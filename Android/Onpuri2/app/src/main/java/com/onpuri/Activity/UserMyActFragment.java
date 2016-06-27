@@ -1,7 +1,5 @@
-package com.onpuri;
+package com.onpuri.Activity;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.InflateException;
@@ -9,20 +7,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.onpuri.R;
+import com.onpuri.Server.ActivityList;
+
 /**
  * Created by kutemsys on 2016-05-26.
  */
-public class UserMyAct extends Fragment {
-    private CloseSystem CloseSystem; //BackKeyPressed,close
+public class UserMyActFragment extends Fragment {
+    private com.onpuri.Server.CloseSystem CloseSystem; //BackKeyPressed,close
     private ActivityList actManager = ActivityList.getInstance();
     private static View view;
 
-    public static UserMyAct newInstance() {
-        UserMyAct fragment = new UserMyAct();
+    public static UserMyActFragment newInstance() {
+        UserMyActFragment fragment = new UserMyActFragment();
         return fragment;
     }
 
-    public UserMyAct() {
+    public UserMyActFragment() {
 
 // Required empty public constructor
     }

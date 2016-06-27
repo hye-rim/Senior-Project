@@ -3,7 +3,7 @@
                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:context=".UserMy"
+                tools:context=".Activity.UserMyFragment"
               android:background="#FAF5B3"
               android:weightSum="1">
     <LinearLayout

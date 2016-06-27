@@ -1,8 +1,10 @@
-package com.onpuri;
+package com.onpuri.Activity;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.TextView;
+
+import com.onpuri.R;
 
 /**
  * Created by kutemsys on 2016-05-11.
@@ -19,7 +21,7 @@ public class UserNewSenTab01  extends Activity {
     }
 /*
     public void onBackPressed(){
-        UserNewSen parent = ((UserNewSen)getParent());
+         parent = (()getParent());
         parent.onBackPressed();
     }
 */

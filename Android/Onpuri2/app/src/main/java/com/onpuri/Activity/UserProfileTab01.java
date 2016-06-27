@@ -1,4 +1,4 @@
-package com.onpuri;
+package com.onpuri.Activity;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -6,7 +6,8 @@ import android.app.FragmentTransaction;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
+
+import com.onpuri.R;
 
 /**
  * Created by kutemsys on 2016-04-26.
@@ -16,7 +17,7 @@ public class UserProfileTab01 extends FragmentActivity {
 
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_user_profile);
+        setContentView(R.layout.activity_splash);
 
        // btn_note_word = (Button) findViewById(R.id.btn_note_text);
         //btn_note_sentecnce = (Button) findViewById(R.id.btn_note_sentence);
@@ -26,9 +27,9 @@ public class UserProfileTab01 extends FragmentActivity {
         Fragment fr;
 
         if(view == findViewById(R.id.btn_note_sentence)){
-            fr = new NoteSentence();
+            fr = new NoteSentenceFragment();
         }else{
-            fr = new NoteWord();
+            fr = new NoteWordFragment();
         }
 
         FragmentManager fm = getFragmentManager();

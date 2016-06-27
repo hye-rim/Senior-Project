@@ -1,4 +1,4 @@
-package com.onpuri;
+package com.onpuri.Activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,6 +10,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.onpuri.R;
+import com.onpuri.Server.ActivityList;
+import com.onpuri.Server.CloseSystem;
+import com.onpuri.Server.PacketUser;
+import com.onpuri.Server.SocketConnection;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -18,10 +24,11 @@ import java.util.regex.Pattern;
 /**
  * Created by Hye-rim on 2016-03-18.
  */
+//Login
 public class LoginActivity extends Activity{
     private String id, pass;
     private String admin = "test";  // admin IP/PW
-    private CloseSystem CloseSystem; // BackKeyPressed,close
+    private com.onpuri.Server.CloseSystem CloseSystem; // BackKeyPressed,close
 
     DataOutputStream dos;
     DataInputStream dis;
@@ -77,7 +84,7 @@ public class LoginActivity extends Activity{
                 System.out.println("result: " + (char)inData[4]);
                // mworker_login.stopThread();
                 if ( (check != '0' && check != '5') && checkLength != '1') {
-                    Intent intent = new Intent(LoginActivity.this, MainSubActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                 }
                 else if( check == '5'){
@@ -92,7 +99,7 @@ public class LoginActivity extends Activity{
         btNew.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               Intent intent = new Intent(LoginActivity.this, NewActivity.class);
+               Intent intent = new Intent(LoginActivity.this, JoinActivity.class);
                     startActivity(intent);
 
             }

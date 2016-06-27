@@ -1,4 +1,4 @@
-package com.onpuri;
+package com.onpuri.Server;
 
 import java.io.BufferedReader;
 import java.io.IOException;

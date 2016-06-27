@@ -1,4 +1,4 @@
-package com.onpuri;
+package com.onpuri.Activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -17,6 +17,11 @@ import android.widget.Toast;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.onpuri.R;
+import com.onpuri.Server.ActivityList;
+import com.onpuri.Server.CloseSystem;
+import com.onpuri.Server.PacketUser;
+import com.onpuri.Server.SocketConnection;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -26,7 +31,8 @@ import java.util.regex.Pattern;
 /**
  * Created by kutemsys on 2016-03-25.
  */
-public class NewActivity extends Activity {
+//Join Activity
+public class JoinActivity extends Activity {
     Button btCheck, btJoin;
     DataOutputStream dos;
     DataInputStream dis;
@@ -51,7 +57,7 @@ public class NewActivity extends Activity {
     private GoogleApiClient client;
 
 
-    private CloseSystem CloseSystem; //BackKeyPressed,close
+    private com.onpuri.Server.CloseSystem CloseSystem; //BackKeyPressed,close
     private ActivityList actManager = ActivityList.getInstance();
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -176,7 +182,7 @@ public class NewActivity extends Activity {
                 if(checkID == 1 && checkPw) {
                     if(worker_join.getState() == Thread.State.NEW)
                         worker_join.start();
-                    Intent intent = new Intent(NewActivity.this, LoginActivity.class);
+                    Intent intent = new Intent(JoinActivity.this, LoginActivity.class);
                     startActivity(intent);
                     finish();
                     worker_join.interrupt();

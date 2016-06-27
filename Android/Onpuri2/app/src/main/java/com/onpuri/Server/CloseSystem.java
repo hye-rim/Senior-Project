@@ -1,11 +1,12 @@
-package com.onpuri;
+package com.onpuri.Server;
 
 /**
  * Created by kutemsys on 2016-04-01.
  */
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.widget.Toast;
+
+import com.onpuri.Server.ActivityList;
 
 public class CloseSystem {
 

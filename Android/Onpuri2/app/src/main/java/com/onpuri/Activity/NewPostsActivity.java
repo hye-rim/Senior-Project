@@ -1,4 +1,4 @@
-package com.onpuri;
+package com.onpuri.Activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -11,19 +11,18 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+
+import com.onpuri.R;
+import com.onpuri.Server.ActivityList;
+import com.onpuri.Server.CloseSystem;
 
 import java.io.File;
 
@@ -34,7 +33,7 @@ public class NewPostsActivity extends Activity {
 
     private Uri mImageCaptureUri;
 
-    private CloseSystem CloseSystem; //BackKeyPressed,close
+    private com.onpuri.Server.CloseSystem CloseSystem; //BackKeyPressed,close
     private ActivityList actManager = ActivityList.getInstance();
 
     private static final String TAG = "NewCamera";

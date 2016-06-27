@@ -13,7 +13,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".SplashActivity"
+            android:name=".Activity.SplashActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,54 +22,35 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".UserMy"
+            android:name=".Activity.LoginActivity"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".Activity.JoinActivity"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
         <activity
-            android:name=".NewActivity"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
-        <activity
-            android:name=".NewPostsActivity"
+            android:name=".Activity.NewPostsActivity"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
         <activity
-            android:name=".UserProfile"
+            android:name=".Activity.UserProfileTab01"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
         <activity
-            android:name=".UserProfileTab01"
+            android:name=".Activity.UserNewSenTab01"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
         <activity
-            android:name=".UserProfileTab02"
+            android:name=".Activity.UserMainTab01"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
         <activity
-            android:name=".UserNewSen"
+            android:name=".Activity.UserMainSentence"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
         <activity
-            android:name=".UserNewSenTab01"
+            android:name=".Activity.UserMainSenListen"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
         <activity
-            android:name=".UserMain"
+            android:name=".Activity.UserMainSenTrans"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
+
         <activity
-            android:name=".UserMainTab01"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
-        <activity
-            android:name=".UserMainSentence"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
-        <activity
-            android:name=".UserMainSenListen"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
-        <activity
-            android:name=".UserMainSenTrans"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
-        <!--
-        <activity
-            android:name=".HomeActivity"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
-        -->
-        <activity
-            android:name=".MainSubActivity"
+            android:name=".Activity.MainActivity"
             android:label="@string/title_activity_main_sub"
             android:theme="@style/AppTheme" />
 

@@ -38,11 +38,11 @@
                 android:onClick="selectFrag"
                 />
         </LinearLayout>
-        <fragment android:name="com.onpuri.NoteWord"
+        <fragment android:name="com.onpuri.Activity.NoteWordFragment"
             android:id="@+id/frag_note"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:layout="@layout/fragment_user_profile" />
+            tools:layout="@layout/fragment_note" />
 
     </LinearLayout>
 </ScrollView>

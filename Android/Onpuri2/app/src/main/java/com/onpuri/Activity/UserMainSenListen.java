@@ -1,4 +1,4 @@
-package com.onpuri;
+package com.onpuri.Activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.onpuri.R;
 
 /**
  * Created by kutemsys on 2016-05-17.
@@ -24,11 +26,4 @@ public class UserMainSenListen extends Activity {
         tvSen.setText(sen);
 
     }
-    /*
-
-    public void onBackPressed(){
-        UserMain parent = ((UserMain)getParent());
-        parent.onBackPressed();
-    }
-    */
 }

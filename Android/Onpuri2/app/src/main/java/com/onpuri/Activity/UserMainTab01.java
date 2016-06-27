@@ -1,4 +1,4 @@
-package com.onpuri;
+package com.onpuri.Activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -12,6 +12,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.onpuri.R;
+import com.onpuri.Server.PacketUser;
+import com.onpuri.Server.SocketConnection;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -116,8 +120,6 @@ public class UserMainTab01 extends Activity  {
 
             intent.putExtra("Sentence", arrSentence.get(position));
 
-            //view = UserMain.MainGroup.getLocalActivityManager().startActivity("UserMainSentence", intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)).getDecorView();
-            //UserMain.MainGroup.replaceView(view);
         }
     };
 

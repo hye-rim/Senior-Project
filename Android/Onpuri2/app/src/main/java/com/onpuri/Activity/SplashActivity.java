@@ -1,4 +1,4 @@
-package com.onpuri;
+package com.onpuri.Activity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,7 +10,11 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.onpuri.R;
+import com.onpuri.Server.ActivityList;
+import com.onpuri.Server.PacketInfo;
+import com.onpuri.Server.SocketConnection;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -19,6 +23,7 @@ import java.io.IOException;
 /**
  * Created by Hye-rim on 2016-03-18.
  */
+//Loading Activity
 public class SplashActivity extends Activity {
     private ProgressBar spinner;
     DataOutputStream dos;
@@ -132,7 +137,7 @@ public class SplashActivity extends Activity {
             String toServerData ;
 
             toServerData = getDeviceId()+"+"+Build.MODEL;
-            outData[0] = (byte)PacketInfo.SOF;
+            outData[0] = (byte) PacketInfo.SOF;
             outData[1] = (byte)PacketInfo.MPC_RDY;
             outData[2] = (byte)PacketInfo.getSEQ();
             outData[3] = (byte)toServerData.length();

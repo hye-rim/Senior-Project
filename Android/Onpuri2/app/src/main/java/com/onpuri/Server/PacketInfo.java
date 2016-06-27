@@ -1,4 +1,4 @@
-package com.onpuri;
+package com.onpuri.Server;
 
 import android.app.Application;
 
@@ -7,10 +7,10 @@ import android.app.Application;
  * Created by kutemsys on 2016-03-21.
  */
 public class PacketInfo extends Application{
-    static char MPC_RDY = 1, MPC_RDY_LEN = 0x14;//Decimal=20
-    static char  ACK_MRY = 2, ACK_MRY_LEN = 1;
-    static char SOF = 0xcc;//Decimal=204
-    static char CRC = 0x55;//Decimal=55
+    static public char MPC_RDY = 1, MPC_RDY_LEN = 0x14;//Decimal=20
+    static public char  ACK_MRY = 2, ACK_MRY_LEN = 1;
+    static public char SOF = 0xcc;//Decimal=204
+    static public char CRC = 0x55;//Decimal=55
 
     private static int SEQ = 0;
 

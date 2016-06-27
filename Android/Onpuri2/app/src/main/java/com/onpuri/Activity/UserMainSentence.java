@@ -1,4 +1,4 @@
-package com.onpuri;
+package com.onpuri.Activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.onpuri.R;
 
 /**
  * Created by kutemsys on 2016-05-11.
@@ -33,8 +35,6 @@ public class UserMainSentence extends Activity {
 
                 intent.putExtra("Sentence", tvSen.getText());
 
-                view = UserMain.MainGroup.getLocalActivityManager().startActivity("UserMainSenListen", intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)).getDecorView();
-                UserMain.MainGroup.replaceView(view);
             }
         });
 
@@ -46,15 +46,8 @@ public class UserMainSentence extends Activity {
 
                 intent.putExtra("Sentence", tvSen.getText());
 
-                view = UserMain.MainGroup.getLocalActivityManager().startActivity("UserMainSenTrans", intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)).getDecorView();
-                UserMain.MainGroup.replaceView(view);
             }
         });
         */
     }
-/*
-    public void onBackPressed(){
-        UserMain parent = ((UserMain)getParent());
-        parent.onBackPressed();
-    }*/
 }

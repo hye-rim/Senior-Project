@@ -1,4 +1,4 @@
-package com.onpuri;
+package com.onpuri.Activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -23,20 +23,24 @@ import android.widget.Toast;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.onpuri.R;
+import com.onpuri.Server.ActivityList;
+import com.onpuri.Server.CloseSystem;
+import com.onpuri.Server.PacketUser;
+import com.onpuri.Server.SocketConnection;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class MainSubActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private Toast toast;
     private Activity activity;
     private TabHost tabHost;
 
     private ActivityList actManager = ActivityList.getInstance();
-    private CloseSystem CloseSystem; //BackKeyPressed,close
+    private com.onpuri.Server.CloseSystem CloseSystem; //BackKeyPressed,close
 
     private worker_logout mworker_out;
 
@@ -51,9 +55,9 @@ public class MainSubActivity extends AppCompatActivity
 
     Toolbar toolbar;
     ActionBarDrawerToggle toggle;
-    UserMy userInfo;
-    UserMyAct userAct;
-    SetFragment setFrag;
+    UserMyFragment userInfo;
+    UserMyActFragment userAct;
+    UserSetFragment setFrag;
     private MenuItem item;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -66,7 +70,7 @@ public class MainSubActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         actManager.addActivity(this);
-        setContentView(R.layout.activity_main_sub);
+        setContentView(R.layout.activity_main);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -109,9 +113,9 @@ public class MainSubActivity extends AppCompatActivity
             }
         });
 
-        userInfo = UserMy.newInstance();
-        userAct = UserMyAct.newInstance();
-        setFrag = SetFragment.newInstance();
+        userInfo = UserMyFragment.newInstance();
+        userAct = UserMyActFragment.newInstance();
+        setFrag = UserSetFragment.newInstance();
 
         TabLayout.Tab tab = tabLayout.getTabAt(1);
         tab.select();
@@ -191,7 +195,7 @@ public class MainSubActivity extends AppCompatActivity
 
             System.out.println("down_join");
 
-            Intent loginIntent = new Intent(MainSubActivity.this, LoginActivity.class);
+            Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(loginIntent);
             finish();
         } else if (id == R.id.nav_myact) {

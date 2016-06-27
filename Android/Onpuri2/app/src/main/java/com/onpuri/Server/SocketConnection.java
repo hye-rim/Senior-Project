@@ -1,4 +1,4 @@
-package com.onpuri;
+package com.onpuri.Server;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -11,13 +11,13 @@ import java.io.PrintWriter;
  * Created by kutemsys on 2016-03-29.
  */
 public class SocketConnection {
-    static java.net.Socket socket;
+    static public java.net.Socket socket;
 
-    void SocketConnection(){
+    public void SocketConnection(){
 
     }
 
-    static void start(){  //바로 연결시작
+    static public void start(){  //바로 연결시작
         try {
             socket = new java.net.Socket("218.150.182.52", 8888);
 
@@ -26,7 +26,7 @@ public class SocketConnection {
         }
     }
 
-    static   void close(){
+    static public  void close(){
         try{
             socket.close();
         }catch (IOException e){
