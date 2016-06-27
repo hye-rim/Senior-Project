@@ -3,12 +3,14 @@ package com.onpuri.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.TypedValue;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -25,11 +27,10 @@ import java.util.ArrayList;
 /**
  * Created by kutemsys on 2016-05-03.
  */
-public class HomeFragment extends Fragment  {
+public class HomeFragment extends Fragment implements AdapterView.OnItemClickListener {
     private static View view;
 
     private worker_sentence_list mworker_sentence;
-
 
     ArrayList<String> arrSentence;
     PacketUser userSentence;
@@ -91,6 +92,7 @@ public class HomeFragment extends Fragment  {
             @Override
             public void onScroll(AbsListView absListView, int firtVisibleItem, int visibleItemCount, int totalItemCount) {
                 lastItemVisibleFlag = (totalItemCount > 0) && (firtVisibleItem + visibleItemCount >= totalItemCount);
+
             }
         });
 
@@ -116,8 +118,20 @@ public class HomeFragment extends Fragment  {
 
         });
 
+        listView.setOnItemClickListener(this);
+
 
         return view;
+    }
+
+    //FragmentTransaction transaction = getFragmentManager().beginTransaction();
+    //transaction.hide(현재프래그먼트.this)
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
+        adapterView.getItemAtPosition(pos);
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.hide(HomeFragment.this);
+        fragmentTransaction.replace(R.id.containerView, new HomeSentenceFragment()).commit();
     }
 
     class worker_sentence_list extends Thread {

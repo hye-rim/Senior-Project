@@ -2,8 +2,8 @@
     android:shape="rectangle">
     <gradient
         android:angle="135"
-        android:centerColor="@drawable/never_forgotten"
-        android:endColor="@drawable/never_forgotten"
-        android:startColor="@drawable/never_forgotten"
+        android:centerColor="@color/never_forgotten"
+        android:endColor="@color/never_forgotten"
+        android:startColor="@color/never_forgotten"
         android:type="linear" />
 </shape>

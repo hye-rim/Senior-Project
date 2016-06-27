@@ -40,9 +40,6 @@
             android:name=".Activity.UserMainTab01"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
         <activity
-            android:name=".Activity.UserMainSentence"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
-        <activity
             android:name=".Activity.UserMainSenListen"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
         <activity

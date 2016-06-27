@@ -116,10 +116,10 @@ public class UserMainTab01 extends Activity  {
     AdapterView.OnItemClickListener listener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-            Intent intent = new Intent(UserMainTab01.this, UserMainSentence.class);
+   /*         Intent intent = new Intent(UserMainTab01.this, UserMainSentence.class);
 
             intent.putExtra("Sentence", arrSentence.get(position));
-
+*/
         }
     };
 

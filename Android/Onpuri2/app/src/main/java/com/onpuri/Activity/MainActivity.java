@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
@@ -54,17 +56,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     char isOut = '0';
 
     Toolbar toolbar;
-    ActionBarDrawerToggle toggle;
+    ActionBarDrawerToggle mDrawerToggle;
     UserMyFragment userInfo;
     UserMyActFragment userAct;
     UserSetFragment setFrag;
     private MenuItem item;
+
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
     private GoogleApiClient client;
-    DrawerLayout drawer;
+
+    DrawerLayout mDrawerLayout;
+    NavigationView mNavigationView;
+    FragmentManager mFragmentManager;
+    FragmentTransaction mFragmentTransaction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,63 +79,46 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         actManager.addActivity(this);
         setContentView(R.layout.activity_main);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        CloseSystem = new CloseSystem(this); //backKey Event
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
-        tabLayout.addTab(tabLayout.newTab().setText("내노트"));
-        tabLayout.addTab(tabLayout.newTab().setText("홈"));
-        tabLayout.addTab(tabLayout.newTab().setText("문장 등록"));
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        final PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
-        viewPager.setAdapter(adapter);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-
-        userInfo = UserMyFragment.newInstance();
-        userAct = UserMyActFragment.newInstance();
-        setFrag = UserSetFragment.newInstance();
-
-        TabLayout.Tab tab = tabLayout.getTabAt(1);
-        tab.select();
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
+        /**
+         *Setup the DrawerLayout and NavigationView
+         */
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
+        mNavigationView = (NavigationView) findViewById(R.id.nav_view) ;
+
+        /**
+         * Lets inflate the very first fragment
+         * Here , we are inflating the TabFragment as the first Fragment
+         */
+
+        mFragmentManager = getSupportFragmentManager();
+        mFragmentTransaction = mFragmentManager.beginTransaction();
+        mFragmentTransaction.replace(R.id.containerView,new TabFragment()).commit();
+        /**
+         * Setup click events on the Navigation View Items.
+         */
+
+        mNavigationView.setNavigationItemSelectedListener(this);
+
+        /**
+         * Setup Drawer Toggle of the Toolbar
+         */
+
+        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        mDrawerToggle = new ActionBarDrawerToggle(this,mDrawerLayout, toolbar,R.string.app_name, R.string.app_name);
+
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+        mDrawerToggle.syncState();
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
@@ -147,13 +137,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        toggle.syncState();
+        mDrawerToggle.syncState();
+
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        toggle.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
     @Override
@@ -163,27 +154,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case android.R.id.home:
-                drawer.openDrawer(GravityCompat.START);
+                mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        System.out.println("id : " + id);
-        if (id == R.id.nav_mypage) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.mainActivity, userInfo).commit();
-        } else if (id == R.id.nav_logout) {
+        mDrawerLayout.closeDrawers();
+        if (item.getItemId() == R.id.nav_home) {
+            FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.containerView,new TabFragment()).commit();
+        }
+        if (item.getItemId() == R.id.nav_mypage) {
+            FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.containerView,new UserMyFragment()).commit();
+        }
+        if (item.getItemId() == R.id.nav_myact) {
+            FragmentTransaction xfragmentTransaction = mFragmentManager.beginTransaction();
+            xfragmentTransaction.replace(R.id.containerView,new UserMyActFragment()).commit();
+        }
+        if (item.getItemId() == R.id.nav_logout) {
 
             System.out.println("click logout");
             isOut = '1';
 
-            System.out.println("down");
             mworker_out = new worker_logout(true);
             mworker_out.start();
 
@@ -193,20 +189,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 e.printStackTrace();
             }
 
-            System.out.println("down_join");
-
             Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(loginIntent);
             finish();
-        } else if (id == R.id.nav_myact) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.mainActivity, userAct).commit();
-        } else if (id == R.id.nav_set) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.mainActivity, setFrag).commit();
         }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
+        if (item.getItemId() == R.id.nav_set) {
+            FragmentTransaction sfragmentTransaction = mFragmentManager.beginTransaction();
+            sfragmentTransaction.replace(R.id.containerView, new UserSetFragment()).commit();
+        }
+        return false;
     }
 
     @Override
@@ -277,8 +268,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     check_out = (char) inData[4];
 
                     System.out.println("outData : " + (char) outData[4] + "  inData : " + (char) inData[4]);
-                    //System.out.println("cqq"+(char)inData[4]+"\n");
-                    // System.out.println("cqq"+check+"\n");
                     if (check_out == '0' || check_out == '1')
                         isPlay = !isPlay;
 

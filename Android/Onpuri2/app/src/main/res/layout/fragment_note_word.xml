@@ -11,7 +11,7 @@
         android:textSize="20dp"
         android:gravity="center_vertical"
         android:textStyle="bold"
-        android:background="@drawable/never_forgotten" />
+        android:background="@color/never_forgotten" />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="40dp"
@@ -19,6 +19,6 @@
         android:textSize="20dp"
         android:gravity="center_vertical"
         android:textStyle="bold"
-        android:background="@drawable/fuzzy_peach"/>
+        android:background="@color/fuzzy_peach"/>
 
 </LinearLayout>
