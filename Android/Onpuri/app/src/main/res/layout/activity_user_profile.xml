@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#faf5b3">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingRight="5px">
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:layout_gravity="right" />
+        <LinearLayout
+            android:layout_width="376dp"
+            android:layout_height="40dp"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btn_note_text"
+                android:layout_width="180dp"
+                android:layout_height="38dp"
+                android:text="단어"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:textColor="#000000"
+                android:background="@drawable/btn_clilcked"
+                android:onClick="selectFrag"/>
+            <Button
+                android:id="@+id/btn_note_sentence"
+                android:layout_width="180dp"
+                android:layout_height="38dp"
+                android:text="문장"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:textColor="#000000"
+                android:background="@drawable/btn_clilcked"
+                android:onClick="selectFrag"
+                />
+        </LinearLayout>
+        <fragment android:name="com.onpuri.NoteWord"
+            android:id="@+id/frag_note"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:layout="@layout/activity_user_profile" />
+
+    </LinearLayout>
+</ScrollView>

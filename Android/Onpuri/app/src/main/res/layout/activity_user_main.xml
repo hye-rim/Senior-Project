@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#faf5b3">
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="right" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="단어장에있는 단어 많은 순"
+                android:focusable="false"
+                android:textSize="15dp"
+                android:layout_marginLeft="10dp"
+                android:gravity="center_vertical|right" />
+
+        </LinearLayout>
+        <ListView
+            android:id="@+id/list_sentence"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:dividerHeight="1dp"
+            android:layout_marginTop="10dp">
+
+        </ListView>
+    </LinearLayout>
+
+</LinearLayout>
