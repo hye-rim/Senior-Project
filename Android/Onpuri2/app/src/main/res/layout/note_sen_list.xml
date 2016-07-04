@@ -8,7 +8,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:textColor="@color/black"
-        android:id="@+id/tv_sen_item"
+        android:id="@+id/note_sen_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>

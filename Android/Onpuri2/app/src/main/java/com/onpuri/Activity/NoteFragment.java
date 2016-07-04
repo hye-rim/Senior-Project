@@ -2,13 +2,18 @@ package com.onpuri.Activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
 
+import com.onpuri.Adapter.NoteSenAdapter;
 import com.onpuri.R;
+
+import java.util.ArrayList;
 
 /**
  * Created by kutemsys on 2016-04-26.
@@ -16,22 +21,57 @@ import com.onpuri.R;
 //내노트
 public class NoteFragment extends Fragment {
     //public static UserProfile ProfileGroup;
-   // private ArrayList<View> history;
-        private static View view;
-        private TabHost mTabHost;
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            if (view != null) {
-                ViewGroup parent = (ViewGroup) view.getParent();
-                if (parent != null)
-                    parent.removeView(view);
-            }
-            try {
-                view = inflater.inflate(R.layout.fragment_note, container, false);
-            } catch (InflateException e) {
-        //map is already there, just return view as it is
-        }
+    // private ArrayList<View> history;
+    private static View view;
+    private TabHost mTabHost;
 
+    ArrayList<String> listSentence;
+
+    int i, index;
+
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+
+    protected RecyclerView.LayoutManager mLayoutManager;
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        if (view != null) {
+            ViewGroup parent = (ViewGroup) view.getParent();
+            if (parent != null)
+                parent.removeView(view);
+        }
+        try {
+            view = inflater.inflate(R.layout.fragment_note, container, false);
+        } catch (InflateException e) {
+            //map is already there, just return view as it is
+        }
+        mTabHost = (TabHost) view.findViewById(R.id.note_tab);
+
+        mTabHost.setup();
+
+        mTabHost.addTab(mTabHost.newTabSpec("tab_1")
+                .setIndicator("문장")
+                .setContent(R.id.tab_sen));
+
+        mTabHost.addTab(mTabHost.newTabSpec("tab_2")
+                .setIndicator("단어")
+                .setContent(R.id.tab_word));
+
+        initData();
+
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycle_note_sen);
+        mLayoutManager = new LinearLayoutManager(getActivity());
+
+        mAdapter = new NoteSenAdapter(listSentence);
+
+        mRecyclerView.setAdapter(mAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         return view;
+    }
+
+    private void initData() {
+        listSentence = new ArrayList<String>();
+
+        for(int i = 0; i < 5; i++)
+            listSentence.add("문장모음 " + i);
     }
 }

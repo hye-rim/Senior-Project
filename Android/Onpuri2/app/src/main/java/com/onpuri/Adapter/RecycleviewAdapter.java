@@ -1,5 +1,9 @@
 package com.onpuri.Adapter;
 
+import android.app.FragmentTransaction;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,6 +12,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.onpuri.Activity.HomeFragment;
+import com.onpuri.Activity.HomeSentenceFragment;
+import com.onpuri.Activity.MainActivity;
 import com.onpuri.R;
 
 import java.util.ArrayList;
@@ -20,13 +27,13 @@ public class RecycleviewAdapter extends RecyclerView.Adapter<RecycleviewAdapter.
     private final String TAG = "RecycleviewAdapter";
     private ArrayList<String> senList = new ArrayList<String>();
 
+    public TextView mSenItem;
+
     public RecycleviewAdapter(ArrayList<String> listSentence) {
         senList.addAll(listSentence);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView mSenItem;
-
         public ViewHolder(View v) {
             super(v);
 
@@ -39,6 +46,7 @@ public class RecycleviewAdapter extends RecyclerView.Adapter<RecycleviewAdapter.
             });
 
             mSenItem = (TextView) v.findViewById(R.id.tv_sen_item);
+
         }
 
         public TextView getTextView() {
@@ -58,6 +66,21 @@ public class RecycleviewAdapter extends RecyclerView.Adapter<RecycleviewAdapter.
         Log.d(TAG, "Element " + position + " set.");
         // Get element from your dataset at this position and replace the contents of the view with that element
         holder.getTextView().setText(senList.get(position));
+        holder.itemView.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v){
+
+            }
+        });
+
+        if (position % 2 == 0) {
+            holder.itemView.setBackgroundColor(Color.parseColor("#FEE098"));
+            holder.getTextView().setTypeface(null, Typeface.NORMAL);
+        } else {
+            holder.itemView.setBackgroundColor(Color.parseColor("#faf5b3"));
+            holder.getTextView().setTypeface(null, Typeface.BOLD);
+        }
     }
 
     @Override

@@ -17,6 +17,7 @@ import com.onpuri.R;
  * Created by kutemsys on 2016-05-11.
  */
 public class HomeSentenceFragment extends Fragment {
+    private Fragment hostedFragment;
     TextView tvSen;
     private static View view;
 

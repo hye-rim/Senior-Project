@@ -98,16 +98,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-/*
-       if (position % 2 == 0) {
-                    textView.setBackgroundColor(Color.parseColor("#FEE098"));
-                } else {
-                    textView.setBackgroundColor(Color.parseColor("#faf5b3"));
-                }
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-                textView.setHeight((int) (24 * scale)); // Height
-                }
-        */
+
     }
 
     //FragmentTransaction transaction = getFragmentManager().beginTransaction();
