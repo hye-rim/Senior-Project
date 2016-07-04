@@ -1,48 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#faf5b3">
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingRight="5px">
-
-        <LinearLayout
-            android:layout_width="376dp"
-            android:layout_height="40dp"
-            android:orientation="horizontal"
-            android:gravity="center">
-
-            <Button
-                android:id="@+id/btn_note_text"
-                android:layout_width="180dp"
-                android:layout_height="38dp"
-                android:text="단어"
-                android:textSize="20dp"
-                android:textStyle="bold"
-                android:textColor="#000000"
-                android:background="@drawable/btn_clilcked"
-                android:onClick="selectFrag"/>
-            <Button
-                android:id="@+id/btn_note_sentence"
-                android:layout_width="180dp"
-                android:layout_height="38dp"
-                android:text="문장"
-                android:textSize="20dp"
-                android:textStyle="bold"
-                android:textColor="#000000"
-                android:background="@drawable/btn_clilcked"
-                android:onClick="selectFrag"
-                />
-        </LinearLayout>
-        <fragment android:name="com.onpuri.Activity.NoteWordFragment"
-            android:id="@+id/frag_note"
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        android:layout_height="match_parent">
+        <Button
+            android:id="@+id/btn_word"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:layout="@layout/fragment_note" />
-
+            android:layout_weight="1"></Button>
+        <Button
+            android:id="@+id/btn_sen"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"></Button>
     </LinearLayout>
-</ScrollView>
+    <FrameLayout
+        android:id="@+id/note_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+    </FrameLayout>
+
+</LinearLayout>

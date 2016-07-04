@@ -50,8 +50,8 @@ public class TabFragment extends Fragment {
             }
         });
 
+        viewPager.setCurrentItem(1);
         return x;
-
     }
 
     class MyAdapter extends FragmentPagerAdapter {
@@ -84,7 +84,6 @@ public class TabFragment extends Fragment {
         public int getCount() {
             return int_items;
         }
-
         /**
          * This method returns the title of the tab according to the position.
          */

@@ -1,9 +1,15 @@
 package com.onpuri.Activity;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.InflateException;
 import android.view.LayoutInflater;
@@ -14,7 +20,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.onpuri.Adapter.RecycleviewAdapter;
 import com.onpuri.R;
 import com.onpuri.Server.PacketUser;
 import com.onpuri.Server.SocketConnection;
@@ -23,19 +31,21 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Created by kutemsys on 2016-05-03.
  */
-public class HomeFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class HomeFragment extends Fragment {
     private static View view;
 
     private worker_sentence_list mworker_sentence;
 
-    ArrayList<String> arrSentence;
+    ArrayList<String> listSentence;
     PacketUser userSentence;
-
-    ListView listView;
 
     int i, index;
 
@@ -47,6 +57,11 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
     byte[] temp = new byte[261];
     boolean lastItemVisibleFlag = false;
 
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+
+    protected RecyclerView.LayoutManager mLayoutManager;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (view != null) {
@@ -57,82 +72,46 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
         try {
             view = inflater.inflate(R.layout.fragment_main, container, false);
         } catch (InflateException e) {
-    /* map is already there, just return view as it is */
+            /* map is already there, just return view as it is */
         }
 
         mworker_sentence = new worker_sentence_list(true);
         mworker_sentence.start();
-
         try {
             mworker_sentence.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        listView = (ListView) view.findViewById(R.id.list_sentence);
-        arrSentence = userSentence.copyList();
-
-        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
-
-            @Override
-            public void onScrollStateChanged(AbsListView absListView, int scrollState) {
-                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE && lastItemVisibleFlag) {
-                    mworker_sentence = new worker_sentence_list(true);
-                    mworker_sentence.start();
-
-                    try {
-                        mworker_sentence.join();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    arrSentence = userSentence.copyList();
-                }
-            }
-
-            @Override
-            public void onScroll(AbsListView absListView, int firtVisibleItem, int visibleItemCount, int totalItemCount) {
-                lastItemVisibleFlag = (totalItemCount > 0) && (firtVisibleItem + visibleItemCount >= totalItemCount);
-
-            }
-        });
+        listSentence = userSentence.copyList();
 
 
-        //ArrayAdapter adapter= new ArrayAdapter(this, android.R.layout.simple_list_item_1, arrSentence);
-        listView.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, arrSentence) {
-            final float scale = getResources().getDisplayMetrics().density;
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_sentence);
+        mLayoutManager = new LinearLayoutManager(getActivity());
 
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
+        mAdapter = new RecycleviewAdapter(listSentence);
 
-                View view = super.getView(position, convertView, parent);
-                TextView textView = ((TextView) view.findViewById(android.R.id.text1));
-                if (position % 2 == 0) {
+        mRecyclerView.setAdapter(mAdapter);// Set CustomAdapter as the adapter for RecyclerView.
+
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+/*
+       if (position % 2 == 0) {
                     textView.setBackgroundColor(Color.parseColor("#FEE098"));
                 } else {
                     textView.setBackgroundColor(Color.parseColor("#faf5b3"));
                 }
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
                 textView.setHeight((int) (24 * scale)); // Height
-                return view;
-            }
-
-        });
-
-        listView.setOnItemClickListener(this);
-
-
-        return view;
+                }
+        */
     }
 
     //FragmentTransaction transaction = getFragmentManager().beginTransaction();
     //transaction.hide(현재프래그먼트.this)
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
-        adapterView.getItemAtPosition(pos);
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.hide(HomeFragment.this);
-        fragmentTransaction.replace(R.id.containerView, new HomeSentenceFragment()).commit();
-    }
 
     class worker_sentence_list extends Thread {
         private boolean isPlay = false;
@@ -149,20 +128,17 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
             super.run();
             while (isPlay) {
                 System.out.println("1");
-                String toServerDataUser;
                 outData[0] = (byte) PacketUser.SOF;
                 outData[1] = (byte) PacketUser.USR_MSL;
                 outData[2] = (byte) PacketUser.getSEQ();
                 outData[3] = (byte) PacketUser.USR_MSL_LEN;
                 outData[4] = (byte) 10;
                 outData[5] = (byte) 85;
-                System.out.println("1");
                 try {
                     i = 0;
                     dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
                     dos.write(outData, 0, outData[3] + 5); // packet transmission
                     dos.flush();
-                    System.out.println("1");
 
                     dis = new DataInputStream(SocketConnection.socket.getInputStream());
                     while (i < 10) {
@@ -214,32 +190,4 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
             }
         }
     }
-/*
-
-    //새로운 level의 activity를 추가하는 경우
-    public void replaceView(View view) {
-        history.add(view);
-        setContentView(view);
-    }
-
-    //back key가 눌러졌을 경우에 대한 처리
-    public void back(){
-        if(history.size() > 0) {
-            history.remove(history.size() - 1);
-            if (history.size() == 0)
-                finish();
-            else
-                setContentView(history.get(history.size() - 1));
-
-        }else{
-            finish();
-        }
-    }
-
-    //back key에 대한 event handler
-    public void onBackPressed(){
-        MainGroup.back();
-        return;
-    }
-    */
 }

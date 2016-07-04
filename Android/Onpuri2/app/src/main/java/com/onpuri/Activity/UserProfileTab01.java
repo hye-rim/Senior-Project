@@ -26,7 +26,7 @@ public class UserProfileTab01 extends FragmentActivity {
     public void selectFrag(View view){
         Fragment fr;
 
-        if(view == findViewById(R.id.btn_note_sentence)){
+        if(view == findViewById(R.id.btn_sen)){
             fr = new NoteSentenceFragment();
         }else{
             fr = new NoteWordFragment();
@@ -34,7 +34,7 @@ public class UserProfileTab01 extends FragmentActivity {
 
         FragmentManager fm = getFragmentManager();
         FragmentTransaction fragmentTransaction = fm.beginTransaction();
-        fragmentTransaction.replace(R.id.frag_note, fr);
+        fragmentTransaction.replace(R.id.note_content, fr);
         fragmentTransaction.commit();
     }
 /*
