@@ -63,7 +63,7 @@ public class JoinActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         actManager.addActivity(this);
-        setContentView(R.layout.activity_new);
+        setContentView(R.layout.activity_join);
         CloseSystem = new CloseSystem(this); //backKey Event
 
         btCheck = (Button) findViewById(R.id.btnCheck);

@@ -1,26 +1,14 @@
 package com.onpuri.Activity;
 
-import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.onpuri.Adapter.RecycleviewAdapter;
 import com.onpuri.R;
@@ -31,10 +19,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
 
 /**
  * Created by kutemsys on 2016-05-03.
@@ -70,7 +54,7 @@ public class HomeFragment extends Fragment {
                 parent.removeView(view);
         }
         try {
-            view = inflater.inflate(R.layout.fragment_main, container, false);
+            view = inflater.inflate(R.layout.fragment_home, container, false);
         } catch (InflateException e) {
             /* map is already there, just return view as it is */
         }
