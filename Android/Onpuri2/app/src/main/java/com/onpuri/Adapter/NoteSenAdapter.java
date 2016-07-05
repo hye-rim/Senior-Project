@@ -1,12 +1,17 @@
 package com.onpuri.Adapter;
 
+import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.content.ClipData;
+import android.content.DialogInterface;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,8 +29,9 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private ArrayList<String> noteSenList = new ArrayList<String>();
 
-    public TextView mSenItem;
-    public Button mSenAdd;
+    private TextView mSenItem;
+    private Button mSenAdd;
+    private EditText mAddItem;
 
     public NoteSenAdapter(ArrayList<String> listSentence) {
         noteSenList.addAll(listSentence);
@@ -70,7 +76,7 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         // Get element from your dataset at this position and replace the contents of the view with that element
         switch (getItemViewType(position)){
             case VIEW_TYPE_CELL:
-                Log.d(TAG, "Sentence List " + position + " set.");
+                Log.d(TAG, "Sentence Item set. - " + position);
                 ItemViewHolder itemViewHolder = (ItemViewHolder)holder;
                 itemViewHolder.getTextView().setText(noteSenList.get(position));
                 itemViewHolder.itemView.setOnClickListener(new View.OnClickListener(){
@@ -81,17 +87,49 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 });
                 break;
             case VIEW_TYPE_FOOTER:
-                Log.d(TAG, "Add Button set." + position);
-                AddViewHolder addViewHolder = (AddViewHolder)holder;
+                Log.d(TAG, "Add Button set. - " + position);
+                final AddViewHolder addViewHolder = (AddViewHolder)holder;
                 addViewHolder.getButton().setOnClickListener(new View.OnClickListener() {
+                    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
                     @Override
                     public void onClick(View v) {
-                        Log.d(TAG, "Add Button " + position + " clicked.");
+                        Log.d(TAG, "Add Button clicked. - " + position);
+
+                        AlertDialog.Builder alertBuilder = new AlertDialog.Builder((addViewHolder.itemView.getContext()));
+                        alertBuilder.setTitle("문장 모음 추가하기");
+
+                        mAddItem = new EditText((addViewHolder.itemView.getContext()));
+                        alertBuilder.setView(mAddItem);
+
+                        alertBuilder.setCancelable(false
+                        ).setPositiveButton("추가",new DialogInterface.OnClickListener(){
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String itemName = "문장 모음" + noteSenList.size();
+                                if(!mAddItem.getText().toString().isEmpty())
+                                    itemName = mAddItem.getText().toString();
+                                addItem(position , itemName);
+                            }
+                        }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                        AlertDialog alertDialog = alertBuilder.create();
+                        alertDialog.show();  //<-- See This!
                     }
                 });
 
                 break;
         }
+    }
+
+    private void addItem(int position, String itemName) {
+        noteSenList.add(itemName);
+        Log.d(TAG, "noteSenList size : " + noteSenList.size());
+        notifyItemInserted(noteSenList.size());
+        //notifyItemRangeChanged(position, noteSenList.size());
     }
 
     @Override
