@@ -36,19 +36,20 @@
                         android:id="@+id/recycle_note_sen"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        tools:listitem="@layout/note_sen_list" >
-
-                    </android.support.v7.widget.RecyclerView>
+                        tools:listitem="@layout/note_sen_list" />
                 </LinearLayout>
                 <LinearLayout
                     android:id="@+id/tab_word"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     >
-                    <TextView
-                        android:text="word"
+                    <android.support.v7.widget.RecyclerView
+                        android:scrollbars="vertical"
+                        app:layoutManager="LinearLayoutManager"
+                        android:id="@+id/recycle_note_word"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        tools:listitem="@layout/note_word_list" />
                 </LinearLayout>
             </FrameLayout>
         </LinearLayout>

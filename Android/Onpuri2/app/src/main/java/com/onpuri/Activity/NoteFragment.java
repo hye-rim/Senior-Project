@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TabHost;
 
 import com.onpuri.Adapter.NoteSenAdapter;
+import com.onpuri.Adapter.NoteWordAdapter;
 import com.onpuri.R;
 
 import java.util.ArrayList;
@@ -29,8 +30,8 @@ public class NoteFragment extends Fragment {
 
     int i, index;
 
-    private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private RecyclerView mRecyclerSen, mRecyclerWord;
+    private RecyclerView.Adapter mSenAdapter, mWordAdapter;
 
     protected RecyclerView.LayoutManager mLayoutManager;
     @Override
@@ -59,12 +60,18 @@ public class NoteFragment extends Fragment {
 
         initData();
 
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycle_note_sen);
+        //Set Sentence Adapter for Sentence RecyclerView (NoteTab)
+        mRecyclerSen = (RecyclerView) view.findViewById(R.id.recycle_note_sen);
         mLayoutManager = new LinearLayoutManager(getActivity());
+        mSenAdapter = new NoteSenAdapter(listSentence);
+        mRecyclerSen.setAdapter(mSenAdapter);// Set CustomAdapter as the adapter for RecyclerView.
 
-        mAdapter = new NoteSenAdapter(listSentence);
+        //Set Word Adapter for Word RecyclerView (NoteTab)
+        mRecyclerWord = (RecyclerView) view.findViewById(R.id.recycle_note_word);
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mWordAdapter = new NoteWordAdapter(listSentence);
+        mRecyclerWord.setAdapter(mWordAdapter);// Set CustomAdapter as the adapter for RecyclerView.
 
-        mRecyclerView.setAdapter(mAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         return view;
     }
 
