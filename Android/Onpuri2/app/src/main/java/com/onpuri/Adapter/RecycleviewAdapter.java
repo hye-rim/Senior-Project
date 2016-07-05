@@ -69,10 +69,8 @@ public class RecycleviewAdapter extends RecyclerView.Adapter<RecycleviewAdapter.
 
         if (position % 2 == 0) {
             holder.itemView.setBackgroundColor(Color.parseColor("#FEE098"));
-            holder.getTextView().setTypeface(null, Typeface.NORMAL);
         } else {
             holder.itemView.setBackgroundColor(Color.parseColor("#faf5b3"));
-            holder.getTextView().setTypeface(null, Typeface.BOLD);
         }
     }
 

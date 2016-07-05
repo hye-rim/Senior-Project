@@ -1,8 +1,10 @@
 package com.onpuri.Activity;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.InflateException;
@@ -11,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.onpuri.Adapter.RecycleviewAdapter;
+import com.onpuri.DividerItemDecoration;
 import com.onpuri.R;
 import com.onpuri.Server.PacketUser;
 import com.onpuri.Server.SocketConnection;
@@ -19,6 +22,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import static com.onpuri.R.drawable.divider;
 
 /**
  * Created by kutemsys on 2016-05-03.
@@ -69,12 +74,16 @@ public class HomeFragment extends Fragment {
         listSentence = userSentence.copyList();
 
 
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_sentence);
+
+       mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_sentence);
         mLayoutManager = new LinearLayoutManager(getActivity());
 
         mAdapter = new RecycleviewAdapter(listSentence);
 
         mRecyclerView.setAdapter(mAdapter);// Set CustomAdapter as the adapter for RecyclerView.
+
+        Drawable dividerDrawable = ContextCompat.getDrawable(getContext(), divider);
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(dividerDrawable));
 
         return view;
     }

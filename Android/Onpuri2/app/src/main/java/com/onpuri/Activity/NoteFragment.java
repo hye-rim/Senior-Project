@@ -1,7 +1,9 @@
 package com.onpuri.Activity;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.InflateException;
@@ -12,9 +14,12 @@ import android.widget.TabHost;
 
 import com.onpuri.Adapter.NoteSenAdapter;
 import com.onpuri.Adapter.NoteWordAdapter;
+import com.onpuri.DividerItemDecoration;
 import com.onpuri.R;
 
 import java.util.ArrayList;
+
+import static com.onpuri.R.drawable.divider;
 
 /**
  * Created by kutemsys on 2016-04-26.
@@ -59,18 +64,21 @@ public class NoteFragment extends Fragment {
                 .setContent(R.id.tab_word));
 
         initData();
+        Drawable dividerDrawable = ContextCompat.getDrawable(getContext(), divider);
 
         //Set Sentence Adapter for Sentence RecyclerView (NoteTab)
         mRecyclerSen = (RecyclerView) view.findViewById(R.id.recycle_note_sen);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mSenAdapter = new NoteSenAdapter(listSentence);
         mRecyclerSen.setAdapter(mSenAdapter);// Set CustomAdapter as the adapter for RecyclerView.
+        mRecyclerSen.addItemDecoration(new DividerItemDecoration(dividerDrawable));
 
         //Set Word Adapter for Word RecyclerView (NoteTab)
         mRecyclerWord = (RecyclerView) view.findViewById(R.id.recycle_note_word);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mWordAdapter = new NoteWordAdapter(listWord);
         mRecyclerWord.setAdapter(mWordAdapter);// Set CustomAdapter as the adapter for RecyclerView.
+        mRecyclerWord.addItemDecoration(new DividerItemDecoration(dividerDrawable));
 
         return view;
     }

@@ -94,7 +94,7 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         Log.d(TAG, "Add Button clicked. - " + position);
 
                         AlertDialog.Builder alertBuilder = new AlertDialog.Builder((addViewHolder.itemView.getContext()));
-                        alertBuilder.setTitle("문장 모음 추가하기");
+                        alertBuilder.setTitle("단어 모음 추가하기");
 
                         mAddItem = new EditText((addViewHolder.itemView.getContext()));
                         alertBuilder.setView(mAddItem);
@@ -103,7 +103,7 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         ).setPositiveButton("추가",new DialogInterface.OnClickListener(){
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                String itemName = "문장 모음" + noteWordList.size();
+                                String itemName = "단어 모음" + noteWordList.size();
                                 if(!mAddItem.getText().toString().isEmpty())
                                     itemName = mAddItem.getText().toString();
                                 addItem(position , itemName);
