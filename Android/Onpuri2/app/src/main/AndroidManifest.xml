@@ -30,21 +30,6 @@
         <activity
             android:name=".Activity.NewPostsActivity"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
-        <activity
-            android:name=".Activity.UserProfileTab01"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
-        <activity
-            android:name=".Activity.UserNewSenTab01"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
-        <activity
-            android:name=".Activity.UserMainTab01"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
-        <activity
-            android:name=".Activity.UserMainSenListen"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
-        <activity
-            android:name=".Activity.UserMainSenTrans"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
 
         <activity
             android:name=".Activity.MainActivity"

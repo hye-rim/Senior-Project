@@ -17,7 +17,7 @@ import android.view.ViewGroup;
 import com.onpuri.R;
 
 //Fragment Tab 설정
-public class TabFragment extends Fragment {
+public class TabViewPager extends Fragment {
 
     public static TabLayout tabLayout;
     public static ViewPager viewPager;

@@ -91,12 +91,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         /**
          * Lets inflate the very first fragment
-         * Here , we are inflating the TabFragment as the first Fragment
+         * Here , we are inflating the TabViewPager as the first Fragment
          */
 
         mFragmentManager = getSupportFragmentManager();
         mFragmentTransaction = mFragmentManager.beginTransaction();
-        mFragmentTransaction.replace(R.id.containerView,new TabFragment()).commit();
+        mFragmentTransaction.replace(R.id.containerView,new TabViewPager()).commit();
 
         //Setup click events on the Navigation View Items.
         mNavigationView.setNavigationItemSelectedListener(this);
@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mDrawerLayout.closeDrawers();
         if (item.getItemId() == R.id.nav_home) {
             FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.containerView,new TabFragment()).commit();
+            fragmentTransaction.replace(R.id.containerView,new TabViewPager()).commit();
         }
         if (item.getItemId() == R.id.nav_mypage) {
             FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
