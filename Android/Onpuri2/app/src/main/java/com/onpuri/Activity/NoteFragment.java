@@ -26,7 +26,7 @@ public class NoteFragment extends Fragment {
     private static View view;
     private TabHost mTabHost;
 
-    ArrayList<String> listSentence;
+    ArrayList<String> listSentence, listWord;
 
     int i, index;
 
@@ -69,7 +69,7 @@ public class NoteFragment extends Fragment {
         //Set Word Adapter for Word RecyclerView (NoteTab)
         mRecyclerWord = (RecyclerView) view.findViewById(R.id.recycle_note_word);
         mLayoutManager = new LinearLayoutManager(getActivity());
-        mWordAdapter = new NoteWordAdapter(listSentence);
+        mWordAdapter = new NoteWordAdapter(listWord);
         mRecyclerWord.setAdapter(mWordAdapter);// Set CustomAdapter as the adapter for RecyclerView.
 
         return view;
@@ -77,8 +77,11 @@ public class NoteFragment extends Fragment {
 
     private void initData() {
         listSentence = new ArrayList<String>();
+        listWord = new ArrayList<String>();
 
-        for(int i = 0; i < 5; i++)
+        for(int i = 0; i < 3; i++) {
             listSentence.add("문장모음 " + i);
+            listWord.add("단어모음 " + i);
+        }
     }
 }
