@@ -19,7 +19,7 @@ import com.onpuri.R;
 
 import java.util.ArrayList;
 
-import static com.onpuri.R.drawable.divider;
+import static com.onpuri.R.drawable.divider_light;
 
 /**
  * Created by kutemsys on 2016-04-26.
@@ -64,7 +64,7 @@ public class NoteFragment extends Fragment {
                 .setContent(R.id.tab_word));
 
         initData();
-        Drawable dividerDrawable = ContextCompat.getDrawable(getContext(), divider);
+        Drawable dividerDrawable = ContextCompat.getDrawable(getContext(), divider_light);
 
         //Set Sentence Adapter for Sentence RecyclerView (NoteTab)
         mRecyclerSen = (RecyclerView) view.findViewById(R.id.recycle_note_sen);
