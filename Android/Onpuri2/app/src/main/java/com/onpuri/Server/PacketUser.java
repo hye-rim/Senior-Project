@@ -3,6 +3,7 @@ package com.onpuri.Server;
 import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 
 import java.util.ArrayList;
@@ -30,7 +31,8 @@ public class PacketUser extends Application {
             ranking = "", question = "", solving = "", attend = "",
             purchase = "", sale = "", declaration = "";
 
-    static public ArrayList<String> arrSentence = new ArrayList<String>();
+
+    public ArrayList<String> arrSentence;
     static public int data_len, sentence_len;
 
     private static int SEQ = 0;
@@ -47,12 +49,20 @@ public class PacketUser extends Application {
             SEQ++;
     }
 
-    static public void setSentence(String str) {
-        arrSentence.add(str);
-        System.out.println("string : " + arrSentence.get(0));
+    public PacketUser() {
+        arrSentence = new ArrayList<String>();
     }
 
-    static public ArrayList<String> copyList() {
+    public void setSentence(String str) {
+        arrSentence.add(str);
+        Log.d("PacketUser" , "string : " + str);
+    }
+
+    public String getSentence(int i){
+        return arrSentence.get(i);
+    }
+    public ArrayList<String> copyList() {
         return arrSentence;
     }
+
 }

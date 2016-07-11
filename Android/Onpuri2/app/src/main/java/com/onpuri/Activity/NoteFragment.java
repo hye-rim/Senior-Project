@@ -99,7 +99,7 @@ public class NoteFragment extends Fragment {
             @Override
             public void onLongItemClick(View view, int position) {
                 Log.v(TAG, "sententce item : " + position);
-                mTabHost.setVisibility(View.GONE);                  
+                mTabHost.setVisibility(View.GONE);
                 mItemFrame.setVisibility(View.VISIBLE);
                 FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.note_item , new NoteSenFragment()).commit();

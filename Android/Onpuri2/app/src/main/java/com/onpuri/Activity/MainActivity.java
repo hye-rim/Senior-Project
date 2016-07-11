@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             super.onBackPressed();
         }
+
         if(mworker_out != null && mworker_out.isAlive()){  //이미 동작하고 있을 경우 중지
             mworker_out.interrupt();
         }

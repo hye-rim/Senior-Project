@@ -17,50 +17,19 @@ import java.util.ArrayList;
 /**
  * Created by HYERIM on 2016-07-04.
  */
-public class RecycleviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class RecycleviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
     private final String TAG = "RecycleviewAdapter";
     private static final int VIEW_TYPE_CELL = 1;
     private static final int VIEW_TYPE_FOOTER = 0;
 
-    private ArrayList<String> senList = new ArrayList<String>();
-
-    public TextView mSenItem;
-
-    private int visibleThreshold = 5;
-    private int lastVisibleItem, totalItemCount;
-    private boolean loading;
-    private OnLoadMoreListener onLoadMoreListener;
+    private ArrayList<String> senList;
 
     public RecycleviewAdapter(ArrayList<String> listSentence, RecyclerView recyclerView) {
-        senList=listSentence;
-
-        if(recyclerView.getLayoutManager() instanceof LinearLayoutManager){
-            final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                @Override
-                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                    super.onScrolled(recyclerView, dx, dy);
-
-                    totalItemCount = linearLayoutManager.getItemCount();
-                    lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
-                    if (!loading && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
-                        // End has been reached
-                        // Do something
-                        if (onLoadMoreListener != null) {
-                            onLoadMoreListener.onLoadMore();
-                        }
-                        loading = true;
-                    }
-                }
-            });
-        }
-    }
-
-    public interface OnLoadMoreListener {
-        void onLoadMore();
+        this.senList=listSentence;
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
+        public TextView mSenItem;
         public ItemViewHolder(View v) {
             super(v);
 
@@ -112,9 +81,8 @@ public class RecycleviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         switch (getItemViewType(position)){
             case VIEW_TYPE_CELL:
                 ItemViewHolder itemViewHolder = (ItemViewHolder)holder;
-                itemViewHolder.getTextView().setText(senList.get(position));
+                itemViewHolder.mSenItem.setText(senList.get(position));
                 itemViewHolder.itemView.setOnClickListener(new View.OnClickListener(){
-
                     @Override
                     public void onClick(View v){
 
@@ -133,7 +101,6 @@ public class RecycleviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 progressViewHolder.progressBar.setIndeterminate(true);
                 break;
         }
-
     }
 
     @Override
@@ -141,17 +108,9 @@ public class RecycleviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         return senList.get(position) != null ? VIEW_TYPE_CELL : VIEW_TYPE_FOOTER;
     }
 
-    public void setLoaded() {
-        loading = false;
-    }
-
     @Override
     public int getItemCount() {
         return senList.size();
-    }
-
-    public void setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener) {
-        this.onLoadMoreListener = onLoadMoreListener;
     }
 
 }

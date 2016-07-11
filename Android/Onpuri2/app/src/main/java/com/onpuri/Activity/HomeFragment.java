@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 
 import com.onpuri.Adapter.RecycleviewAdapter;
 import com.onpuri.DividerItemDecoration;
+import com.onpuri.EndlessRecyclerOnScrollListener;
 import com.onpuri.R;
 import com.onpuri.Server.PacketUser;
 import com.onpuri.Server.SocketConnection;
@@ -53,6 +54,11 @@ public class HomeFragment extends Fragment {
     protected RecyclerView.LayoutManager mLayoutManager;
     protected Handler handler;
 
+    // on scroll
+    private static int current_page = 1;
+    private int ival = 0;
+    private int loadLimit = 10;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (view != null) {
@@ -65,18 +71,11 @@ public class HomeFragment extends Fragment {
         } catch (InflateException e) {
             /* map is already there, just return view as it is */
         }
+        userSentence = new PacketUser();
+        listSentence = new ArrayList<String>();
+        loadData(current_page);
 
-        mworker_sentence = new worker_sentence_list(true);
-        mworker_sentence.start();
-        try {
-            mworker_sentence.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        listSentence = userSentence.copyList();
         listSentence.add(" ");
-
-        mworker_sentence.stopThread();
 
         handler = new Handler();
 
@@ -87,32 +86,10 @@ public class HomeFragment extends Fragment {
         mAdapter = new RecycleviewAdapter(listSentence,mRecyclerView);
 
         mRecyclerView.setAdapter(mAdapter);// Set CustomAdapter as the adapter for RecyclerView.
-        mAdapter.setOnLoadMoreListener(new RecycleviewAdapter.OnLoadMoreListener() {
+        mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener((LinearLayoutManager) mLayoutManager) {
             @Override
-            public void onLoadMore() {
-                //add progress item
-                listSentence.add(null);
-                mAdapter.notifyItemInserted(listSentence.size() - 1);
-
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        //remove progress item
-                        listSentence.remove(listSentence.size() - 1);
-                        mAdapter.notifyItemRemoved(listSentence.size());
-                        //add items one by one
-                        int start = listSentence.size();
-                        int end = start + 10;
-
-                        for (int i = start + 1; i <= end; i++) {
-                            listSentence.add("Item" + (listSentence.size() + 1));
-                            mAdapter.notifyItemInserted(listSentence.size());
-                        }
-                        mAdapter.setLoaded();
-                        //or you can add all at once but do not forget to call mAdapter.notifyDataSetChanged();
-                    }
-                }, 2000);
-                System.out.println("load");
+            public void onLoadMore(int current_page) {
+                loadMoreData(current_page);
             }
         });
 
@@ -129,8 +106,60 @@ public class HomeFragment extends Fragment {
 
     }
 
-    //FragmentTransaction transaction = getFragmentManager().beginTransaction();
-    //transaction.hide(현재프래그먼트.this)
+    // By default, we add 10 objects for first time.
+    private void loadData(int current_page) {
+
+        // I have not used current page for showing demo, if u use a webservice
+        // then it is useful for every call request
+
+        if(mworker_sentence != null && mworker_sentence.isAlive()){  //이미 동작하고 있을 경우 중지
+            mworker_sentence.interrupt();
+        }
+        mworker_sentence = new worker_sentence_list(true);
+        mworker_sentence.start();
+        try {
+            mworker_sentence.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        for (int i = ival; i < loadLimit; i++) {
+            listSentence.add(userSentence.arrSentence.get(i));
+            ival++;
+        }
+
+    }
+
+    // adding 10 object creating dymically to arraylist and updating recyclerview when ever we reached last item
+    private void loadMoreData(int current_page) {
+
+        // I have not used current page for showing demo, if u use a webservice
+        // then it is useful for every call request
+
+        loadLimit = ival + 10;
+
+        if(mworker_sentence != null && mworker_sentence.isAlive()){  //이미 동작하고 있을 경우 중지
+            mworker_sentence.interrupt();
+        }
+        mworker_sentence = new worker_sentence_list(true);
+        mworker_sentence.start();
+        try {
+            mworker_sentence.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        int j = 0;
+        for (int i = ival; i < loadLimit; i++) {
+            listSentence.add(userSentence.arrSentence.get(j));
+            //listSentence.add("item" + i);
+            j++;
+            ival++;
+        }
+
+        mAdapter.notifyDataSetChanged();
+
+    }
 
     class worker_sentence_list extends Thread {
         private boolean isPlay = false;

@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:orientation="horizontal">
@@ -13,23 +13,31 @@
             android:id="@+id/note_sen_name"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:layout_alignParentLeft="true"
             android:text="노트 이름"/>
         <Button
             android:id="@+id/sen_listen"
             android:text="듣기"
+            android:layout_centerInParent="true"
+            android:layout_toLeftOf="@+id/sen_test"
             android:layout_width="wrap_content"
             android:layout_height="match_parent" />
         <Button
             android:id="@+id/sen_test"
             android:text="시험"
+            android:layout_centerInParent="true"
+            android:layout_toLeftOf="@+id/sen_edit"
             android:layout_width="wrap_content"
             android:layout_height="match_parent" />
         <Button
             android:id="@+id/sen_edit"
             android:text="편집"
+            android:layout_centerInParent="true"
+            android:layout_alignParentRight="true"
             android:layout_width="wrap_content"
             android:layout_height="match_parent" />
-    </LinearLayout>
+    </RelativeLayout>
     <android.support.v7.widget.RecyclerView
         android:scrollbars="vertical"
         app:layoutManager="LinearLayoutManager"
