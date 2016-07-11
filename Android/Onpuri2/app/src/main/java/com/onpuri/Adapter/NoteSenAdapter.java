@@ -57,6 +57,7 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         public Button getButton() { return mSenAdd; }
 
     }
+
     //create new views(invoked by the layout manager)
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -125,7 +126,7 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
                     @Override
                     public void onClick(View v) {
-                        Log.d(TAG, "Add Button clicked. - ");
+                        Log.d(TAG, "Add Button clicked.");
 
                         AlertDialog.Builder alertBuilder = new AlertDialog.Builder((addViewHolder.itemView.getContext()));
                         alertBuilder.setTitle("문장 모음 추가하기");
@@ -181,5 +182,4 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public int getItemViewType(int position) {
         return (position >= noteSenList.size()) ? VIEW_TYPE_FOOTER : VIEW_TYPE_CELL;
     }
-
 }

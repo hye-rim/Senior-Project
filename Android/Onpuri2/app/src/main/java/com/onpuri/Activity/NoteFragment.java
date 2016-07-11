@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +14,7 @@ import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TabHost;
 
 import com.onpuri.Adapter.NoteSenAdapter;
@@ -44,6 +47,9 @@ public class NoteFragment extends Fragment {
     protected RecyclerView.LayoutManager mLayoutManager;
     private Context context;
 
+    private FrameLayout mItemFrame;
+    private FragmentManager mFragmentManager;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (view != null) {
@@ -56,6 +62,8 @@ public class NoteFragment extends Fragment {
         } catch (InflateException e) {
             //map is already there, just return view as it is
         }
+        mFragmentManager = getFragmentManager();
+        mItemFrame = (FrameLayout)view.findViewById(R.id.note_item);
         mTabHost = (TabHost) view.findViewById(R.id.note_tab);
 
         mTabHost.setup();
@@ -81,12 +89,20 @@ public class NoteFragment extends Fragment {
                 new RecyclerItemClickListener(context, mRecyclerSen, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Log.v(TAG, "click : " + position);
+                Log.v(TAG,"sententce item : " + position);
+                mTabHost.setVisibility(View.GONE);
+                mItemFrame.setVisibility(View.VISIBLE);
+                FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.note_item , new NoteSenFragment()).commit();
             }
 
             @Override
             public void onLongItemClick(View view, int position) {
-                Log.v(TAG, "click : " + position);
+                Log.v(TAG, "sententce item : " + position);
+                mTabHost.setVisibility(View.GONE);                  
+                mItemFrame.setVisibility(View.VISIBLE);
+                FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.note_item , new NoteSenFragment()).commit();
             }
         }));
 
@@ -96,6 +112,27 @@ public class NoteFragment extends Fragment {
         mWordAdapter = new NoteWordAdapter(listWord);
         mRecyclerWord.setAdapter(mWordAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerWord.addItemDecoration(new DividerItemDecoration(dividerDrawable));
+        mRecyclerWord.addOnItemTouchListener(
+                new RecyclerItemClickListener(context, mRecyclerSen, new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        Log.v(TAG, "word item : " + position);
+                        mTabHost.setVisibility(View.GONE);
+                        mItemFrame.setVisibility(View.VISIBLE);
+                        FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+                        fragmentTransaction.add(R.id.note_item , new NoteWordFragment()).commit();
+                    }
+
+                    @Override
+                    public void onLongItemClick(View view, int position) {
+                        Log.v(TAG, "word item : " + position);
+                        mTabHost.setVisibility(View.GONE);
+
+                        mItemFrame.setVisibility(View.VISIBLE);
+                        FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+                        fragmentTransaction.add(R.id.note_item , new NoteWordFragment()).commit();
+                    }
+                }));
 
         return view;
     }

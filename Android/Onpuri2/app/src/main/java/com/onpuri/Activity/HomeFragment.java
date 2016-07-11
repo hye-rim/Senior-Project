@@ -102,7 +102,7 @@ public class HomeFragment extends Fragment {
                         mAdapter.notifyItemRemoved(listSentence.size());
                         //add items one by one
                         int start = listSentence.size();
-                        int end = start + 20;
+                        int end = start + 10;
 
                         for (int i = start + 1; i <= end; i++) {
                             listSentence.add("Item" + (listSentence.size() + 1));
@@ -180,7 +180,6 @@ public class HomeFragment extends Fragment {
                         System.out.println("5 : " + (char) inData[5]); //sentence - second char
                         PacketUser.sentence_len = ((int) inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);
 
-                        System.out.println("str_start");
                         index = 0;
                         String str = "";
                         System.out.println("len : " + PacketUser.sentence_len);
@@ -195,7 +194,6 @@ public class HomeFragment extends Fragment {
                                 index++;
                             }
                         }
-                        System.out.println("\n last : " + inData[4 + index]);
 
                         userSentence.setSentence(str);
                         System.out.println("str :" + str);
