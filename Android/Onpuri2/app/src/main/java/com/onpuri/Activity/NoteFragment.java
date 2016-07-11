@@ -1,5 +1,6 @@
 package com.onpuri.Activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -34,8 +35,8 @@ import static com.onpuri.R.drawable.divider_light;
 //내노트
 public class NoteFragment extends Fragment {
     private static final String TAG = "NoteFragment";
-    //public static UserProfile ProfileGroup;
-    // private ArrayList<View> history;
+    private static final int VIEW_TYPE_CELL = 0; //sentence item
+    private static final int VIEW_TYPE_FOOTER = 1; //sentence add button
     private static View view;
     private TabHost mTabHost;
 
@@ -49,6 +50,11 @@ public class NoteFragment extends Fragment {
 
     private FrameLayout mItemFrame;
     private FragmentManager mFragmentManager;
+
+    private CustomOnClickListener customLister;
+    public interface CustomOnClickListener {
+        public void onClicked(int id);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -78,6 +84,8 @@ public class NoteFragment extends Fragment {
 
         initData();
         Drawable dividerDrawable = ContextCompat.getDrawable(getContext(), divider_light);
+        final NoteSenFragment noteSenItem = new NoteSenFragment();
+
 
         //Set Sentence Adapter for Sentence RecyclerView (NoteTab)
         mRecyclerSen = (RecyclerView) view.findViewById(R.id.recycle_note_sen);
@@ -87,25 +95,30 @@ public class NoteFragment extends Fragment {
         mRecyclerSen.addItemDecoration(new DividerItemDecoration(dividerDrawable));
         mRecyclerSen.addOnItemTouchListener(
                 new RecyclerItemClickListener(context, mRecyclerSen, new RecyclerItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                Log.v(TAG,"sententce item : " + position);
-                mTabHost.setVisibility(View.GONE);
-                mItemFrame.setVisibility(View.VISIBLE);
-                FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.note_item , new NoteSenFragment()).commit();
-            }
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        Log.v(TAG,"sententce item : " + position);
 
-            @Override
-            public void onLongItemClick(View view, int position) {
-                Log.v(TAG, "sententce item : " + position);
-                mTabHost.setVisibility(View.GONE);
-                mItemFrame.setVisibility(View.VISIBLE);
-                FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.note_item , new NoteSenFragment()).commit();
-            }
-        }));
+                        if( view.getId() != R.id.ll_sen_more && view.getId() != R.id.btn_sen_more && mRecyclerSen.getAdapter().getItemViewType(position) == VIEW_TYPE_CELL  ) {
+                            Bundle args = new Bundle();
+                            args.putString("senItemName", "문장 모음" );
+                            noteSenItem.setArguments(args);
 
+                            mTabHost.setVisibility(View.GONE);
+                            mItemFrame.setVisibility(View.VISIBLE);
+                            FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+                            fragmentTransaction.replace(R.id.note_item, noteSenItem).commit();
+                        }
+                    }
+/*
+                    @Override
+                    public void onLongItemClick(View view, int position) {
+                        Log.v(TAG, "sententce item : " + position);
+                    }*/
+                }));
+
+
+        final NoteWordFragment noteWordItem = new NoteWordFragment();
         //Set Word Adapter for Word RecyclerView (NoteTab)
         mRecyclerWord = (RecyclerView) view.findViewById(R.id.recycle_note_word);
         mLayoutManager = new LinearLayoutManager(getActivity());
@@ -113,25 +126,26 @@ public class NoteFragment extends Fragment {
         mRecyclerWord.setAdapter(mWordAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerWord.addItemDecoration(new DividerItemDecoration(dividerDrawable));
         mRecyclerWord.addOnItemTouchListener(
-                new RecyclerItemClickListener(context, mRecyclerSen, new RecyclerItemClickListener.OnItemClickListener() {
+                new RecyclerItemClickListener(context, mRecyclerWord, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
                         Log.v(TAG, "word item : " + position);
-                        mTabHost.setVisibility(View.GONE);
-                        mItemFrame.setVisibility(View.VISIBLE);
-                        FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-                        fragmentTransaction.add(R.id.note_item , new NoteWordFragment()).commit();
-                    }
+                        if( view.getId() != R.id.ll_word_more&& view.getId() != R.id.btn_word_more &&mRecyclerWord.getAdapter().getItemViewType(position) == VIEW_TYPE_CELL  ) {
+                            Bundle args = new Bundle();
+                            args.putString("wordItemName", "단어 모음" );
+                            noteWordItem.setArguments(args);
 
+                            mTabHost.setVisibility(View.GONE);
+                            mItemFrame.setVisibility(View.VISIBLE);
+                            FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+                            fragmentTransaction.add(R.id.note_item, noteWordItem).commit();
+                        }
+                    }
+/*
                     @Override
                     public void onLongItemClick(View view, int position) {
                         Log.v(TAG, "word item : " + position);
-                        mTabHost.setVisibility(View.GONE);
-
-                        mItemFrame.setVisibility(View.VISIBLE);
-                        FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-                        fragmentTransaction.add(R.id.note_item , new NoteWordFragment()).commit();
-                    }
+                    }*/
                 }));
 
         return view;

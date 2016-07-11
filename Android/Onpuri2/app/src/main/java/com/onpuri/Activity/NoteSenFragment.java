@@ -14,6 +14,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.onpuri.Adapter.NoteSenItemAdapter;
 import com.onpuri.DividerItemDecoration;
@@ -35,9 +36,12 @@ public class NoteSenFragment extends Fragment {
 
     private RecyclerView mRecyclerSenItem;
     private RecyclerView.Adapter mSenAdapter;
+    private TextView tvItemName;
 
     protected RecyclerView.LayoutManager mLayoutManager;
     private Context context;
+
+    String itemName;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -50,6 +54,12 @@ public class NoteSenFragment extends Fragment {
             view = inflater.inflate(R.layout.fragment_note_sen, container, false);
         } catch (InflateException e) {
             //map is already there, just return view as it is
+        }
+
+        tvItemName = (TextView)view.findViewById(R.id.note_sen_name);
+        if (getArguments() != null) {                       //클릭한 문장이름 저장
+            itemName = getArguments().getString("senItemName");
+            tvItemName.setText(itemName);
         }
 
         initData();
@@ -67,11 +77,11 @@ public class NoteSenFragment extends Fragment {
                     public void onItemClick(View view, int position) {
                         Log.v(TAG,"sententce item : " + position);
                     }
-
+/*
                     @Override
                     public void onLongItemClick(View view, int position) {
                         Log.v(TAG, "sententce item : " + position);
-                    }
+                    }*/
                 }));
 
         return view;

@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.onpuri.NoteData;
@@ -33,9 +34,14 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public ImageButton mSenMore;
     public Button mSenAdd;
     private EditText mAddItem, mChangeItem;
+    private LinearLayout mSenMoreLayout;
+
+    public boolean isBtnClicked;
+
 
     public NoteSenAdapter(ArrayList<NoteData> listSentence) {
         noteSenList.addAll(listSentence);
+        isBtnClicked = false;
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
@@ -43,9 +49,11 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             super(v);
             mSenItem = (TextView) v.findViewById(R.id.note_sen_item);
             mSenMore = (ImageButton) v.findViewById(R.id.btn_sen_more);
+            mSenMoreLayout = (LinearLayout) v.findViewById(R.id.ll_sen_more);
         }
         public ImageButton getImageButton(){ return mSenMore; }
         public TextView getTextView() {  return mSenItem;  }
+        public LinearLayout getLinearLayout() { return mSenMoreLayout; }
     }
 
     public class AddViewHolder extends RecyclerView.ViewHolder {
@@ -86,12 +94,14 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     @Override
                     public void onClick(View v){
                         Log.d(TAG, "Sentence List clicked.");
+                        isBtnClicked = false;
                     }
                 });
                 itemViewHolder.getImageButton().setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View v){
                         Log.d(TAG, "Sentence More clicked.");
+                        isBtnClicked = true;
                         String changeName = itemViewHolder.getTextView().getText().toString();
                         AlertDialog.Builder alertBuilder = new AlertDialog.Builder((itemViewHolder.itemView.getContext()));
 
@@ -153,7 +163,6 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         alertDialog.show();  //<-- See This!
                     }
                 });
-
                 break;
         }
 
@@ -165,6 +174,7 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         notifyItemInserted(position);
         notifyItemRangeChanged(position, getItemCount()-position);
     }
+
     private void changeItem(int position, String itemName){
         if(position < noteSenList.size()) {
             noteSenList.set(position, new NoteData(itemName));
@@ -181,5 +191,9 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public int getItemViewType(int position) {
         return (position >= noteSenList.size()) ? VIEW_TYPE_FOOTER : VIEW_TYPE_CELL;
+    }
+
+    public boolean isBtnClicked() {
+        return isBtnClicked;
     }
 }

@@ -12,6 +12,7 @@ import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.onpuri.Adapter.NoteSenItemAdapter;
 import com.onpuri.Adapter.NoteWordItemAdapter;
@@ -34,9 +35,12 @@ public class NoteWordFragment  extends Fragment {
 
     private RecyclerView mRecyclerWordItem;
     private RecyclerView.Adapter mWordAdapter;
+    private TextView tvItemName;
 
     protected RecyclerView.LayoutManager mLayoutManager;
     private Context context;
+
+    String itemName;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -49,6 +53,12 @@ public class NoteWordFragment  extends Fragment {
             view = inflater.inflate(R.layout.fragment_note_word, container, false);
         } catch (InflateException e) {
             //map is already there, just return view as it is
+        }
+
+        tvItemName = (TextView)view.findViewById(R.id.note_word_name);
+        if (getArguments() != null) {   //클릭한 단어이름 저장
+            itemName = getArguments().getString("wordItemName");
+            tvItemName.setText(itemName);
         }
 
         initData();
@@ -66,11 +76,11 @@ public class NoteWordFragment  extends Fragment {
                     public void onItemClick(View view, int position) {
                         Log.v(TAG,"word item : " + position);
                     }
-
+/*
                     @Override
                     public void onLongItemClick(View view, int position) {
                         Log.v(TAG, "Word item : " + position);
-                    }
+                    }*/
                 }));
 
         return view;
