@@ -9,25 +9,26 @@ import android.view.View;
 /**
  * Created by HYERIM on 2016-07-11.
  */
-public class RecyclerItemClickListener implements RecyclerView.OnItemTouchListener {
+public class RecycleItemClickListener implements RecyclerView.OnItemTouchListener {
     private OnItemClickListener mListener;
 
     public interface OnItemClickListener {
-        public void onItemClick(View view, int position);
+        //public void onItemClick(View view, int position);
 
-        //public void onLongItemClick(View view, int position);
+        public void onLongItemClick(View view, int position);
     }
 
     GestureDetector mGestureDetector;
 
-    public RecyclerItemClickListener(Context context, final RecyclerView recyclerView, OnItemClickListener listener) {
+    public RecycleItemClickListener(Context context, final RecyclerView recyclerView, OnItemClickListener listener) {
         mListener = listener;
         mGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
+            /*
             @Override
             public boolean onSingleTapUp(MotionEvent e) {
                 return true;
-            }
-/*
+            }*/
+
             @Override
             public void onLongPress(MotionEvent e) {
                 View child = recyclerView.findChildViewUnder(e.getX(), e.getY());
@@ -35,7 +36,7 @@ public class RecyclerItemClickListener implements RecyclerView.OnItemTouchListen
                     mListener.onLongItemClick(child, recyclerView.getChildAdapterPosition(child));
                 }
             }
-            */
+
         });
 
     }
@@ -43,7 +44,7 @@ public class RecyclerItemClickListener implements RecyclerView.OnItemTouchListen
     @Override public boolean onInterceptTouchEvent(RecyclerView view, MotionEvent e) {
         View childView = view.findChildViewUnder(e.getX(), e.getY());
         if (childView != null && mListener != null && mGestureDetector.onTouchEvent(e)) {
-            mListener.onItemClick(childView, view.getChildAdapterPosition(childView));
+            mListener.onLongItemClick(childView, view.getChildAdapterPosition(childView));
             return true;
         }
         return false;

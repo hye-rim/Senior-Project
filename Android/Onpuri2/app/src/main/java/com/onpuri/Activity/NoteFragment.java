@@ -23,7 +23,7 @@ import com.onpuri.Adapter.NoteWordAdapter;
 import com.onpuri.DividerItemDecoration;
 import com.onpuri.NoteData;
 import com.onpuri.R;
-import com.onpuri.RecyclerItemClickListener;
+import com.onpuri.RecycleItemClickListener;
 
 import java.util.ArrayList;
 
@@ -93,13 +93,14 @@ public class NoteFragment extends Fragment {
         mSenAdapter = new NoteSenAdapter(listSentence);
         mRecyclerSen.setAdapter(mSenAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerSen.addItemDecoration(new DividerItemDecoration(dividerDrawable));
+
         mRecyclerSen.addOnItemTouchListener(
-                new RecyclerItemClickListener(context, mRecyclerSen, new RecyclerItemClickListener.OnItemClickListener() {
+                new RecycleItemClickListener(context, mRecyclerSen, new RecycleItemClickListener.OnItemClickListener() {
                     @Override
-                    public void onItemClick(View view, int position) {
+                    public void onLongItemClick(View view, int position) {
                         Log.v(TAG,"sententce item : " + position);
 
-                        if( view.getId() != R.id.ll_sen_more && view.getId() != R.id.btn_sen_more && mRecyclerSen.getAdapter().getItemViewType(position) == VIEW_TYPE_CELL  ) {
+                        if(  mRecyclerSen.getAdapter().getItemViewType(position) == VIEW_TYPE_CELL  ) {
                             Bundle args = new Bundle();
                             args.putString("senItemName", "문장 모음" );
                             noteSenItem.setArguments(args);
@@ -110,11 +111,6 @@ public class NoteFragment extends Fragment {
                             fragmentTransaction.replace(R.id.note_item, noteSenItem).commit();
                         }
                     }
-/*
-                    @Override
-                    public void onLongItemClick(View view, int position) {
-                        Log.v(TAG, "sententce item : " + position);
-                    }*/
                 }));
 
 
@@ -126,9 +122,9 @@ public class NoteFragment extends Fragment {
         mRecyclerWord.setAdapter(mWordAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerWord.addItemDecoration(new DividerItemDecoration(dividerDrawable));
         mRecyclerWord.addOnItemTouchListener(
-                new RecyclerItemClickListener(context, mRecyclerWord, new RecyclerItemClickListener.OnItemClickListener() {
+                new RecycleItemClickListener(context, mRecyclerWord, new RecycleItemClickListener.OnItemClickListener() {
                     @Override
-                    public void onItemClick(View view, int position) {
+                    public void onLongItemClick(View view, int position) {
                         Log.v(TAG, "word item : " + position);
                         if( view.getId() != R.id.ll_word_more&& view.getId() != R.id.btn_word_more &&mRecyclerWord.getAdapter().getItemViewType(position) == VIEW_TYPE_CELL  ) {
                             Bundle args = new Bundle();
@@ -141,11 +137,6 @@ public class NoteFragment extends Fragment {
                             fragmentTransaction.add(R.id.note_item, noteWordItem).commit();
                         }
                     }
-/*
-                    @Override
-                    public void onLongItemClick(View view, int position) {
-                        Log.v(TAG, "word item : " + position);
-                    }*/
                 }));
 
         return view;
