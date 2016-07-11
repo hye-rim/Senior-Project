@@ -58,6 +58,7 @@ public class HomeFragment extends Fragment {
     private static int current_page = 1;
     private int ival = 0;
     private int loadLimit = 10;
+    private int total = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -74,8 +75,6 @@ public class HomeFragment extends Fragment {
         userSentence = new PacketUser();
         listSentence = new ArrayList<String>();
         loadData(current_page);
-
-        listSentence.add(" ");
 
         handler = new Handler();
 
@@ -149,11 +148,8 @@ public class HomeFragment extends Fragment {
             e.printStackTrace();
         }
 
-        int j = 0;
         for (int i = ival; i < loadLimit; i++) {
-            listSentence.add(userSentence.arrSentence.get(j));
-            //listSentence.add("item" + i);
-            j++;
+            listSentence.add(userSentence.arrSentence.get(i));
             ival++;
         }
 
@@ -225,7 +221,8 @@ public class HomeFragment extends Fragment {
                         }
 
                         userSentence.setSentence(str);
-                        System.out.println("str :" + str);
+                        System.out.println(total + "str :" + str);
+                        total++;
                         i++;
                     }
                 } catch (IOException e) {

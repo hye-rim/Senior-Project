@@ -6,26 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#faf5b3">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:text="단어장에있는 단어 많은 순"
-                android:focusable="false"
-                android:textSize="15dp"
-                android:layout_marginLeft="10dp"
-                android:gravity="center_vertical|right" />
-
-        </LinearLayout>
-
         <android.support.v7.widget.RecyclerView
             android:scrollbars="vertical"
             app:layoutManager="LinearLayoutManager"
@@ -35,6 +15,5 @@
             tools:listitem="@layout/home_list" >
 
         </android.support.v7.widget.RecyclerView>
-    </LinearLayout>
 
 </LinearLayout>
