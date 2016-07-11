@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.onpuri.NoteData;
 import com.onpuri.R;
 
 import java.util.ArrayList;
@@ -26,14 +27,14 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private static final int VIEW_TYPE_CELL = 0;
     private static final int VIEW_TYPE_FOOTER = 1;
 
-    private ArrayList<String> noteWordList = new ArrayList<String>();
+    private ArrayList<NoteData> noteWordList = new ArrayList<NoteData>();
 
     public TextView mWordItem;
     public ImageButton mWordMore;
     public Button mWordAdd;
     private EditText mAddItem, mChangeItem;
 
-    public NoteWordAdapter(ArrayList<String> listWord) {
+    public NoteWordAdapter(ArrayList<NoteData> listWord) {
         noteWordList.addAll(listWord);
     }
 
@@ -79,7 +80,7 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             case VIEW_TYPE_CELL:
                 Log.d(TAG, "Word Item set. - " + position);
                 final ItemViewHolder itemViewHolder = (ItemViewHolder)holder;
-                itemViewHolder.getTextView().setText(noteWordList.get(position));
+                itemViewHolder.getTextView().setText(noteWordList.get(position).getName());
                 itemViewHolder.getTextView().setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View v){
@@ -90,7 +91,7 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     @Override
                     public void onClick(View v){
                         Log.d(TAG, "Word More " + position + " clicked.");
-                        String changeName = noteWordList.get(position);
+                        String changeName = noteWordList.get(position).getName();
                         AlertDialog.Builder alertBuilder = new AlertDialog.Builder((itemViewHolder.itemView.getContext()));
 
                         mChangeItem = new EditText((itemViewHolder.itemView.getContext()));
@@ -155,13 +156,13 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     private void addItem(final int position, String itemName) {
-        noteWordList.add(position,itemName);
+        noteWordList.add(position,new NoteData(itemName));
         Log.d(TAG, "noteWordList : " + position);
         notifyItemInserted(position);
         notifyItemRangeChanged(position, noteWordList.size());
     }
     private void changeItem(final int position, String itemName){
-        noteWordList.set(position, itemName);
+        noteWordList.set(position, new NoteData(itemName));
         Log.d(TAG, "noteWordList : " + position);
         notifyItemChanged(position);
     }

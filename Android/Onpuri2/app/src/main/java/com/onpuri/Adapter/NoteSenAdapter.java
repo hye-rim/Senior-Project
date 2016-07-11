@@ -2,7 +2,6 @@ package com.onpuri.Adapter;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
-import android.content.ClipData;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
@@ -14,8 +13,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.onpuri.NoteData;
 import com.onpuri.R;
 
 import java.util.ArrayList;
@@ -28,14 +27,14 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private static final int VIEW_TYPE_CELL = 0; //sentence item
     private static final int VIEW_TYPE_FOOTER = 1; //sentence add button
 
-    private ArrayList<String> noteSenList = new ArrayList<String>();
+    private ArrayList<NoteData> noteSenList = new ArrayList<>();
 
     private TextView mSenItem;
     public ImageButton mSenMore;
     public Button mSenAdd;
     private EditText mAddItem, mChangeItem;
 
-    public NoteSenAdapter(ArrayList<String> listSentence) {
+    public NoteSenAdapter(ArrayList<NoteData> listSentence) {
         noteSenList.addAll(listSentence);
     }
 
@@ -81,7 +80,7 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             case VIEW_TYPE_CELL:
                 Log.d(TAG, "Sentence Item set. - " + position);
                 final ItemViewHolder itemViewHolder = (ItemViewHolder)holder;
-                itemViewHolder.getTextView().setText(noteSenList.get(position));
+                itemViewHolder.getTextView().setText(noteSenList.get(position).getName());
                 itemViewHolder.getTextView().setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View v){
@@ -159,14 +158,14 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     private void addItem(int position, String itemName) {
-        noteSenList.add(position,itemName);
+        noteSenList.add(position, new NoteData(itemName));
         Log.d(TAG, "noteSen add : " + position);
         notifyItemInserted(position);
         notifyItemRangeChanged(position, getItemCount()-position);
     }
     private void changeItem(int position, String itemName){
         if(position < noteSenList.size()) {
-            noteSenList.set(position, itemName);
+            noteSenList.set(position, new NoteData(itemName));
             Log.d(TAG, "noteSen change : " + position);
             notifyItemRangeChanged(0, getItemCount());
         }

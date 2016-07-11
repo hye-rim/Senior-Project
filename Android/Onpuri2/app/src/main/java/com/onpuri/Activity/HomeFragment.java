@@ -74,7 +74,9 @@ public class HomeFragment extends Fragment {
             e.printStackTrace();
         }
         listSentence = userSentence.copyList();
-        listSentence.add("load");
+        listSentence.add(" ");
+
+        mworker_sentence.stopThread();
 
         handler = new Handler();
 

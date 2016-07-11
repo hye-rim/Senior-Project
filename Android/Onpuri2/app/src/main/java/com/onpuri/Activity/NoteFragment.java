@@ -15,6 +15,7 @@ import android.widget.TabHost;
 import com.onpuri.Adapter.NoteSenAdapter;
 import com.onpuri.Adapter.NoteWordAdapter;
 import com.onpuri.DividerItemDecoration;
+import com.onpuri.NoteData;
 import com.onpuri.R;
 
 import java.util.ArrayList;
@@ -31,9 +32,7 @@ public class NoteFragment extends Fragment {
     private static View view;
     private TabHost mTabHost;
 
-    ArrayList<String> listSentence, listWord;
-
-    int i, index;
+    ArrayList<NoteData> listSentence, listWord;
 
     private RecyclerView mRecyclerSen, mRecyclerWord;
     private RecyclerView.Adapter mSenAdapter, mWordAdapter;
@@ -84,12 +83,12 @@ public class NoteFragment extends Fragment {
     }
 
     private void initData() {
-        listSentence = new ArrayList<String>();
-        listWord = new ArrayList<String>();
+        listSentence = new ArrayList<NoteData>();
+        listWord = new ArrayList<NoteData>();
 
         for(int i = 0; i < 3; i++) {
-            listSentence.add("문장모음 " + i);
-            listWord.add("단어모음 " + i);
+            listSentence.add(new NoteData("문장모음 " + i));
+            listWord.add(new NoteData("단어모음 " + i));
         }
     }
 }
