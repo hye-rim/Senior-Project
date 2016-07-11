@@ -13,14 +13,9 @@ import java.io.PrintWriter;
 public class SocketConnection {
     static public java.net.Socket socket;
 
-    public void SocketConnection(){
-
-    }
-
     static public void start(){  //바로 연결시작
         try {
-            socket = new java.net.Socket("218.150.182.52", 8888);
-
+            socket = new java.net.Socket("218.150.182.58", 2040);
         } catch (IOException e) {
             e.printStackTrace();
         }

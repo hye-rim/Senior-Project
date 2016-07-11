@@ -2,6 +2,7 @@ package com.onpuri.Activity;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 
 import com.onpuri.Adapter.RecycleviewAdapter;
 import com.onpuri.DividerItemDecoration;
+import com.onpuri.EndlessRecyclerOnScrollListener;
 import com.onpuri.R;
 import com.onpuri.Server.PacketUser;
 import com.onpuri.Server.SocketConnection;
@@ -23,12 +25,13 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static com.onpuri.R.drawable.divider;
+import static com.onpuri.R.drawable.divider_dark;
 
 /**
  * Created by kutemsys on 2016-05-03.
  */
 public class HomeFragment extends Fragment {
+    private static final String TAG = "HomeFragment";
     private static View view;
 
     private worker_sentence_list mworker_sentence;
@@ -44,12 +47,18 @@ public class HomeFragment extends Fragment {
     byte[] outData = new byte[261];
     byte[] inData = new byte[261];
     byte[] temp = new byte[261];
-    boolean lastItemVisibleFlag = false;
 
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private RecycleviewAdapter mAdapter;
 
     protected RecyclerView.LayoutManager mLayoutManager;
+    protected Handler handler;
+
+    // on scroll
+    private static int current_page = 1;
+    private int ival = 0;
+    private int loadLimit = 10;
+    private int total = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -63,27 +72,29 @@ public class HomeFragment extends Fragment {
         } catch (InflateException e) {
             /* map is already there, just return view as it is */
         }
+        userSentence = new PacketUser();
+        listSentence = new ArrayList<String>();
+        loadData(current_page);
 
-        mworker_sentence = new worker_sentence_list(true);
-        mworker_sentence.start();
-        try {
-            mworker_sentence.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        listSentence = userSentence.copyList();
+        handler = new Handler();
 
-
-
-       mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_sentence);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_sentence);
         mLayoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mAdapter = new RecycleviewAdapter(listSentence);
+        mAdapter = new RecycleviewAdapter(listSentence,mRecyclerView);
 
         mRecyclerView.setAdapter(mAdapter);// Set CustomAdapter as the adapter for RecyclerView.
+        mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener((LinearLayoutManager) mLayoutManager) {
+            @Override
+            public void onLoadMore(int current_page) {
+                loadMoreData(current_page);
+            }
+        });
 
-        Drawable dividerDrawable = ContextCompat.getDrawable(getContext(), divider);
+        Drawable dividerDrawable = ContextCompat.getDrawable(getContext(), divider_dark);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(dividerDrawable));
+
 
         return view;
     }
@@ -94,8 +105,57 @@ public class HomeFragment extends Fragment {
 
     }
 
-    //FragmentTransaction transaction = getFragmentManager().beginTransaction();
-    //transaction.hide(현재프래그먼트.this)
+    // By default, we add 10 objects for first time.
+    private void loadData(int current_page) {
+
+        // I have not used current page for showing demo, if u use a webservice
+        // then it is useful for every call request
+
+        if(mworker_sentence != null && mworker_sentence.isAlive()){  //이미 동작하고 있을 경우 중지
+            mworker_sentence.interrupt();
+        }
+        mworker_sentence = new worker_sentence_list(true);
+        mworker_sentence.start();
+        try {
+            mworker_sentence.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        for (int i = ival; i < loadLimit; i++) {
+            listSentence.add(userSentence.arrSentence.get(i));
+            ival++;
+        }
+
+    }
+
+    // adding 10 object creating dymically to arraylist and updating recyclerview when ever we reached last item
+    private void loadMoreData(int current_page) {
+
+        // I have not used current page for showing demo, if u use a webservice
+        // then it is useful for every call request
+
+        loadLimit = ival + 10;
+
+        if(mworker_sentence != null && mworker_sentence.isAlive()){  //이미 동작하고 있을 경우 중지
+            mworker_sentence.interrupt();
+        }
+        mworker_sentence = new worker_sentence_list(true);
+        mworker_sentence.start();
+        try {
+            mworker_sentence.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        for (int i = ival; i < loadLimit; i++) {
+            listSentence.add(userSentence.arrSentence.get(i));
+            ival++;
+        }
+
+        mAdapter.notifyDataSetChanged();
+
+    }
 
     class worker_sentence_list extends Thread {
         private boolean isPlay = false;
@@ -145,7 +205,6 @@ public class HomeFragment extends Fragment {
                         System.out.println("5 : " + (char) inData[5]); //sentence - second char
                         PacketUser.sentence_len = ((int) inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);
 
-                        System.out.println("str_start");
                         index = 0;
                         String str = "";
                         System.out.println("len : " + PacketUser.sentence_len);
@@ -160,10 +219,10 @@ public class HomeFragment extends Fragment {
                                 index++;
                             }
                         }
-                        System.out.println("\n last : " + inData[4 + index]);
 
                         userSentence.setSentence(str);
-                        System.out.println("str :" + str);
+                        System.out.println(total + "str :" + str);
+                        total++;
                         i++;
                     }
                 } catch (IOException e) {

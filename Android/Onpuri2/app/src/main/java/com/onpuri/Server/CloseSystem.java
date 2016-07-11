@@ -33,8 +33,6 @@ public class CloseSystem {
             actManager.finishAllActivity();
             activity .moveTaskToBack(true);
             activity .finish();
-            //android.os.Process.killProcess(android.os.Process.myPid());
-            //System.exit(0);
             toast.cancel();
         }
     }
