@@ -10,11 +10,16 @@
         android:layout_height="40dp">
         <TextView
             android:id="@+id/note_word_name"
+            android:layout_marginLeft="15dp"
+            android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:layout_alignParentLeft="true"
-            android:text="노트 이름"/>
+            android:text="노트 이름"
+            android:textSize="18dp"
+            android:textColor="@color/black"
+            android:textStyle="bold"/>
         <Button
             android:id="@+id/word_listen"
             android:text="듣기"
