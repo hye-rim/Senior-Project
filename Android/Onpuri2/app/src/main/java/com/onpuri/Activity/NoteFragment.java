@@ -1,11 +1,13 @@
 package com.onpuri.Activity;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +19,7 @@ import com.onpuri.Adapter.NoteWordAdapter;
 import com.onpuri.DividerItemDecoration;
 import com.onpuri.NoteData;
 import com.onpuri.R;
+import com.onpuri.RecyclerItemClickListener;
 
 import java.util.ArrayList;
 
@@ -27,6 +30,7 @@ import static com.onpuri.R.drawable.divider_light;
  */
 //내노트
 public class NoteFragment extends Fragment {
+    private static final String TAG = "NoteFragment";
     //public static UserProfile ProfileGroup;
     // private ArrayList<View> history;
     private static View view;
@@ -38,6 +42,8 @@ public class NoteFragment extends Fragment {
     private RecyclerView.Adapter mSenAdapter, mWordAdapter;
 
     protected RecyclerView.LayoutManager mLayoutManager;
+    private Context context;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (view != null) {
@@ -71,6 +77,18 @@ public class NoteFragment extends Fragment {
         mSenAdapter = new NoteSenAdapter(listSentence);
         mRecyclerSen.setAdapter(mSenAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerSen.addItemDecoration(new DividerItemDecoration(dividerDrawable));
+        mRecyclerSen.addOnItemTouchListener(
+                new RecyclerItemClickListener(context, mRecyclerSen, new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Log.v(TAG, "click : " + position);
+            }
+
+            @Override
+            public void onLongItemClick(View view, int position) {
+                Log.v(TAG, "click : " + position);
+            }
+        }));
 
         //Set Word Adapter for Word RecyclerView (NoteTab)
         mRecyclerWord = (RecyclerView) view.findViewById(R.id.recycle_note_word);

@@ -155,6 +155,7 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
                 break;
         }
+
     }
 
     private void addItem(int position, String itemName) {
