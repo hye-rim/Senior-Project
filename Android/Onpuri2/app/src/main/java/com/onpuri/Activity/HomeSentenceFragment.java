@@ -1,14 +1,11 @@
 package com.onpuri.Activity;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.onpuri.R;
@@ -29,7 +26,7 @@ public class HomeSentenceFragment extends Fragment {
                 parent.removeView(view);
         }
         try {
-            view = inflater.inflate(R.layout.fragment_sentence, container, false);
+            view = inflater.inflate(R.layout.fragment_home_sen, container, false);
         } catch (InflateException e) {
     /* map is already there, just return view as it is */
         }

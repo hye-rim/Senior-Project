@@ -2,6 +2,7 @@ package com.onpuri.Activity;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -23,12 +24,13 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static com.onpuri.R.drawable.divider;
+import static com.onpuri.R.drawable.divider_dark;
 
 /**
  * Created by kutemsys on 2016-05-03.
  */
 public class HomeFragment extends Fragment {
+    private static final String TAG = "HomeFragment";
     private static View view;
 
     private worker_sentence_list mworker_sentence;
@@ -44,12 +46,12 @@ public class HomeFragment extends Fragment {
     byte[] outData = new byte[261];
     byte[] inData = new byte[261];
     byte[] temp = new byte[261];
-    boolean lastItemVisibleFlag = false;
 
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private RecycleviewAdapter mAdapter;
 
     protected RecyclerView.LayoutManager mLayoutManager;
+    protected Handler handler;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -72,18 +74,51 @@ public class HomeFragment extends Fragment {
             e.printStackTrace();
         }
         listSentence = userSentence.copyList();
+        listSentence.add(" ");
 
+        mworker_sentence.stopThread();
 
+        handler = new Handler();
 
-       mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_sentence);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_sentence);
         mLayoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mAdapter = new RecycleviewAdapter(listSentence);
+        mAdapter = new RecycleviewAdapter(listSentence,mRecyclerView);
 
         mRecyclerView.setAdapter(mAdapter);// Set CustomAdapter as the adapter for RecyclerView.
+        mAdapter.setOnLoadMoreListener(new RecycleviewAdapter.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                //add progress item
+                listSentence.add(null);
+                mAdapter.notifyItemInserted(listSentence.size() - 1);
 
-        Drawable dividerDrawable = ContextCompat.getDrawable(getContext(), divider);
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //remove progress item
+                        listSentence.remove(listSentence.size() - 1);
+                        mAdapter.notifyItemRemoved(listSentence.size());
+                        //add items one by one
+                        int start = listSentence.size();
+                        int end = start + 10;
+
+                        for (int i = start + 1; i <= end; i++) {
+                            listSentence.add("Item" + (listSentence.size() + 1));
+                            mAdapter.notifyItemInserted(listSentence.size());
+                        }
+                        mAdapter.setLoaded();
+                        //or you can add all at once but do not forget to call mAdapter.notifyDataSetChanged();
+                    }
+                }, 2000);
+                System.out.println("load");
+            }
+        });
+
+        Drawable dividerDrawable = ContextCompat.getDrawable(getContext(), divider_dark);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(dividerDrawable));
+
 
         return view;
     }
@@ -145,7 +180,6 @@ public class HomeFragment extends Fragment {
                         System.out.println("5 : " + (char) inData[5]); //sentence - second char
                         PacketUser.sentence_len = ((int) inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);
 
-                        System.out.println("str_start");
                         index = 0;
                         String str = "";
                         System.out.println("len : " + PacketUser.sentence_len);
@@ -160,7 +194,6 @@ public class HomeFragment extends Fragment {
                                 index++;
                             }
                         }
-                        System.out.println("\n last : " + inData[4 + index]);
 
                         userSentence.setSentence(str);
                         System.out.println("str :" + str);
