@@ -83,7 +83,7 @@ public class NoteFragment extends Fragment {
                 .setContent(R.id.tab_word));
 
         initData();
-        Drawable dividerDrawable = ContextCompat.getDrawable(getContext(), divider_light);
+        Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_light);
         final NoteSenFragment noteSenItem = new NoteSenFragment();
 
 

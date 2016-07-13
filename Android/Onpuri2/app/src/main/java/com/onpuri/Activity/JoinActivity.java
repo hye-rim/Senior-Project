@@ -269,7 +269,7 @@ public class JoinActivity extends Activity {
 
     Thread worker_join = new Thread() {
         public void run() {
-                       String toServerDataUser;
+            String toServerDataUser;
             toServerDataUser = et_newId.getText().toString() + "+" + et_newPw.getText().toString() + "+" + et_newName.getText().toString()
                     + "+" + et_newPhone1.getText().toString() + et_newPhone2.getText().toString() + et_newPhone3.getText().toString() ;
             outData[0] = (byte) PacketUser.SOF;

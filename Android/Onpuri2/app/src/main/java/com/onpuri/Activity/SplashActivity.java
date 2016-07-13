@@ -55,7 +55,7 @@ public class SplashActivity extends Activity {
 
         //if(worker.getState() == Thread.State.NEW)
         worker.start();
-       try {
+        try {
             worker.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -124,7 +124,7 @@ public class SplashActivity extends Activity {
             } catch (IOException e) {
                 e.printStackTrace();
             }*/
-      //  }
+        //  }
     }
 
     Thread worker = new Thread() {

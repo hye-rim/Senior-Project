@@ -186,15 +186,14 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private void changeItem(int pos, String itemName){
         if(pos < noteSenList.size()) {
-            noteSenList.set(pos, new NoteData(itemName));
+            noteSenList.get(pos).setName(itemName);
             Log.d(TAG, "noteSen change : " + pos);
             notifyItemRangeChanged(0, getItemCount());
         }
     }
 
     private void removeItem(int pos, String itemName){
-        if(noteSenList.get(pos).getName() == itemName)
-            noteSenList.remove(pos);
+        noteSenList.remove(pos);
         notifyItemRangeChanged(0, getItemCount());
     }
 

@@ -82,26 +82,29 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         // Get element from your dataset at this position and replace the contents of the view with that element
         switch (getItemViewType(position)){
             case VIEW_TYPE_CELL:
-                Log.d(TAG, "Word Item set. - " + position);
-                changeName = noteWordList.get(position).getName();
+                Log.d(TAG, "Sentence Item set. - " + position);
 
                 final ItemViewHolder itemViewHolder = (ItemViewHolder)holder;
                 itemViewHolder.getTextView().setText(noteWordList.get(position).getName());
                 itemViewHolder.getTextView().setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View v){
-                        Log.d(TAG, "Word List clicked.");
+                        Log.d(TAG, "Sentence List clicked.");
                     }
                 });
+
+                changeName = noteWordList.get(itemViewHolder.getAdapterPosition()).getName();
+
                 itemViewHolder.getImageButton().setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View v){
                         Log.d(TAG, "Word More clicked.");
+
                         AlertDialog.Builder alertBuilder = new AlertDialog.Builder((itemViewHolder.itemView.getContext()));
 
                         mChangeItem = new EditText((itemViewHolder.itemView.getContext()));
                         mChangeItem.setText(changeName);
-                        alertBuilder.setTitle("");
+                        alertBuilder.setTitle(" ");
                         alertBuilder.setView(mChangeItem);
 
                         alertBuilder.setCancelable(false
@@ -109,7 +112,7 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 Log.d(TAG,"change : " +  mChangeItem.getText().toString());
-                                changeItem(itemViewHolder.getAdapterPosition() , mChangeItem.getText().toString());
+                                changeItem(itemViewHolder.getAdapterPosition(), mChangeItem.getText().toString());
                             }
                         }).setNegativeButton("삭제", new DialogInterface.OnClickListener() {
                             @Override
@@ -170,16 +173,15 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyItemRangeChanged(0, getItemCount());
     }
 
-    private void removeItem(int position, String itemName){
-        if(noteWordList.get(position).getName() == itemName)
-            noteWordList.remove(position);
+    private void removeItem(int pos, String itemName){
+        noteWordList.remove(pos);
         notifyItemRangeChanged(0, getItemCount());
     }
 
-    private void changeItem(int position, String itemName){
-        if(position < noteWordList.size()) {
-            noteWordList.set(position, new NoteData(itemName));
-            Log.d(TAG, "noteWordList : " + position);
+    private void changeItem(int pos, String itemName){
+        if(pos < noteWordList.size()) {
+            noteWordList.get(pos).setName(itemName);
+            Log.d(TAG, "noteWordList : " + pos);
             notifyItemRangeChanged(0, getItemCount());
         }
     }

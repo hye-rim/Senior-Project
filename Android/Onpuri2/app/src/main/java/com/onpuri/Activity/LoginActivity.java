@@ -75,14 +75,14 @@ public class LoginActivity extends Activity{
                 mworker_login = new worker_login(true);
                 mworker_login.start();
 
-                 try {
-                   mworker_login.join();
-                 } catch (InterruptedException e) {
+                try {
+                    mworker_login.join();
+                } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 //isPause = false;
                 System.out.println("result: " + (char)inData[4]);
-               // mworker_login.stopThread();
+                // mworker_login.stopThread();
                 if ( (check != '0' && check != '5') && checkLength != '1') {
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
@@ -99,8 +99,8 @@ public class LoginActivity extends Activity{
         btNew.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               Intent intent = new Intent(LoginActivity.this, JoinActivity.class);
-                    startActivity(intent);
+                Intent intent = new Intent(LoginActivity.this, JoinActivity.class);
+                startActivity(intent);
 
             }
         });
@@ -121,8 +121,8 @@ public class LoginActivity extends Activity{
             return "";
         }
     };
-   class worker_login extends Thread{
-       private boolean isPlay = false;
+    class worker_login extends Thread{
+        private boolean isPlay = false;
 
         public worker_login(boolean isPlay){
             this.isPlay = isPlay;
@@ -132,7 +132,7 @@ public class LoginActivity extends Activity{
             isPlay = !isPlay;
         }
         public void run() {
-           super.run();
+            super.run();
             while (isPlay) {
 
                 String toServerDataUser;
@@ -273,15 +273,15 @@ public class LoginActivity extends Activity{
                             }
                         }
                     }
-                        check = (char) inData[4];
-                        checkLength = (char) inData[3];
+                    check = (char) inData[4];
+                    checkLength = (char) inData[3];
 
-                        if (check == '0' || checkLength != '1')
-                            isPlay = !isPlay;
+                    if (check == '0' || checkLength != '1')
+                        isPlay = !isPlay;
 
-                    }catch(IOException e){
-                        e.printStackTrace();
-                    }
+                }catch(IOException e){
+                    e.printStackTrace();
+                }
 
 
             }
@@ -293,7 +293,7 @@ public class LoginActivity extends Activity{
 
         int i = 0;
         inData = new byte[inData.length]; //초기화가 되지않아....
-     //   SocketConnection.close();
+        //   SocketConnection.close();
     }
     @Override
     protected void onDestroy()

@@ -28,7 +28,6 @@ public class HomeSentenceFragment extends Fragment {
         try {
             view = inflater.inflate(R.layout.fragment_home_sen, container, false);
         } catch (InflateException e) {
-    /* map is already there, just return view as it is */
         }
         return view;
     }

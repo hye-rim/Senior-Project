@@ -2,16 +2,12 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-<LinearLayout
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#faf5b3"
-    android:paddingRight="5px">
+    <LinearLayout
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#faf5b3"
+        android:paddingRight="5px">
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="75dp"
-            android:layout_gravity="right" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="140dp"
@@ -22,7 +18,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:id="@+id/tv_sentence"
-                android:text="Not Loading"
+                android:text="-구현중-"
                 android:textSize="15dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
@@ -55,7 +51,7 @@
                 <TextView
                     android:layout_width="240dp"
                     android:layout_height="30dp"
-                    android:text="듣기"
+                    android:text="해석"
                     android:focusable="false"
                     android:textSize="15dp"
                     android:layout_marginLeft="15dp"
@@ -67,6 +63,72 @@
                     android:layout_height="25dp"
                     android:textSize="10dp"
                     android:text="더보기  > "
+                    android:textColor="@android:color/black"
+                    android:visibility="visible"
+                    android:gravity="center|right"
+                    android:layout_marginRight="20dp"
+                    android:background="#faf5b3" />
+            </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:text="trans 1"
+                android:focusable="false"
+                android:textSize="15dp"
+                android:layout_marginLeft="15dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:text="trans 2"
+                android:focusable="false"
+                android:textSize="15dp"
+                android:layout_marginLeft="15dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:text="trans 3"
+                android:focusable="false"
+                android:textSize="15dp"
+                android:layout_marginLeft="15dp"/>
+            <Button
+                android:layout_width="100dp"
+                android:layout_height="30dp"
+                android:text="해석 추가"
+                android:layout_gravity="right"
+                android:layout_marginRight="20dp"
+                android:textSize="10dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:orientation="vertical"
+            android:backgroundTint="#3f0808"
+            android:backgroundTintMode="src_in"
+            android:foregroundTint="#c82a2a"
+            android:foregroundTintMode="src_in">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:orientation="horizontal"
+                android:layout_gravity="center_vertical"
+                android:weightSum="1">
+                <TextView
+                    android:layout_width="240dp"
+                    android:layout_height="30dp"
+                    android:text="듣기"
+                    android:focusable="false"
+                    android:textSize="15dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_gravity="left|center_vertical"
+                    android:textStyle="bold"/>
+                <Button
+                    android:id="@+id/btn_trans"
+                    android:layout_width="80dp"
+                    android:layout_height="25dp"
+                    android:textSize="10dp"
+                    android:text="더보기  > "
+                    android:textColor="@android:color/black"
                     android:visibility="visible"
                     android:gravity="center|right"
                     android:layout_marginRight="20dp"
@@ -96,76 +158,12 @@
             <Button
                 android:layout_width="100dp"
                 android:layout_height="30dp"
-                android:text="녹음하기"
+                android:text="녹음 추가"
                 android:layout_gravity="right"
                 android:layout_marginRight="20dp"
                 android:textSize="10dp" />
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:orientation="vertical"
-            android:backgroundTint="#3f0808"
-            android:backgroundTintMode="src_in"
-            android:foregroundTint="#c82a2a"
-            android:foregroundTintMode="src_in">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:orientation="horizontal"
-                android:layout_gravity="center_vertical"
-                android:weightSum="1">
-                <TextView
-                    android:layout_width="240dp"
-                    android:layout_height="30dp"
-                    android:text="해석"
-                    android:focusable="false"
-                    android:textSize="15dp"
-                    android:layout_marginLeft="15dp"
-                    android:layout_gravity="left|center_vertical"
-                    android:textStyle="bold"/>
-                <Button
-                    android:id="@+id/btn_trans"
-                    android:layout_width="80dp"
-                    android:layout_height="25dp"
-                    android:textSize="10dp"
-                    android:text="더보기  > "
-                    android:visibility="visible"
-                    android:gravity="center|right"
-                    android:layout_marginRight="20dp"
-                    android:background="#faf5b3" />
-            </LinearLayout>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:text="trans1"
-                android:focusable="false"
-                android:textSize="15dp"
-                android:layout_marginLeft="15dp"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:text="trans2"
-                android:focusable="false"
-                android:textSize="15dp"
-                android:layout_marginLeft="15dp"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:text="trans3"
-                android:focusable="false"
-                android:textSize="15dp"
-                android:layout_marginLeft="15dp"/>
-            <Button
-                android:layout_width="100dp"
-                android:layout_height="30dp"
-                android:text="해석 참여하기"
-                android:layout_gravity="right"
-                android:layout_marginRight="20dp"
-                android:textSize="10dp" />
-        </LinearLayout>
-</LinearLayout>
-    </ScrollView>
+    </LinearLayout>
+</ScrollView>
 
 

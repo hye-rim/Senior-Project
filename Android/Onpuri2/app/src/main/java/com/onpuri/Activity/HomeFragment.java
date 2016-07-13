@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -78,9 +79,29 @@ public class HomeFragment extends Fragment {
 
         handler = new Handler();
 
+
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_sentence);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
+
+        mRecyclerView.addOnItemTouchListener(
+                new HomeItemClickListener(getActivity(), mRecyclerView ,new HomeItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        System.out.println(position);
+
+                        FragmentTransaction ft = getFragmentManager().beginTransaction();
+                        ft.add(R.id.root_frame, new HomeSentenceFragment());
+                        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                        ft.addToBackStack(null);
+                        ft.commit();
+                    }
+                    @Override
+                    public void onLongItemClick(View view, int position) {
+                        // do whatever
+                    }
+                })
+        );
 
         mAdapter = new RecycleviewAdapter(listSentence,mRecyclerView);
 
@@ -92,7 +113,8 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        Drawable dividerDrawable = ContextCompat.getDrawable(getContext(), divider_dark);
+
+        Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_dark);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(dividerDrawable));
 
 
@@ -104,7 +126,6 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
     }
-
     // By default, we add 10 objects for first time.
     private void loadData(int current_page) {
 
