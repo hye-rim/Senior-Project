@@ -10,7 +10,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.InflateException;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,6 @@ import android.widget.TextView;
 import com.onpuri.Adapter.NoteSenItemAdapter;
 import com.onpuri.DividerItemDecoration;
 import com.onpuri.R;
-import com.onpuri.RecyclerItemClickListener;
 
 import java.util.ArrayList;
 
@@ -71,18 +69,7 @@ public class NoteSenFragment extends Fragment {
         mSenAdapter = new NoteSenItemAdapter(itemSentence);
         mRecyclerSenItem.setAdapter(mSenAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerSenItem.addItemDecoration(new DividerItemDecoration(dividerDrawable));
-        mRecyclerSenItem.addOnItemTouchListener(
-                new RecyclerItemClickListener(context, mRecyclerSenItem, new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        Log.v(TAG,"sententce item : " + position);
-                    }
-/*
-                    @Override
-                    public void onLongItemClick(View view, int position) {
-                        Log.v(TAG, "sententce item : " + position);
-                    }*/
-                }));
+
 
         return view;
     }

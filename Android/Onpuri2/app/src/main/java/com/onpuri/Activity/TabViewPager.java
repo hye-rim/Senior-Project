@@ -71,7 +71,7 @@ public class TabViewPager extends Fragment {
                     NoteFragment tab1 = new NoteFragment();
                     return tab1;
                 case 1:
-                    HomeFragment tab2 = new HomeFragment();
+                    HomeRootFragment tab2 = new HomeRootFragment();
                     return tab2;
                 case 2:
                     NewSenFragment tab3 = new NewSenFragment();

@@ -17,12 +17,14 @@ import java.util.ArrayList;
 public class NoteWordItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final String TAG = "NoteWordItemAdapter";
 
-    private ArrayList<String> wordItemList = new ArrayList<>();
+    private ArrayList<String> wordItemList;
 
     private TextView mWordItem;
 
-    public NoteWordItemAdapter(ArrayList<String> listWord) {
+    public NoteWordItemAdapter(ArrayList<String> listWord){
         wordItemList.addAll(listWord);
+        wordItemList = new ArrayList<String>();
+
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {

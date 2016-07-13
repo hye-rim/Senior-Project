@@ -18,7 +18,6 @@ import com.onpuri.Adapter.NoteSenItemAdapter;
 import com.onpuri.Adapter.NoteWordItemAdapter;
 import com.onpuri.DividerItemDecoration;
 import com.onpuri.R;
-import com.onpuri.RecyclerItemClickListener;
 
 import java.util.ArrayList;
 
@@ -70,18 +69,6 @@ public class NoteWordFragment  extends Fragment {
         mWordAdapter = new NoteWordItemAdapter(itemWord);
         mRecyclerWordItem.setAdapter(mWordAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerWordItem.addItemDecoration(new DividerItemDecoration(dividerDrawable));
-        mRecyclerWordItem.addOnItemTouchListener(
-                new RecyclerItemClickListener(context, mRecyclerWordItem, new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        Log.v(TAG,"word item : " + position);
-                    }
-/*
-                    @Override
-                    public void onLongItemClick(View view, int position) {
-                        Log.v(TAG, "Word item : " + position);
-                    }*/
-                }));
 
         return view;
     }
