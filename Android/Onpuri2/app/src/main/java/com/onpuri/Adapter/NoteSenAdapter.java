@@ -2,9 +2,9 @@ package com.onpuri.Adapter;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
-import android.content.ClipData;
 import android.content.DialogInterface;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,9 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.onpuri.NoteData;
 import com.onpuri.R;
 
 import java.util.ArrayList;
@@ -27,23 +29,33 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private static final int VIEW_TYPE_CELL = 0; //sentence item
     private static final int VIEW_TYPE_FOOTER = 1; //sentence add button
 
-    private ArrayList<String> noteSenList = new ArrayList<String>();
+    private ArrayList<NoteData> noteSenList;
 
     private TextView mSenItem;
-    private Button mSenAdd;
-    private EditText mAddItem;
+    public ImageButton mSenMore;
+    public Button mSenAdd;
+    private EditText mAddItem, mChangeItem;
+    private LinearLayout mSenMoreLayout;
 
-    public NoteSenAdapter(ArrayList<String> listSentence) {
+    public boolean isBtnClicked;
+
+
+    public NoteSenAdapter(ArrayList<NoteData> listSentence) {
+        noteSenList = new ArrayList<>();
         noteSenList.addAll(listSentence);
+        isBtnClicked = false;
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
         public ItemViewHolder(View v) {
             super(v);
             mSenItem = (TextView) v.findViewById(R.id.note_sen_item);
+            mSenMore = (ImageButton) v.findViewById(R.id.btn_sen_more);
+            mSenMoreLayout = (LinearLayout) v.findViewById(R.id.ll_sen_more);
         }
-
-        public TextView getTextView() { return mSenItem;  }
+        public ImageButton getImageButton(){ return mSenMore; }
+        public TextView getTextView() {  return mSenItem;  }
+        public LinearLayout getLinearLayout() { return mSenMoreLayout; }
     }
 
     public class AddViewHolder extends RecyclerView.ViewHolder {
@@ -55,6 +67,7 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         public Button getButton() { return mSenAdd; }
 
     }
+
     //create new views(invoked by the layout manager)
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -70,19 +83,54 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             return new AddViewHolder(v);
         }
     }
+    String changeName;
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         // Get element from your dataset at this position and replace the contents of the view with that element
         switch (getItemViewType(position)){
             case VIEW_TYPE_CELL:
                 Log.d(TAG, "Sentence Item set. - " + position);
-                ItemViewHolder itemViewHolder = (ItemViewHolder)holder;
-                itemViewHolder.getTextView().setText(noteSenList.get(position));
-                itemViewHolder.itemView.setOnClickListener(new View.OnClickListener(){
+                changeName = noteSenList.get(position).getName();
+
+                final ItemViewHolder itemViewHolder = (ItemViewHolder)holder;
+                itemViewHolder.getTextView().setText(noteSenList.get(position).getName());
+                itemViewHolder.getTextView().setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View v){
-                        Log.d(TAG, "Sentence List " + position + " clicked.");
+                        Log.d(TAG, "Sentence List clicked.");
+                        isBtnClicked = false;
+                    }
+                });
+                itemViewHolder.getImageButton().setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v){
+                        Log.d(TAG, "Sentence More clicked.");
+                        isBtnClicked = true;
+
+                        AlertDialog.Builder alertBuilder = new AlertDialog.Builder((itemViewHolder.itemView.getContext()));
+
+                        mChangeItem = new EditText((itemViewHolder.itemView.getContext()));
+                        mChangeItem.setText(changeName);
+                        alertBuilder.setTitle("");
+                        alertBuilder.setView(mChangeItem);
+
+                        alertBuilder.setCancelable(false
+                        ).setPositiveButton("이름 수정",new DialogInterface.OnClickListener(){
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Log.d(TAG,"change : " +  mChangeItem.getText().toString());
+                                changeItem(itemViewHolder.getAdapterPosition(), mChangeItem.getText().toString());
+                            }
+                        }).setNegativeButton("삭제", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                removeItem(itemViewHolder.getAdapterPosition() , mChangeItem.getText().toString());
+                                dialog.cancel();
+                            }
+                        });
+                        AlertDialog alertDialog = alertBuilder.create();
+                        alertDialog.show();  //<-- See This!
                     }
                 });
                 break;
@@ -93,7 +141,7 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
                     @Override
                     public void onClick(View v) {
-                        Log.d(TAG, "Add Button clicked. - " + position);
+                        Log.d(TAG, "Add Button clicked.");
 
                         AlertDialog.Builder alertBuilder = new AlertDialog.Builder((addViewHolder.itemView.getContext()));
                         alertBuilder.setTitle("문장 모음 추가하기");
@@ -105,10 +153,11 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         ).setPositiveButton("추가",new DialogInterface.OnClickListener(){
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                String itemName = "문장 모음" + noteSenList.size();
+                                String itemName = "문장 모음" + addViewHolder.getAdapterPosition();
                                 if(!mAddItem.getText().toString().isEmpty())
+
                                     itemName = mAddItem.getText().toString();
-                                addItem(position , itemName);
+                                addItem(addViewHolder.getAdapterPosition(), itemName);
                             }
                         }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
                             @Override
@@ -120,16 +169,31 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         alertDialog.show();  //<-- See This!
                     }
                 });
-
                 break;
+        }
+
+    }
+
+
+    private void addItem(int position, String itemName) {
+        noteSenList.add(position, new NoteData(itemName));
+        Log.d(TAG, "noteSen add : " + position);
+        notifyItemInserted(position);
+        notifyItemRangeChanged(0, getItemCount());
+    }
+
+    private void changeItem(int position, String itemName){
+        if(position < noteSenList.size()) {
+            noteSenList.set(position, new NoteData(itemName));
+            Log.d(TAG, "noteSen change : " + position);
+            notifyItemRangeChanged(0, getItemCount());
         }
     }
 
-    private void addItem(int position, String itemName) {
-        noteSenList.add(itemName);
-        Log.d(TAG, "noteSenList size : " + noteSenList.size());
-        notifyItemInserted(noteSenList.size());
-        //notifyItemRangeChanged(position, noteSenList.size());
+    private void removeItem(int position, String itemName){
+        if(noteSenList.get(position).getName() == itemName)
+            noteSenList.remove(position);
+        notifyItemRangeChanged(0, getItemCount());
     }
 
     @Override
@@ -142,4 +206,7 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return (position >= noteSenList.size()) ? VIEW_TYPE_FOOTER : VIEW_TYPE_CELL;
     }
 
+    public boolean isBtnClicked() {
+        return isBtnClicked;
+    }
 }

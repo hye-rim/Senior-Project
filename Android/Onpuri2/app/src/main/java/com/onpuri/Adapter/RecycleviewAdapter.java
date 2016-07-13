@@ -1,12 +1,13 @@
 package com.onpuri.Adapter;
 
 import android.graphics.Color;
-import android.graphics.Typeface;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.onpuri.R;
@@ -16,18 +17,20 @@ import java.util.ArrayList;
 /**
  * Created by HYERIM on 2016-07-04.
  */
-public class RecycleviewAdapter extends RecyclerView.Adapter<RecycleviewAdapter.ViewHolder> {
+public class RecycleviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
     private final String TAG = "RecycleviewAdapter";
-    private ArrayList<String> senList = new ArrayList<String>();
+    private static final int VIEW_TYPE_CELL = 1;
+    private static final int VIEW_TYPE_FOOTER = 0;
 
-    public TextView mSenItem;
+    private ArrayList<String> senList;
 
-    public RecycleviewAdapter(ArrayList<String> listSentence) {
-        senList.addAll(listSentence);
+    public RecycleviewAdapter(ArrayList<String> listSentence, RecyclerView recyclerView) {
+        this.senList=listSentence;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public ViewHolder(View v) {
+    public class ItemViewHolder extends RecyclerView.ViewHolder {
+        public TextView mSenItem;
+        public ItemViewHolder(View v) {
             super(v);
 
             // Define click listener for the ViewHolder's View.
@@ -47,31 +50,62 @@ public class RecycleviewAdapter extends RecyclerView.Adapter<RecycleviewAdapter.
         }
     }
 
+    public class ProgressViewHolder extends RecyclerView.ViewHolder {
+        public ProgressBar progressBar;
+
+        public ProgressViewHolder(View v) {
+            super(v);
+            progressBar = (ProgressBar) v.findViewById(R.id.progressBar_home);
+        }
+    }
     //create new views(invoked by the layout manager)
     @Override
-    public RecycleviewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_list, parent, false);
-        return new ViewHolder(v);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View v;
+        if(viewType == VIEW_TYPE_CELL){
+            //Create viewholder for your default cell
+            v = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_list, parent, false);
+            return new ItemViewHolder(v);
+        }
+        else {
+            //Create viewholder for your footer view
+            v = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_progress, parent, false);
+            return new ProgressViewHolder(v);
+        }
     }
 
     @Override
-    public void onBindViewHolder(RecycleviewAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         Log.d(TAG, "Element " + position + " set.");
         // Get element from your dataset at this position and replace the contents of the view with that element
-        holder.getTextView().setText(senList.get(position));
-        holder.itemView.setOnClickListener(new View.OnClickListener(){
+        switch (getItemViewType(position)){
+            case VIEW_TYPE_CELL:
+                ItemViewHolder itemViewHolder = (ItemViewHolder)holder;
+                itemViewHolder.mSenItem.setText(senList.get(position));
+                itemViewHolder.itemView.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v){
 
-            @Override
-            public void onClick(View v){
+                    }
+                });
 
-            }
-        });
+                if (position % 2 == 0) {
+                    itemViewHolder.itemView.setBackgroundColor(Color.parseColor("#FEE098"));
+                } else {
+                    itemViewHolder.itemView.setBackgroundColor(Color.parseColor("#faf5b3"));
+                }
+                break;
 
-        if (position % 2 == 0) {
-            holder.itemView.setBackgroundColor(Color.parseColor("#FEE098"));
-        } else {
-            holder.itemView.setBackgroundColor(Color.parseColor("#faf5b3"));
+            case VIEW_TYPE_FOOTER:
+                ProgressViewHolder progressViewHolder = (ProgressViewHolder)holder;
+                progressViewHolder.progressBar.setIndeterminate(true);
+                break;
         }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return senList.get(position) != null ? VIEW_TYPE_CELL : VIEW_TYPE_FOOTER;
     }
 
     @Override

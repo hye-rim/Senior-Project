@@ -38,10 +38,6 @@ import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private Toast toast;
-    private Activity activity;
-    private TabHost tabHost;
-
     private ActivityList actManager = ActivityList.getInstance();
     private com.onpuri.Server.CloseSystem CloseSystem; //BackKeyPressed,close
 
@@ -56,12 +52,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     char check_out;
     char isOut = '0';
 
-    Toolbar toolbar;
     ActionBarDrawerToggle mDrawerToggle;
-    UserMyFragment userInfo;
-    UserMyActFragment userAct;
-    UserSetFragment setFrag;
-    private MenuItem item;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -118,6 +109,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             super.onBackPressed();
         }
+
+        if(mworker_out != null && mworker_out.isAlive()){  //이미 동작하고 있을 경우 중지
+            mworker_out.interrupt();
+        }
+        mworker_out = new worker_logout(true);
+        mworker_out.start();
+
+        try {
+            mworker_out.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -172,10 +176,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             xfragmentTransaction.replace(R.id.containerView,new UserMyActFragment()).commit();
         }
         if (item.getItemId() == R.id.nav_logout) {
-
-            System.out.println("click logout");
-            isOut = '1';
-
+            if(mworker_out != null && mworker_out.isAlive()){  //이미 동작하고 있을 경우 중지
+                mworker_out.interrupt();
+            }
             mworker_out = new worker_logout(true);
             mworker_out.start();
 
@@ -224,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             this.isPlay = isPlay;
         }
 
-        public void stopThread() {
+        public void setThread() {
             isPlay = !isPlay;
         }
 

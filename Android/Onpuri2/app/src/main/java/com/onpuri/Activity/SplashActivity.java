@@ -64,14 +64,10 @@ public class SplashActivity extends Activity {
         tv_splash = (TextView)findViewById(R.id.tv_splash);
         tv_splash.setText("");
         load = ".";
-       // Log.v("태그", "메시지");
-        //TelephonyManager tm =(TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-        //String deviceid = tm.getDeviceId();
 
         String androID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID); //device ID get
         Log.v("Device Id:", androID);
         Log.v("getDeviceId();", getDeviceId());
-        Log.v("getDeviceId();", getPhoneNumber());
         Log.v("Device Model:", Build.MODEL);
 
         msplashTread = new splashThread(true);
