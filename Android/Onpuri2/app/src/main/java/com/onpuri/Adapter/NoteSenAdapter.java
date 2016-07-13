@@ -91,7 +91,6 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         switch (getItemViewType(position)){
             case VIEW_TYPE_CELL:
                 Log.d(TAG, "Sentence Item set. - " + position);
-                changeName = noteSenList.get(position).getName();
 
                 final ItemViewHolder itemViewHolder = (ItemViewHolder)holder;
                 itemViewHolder.getTextView().setText(noteSenList.get(position).getName());
@@ -102,6 +101,9 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         isBtnClicked = false;
                     }
                 });
+
+                changeName = noteSenList.get(itemViewHolder.getAdapterPosition()).getName();
+
                 itemViewHolder.getImageButton().setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View v){
@@ -182,17 +184,17 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         notifyItemRangeChanged(0, getItemCount());
     }
 
-    private void changeItem(int position, String itemName){
-        if(position < noteSenList.size()) {
-            noteSenList.set(position, new NoteData(itemName));
-            Log.d(TAG, "noteSen change : " + position);
+    private void changeItem(int pos, String itemName){
+        if(pos < noteSenList.size()) {
+            noteSenList.set(pos, new NoteData(itemName));
+            Log.d(TAG, "noteSen change : " + pos);
             notifyItemRangeChanged(0, getItemCount());
         }
     }
 
-    private void removeItem(int position, String itemName){
-        if(noteSenList.get(position).getName() == itemName)
-            noteSenList.remove(position);
+    private void removeItem(int pos, String itemName){
+        if(noteSenList.get(pos).getName() == itemName)
+            noteSenList.remove(pos);
         notifyItemRangeChanged(0, getItemCount());
     }
 
