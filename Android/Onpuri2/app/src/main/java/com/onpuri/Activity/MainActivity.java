@@ -21,6 +21,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TabHost;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.appindexing.Action;
@@ -32,6 +33,8 @@ import com.onpuri.Server.CloseSystem;
 import com.onpuri.Server.PacketUser;
 import com.onpuri.Server.SocketConnection;
 
+import org.w3c.dom.Text;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -39,7 +42,10 @@ import java.io.IOException;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private ActivityList actManager = ActivityList.getInstance();
-    private com.onpuri.Server.CloseSystem CloseSystem; //BackKeyPressed,close
+    //private com.onpuri.Server.CloseSystem closeSystem; //BackKeyPressed,close
+
+    private final long FINISH_INTERVAL_TIME = 3000;
+    private long backPressedTime = 0;
 
     private worker_logout mworker_out;
 
@@ -53,7 +59,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     char isOut = '0';
 
     ActionBarDrawerToggle mDrawerToggle;
-
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -65,6 +70,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     FragmentManager mFragmentManager;
     FragmentTransaction mFragmentTransaction;
 
+    TextView mNavId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,14 +79,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
 
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
-
         /**
          *Setup the DrawerLayout and NavigationView
          */
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         mNavigationView = (NavigationView) findViewById(R.id.nav_view) ;
+        mNavId = (TextView)findViewById(R.id.tv_nav_id);
 
+        Intent intent = getIntent();
+        String userId = intent.getStringExtra("userId");
+        mNavId.setText(userId);
         /**
          * Lets inflate the very first fragment
          * Here , we are inflating the TabViewPager as the first Fragment
@@ -104,12 +114,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {
-        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-            mDrawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-
         if(mworker_out != null && mworker_out.isAlive()){  //이미 동작하고 있을 경우 중지
             mworker_out.interrupt();
         }
@@ -120,6 +124,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mworker_out.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+
+        long tempTime = System.currentTimeMillis();
+        long intervalTime = tempTime - backPressedTime;
+
+        if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime)
+        {
+            if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+            } else {
+                super.onBackPressed();
+            }
+        }
+        else
+        {
+            backPressedTime = tempTime;
+            Toast.makeText(getApplicationContext(), "\'뒤로\' 버튼을 한번 더 누르시면 종료됩니다." , Toast.LENGTH_SHORT).show();
         }
 
     }

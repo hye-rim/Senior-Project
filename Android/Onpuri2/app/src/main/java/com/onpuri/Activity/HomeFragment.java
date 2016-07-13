@@ -47,6 +47,7 @@ public class HomeFragment extends Fragment {
 
     byte[] outData = new byte[261];
     byte[] inData = new byte[261];
+    byte[] senData = new byte[261];
     byte[] temp = new byte[261];
 
     private RecyclerView mRecyclerView;
@@ -207,6 +208,7 @@ public class HomeFragment extends Fragment {
 
                     dis = new DataInputStream(SocketConnection.socket.getInputStream());
                     while (i < 10) {
+                        //문장
                         dis.read(temp, 0, 4);
                         for (index = 0; index < 4; index++) {
                             inData[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
@@ -217,18 +219,43 @@ public class HomeFragment extends Fragment {
                         for (index = 0; index <= (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]); index++) {
                             inData[index + 4] = temp[index];    // 패킷의 Data부분을 inData에 추가해준다.
                         }
+                        //문장번호
+                        dis.read(temp, 0, 4);
+                        for (index = 0; index < 4; index++) {
+                            senData[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
+                        }
+
+                        dis.read(temp, 0, 1 + (senData[3] <= 0 ? (int) senData[3] + 256 : (int) senData[3]));
+
+                        for (index = 0; index <= (senData[3] <= 0 ? (int) senData[3] + 256 : (int) senData[3]); index++) {
+                            senData[index + 4] = temp[index];    // 패킷의 Data부분을 inData에 추가해준다.
+                        }
 
                         int SOF = inData[0];
                         System.out.println("0 : " + inData[0]);
                         System.out.println("1 : " + inData[1]);
                         System.out.println("2 : " + inData[2]);
-                        System.out.println("3 : " + (int) inData[3]);
+                        System.out.println("3 : " + inData[3]);
                         System.out.println("5 : " + (char) inData[5]); //sentence - second char
+
+                        System.out.println("000 : " + senData[0]);
+                        System.out.println("111 : " + senData[1]);
+                        System.out.println("222 : " + senData[2]);
+                        System.out.println("333 : " + senData[3]);
+                        System.out.println("333 : " + (char) senData[4]);
+                        System.out.println("333 : " + (char) senData[5]);
+                        System.out.println("333 : " + (char) senData[6]);
+
                         PacketUser.sentence_len = ((int) inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);
 
                         index = 0;
                         String str = "";
+                        String num = Character.toString((char)senData[4])
+                                + Character.toString((char)senData[5])
+                                + Character.toString((char)senData[6]);
+
                         System.out.println("len : " + PacketUser.sentence_len);
+                        System.out.println(num);
 
                         while (true) { //solving
                             System.out.print((char) inData[4 + index]);

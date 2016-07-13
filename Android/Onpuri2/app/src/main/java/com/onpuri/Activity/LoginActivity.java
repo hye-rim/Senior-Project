@@ -85,6 +85,7 @@ public class LoginActivity extends Activity{
                 // mworker_login.stopThread();
                 if ( (check != '0' && check != '5') && checkLength != '1') {
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    intent.putExtra("userId", id);
                     startActivity(intent);
                 }
                 else if( check == '5'){
