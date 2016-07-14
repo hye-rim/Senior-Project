@@ -39,6 +39,7 @@ public class HomeFragment extends Fragment {
     private worker_sentence_list mworker_sentence;
 
     ArrayList<String> listSentence;
+    ArrayList<String> listSentenceNum;
     PacketUser userSentence;
 
     int i, index;
@@ -77,10 +78,12 @@ public class HomeFragment extends Fragment {
         }
         userSentence = new PacketUser();
         listSentence = new ArrayList<String>();
+        listSentenceNum = new ArrayList<String>();
         loadData(current_page);
 
         handler = new Handler();
 
+        final HomeSentenceFragment hsf = new HomeSentenceFragment();
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_sentence);
         mLayoutManager = new LinearLayoutManager(getActivity());
@@ -91,9 +94,14 @@ public class HomeFragment extends Fragment {
                     @Override
                     public void onItemClick(View view, int position) {
                         System.out.println(position);
+                        Bundle args1 = new Bundle();
+                        args1.putString("sen",listSentence.get(position));
+                        hsf.setArguments(args1);
+                        args1.putString("sen_num",listSentenceNum.get(position));
+                        hsf.setArguments(args1);
 
                         FragmentTransaction ft = getFragmentManager().beginTransaction();
-                        ft.add(R.id.root_frame, new HomeSentenceFragment());
+                        ft.add(R.id.root_frame, hsf);
                         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                         ft.addToBackStack(null);
                         ft.commit();
@@ -147,6 +155,7 @@ public class HomeFragment extends Fragment {
 
         for (int i = ival; i < loadLimit; i++) {
             listSentence.add(userSentence.arrSentence.get(i));
+            listSentenceNum.add(userSentence.arrSentenceNum.get(i));
             ival++;
         }
 
@@ -173,6 +182,7 @@ public class HomeFragment extends Fragment {
 
         for (int i = ival; i < loadLimit; i++) {
             listSentence.add(userSentence.arrSentence.get(i));
+            listSentenceNum.add(userSentence.arrSentenceNum.get(i));
             ival++;
         }
 
@@ -239,14 +249,6 @@ public class HomeFragment extends Fragment {
                         System.out.println("3 : " + inData[3]);
                         System.out.println("5 : " + (char) inData[5]); //sentence - second char
 
-                        System.out.println("000 : " + senData[0]);
-                        System.out.println("111 : " + senData[1]);
-                        System.out.println("222 : " + senData[2]);
-                        System.out.println("333 : " + senData[3]);
-                        System.out.println("333 : " + (char) senData[4]);
-                        System.out.println("333 : " + (char) senData[5]);
-                        System.out.println("333 : " + (char) senData[6]);
-
                         PacketUser.sentence_len = ((int) inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);
 
                         index = 0;
@@ -270,6 +272,8 @@ public class HomeFragment extends Fragment {
                         }
 
                         userSentence.setSentence(str);
+                        userSentence.setSentenceNum(num);
+
                         System.out.println(total + "str :" + str);
                         total++;
                         i++;

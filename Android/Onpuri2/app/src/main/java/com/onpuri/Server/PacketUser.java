@@ -31,6 +31,7 @@ public class PacketUser extends Application {
             purchase = "", sale = "", declaration = "";
 
     static public ArrayList<String> arrSentence = new ArrayList<String>();
+    static public ArrayList<String> arrSentenceNum = new ArrayList<String>();
     static public int data_len, sentence_len;
 
     private static int SEQ = 0;
@@ -50,6 +51,10 @@ public class PacketUser extends Application {
     static public void setSentence(String str) {
         arrSentence.add(str);
         System.out.println("string : " + arrSentence.get(0));
+    }
+    static public void setSentenceNum(String num) {
+        arrSentenceNum.add(num);
+        System.out.println("stringnum : " + arrSentenceNum.get(0));
     }
 
     public String getSentence(int i){
