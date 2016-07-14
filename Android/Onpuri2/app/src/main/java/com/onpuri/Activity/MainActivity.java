@@ -2,6 +2,7 @@ package com.onpuri.Activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TabHost;
@@ -41,6 +43,7 @@ import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    private static final String TAG = "MainActivity" ;
     private ActivityList actManager = ActivityList.getInstance();
     //private com.onpuri.Server.CloseSystem closeSystem; //BackKeyPressed,close
 
@@ -72,6 +75,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     TextView mNavId;
 
+    SharedPreferences setting;
+    SharedPreferences.Editor editor;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +84,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
 
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
+        setting = getSharedPreferences("setting",0);
+        editor = setting.edit();
+        mworker_out = null;
         /**
          *Setup the DrawerLayout and NavigationView
          */
@@ -114,31 +123,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {
-        if(mworker_out != null && mworker_out.isAlive()){  //이미 동작하고 있을 경우 중지
-            mworker_out.interrupt();
-        }
-        mworker_out = new worker_logout(true);
-        mworker_out.start();
-
-        try {
-            mworker_out.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         long tempTime = System.currentTimeMillis();
         long intervalTime = tempTime - backPressedTime;
 
-        if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime)
-        {
+        if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime) {
+            if(mworker_out != null && mworker_out.isAlive()){  //이미 동작하고 있을 경우 중지
+                mworker_out.interrupt();
+            }
+            mworker_out = new worker_logout(true);
+            mworker_out.start();
+
+            try {
+                mworker_out.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
             if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
                 mDrawerLayout.closeDrawer(GravityCompat.START);
             } else {
                 super.onBackPressed();
             }
         }
-        else
-        {
+        else{
             backPressedTime = tempTime;
             Toast.makeText(getApplicationContext(), "\'뒤로\' 버튼을 한번 더 누르시면 종료됩니다." , Toast.LENGTH_SHORT).show();
         }
@@ -197,27 +204,42 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             xfragmentTransaction.replace(R.id.containerView,new UserMyActFragment()).commit();
         }
         if (item.getItemId() == R.id.nav_logout) {
-            if(mworker_out != null && mworker_out.isAlive()){  //이미 동작하고 있을 경우 중지
-                mworker_out.interrupt();
-            }
-            mworker_out = new worker_logout(true);
-            mworker_out.start();
-
-            try {
-                mworker_out.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(loginIntent);
-            finish();
+            Logout();
         }
         if (item.getItemId() == R.id.nav_set) {
             FragmentTransaction sfragmentTransaction = mFragmentManager.beginTransaction();
             sfragmentTransaction.replace(R.id.containerView, new UserSetFragment()).commit();
         }
         return false;
+    }
+
+    private void Logout() {
+        Log.d(TAG, "logout start");
+        if(mworker_out != null && mworker_out.isAlive()){  //이미 동작하고 있을 경우 중지
+            mworker_out.interrupt();
+        }
+        Log.d(TAG, "logout interrupt");
+        mworker_out = new worker_logout(true);
+        mworker_out.start();
+
+        Log.d(TAG, "logout sever nenwnw");
+        try {
+            mworker_out.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        Log.d(TAG, "logout server ok");
+        if (setting.getBoolean("autoLogin", false)) {
+            editor.clear();
+            editor.commit();
+        }
+        Log.d(TAG, "shared ok");
+
+        Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(loginIntent);
+        finish();
+
     }
 
     @Override

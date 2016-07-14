@@ -3,6 +3,8 @@ package com.onpuri.Activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -16,6 +18,8 @@ import com.onpuri.Server.ActivityList;
 import com.onpuri.Server.PacketInfo;
 import com.onpuri.Server.SocketConnection;
 
+import org.w3c.dom.Text;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -25,11 +29,12 @@ import java.io.IOException;
  */
 //Loading Activity
 public class SplashActivity extends Activity {
+    private static final String TAG = "SplashActivity";
     private ProgressBar spinner;
     DataOutputStream dos;
     DataInputStream dis;
 
-    TextView tv_splash;
+    TextView tv_splash, tvVersion;
     String load = ".";
     byte[] outData = new byte[261];
     byte[] inData = new byte[261];
@@ -52,6 +57,18 @@ public class SplashActivity extends Activity {
         spinner.setVisibility(ProgressBar.VISIBLE);
         spinner.setIndeterminate(true);
         spinner.setMax(100);
+
+        PackageInfo pi = null;
+        try {
+            pi = getPackageManager().getPackageInfo(getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e(TAG, e.getMessage());
+        }
+        String appVersion = pi.versionName;
+
+        tvVersion = (TextView)findViewById(R.id.tv_version);
+        tvVersion.setText("Ver." + appVersion);
+
 
         //if(worker.getState() == Thread.State.NEW)
         worker.start();
