@@ -125,6 +125,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onBackPressed() {
         long tempTime = System.currentTimeMillis();
         long intervalTime = tempTime - backPressedTime;
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
 
         if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime) {
             if(mworker_out != null && mworker_out.isAlive()){  //이미 동작하고 있을 경우 중지
@@ -141,7 +143,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
                 mDrawerLayout.closeDrawer(GravityCompat.START);
-            } else {
+            }
+            if (fm.getBackStackEntryCount() > 0) {
+                fm.popBackStack();
+                ft.commit();
+            }
+            else {
                 super.onBackPressed();
             }
         }

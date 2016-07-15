@@ -18,8 +18,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:id="@+id/tv_sentence"
-                android:text="-구현중-"
                 android:textSize="15dp"
+                android:text="영어 문장 내용"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
                 android:textStyle="bold" />
@@ -137,24 +137,30 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:text="listen 1"
+                android:id="@+id/listen1"
+                android:text="listen1"
                 android:focusable="false"
                 android:textSize="15dp"
-                android:layout_marginLeft="15dp"/>
+                android:layout_marginLeft="15dp"
+                android:background="#faf5b3"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:text="listen 2"
+                android:id="@+id/listen2"
+                android:text="listen2"
                 android:focusable="false"
                 android:textSize="15dp"
-                android:layout_marginLeft="15dp"/>
+                android:layout_marginLeft="15dp"
+                android:background="#faf5b3"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:text="listen 3"
+                android:id="@+id/listen3"
+                android:text="listen3"
                 android:focusable="false"
                 android:textSize="15dp"
-                android:layout_marginLeft="15dp"/>
+                android:layout_marginLeft="15dp"
+                android:background="#faf5b3"/>
             <Button
                 android:layout_width="100dp"
                 android:layout_height="30dp"
