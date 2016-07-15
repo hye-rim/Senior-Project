@@ -179,8 +179,7 @@
             android:id="@+id/et_newName"
             android:layout_weight="0.04"
             android:layout_gravity="center_vertical"
-            android:singleLine="true"
-            android:phoneNumber="false" />
+            android:singleLine="true" />
 
         <Space
             android:layout_width="100dp"
@@ -207,7 +206,6 @@
             android:layout_height="wrap_content"
             android:id="@+id/et_newPhone1"
             android:singleLine="true"
-            android:phoneNumber="false"
             android:layout_gravity="center_vertical"
             android:inputType="number" />
         <TextView
@@ -225,7 +223,6 @@
             android:layout_height="wrap_content"
             android:id="@+id/et_newPhone2"
             android:singleLine="true"
-            android:phoneNumber="false"
             android:layout_gravity="center_vertical"
             android:inputType="number" />
         <TextView
@@ -243,7 +240,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/et_newPhone3"
             android:singleLine="true"
-            android:phoneNumber="false"
+            android:maxLength="4"
             android:layout_gravity="center_vertical"
             android:inputType="number" />
         <Space
@@ -260,7 +257,7 @@
         android:layout_gravity="center_horizontal">
     <Button
         android:layout_width="120dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:text="JOIN"
         android:id="@+id/btnJoin"
         android:clickable="true"
@@ -272,8 +269,9 @@
         android:layout_alignParentRight="false"
         android:textStyle="bold" />
         <Button
+            android:id="@+id/btnJoinCancel"
             android:layout_width="120dp"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:text="CANCEL"
             android:clickable="true"
             android:layout_marginLeft="10dp"

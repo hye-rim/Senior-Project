@@ -30,7 +30,7 @@ public class CloseSystem {
         }
 
         if (System.currentTimeMillis() <= backKeyPressedTime + 3000) {
-            actManager.finishAllActivity();
+            //actManager.finishAllActivity();
             activity .moveTaskToBack(true);
             activity .finish();
             toast.cancel();

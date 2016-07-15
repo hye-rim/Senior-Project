@@ -2,11 +2,15 @@ package com.onpuri.Activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -25,9 +29,9 @@ import java.util.regex.Pattern;
  * Created by Hye-rim on 2016-03-18.
  */
 //Login
-public class LoginActivity extends Activity{
+public class LoginActivity extends Activity implements View.OnClickListener {
+    private static final String TAG = "LoginActivity";
     private String id, pass;
-    private String admin = "test";  // admin IP/PW
     private com.onpuri.Server.CloseSystem CloseSystem; // BackKeyPressed,close
 
     DataOutputStream dos;
@@ -38,23 +42,31 @@ public class LoginActivity extends Activity{
 
     Button btLogin, btNew;
     EditText et_loginId, et_loginPw;
+    CheckBox checkAuto;
+
+    SharedPreferences setting;
+    SharedPreferences.Editor editor;
 
     int i, index;
-    char check = '5';
+    char check;
     char checkLength;
+    boolean isLoginBtn;
 
     private worker_login mworker_login;
 
     private ActivityList actManager = ActivityList.getInstance();
+    private boolean loginChecked;
 
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         actManager.addActivity(this);
         setContentView(R.layout.activity_login);
         CloseSystem = new CloseSystem(this); //backKey Event
+        check = '5';
 
         btLogin = (Button) findViewById(R.id.btnLogin);
         btNew = (Button) findViewById(R.id.btnNew);
+        checkAuto = (CheckBox)findViewById(R.id.check_auto);
 
         et_loginId = (EditText) findViewById(R.id.et_loginId);
         et_loginId.setFilters(new InputFilter[]{filterAlphaNum}); //영문+숫자만 되도록 제한
@@ -66,48 +78,161 @@ public class LoginActivity extends Activity{
         et_loginPw.setPrivateImeOptions("defaultInputmode=english;");
         et_loginPw.setText("");
 
-        btLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                id = et_loginId.getText().toString();
-                pass = et_loginPw.getText().toString();
+        isLoginBtn = false;
 
-                mworker_login = new worker_login(true);
-                mworker_login.start();
+        setting = getSharedPreferences("setting",0);
+        editor = setting.edit();
+        String id, password;
+        Boolean validation;
+        // if autoLogin checked, get input
+        if (setting.getBoolean("autoLogin", false)) {
+            et_loginId.setText(setting.getString("ID", ""));
+            et_loginPw.setText(setting.getString("PW", ""));
+            checkAuto.setChecked(true);
+            // goto mainActivity
 
-                try {
-                    mworker_login.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            id = et_loginId.getText().toString();
+            password = et_loginPw.getText().toString();
+            validation = loginCorrect(id, password);
+
+            mainGo();
+        } else {
+            // if autoLogin unChecked
+            id = et_loginId.getText().toString();
+            password = et_loginPw.getText().toString();
+            validation = loginCorrect(id, password);
+
+            if(validation) {
+                Toast.makeText(getApplicationContext(), "Login Success", Toast.LENGTH_LONG).show();
+                // save id, password to Database
+
+                if(loginChecked) {
+                    // if autoLogin Checked, save values
+                    editor.putString("id", id);
+                    editor.putString("pw", password);
+                    editor.putBoolean("autoLogin", true);
+                    editor.commit();
                 }
-                //isPause = false;
-                System.out.println("result: " + (char)inData[4]);
-                // mworker_login.stopThread();
-                if ( (check != '0' && check != '5') && checkLength != '1') {
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
-                }
-                else if( check == '5'){
-                    Toast.makeText(getApplicationContext(), "ID와 비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show();
-                }
-                else{
-                    Toast.makeText(getApplicationContext(), "ID 또는 비밀번호가 틀렸습니다", Toast.LENGTH_SHORT).show();
-                }
+                // goto mainActivity
+
+                mainGo();
+
+            } else {
+                Log.d(TAG, "Login failed");
+                // goto LoginActivity
             }
-        });
+        }
 
-        btNew.setOnClickListener(new View.OnClickListener() {
+        btLogin.setOnClickListener(this);
+        btNew.setOnClickListener(this);
+
+        checkAuto.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(LoginActivity.this, JoinActivity.class);
-                startActivity(intent);
-
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked) {
+                    loginChecked = true;
+                } else {
+                    // if unChecked, removeAll
+                    loginChecked = false;
+                    editor.clear();
+                    editor.commit();
+                }
             }
         });
     }
+
+    private void mainGo(){
+        if(mworker_login != null && mworker_login.isAlive()){  //이미 동작하고 있을 경우 중지
+            mworker_login.interrupt();
+        }
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        intent.putExtra("userId", id);
+
+        startActivity(intent);
+        finish();
+    }
+    @Override
+    public void onClick(View v) {
+        Intent intent;
+
+        if(checkAuto.isChecked()){
+            Log.d(TAG, "로그인");
+            String id = et_loginId.getText().toString();
+            String password = et_loginPw.getText().toString();
+
+            editor.putString("ID", id);
+            editor.putString("PW", password);
+            editor.putBoolean("autoLogin", true);
+            editor.commit();
+
+            mainGo();
+
+        }else{
+            editor.clear();
+            editor.commit();
+
+            switch (v.getId()) {
+                case R.id.btnNew :
+                    intent = new Intent(LoginActivity.this, JoinActivity.class);
+                    startActivity(intent);
+                    break;
+                case R.id.btnLogin:
+                    id = et_loginId.getText().toString();
+                    pass = et_loginPw.getText().toString();
+                    Boolean validation = loginCorrect(id,pass);
+
+                    isLoginBtn = true;
+
+                    if(validation)
+                        mainGo();
+
+                    break;
+            }
+        }
+    }
+
+    private Boolean loginCorrect(String id, String password) {
+        if(mworker_login != null && mworker_login.isAlive()){  //이미 동작하고 있을 경우 중지
+            mworker_login.interrupt();
+        }
+
+        mworker_login = new worker_login(true);
+        mworker_login.start();
+
+        try {
+            mworker_login.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        //isPause = false;
+        System.out.println("result: " + (char)inData[4]);
+        // mworker_login.stopThread();
+        if ( (check != '0' && check != '5') && checkLength != '1') {
+            return true;
+        }
+        else if( check == '5' || et_loginId.getText().equals(null)){
+            Toast.makeText(getApplicationContext(), "ID와 비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        else if (setting.getString("id","").equals(null)) {
+            // sign in first
+            Toast.makeText(getApplicationContext(), "가입을 먼저 해주세요.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        else if( check != '5' && isLoginBtn){
+            Toast.makeText(getApplicationContext(), "ID 또는 비밀번호가 틀렸습니다", Toast.LENGTH_SHORT).show();
+            return false;
+
+        }else{
+            return false;
+        }
+    }
+
     public void onBackPressed(){
         CloseSystem.onBackPressed();
     }
+
     //edittext 영문+숫자만 입력되도록 하는 함수
     public InputFilter filterAlphaNum = new InputFilter() {
         @Override
@@ -121,6 +246,7 @@ public class LoginActivity extends Activity{
             return "";
         }
     };
+
     class worker_login extends Thread{
         private boolean isPlay = false;
 

@@ -7,7 +7,7 @@
               android:weightSum="1">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="170dp"
+        android:layout_height="160dp"
         android:layout_weight="0.19"
         android:gravity="center">
         <ImageView
@@ -37,7 +37,6 @@
             android:inputType="none"
             android:backgroundTint="#ffffffff"
             android:singleLine="true"
-            android:autoText="false"
             android:hint="ID" />
 
         <EditText
@@ -51,7 +50,6 @@
             android:inputType="textPassword"
             android:backgroundTint="#ffffffff"
             android:singleLine="true"
-            android:phoneNumber="false"
             android:hint="password" />
 
     </LinearLayout>
@@ -65,7 +63,8 @@
         <Button
             android:layout_width="240dp"
             android:layout_height="40dp"
-            android:text="Login"
+            android:text="L o g i n"
+            android:textStyle="bold"
             android:id="@+id/btnLogin"
             android:layout_gravity="center_horizontal"
             android:background="#fee098"
@@ -79,7 +78,8 @@
         <Button
             android:layout_width="240dp"
             android:layout_height="40dp"
-            android:text="New"
+            android:text="N e w"
+            android:textStyle="bold"
             android:id="@+id/btnNew"
             android:layout_gravity="center_horizontal"
             android:layout_margin="5dp"
@@ -87,5 +87,26 @@
             android:textColor="#030409"
             android:background="#fee098"
             />
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center">
+            <CheckBox
+                android:id="@+id/check_auto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:text="자동 로그인"
+                android:textColor="@color/black"
+                android:textSize="16dp"
+                android:layout_marginLeft="10dp"
+                android:gravity="center" />
+        </LinearLayout>
     </LinearLayout>
+
 </LinearLayout>

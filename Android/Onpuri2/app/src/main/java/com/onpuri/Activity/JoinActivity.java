@@ -33,7 +33,11 @@ import java.util.regex.Pattern;
  */
 //Join Activity
 public class JoinActivity extends Activity {
-    Button btCheck, btJoin;
+//    private com.onpuri.Server.CloseSystem closeSystem; //BackKeyPressed,close
+    private final long FINISH_INTERVAL_TIME = 3000;
+    private long backPressedTime = 0;
+
+    Button btCheck, btJoin, btCancel;
     DataOutputStream dos;
     DataInputStream dis;
 
@@ -56,18 +60,18 @@ public class JoinActivity extends Activity {
      */
     private GoogleApiClient client;
 
-
-    private com.onpuri.Server.CloseSystem CloseSystem; //BackKeyPressed,close
     private ActivityList actManager = ActivityList.getInstance();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         actManager.addActivity(this);
         setContentView(R.layout.activity_join);
-        CloseSystem = new CloseSystem(this); //backKey Event
+        //closeSystem = new CloseSystem(this); //backKey Event
+
 
         btCheck = (Button) findViewById(R.id.btnCheck);
         btJoin = (Button) findViewById(R.id.btnJoin);
+        btCancel = (Button) findViewById(R.id.btnJoinCancel);
 
         et_newId = (EditText) findViewById(R.id.et_newId);
         et_newId.setFilters(new InputFilter[]{filterAlphaNum});
@@ -143,14 +147,16 @@ public class JoinActivity extends Activity {
             }
         });
 
-
+        et_newName.setNextFocusDownId(R.id.et_newPhone1);
         //포커스 이동
         et_newPhone1.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (et_newPhone1.length() == 3) {  // edit1  값의 제한값을 3이라고 가정했을때
+                if (et_newPhone1.length() == 3 && et_newPhone1.getText() != null) {  // edit1  값의 제한값을 3이라고 가정했을때
                     et_newPhone2.requestFocus(); // 두번째EditText 로 포커스가 넘어가게 됩니다
                 }
+                else
+                    et_newPhone1.requestFocus();
             }
 
             @Override
@@ -180,6 +186,7 @@ public class JoinActivity extends Activity {
             @Override
             public void onClick(View view) {
                 if(checkID == 1 && checkPw) {
+                    Toast.makeText(getApplicationContext(), "가입이 완료되었습니다.", Toast.LENGTH_SHORT).show();
                     if(worker_join.getState() == Thread.State.NEW)
                         worker_join.start();
                     Intent intent = new Intent(JoinActivity.this, LoginActivity.class);
@@ -199,13 +206,36 @@ public class JoinActivity extends Activity {
             }
         });
 
+        btCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(JoinActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     public void onBackPressed(){
-        super.onBackPressed();
+        //super.onBackPressed();
+
+        long tempTime = System.currentTimeMillis();
+        long intervalTime = tempTime - backPressedTime;
+
+        if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime)
+        {
+            super.onBackPressed();
+        }
+        else
+        {
+            backPressedTime = tempTime;
+            Toast.makeText(getApplicationContext(), "\'뒤로\' 버튼을 한번 더 누르시면 \n로그인화면으로 이동합니다." , Toast.LENGTH_SHORT).show();
+        }
+
     }
 
 
@@ -240,12 +270,10 @@ public class JoinActivity extends Activity {
                     dos = new DataOutputStream (SocketConnection.socket.getOutputStream ());
                     dos.write (outData,0,outData[3]+5); // packet transmission
                     dos.flush();
-                    System.out.println("abc4");
                     dis = new DataInputStream (SocketConnection.socket.getInputStream ());
                     dis.read (inData);
                     //System.out.println("Data form server: " + ((char)inData[0].) + (char)inData[1]);
                     int SOF = inData[0];
-                    System.out.println("abc5");
                     System.out.println (inData[0]);
                     System.out.println (inData[1]);
                     System.out.println (inData[2]);
@@ -253,8 +281,7 @@ public class JoinActivity extends Activity {
                     System.out.println ((char) inData[4]);
                     System.out.println (inData[5]);
                     check = (char) inData[4];
-                    System.out.println("cqq"+(char)inData[4]+"\n");
-                    System.out.println("cqq"+check+"\n");
+                    System.out.println(check+"\n");
                     if( check == '0' || check == '1')
                         isPlay = !isPlay;
 
@@ -314,8 +341,6 @@ public class JoinActivity extends Activity {
                 source.equals(""); //백스페이스를 위해 추가한 부분
                 return source;
             }
-
-            //Toast.makeText(getActivity(), "영문, 숫자, _, - 만 입력 가능합니다.", Toast.LENGTH_SHORT).show();
 
             return "";
         }
