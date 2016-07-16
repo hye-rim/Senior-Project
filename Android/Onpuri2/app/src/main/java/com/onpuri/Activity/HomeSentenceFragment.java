@@ -67,6 +67,8 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
         add_note.setOnClickListener(this);
         Button add_trans = (Button) view.findViewById(R.id.add_trans);
         add_trans.setOnClickListener(this);
+        Button add_listen = (Button) view.findViewById(R.id.add_listen);
+        add_listen.setOnClickListener(this);
 
         TextView listen1 = (TextView) view.findViewById(R.id.listen1);
         TextView listen2 = (TextView) view.findViewById(R.id.listen2);
@@ -91,6 +93,11 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
+        Bundle args = new Bundle();
+        args.putString("sen",sentence);
+        args.putString("sen_num",sentence_num);
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+
         switch (v.getId()) {
             case R.id.listen1:
                 tts.speak(sentence, TextToSpeech.QUEUE_FLUSH, null);
@@ -128,15 +135,20 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 break;
             case R.id.add_trans:
                 final AddTransFragment atf = new AddTransFragment();
-
-                Bundle args = new Bundle();
-                args.putString("sen",sentence);
                 atf.setArguments(args);
-                args.putString("sen_num",sentence_num);
                 atf.setArguments(args);
 
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.replace(R.id.root_frame, atf);
+                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                ft.addToBackStack(null);
+                ft.commit();
+                break;
+            case R.id.add_listen:
+                final AddListenFragment alf = new AddListenFragment();
+                alf.setArguments(args);
+                alf.setArguments(args);
+
+                ft.replace(R.id.root_frame, alf);
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                 ft.addToBackStack(null);
                 ft.commit();

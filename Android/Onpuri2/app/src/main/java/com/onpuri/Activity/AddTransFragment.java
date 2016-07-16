@@ -22,6 +22,7 @@ import com.onpuri.R;
 public class AddTransFragment extends Fragment implements View.OnClickListener {
 
     private static View view;
+    private Toast toast;
 
     TextView item;
     String sentence="";
@@ -42,20 +43,24 @@ public class AddTransFragment extends Fragment implements View.OnClickListener {
         if (getArguments() != null) { //클릭한 문장 출력
             sentence = getArguments().getString("sen");
             item.setText(sentence);
-        }/*
-        Button del_sen = (Button) view.findViewById(R.id.del_sen);
-        del_sen.setOnClickListener(this);
-        Button add_note = (Button) view.findViewById(R.id.add_note);
-        add_note.setOnClickListener(this);
-*/
+        }
+        Button btn_new_trans = (Button) view.findViewById(R.id.btn_new_trans);
+        btn_new_trans.setOnClickListener(this);
+        Button btn_new_trans_back = (Button) view.findViewById(R.id.btn_new_trans_back);
+        btn_new_trans_back.setOnClickListener(this);
+
         return view;
     }
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_new_trans:
+                toast = Toast.makeText(getActivity(), "등록(구현예정)", Toast.LENGTH_SHORT);
+                toast.show();
                 break;
             case R.id.btn_new_trans_back:
+                toast = Toast.makeText(getActivity(), "취소(구현예정)", Toast.LENGTH_SHORT);
+                toast.show();
                 break;
         }
     }
