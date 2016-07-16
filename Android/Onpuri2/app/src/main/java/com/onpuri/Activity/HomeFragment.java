@@ -94,11 +94,11 @@ public class HomeFragment extends Fragment {
                     @Override
                     public void onItemClick(View view, int position) {
                         System.out.println(position);
-                        Bundle args1 = new Bundle();
-                        args1.putString("sen",listSentence.get(position));
-                        hsf.setArguments(args1);
-                        args1.putString("sen_num",listSentenceNum.get(position));
-                        hsf.setArguments(args1);
+                        Bundle args = new Bundle();
+                        args.putString("sen",listSentence.get(position));
+                        hsf.setArguments(args);
+                        args.putString("sen_num",listSentenceNum.get(position));
+                        hsf.setArguments(args);
 
                         FragmentTransaction ft = getFragmentManager().beginTransaction();
                         ft.add(R.id.root_frame, hsf);

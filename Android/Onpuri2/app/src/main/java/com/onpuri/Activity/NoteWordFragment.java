@@ -61,7 +61,7 @@ public class NoteWordFragment  extends Fragment {
         }
 
         initData();
-        Drawable dividerDrawable = ContextCompat.getDrawable(getContext(), divider_light);
+        Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_light);
 
         //Set Word Adapter for Word RecyclerView (NoteTab)
         mRecyclerWordItem = (RecyclerView) view.findViewById(R.id.recycle_note_word);
