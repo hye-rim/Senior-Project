@@ -101,6 +101,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
         switch (v.getId()) {
             case R.id.listen1:
                 tts.speak(sentence, TextToSpeech.QUEUE_FLUSH, null);
+
                 break;
             case R.id.listen2:
                 toast = Toast.makeText(getActivity(), "두번째 음성 파일이 존재하지 않습니다", Toast.LENGTH_SHORT);
@@ -137,7 +138,6 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 final AddTransFragment atf = new AddTransFragment();
                 atf.setArguments(args);
                 atf.setArguments(args);
-
                 ft.replace(R.id.root_frame, atf);
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                 ft.addToBackStack(null);
@@ -147,7 +147,6 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 final AddListenFragment alf = new AddListenFragment();
                 alf.setArguments(args);
                 alf.setArguments(args);
-
                 ft.replace(R.id.root_frame, alf);
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                 ft.addToBackStack(null);

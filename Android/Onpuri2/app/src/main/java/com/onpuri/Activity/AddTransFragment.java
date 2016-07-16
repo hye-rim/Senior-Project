@@ -55,11 +55,11 @@ public class AddTransFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_new_trans:
-                toast = Toast.makeText(getActivity(), "등록(구현예정)", Toast.LENGTH_SHORT);
+                toast = Toast.makeText(getActivity(), "등록", Toast.LENGTH_SHORT);
                 toast.show();
                 break;
             case R.id.btn_new_trans_back:
-                toast = Toast.makeText(getActivity(), "취소(구현예정)", Toast.LENGTH_SHORT);
+                toast = Toast.makeText(getActivity(), "취소", Toast.LENGTH_SHORT);
                 toast.show();
                 break;
         }
