@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Intent intent = getIntent();
         String userId = intent.getStringExtra("userId");
-        mNavId.setText(userId);
+        mNavId.setText(userId + " 님");
         /**
          * Lets inflate the very first fragment
          * Here , we are inflating the TabViewPager as the first Fragment
