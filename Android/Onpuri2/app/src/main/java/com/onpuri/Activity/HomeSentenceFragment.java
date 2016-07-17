@@ -1,5 +1,6 @@
 package com.onpuri.Activity;
 
+
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -91,16 +92,20 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
         TextView trans1 = (TextView) view.findViewById(R.id.trans1);
         TextView trans2 = (TextView) view.findViewById(R.id.trans2);
         TextView trans3 = (TextView) view.findViewById(R.id.trans3);
+        Button btn_trans_more = (Button) view.findViewById(R.id.btn_trans_more);
         trans1.setOnClickListener(this);
         trans2.setOnClickListener(this);
         trans3.setOnClickListener(this);
+        btn_trans_more.setOnClickListener(this);
 
         TextView listen1 = (TextView) view.findViewById(R.id.listen1);
         TextView listen2 = (TextView) view.findViewById(R.id.listen2);
         TextView listen3 = (TextView) view.findViewById(R.id.listen3);
+        Button btn_listen_more = (Button) view.findViewById(R.id.btn_listen_more);
         listen1.setOnClickListener(this);
         listen2.setOnClickListener(this);
         listen3.setOnClickListener(this);
+        btn_listen_more.setOnClickListener(this);
 
         tts = new TextToSpeech(getActivity(), this);
 
@@ -118,27 +123,30 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
-        Bundle args = new Bundle();
+        final Bundle args = new Bundle();
         args.putString("sen", sentence);
         args.putString("sen_num", sentence_num);
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        final FragmentTransaction ft = getFragmentManager().beginTransaction();
 
         switch (v.getId()) {
-            case R.id.listen1:
-                tts.speak(sentence, TextToSpeech.QUEUE_FLUSH, null);
-
-                break;
-            case R.id.listen2:
-                toast = Toast.makeText(getActivity(), "두번째 음성 파일이 존재하지 않습니다", Toast.LENGTH_SHORT);
-                toast.show();
-                break;
-            case R.id.listen3:
-                toast = Toast.makeText(getActivity(), "세번째 음성 파일이 존재하지 않습니다", Toast.LENGTH_SHORT);
-                toast.show();
-                break;
             case R.id.del_sen:
-                toast = Toast.makeText(getActivity(), "내가 등록한 문장만 삭제가능합니다", Toast.LENGTH_SHORT);
-                toast.show();
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("문장을 삭제하시겠습니까?")
+                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                final HomeFragment hf = new HomeFragment();
+                                ft.replace(R.id.root_frame, hf);
+                                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                                ft.commit();
+                                toast = Toast.makeText(getActivity(), "삭제되었습니다(구현예정)", Toast.LENGTH_SHORT);
+                            }
+                        })
+                        .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dlg, int sumthin) {
+                                toast = Toast.makeText(getActivity(), "취소되었습니다", Toast.LENGTH_SHORT);
+                            }
+
+                        }).show();
                 break;
             case R.id.add_note:
                 final CharSequence[] items = {"노트1", "노트2", "노트3"};
@@ -149,11 +157,6 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                                 Toast.makeText(getActivity(), items[index] + "선택", Toast.LENGTH_SHORT).show();
                             }
                         })
-                        /*
-                        .setPositiveButton("확인", new DialogInterface.OnClickListener(){
-                            public void onClick(DialogInterface dialog, int whichButton){
-                            }
-                        })*/
                         .setNegativeButton("취소", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dlg, int sumthin) {
                             }
@@ -167,6 +170,14 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                 ft.commit();
                 break;
+            case R.id.btn_trans_more:
+                final TransMoreFragment tmf = new TransMoreFragment();
+                tmf.setArguments(args);
+                tmf.setArguments(args);
+                ft.replace(R.id.root_frame, tmf);
+                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                ft.commit();
+                break;
             case R.id.add_listen:
                 final AddListenFragment alf = new AddListenFragment();
                 alf.setArguments(args);
@@ -175,6 +186,26 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                 ft.addToBackStack(null);
                 ft.commit();
+                break;
+            case R.id.btn_listen_more:
+             /*   final ListenMoreFragment lmf = new ListenMoreFragment();
+                lmf.setArguments(args);
+                lmf.setArguments(args);
+                ft.replace(R.id.root_frame, lmf);
+                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                ft.commit();*/
+                break;
+            case R.id.listen1:
+                tts.speak(sentence, TextToSpeech.QUEUE_FLUSH, null);
+
+                break;
+            case R.id.listen2:
+                toast = Toast.makeText(getActivity(), "두번째 음성 파일이 존재하지 않습니다", Toast.LENGTH_SHORT);
+                toast.show();
+                break;
+            case R.id.listen3:
+                toast = Toast.makeText(getActivity(), "세번째 음성 파일이 존재하지 않습니다", Toast.LENGTH_SHORT);
+                toast.show();
                 break;
         }
     }
@@ -249,12 +280,9 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                         System.out.println(trans);
                         i++;
                     }
-
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
-
             }
         }
     }

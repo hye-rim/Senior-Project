@@ -1,6 +1,5 @@
 package com.onpuri.Activity;
 
-import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -93,7 +92,7 @@ public class HomeFragment extends Fragment {
                 new HomeItemClickListener(getActivity(), mRecyclerView ,new HomeItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        System.out.println("/////////////////////////////////////////////////" + position);
+                        System.out.println(position);
                         Bundle args = new Bundle();
                         args.putString("sen",listSentence.get(position));
                         hsf.setArguments(args);

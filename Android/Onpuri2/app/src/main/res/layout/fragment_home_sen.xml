@@ -83,7 +83,7 @@
                     android:layout_gravity="left|center_vertical"
                     android:textStyle="bold"/>
                 <Button
-                    android:id="@+id/btn_listen"
+                    android:id="@+id/btn_trans_more"
                     android:layout_width="80dp"
                     android:layout_height="25dp"
                     android:textSize="10dp"
@@ -152,7 +152,7 @@
                     android:layout_gravity="left|center_vertical"
                     android:textStyle="bold"/>
                 <Button
-                    android:id="@+id/btn_trans"
+                    android:id="@+id/btn_listen_more"
                     android:layout_width="80dp"
                     android:layout_height="25dp"
                     android:textSize="10dp"
