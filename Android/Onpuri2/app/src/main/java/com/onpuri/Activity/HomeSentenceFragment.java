@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,17 +30,23 @@ import java.util.Locale;
  */
 public class HomeSentenceFragment extends Fragment implements View.OnClickListener, TextToSpeech.OnInitListener {
 
-    byte[] outData = new byte[261];
-    byte[] inData = new byte[261];
+    private static final String TAG = "HomeSentenceFragment";
+    private worker_sentence_trans worker_sentence_trans;
+
     DataOutputStream dos;
     DataInputStream dis;
+    byte[] outData = new byte[261];
+    byte[] inData = new byte[261];
+    byte[] temp = new byte[261];
+
+    int i, index;
 
     private static View view;
     private Toast toast;
 
     TextView item;
-    String sentence="";
-    String sentence_num="";
+    String sentence = "";
+    String sentence_num = "";
     TextToSpeech tts;
 
     @Override
@@ -60,7 +67,18 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
             sentence_num = getArguments().getString("sen_num");
             item.setText(sentence);
         }
-
+/*
+        if(worker_sentence_trans != null && worker_sentence_trans.isAlive()){  //이미 동작하고 있을 경우 중지
+            worker_sentence_trans.interrupt();
+        }
+        worker_sentence_trans = new worker_sentence_trans(true);
+        worker_sentence_trans.start();
+        try {
+            worker_sentence_trans.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+*/
         Button del_sen = (Button) view.findViewById(R.id.del_sen);
         del_sen.setOnClickListener(this);
         Button add_note = (Button) view.findViewById(R.id.add_note);
@@ -69,6 +87,13 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
         add_trans.setOnClickListener(this);
         Button add_listen = (Button) view.findViewById(R.id.add_listen);
         add_listen.setOnClickListener(this);
+
+        TextView trans1 = (TextView) view.findViewById(R.id.trans1);
+        TextView trans2 = (TextView) view.findViewById(R.id.trans2);
+        TextView trans3 = (TextView) view.findViewById(R.id.trans3);
+        trans1.setOnClickListener(this);
+        trans2.setOnClickListener(this);
+        trans3.setOnClickListener(this);
 
         TextView listen1 = (TextView) view.findViewById(R.id.listen1);
         TextView listen2 = (TextView) view.findViewById(R.id.listen2);
@@ -84,7 +109,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
 
     @Override
     public void onDestroy() {
-        if(tts!=null) {
+        if (tts != null) {
             tts.stop();
             tts.shutdown();
         }
@@ -94,8 +119,8 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
     @Override
     public void onClick(View v) {
         Bundle args = new Bundle();
-        args.putString("sen",sentence);
-        args.putString("sen_num",sentence_num);
+        args.putString("sen", sentence);
+        args.putString("sen_num", sentence_num);
         FragmentTransaction ft = getFragmentManager().beginTransaction();
 
         switch (v.getId()) {
@@ -119,9 +144,9 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 final CharSequence[] items = {"노트1", "노트2", "노트3"};
                 new AlertDialog.Builder(getActivity())
                         .setTitle("노트를 선택해 주세요(노트 연동은 구현 예정)")
-                        .setItems(items, new DialogInterface.OnClickListener(){
-                            public void onClick(DialogInterface dialog, int index){
-                                Toast.makeText(getActivity(), items[index]+"선택", Toast.LENGTH_SHORT).show();
+                        .setItems(items, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int index) {
+                                Toast.makeText(getActivity(), items[index] + "선택", Toast.LENGTH_SHORT).show();
                             }
                         })
                         /*
@@ -140,7 +165,6 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 atf.setArguments(args);
                 ft.replace(R.id.root_frame, atf);
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                ft.addToBackStack(null);
                 ft.commit();
                 break;
             case R.id.add_listen:
@@ -154,44 +178,84 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 break;
         }
     }
+
     @Override
     public void onInit(int status) {
         tts.setLanguage(Locale.US);
     }
 
-    /*
-    public void test() {
+    class worker_sentence_trans extends Thread {
+        private boolean isPlay = false;
 
-        int i;
-        String toServerDataUser;
-        toServerDataUser = sentence_num;
-
-        outData[0] = (byte) PacketUser.SOF;
-        outData[1] = (byte) PacketUser.USR_SEN;
-        outData[2] = (byte) PacketUser.getSEQ();
-        outData[3] = (byte) PacketUser.USR_SEN_LEN;
-        for (i = 4; i < 4 + PacketUser.USR_SEN_LEN; i++) {
-            outData[i] = (byte) toServerDataUser.charAt(i - 4);
+        public worker_sentence_trans(boolean isPlay) {
+            this.isPlay = isPlay;
         }
-        outData[4 + toServerDataUser.length()] = (byte) 85;
 
-        try {
-            dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
-            dos.write(outData, 0, outData[3] + 5); // packet transmission
-            dos.flush();
-            dis = new DataInputStream(SocketConnection.socket.getInputStream());
-            dis.read(inData);
-            //System.out.println("Data form server: " + ((char)inData[0].) + (char)inData[1]);
-            int SOF = inData[0];
-            System.out.println(inData[0]);
-            System.out.println(inData[1]);
-            System.out.println(inData[2]);
-            System.out.println(inData[3]);
-            System.out.println((char) inData[4]);
-            System.out.println(inData[5]);
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        public void stopThread() {
+            isPlay = !isPlay;
         }
-    }*/
+
+        public void run() {
+            super.run();
+            while (isPlay) {
+                Log.d(TAG, "worker trans start");
+
+                outData[0] = (byte) PacketUser.SOF;
+                outData[1] = (byte) PacketUser.USR_SEN;
+                outData[2] = (byte) PacketUser.getSEQ();
+                outData[3] = (byte) sentence_num.length();
+                for (int i = 4; i < 4 + sentence_num.length(); i++) {
+                    outData[i] = (byte) sentence_num.charAt(i - 4);
+                }
+                outData[4 + sentence_num.length()] = (byte) 85;
+
+                try {
+                    dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
+                    dos.write(outData, 0, outData[3] + 5); // packet transmission
+                    dos.flush();
+                    dis = new DataInputStream(SocketConnection.socket.getInputStream());
+
+                    while( i < 3) {
+                        dis.read(temp, 0, 4);
+                        for (index = 0; index < 4; index++) {
+                            inData[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
+                        }
+                        dis.read(temp, 0, 1 + (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]));
+                        for (index = 0; index <= (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]); index++) {
+                            inData[index + 4] = temp[index];    // 패킷의 Data부분을 inData에 추가해준다.
+                        }
+
+                        int SOF = inData[0];
+                        System.out.println("000 : " + inData[0]);
+                        System.out.println("111 : " + inData[1]);
+                        System.out.println("222 : " + inData[2]);
+                        System.out.println("333 : " + inData[3]);
+                        System.out.println("444 : " + inData[4]);
+
+                        String trans = "";
+                        int trans_len;
+
+                        trans_len = ((int) inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);
+
+                        index = 0;
+                        while (true) { //solving
+                            if (index == trans_len)
+                                break;
+                            else {
+                                trans += (char) inData[4 + index];
+                                index++;
+                            }
+                        }
+                        System.out.println(trans);
+                        i++;
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }
+    }
 }

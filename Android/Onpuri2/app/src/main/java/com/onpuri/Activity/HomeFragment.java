@@ -93,7 +93,7 @@ public class HomeFragment extends Fragment {
                 new HomeItemClickListener(getActivity(), mRecyclerView ,new HomeItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        System.out.println(position);
+                        System.out.println("/////////////////////////////////////////////////" + position);
                         Bundle args = new Bundle();
                         args.putString("sen",listSentence.get(position));
                         hsf.setArguments(args);
@@ -101,7 +101,7 @@ public class HomeFragment extends Fragment {
                         hsf.setArguments(args);
 
                         FragmentTransaction ft = getFragmentManager().beginTransaction();
-                        ft.add(R.id.root_frame, hsf);
+                        ft.replace(R.id.root_frame, hsf);
                         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                         ft.addToBackStack(null);
                         ft.commit();

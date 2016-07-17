@@ -97,21 +97,24 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:text="trans 1"
+                android:id="@+id/trans1"
+                android:text="trans1"
                 android:focusable="false"
                 android:textSize="15dp"
                 android:layout_marginLeft="15dp"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:text="trans 2"
+                android:id="@+id/trans2"
+                android:text="trans2"
                 android:focusable="false"
                 android:textSize="15dp"
                 android:layout_marginLeft="15dp"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:text="trans 3"
+                android:id="@+id/trans3"
+                android:text="trans3"
                 android:focusable="false"
                 android:textSize="15dp"
                 android:layout_marginLeft="15dp"/>
