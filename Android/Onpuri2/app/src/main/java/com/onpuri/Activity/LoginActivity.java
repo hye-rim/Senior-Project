@@ -145,8 +145,9 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         if(mworker_login != null && mworker_login.isAlive()){  //이미 동작하고 있을 경우 중지
             mworker_login.interrupt();
         }
+
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-        intent.putExtra("userId", id);
+        intent.putExtra("userId", et_loginId.getText().toString());
 
         startActivity(intent);
         finish();

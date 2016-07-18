@@ -159,6 +159,8 @@ public class HomeFragment extends Fragment {
             ival++;
         }
 
+        mAdapter.notifyDataSetChanged();
+
     }
 
     // adding 10 object creating dymically to arraylist and updating recyclerview when ever we reached last item
