@@ -61,7 +61,7 @@ public class NoteSenFragment extends Fragment {
         }
 
         initData();
-        Drawable dividerDrawable = ContextCompat.getDrawable(getContext(), divider_light);
+        Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_light);
 
         //Set Sentence Adapter for Sentence RecyclerView (NoteTab)
         mRecyclerSenItem = (RecyclerView) view.findViewById(R.id.recycle_note_sen);

@@ -26,27 +26,15 @@ public class RecycleviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public RecycleviewAdapter(ArrayList<String> listSentence, RecyclerView recyclerView) {
         this.senList=listSentence;
+
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
         public TextView mSenItem;
+
         public ItemViewHolder(View v) {
             super(v);
-
-            // Define click listener for the ViewHolder's View.
-            v.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d(TAG, "Element " + getAdapterPosition() + " clicked.");
-                }
-            });
-
             mSenItem = (TextView) v.findViewById(R.id.tv_sen_item);
-
-        }
-
-        public TextView getTextView() {
-            return mSenItem;
         }
     }
 
@@ -62,44 +50,22 @@ public class RecycleviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v;
-        if(viewType == VIEW_TYPE_CELL){
-            //Create viewholder for your default cell
-            v = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_list, parent, false);
-            return new ItemViewHolder(v);
-        }
-        else {
-            //Create viewholder for your footer view
-            v = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_progress, parent, false);
-            return new ProgressViewHolder(v);
-        }
+        v = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_list, parent, false);
+
+        return new ItemViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         Log.d(TAG, "Element " + position + " set.");
-        // Get element from your dataset at this position and replace the contents of the view with that element
-        switch (getItemViewType(position)){
-            case VIEW_TYPE_CELL:
-                ItemViewHolder itemViewHolder = (ItemViewHolder)holder;
-                itemViewHolder.mSenItem.setText(senList.get(position));
-                itemViewHolder.itemView.setOnClickListener(new View.OnClickListener(){
-                    @Override
-                    public void onClick(View v){
 
-                    }
-                });
+        ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
+        itemViewHolder.mSenItem.setText(senList.get(position));
 
-                if (position % 2 == 0) {
-                    itemViewHolder.itemView.setBackgroundColor(Color.parseColor("#faf5b3"));
-                } else {
-                    itemViewHolder.itemView.setBackgroundColor(Color.parseColor("#FEE098"));
-                }
-                break;
-
-            case VIEW_TYPE_FOOTER:
-                ProgressViewHolder progressViewHolder = (ProgressViewHolder)holder;
-                progressViewHolder.progressBar.setIndeterminate(true);
-                break;
+        if (position % 2 == 0) {
+            itemViewHolder.itemView.setBackgroundColor(Color.parseColor("#faf5b3"));
+        } else {
+            itemViewHolder.itemView.setBackgroundColor(Color.parseColor("#FEE098"));
         }
     }
 
