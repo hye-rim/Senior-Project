@@ -4,26 +4,31 @@
     android:layout_height="match_parent"
     android:background="#faf5b3">
     <LinearLayout
-        android:layout_width="376dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_width="match_parent"
         android:layout_height="40dp"
         android:orientation="horizontal"
         android:gravity="center">
 
         <Button
-            android:id="@+id/btn_new_text"
-            android:layout_width="180dp"
+            android:id="@+id/btn_new_picture"
+            android:layout_width="100dp"
             android:layout_height="38dp"
             android:text="갤러리"
             android:background="#FFAA78" />
         <Button
-            android:id="@+id/btn_new_picture"
-            android:layout_width="180dp"
+            android:id="@+id/btn_new_camera"
+            android:layout_width="100dp"
             android:layout_height="38dp"
             android:text="카메라"
             android:background="#FFAA78" />
 
     </LinearLayout>
     <EditText
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:layout_width="match_parent"
         android:layout_height="180dp"
         android:hint="Sentence 입력 "

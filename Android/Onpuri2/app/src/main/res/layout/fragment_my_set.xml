@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:background="#FAF5B3">
     <Button
+        android:id="@+id/btn_set_notice"
         android:textColor="@color/black"
         android:gravity="left|center_vertical"
         android:background="#FAF5B3"
@@ -12,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"/>
     <Button
+        android:id="@+id/btn_set_question"
         android:textColor="@color/black"
         android:gravity="left|center_vertical"
         android:background="#FAF5B3"
@@ -20,6 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp" />
     <Button
+        android:id="@+id/btn_set_version"
         android:textColor="@color/black"
         android:gravity="left|center_vertical"
         android:background="#FAF5B3"
@@ -28,6 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp" />
     <Button
+        android:id="@+id/btn_set_tou"
         android:textColor="@color/black"
         android:gravity="left|center_vertical"
         android:background="#FAF5B3"
@@ -36,6 +40,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp" />
     <Button
+        android:id="@+id/btn_set_out"
         android:textColor="@color/black"
         android:gravity="left|center_vertical"
         android:background="#FAF5B3"

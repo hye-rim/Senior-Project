@@ -72,9 +72,9 @@ public class MyActRecordAdapter  extends RecyclerView.Adapter<RecyclerView.ViewH
         });
 
         if (position % 2 == 0) {
-            itemViewHolder.itemView.setBackgroundColor(Color.parseColor("#faf5b3"));
-        } else {
             itemViewHolder.itemView.setBackgroundColor(Color.parseColor("#FEE098"));
+        } else {
+            itemViewHolder.itemView.setBackgroundColor(Color.parseColor("#faf5b3"));
         }
 
 
