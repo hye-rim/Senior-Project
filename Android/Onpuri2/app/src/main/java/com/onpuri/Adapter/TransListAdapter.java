@@ -14,13 +14,10 @@ import java.util.ArrayList;
 
 public class TransListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
     private final String TAG = "TransListAdapter";
-    private static final int VIEW_TYPE_CELL = 1;
-    private static final int VIEW_TYPE_FOOTER = 0;
-
     private ArrayList<String> senList;
 
-    public TransListAdapter(ArrayList<String> listSentence, RecyclerView recyclerView) {
-        this.senList=listSentence;
+    public TransListAdapter(ArrayList<String> list_trans, RecyclerView recyclerView) {
+        this.senList=list_trans;
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
@@ -40,20 +37,9 @@ public class TransListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         Log.d(TAG, "trans list " + position + " set.");
-
         ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
         itemViewHolder.mSenItem.setText(senList.get(position));
 
-        if (position % 2 == 0) {
-            itemViewHolder.itemView.setBackgroundColor(Color.parseColor("#faf5b3"));
-        } else {
-            itemViewHolder.itemView.setBackgroundColor(Color.parseColor("#FEE098"));
-        }
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        return senList.get(position) != null ? VIEW_TYPE_CELL : VIEW_TYPE_FOOTER;
     }
 
     @Override

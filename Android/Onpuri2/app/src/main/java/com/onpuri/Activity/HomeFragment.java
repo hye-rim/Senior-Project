@@ -13,14 +13,12 @@ import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.onpuri.Adapter.RecycleviewAdapter;
 import com.onpuri.DividerItemDecoration;
 import com.onpuri.EndlessRecyclerOnScrollListener;
 import com.onpuri.R;
 import com.onpuri.Server.PacketUser;
 import com.onpuri.Server.SocketConnection;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -97,18 +95,13 @@ public class HomeFragment extends Fragment {
             }
         });
 
-
         mRecyclerView.addOnItemTouchListener(
                 new HomeItemClickListener(getActivity().getApplicationContext(), mRecyclerView ,new HomeItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
                         mAdapter.notifyDataSetChanged();
-
-                        System.out.println(position);
-
-                        args.putString("sen",listSentence.get(position));
-                        hsf.setArguments(args);
-                        args.putString("sen_num",listSentenceNum.get(position));
+                        args.putString("sen", listSentence.get(position));
+                        args.putString("sen_num", listSentenceNum.get(position));
                         hsf.setArguments(args);
 
                         FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -123,6 +116,7 @@ public class HomeFragment extends Fragment {
                     }
                 })
         );
+
 
         Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_dark);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(dividerDrawable));

@@ -18,6 +18,9 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
 
     private LinearLayoutManager mLinearLayoutManager;
 
+    public void IsLoading(boolean change) {
+        loading = change;
+    }
     public EndlessRecyclerOnScrollListener(LinearLayoutManager linearLayoutManager) {
         this.mLinearLayoutManager = linearLayoutManager;
     }
@@ -48,6 +51,5 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
             loading = true;
         }
     }
-
     public abstract void onLoadMore(int current_page);
 }

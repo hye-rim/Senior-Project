@@ -71,7 +71,6 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
             sentence_num = getArguments().getString("sen_num");
             item.setText(sentence);
         }
-
         translation();
 
         Button del_sen = (Button) view.findViewById(R.id.del_sen);
@@ -163,14 +162,12 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
             case R.id.add_trans:
                 final AddTransFragment atf = new AddTransFragment();
                 atf.setArguments(args);
-                atf.setArguments(args);
                 ft.replace(R.id.root_frame, atf);
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                 ft.commit();
                 break;
             case R.id.btn_trans_more:
                 final TransMoreFragment tmf = new TransMoreFragment();
-                tmf.setArguments(args);
                 tmf.setArguments(args);
                 ft.replace(R.id.root_frame, tmf);
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
@@ -179,7 +176,6 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
             case R.id.add_listen:
                 final AddListenFragment alf = new AddListenFragment();
                 alf.setArguments(args);
-                alf.setArguments(args);
                 ft.replace(R.id.root_frame, alf);
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                 ft.addToBackStack(null);
@@ -187,7 +183,6 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 break;
             case R.id.btn_listen_more:
                 final ListenMoreFragment lmf = new ListenMoreFragment();
-                lmf.setArguments(args);
                 lmf.setArguments(args);
                 ft.replace(R.id.root_frame, lmf);
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
@@ -269,13 +264,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                         }
 
                         int SOF = inData[0];
-                        System.out.println("000 : " + inData[0]);
-                        System.out.println("111 : " + inData[1]);
-                        System.out.println("222 : " + inData[2]);
-                        System.out.println("333 : " + inData[3]);
-                        System.out.println("444 : " + inData[4]);
-
-                        byte[] tmp = new byte[221];
+                        byte[] tmp = new byte[261];
                         int trans_len;
 
                         trans_len = ((int) inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);

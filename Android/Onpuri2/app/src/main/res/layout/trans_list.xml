@@ -5,8 +5,6 @@
     android:gravity="center">
     <TextView
         android:textSize="16dp"
-        android:layout_marginTop="3dp"
-        android:layout_marginBottom="3dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:textColor="@color/black"
@@ -14,5 +12,39 @@
         android:ellipsize="end"
         android:id="@+id/tv_trans_item"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="none"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:weightSum="1">
+        <TextView
+            android:textSize="14dp"
+            android:layout_marginLeft="8dp"
+            android:textColor="@color/black"
+            android:lineSpacingExtra="3dp"
+            android:ellipsize="end"
+            android:id="@+id/tv_trans_item_reco"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:text="추천수 : 00"
+            android:layout_weight="0.90" />
+        <TextView
+            android:textSize="14dp"
+            android:layout_marginRight="8dp"
+            android:textColor="@color/black"
+            android:lineSpacingExtra="3dp"
+            android:ellipsize="end"
+            android:id="@+id/tv_trans_item_day"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:text="2016.00.00" />
+    </LinearLayout>
+
 </LinearLayout>

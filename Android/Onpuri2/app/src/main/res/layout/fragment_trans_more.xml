@@ -8,10 +8,10 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#faf5b3"
-        android:paddingRight="5px">
+        android:layout_height="600dp"
+        android:background="#faf5b3">
         <LinearLayout
+            android:paddingRight="5px"
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:orientation="vertical"
@@ -26,8 +26,10 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
                 android:textStyle="bold" />
+
         </LinearLayout>
         <LinearLayout
+            android:paddingRight="5px"
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:orientation="vertical"
@@ -52,41 +54,41 @@
                     android:layout_gravity="right" />
             </LinearLayout>
         </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:orientation="horizontal"
-                android:layout_gravity="center_vertical"
-                android:weightSum="1">
-                <TextView
-                    android:layout_width="240dp"
-                    android:layout_height="30dp"
-                    android:text="해석"
-                    android:focusable="false"
-                    android:textSize="15dp"
-                    android:layout_marginLeft="15dp"
-                    android:layout_gravity="left|center_vertical"
-                    android:textStyle="bold"/>
-                <Button
-                    android:id="@+id/btn_trans_more"
-                    android:layout_width="100dp"
-                    android:layout_height="30dp"
-                    android:textSize="10dp"
-                    android:text="해석 추가"
-                    android:visibility="visible"
-                    android:gravity="center"
-                    android:layout_marginRight="20dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal"
+            android:layout_gravity="center_vertical"
+            android:weightSum="1">
+            <TextView
+                android:layout_width="240dp"
+                android:layout_height="30dp"
+                android:text="해석"
+                android:focusable="false"
+                android:textSize="15dp"
+                android:layout_marginLeft="15dp"
+                android:layout_gravity="left|center_vertical"
+                android:textStyle="bold"/>
+            <Button
+                android:id="@+id/add_trans"
+                android:layout_width="100dp"
+                android:layout_height="30dp"
+                android:textSize="10dp"
+                android:text="해석 추가"
+                android:visibility="visible"
+                android:gravity="center"
+                android:layout_marginRight="20dp" />
+        </LinearLayout>
 
-            </LinearLayout>
         <android.support.v7.widget.RecyclerView
             android:scrollbars="vertical"
             app:layoutManager="LinearLayoutManager"
-            android:id="@+id/recycler_sentence"
+            android:id="@+id/recycler_trans"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:listitem="@layout/trans_list" >
-
+            android:layout_height="225dp"
+            tools:listitem="@layout/trans_list">
         </android.support.v7.widget.RecyclerView>
+
     </LinearLayout>
 </ScrollView>
 
