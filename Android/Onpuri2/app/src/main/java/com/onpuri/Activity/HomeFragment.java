@@ -62,7 +62,7 @@ public class HomeFragment extends Fragment {
     private int ival = 0;
     private int loadLimit = 10;
     private int total = 0;
-
+    Bundle args = new Bundle();
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (view != null) {
@@ -87,31 +87,6 @@ public class HomeFragment extends Fragment {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_sentence);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
-
-        mRecyclerView.addOnItemTouchListener(
-                new HomeItemClickListener(getActivity(), mRecyclerView ,new HomeItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        System.out.println(position);
-                        Bundle args = new Bundle();
-                        args.putString("sen",listSentence.get(position));
-                        hsf.setArguments(args);
-                        args.putString("sen_num",listSentenceNum.get(position));
-                        hsf.setArguments(args);
-
-                        FragmentTransaction ft = getFragmentManager().beginTransaction();
-                        ft.replace(R.id.root_frame, hsf);
-                        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                        ft.addToBackStack(null);
-                        ft.commit();
-                    }
-                    @Override
-                    public void onLongItemClick(View view, int position) {
-                        // do whatever
-                    }
-                })
-        );
-
         mAdapter = new RecycleviewAdapter(listSentence,mRecyclerView);
 
         mRecyclerView.setAdapter(mAdapter);// Set CustomAdapter as the adapter for RecyclerView.
@@ -122,6 +97,32 @@ public class HomeFragment extends Fragment {
             }
         });
 
+
+        mRecyclerView.addOnItemTouchListener(
+                new HomeItemClickListener(getActivity().getApplicationContext(), mRecyclerView ,new HomeItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        mAdapter.notifyDataSetChanged();
+
+                        System.out.println(position);
+
+                        args.putString("sen",listSentence.get(position));
+                        hsf.setArguments(args);
+                        args.putString("sen_num",listSentenceNum.get(position));
+                        hsf.setArguments(args);
+
+                        FragmentTransaction ft = getFragmentManager().beginTransaction();
+                        ft.add(R.id.root_frame, hsf);
+                        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                        ft.addToBackStack(null);
+                        ft.commit();
+                    }
+                    @Override
+                    public void onLongItemClick(View view, int position) {
+                        // do whatever
+                    }
+                })
+        );
 
         Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_dark);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(dividerDrawable));
@@ -157,8 +158,6 @@ public class HomeFragment extends Fragment {
             listSentenceNum.add(userSentence.arrSentenceNum.get(i));
             ival++;
         }
-
-        mAdapter.notifyDataSetChanged();
 
     }
 

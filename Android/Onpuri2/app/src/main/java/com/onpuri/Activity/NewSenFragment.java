@@ -2,10 +2,15 @@ package com.onpuri.Activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.onpuri.R;
 
@@ -13,9 +18,12 @@ import com.onpuri.R;
  * Created by kutemsys on 2016-05-03.
  */
 //문장등록 tab
-public class NewSenFragment extends Fragment {
+public class NewSenFragment extends Fragment implements View.OnClickListener {
     //private ArrayList<View> history;
     private static View view;
+    private Button btn_ok, btn_cancel, btn_gallery, btn_camera;
+
+    ViewPager viewPager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -29,34 +37,43 @@ public class NewSenFragment extends Fragment {
         } catch (InflateException e) {
     /* map is already there, just return view as it is */
         }
+        viewPager = (ViewPager)getActivity().findViewById(R.id.viewpager);
+
+        btn_ok = (Button)view.findViewById(R.id.btn_new_sen);
+        btn_cancel = (Button)view.findViewById(R.id.btn_new_sen_back);
+        btn_gallery = (Button)view.findViewById(R.id.btn_new_picture);
+        btn_camera = (Button)view.findViewById(R.id.btn_new_camera);
+
+        btn_ok.setOnClickListener(this);
+        btn_cancel.setOnClickListener(this);
+        btn_gallery.setOnClickListener(this);
+        btn_camera.setOnClickListener(this);
+
         return view;
     }
-    /*
 
-    //새로운 level의 activity를 추가하는 경우
-    public void replaceView(View view) {
-        history.add(view);
-        setContentView(view);
-    }
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.btn_new_sen:
+                Toast.makeText(getActivity(), "서버와의 데이터 교환은 차후 구현 예정입니다.", Toast.LENGTH_SHORT).show();
+                viewPager.setCurrentItem(1);
+                break;
 
-    //back key가 눌러졌을 경우에 대한 처리
-    public void back(){
-        if(history.size() > 0) {
-            history.remove(history.size() - 1);
-            if (history.size() == 0)
-                finish();
-            else
-                setContentView(history.get(history.size() - 1));
+            case R.id.btn_new_sen_back:
+                viewPager.setCurrentItem(1);
+                break;
 
-        }else{
-            finish();
+            case R.id.btn_new_picture:
+                Toast.makeText(getActivity(), "갤러리 기능은 차후 구현 예정입니다.", Toast.LENGTH_SHORT).show();
+                break;
+
+            case R.id.btn_new_camera:
+                Toast.makeText(getActivity(), "카메라 기능은 차후 구현 예정입니다.", Toast.LENGTH_SHORT).show();
+                break;
+
+            default:
+                break;
         }
     }
-
-    //back key에 대한 event handler
-    public void onBackPressed(){
-        NewSentenceGroup.back();
-        return;
-    }
-    */
 }

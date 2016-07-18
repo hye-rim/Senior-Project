@@ -1,5 +1,6 @@
 package com.onpuri.Adapter;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -19,9 +20,11 @@ public class MyActNewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private final String TAG = "MyActNewAdapter";
 
     private ArrayList<String> senList;
+    private Context mContext;
 
-    public MyActNewAdapter(ArrayList<String> listSentence, RecyclerView recyclerView) {
+    public MyActNewAdapter(Context context, ArrayList<String> listSentence, RecyclerView recyclerView) {
         this.senList=listSentence;
+        this.mContext = context;
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
@@ -64,17 +67,12 @@ public class MyActNewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         ItemViewHolder itemViewHolder = (ItemViewHolder)holder;
         itemViewHolder.mSenItem.setText(senList.get(position));
-        itemViewHolder.itemView.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
 
-            }
-        });
 
         if (position % 2 == 0) {
-            itemViewHolder.itemView.setBackgroundColor(Color.parseColor("#faf5b3"));
-        } else {
             itemViewHolder.itemView.setBackgroundColor(Color.parseColor("#FEE098"));
+        } else {
+            itemViewHolder.itemView.setBackgroundColor(Color.parseColor("#faf5b3"));
         }
 
 

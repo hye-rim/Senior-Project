@@ -47,7 +47,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
     SharedPreferences setting;
     SharedPreferences.Editor editor;
 
-    int i, index;
+    int i;
     char check;
     char checkLength;
     boolean isLoginBtn;
@@ -147,7 +147,11 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         }
 
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-        intent.putExtra("userId", et_loginId.getText().toString());
+        intent.putExtra("UserId", PacketUser.userId);
+        intent.putExtra("Name", PacketUser.name);
+        intent.putExtra("JoinDate", PacketUser.joinDate);
+        intent.putExtra("Phone",PacketUser.phone);
+        intent.putExtra("NowPass", PacketUser.nowPass);
 
         startActivity(intent);
         finish();
@@ -291,9 +295,10 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                     System.out.println(inData[5]);
 
                     PacketUser.data_len = (int) inData[3];
-
+                    byte[] nameByte = new byte[221];
+                    int byteI = 0;
                     if (inData[4] != '0') { //ID, PW가 틀렸을 경우 실행하지 않도록 한다.
-                        index = 0;
+                        int index = 0;
                         while (true) { //아이디
                             if ((char) (inData[4 + index]) == '+') {
                                 index++;
@@ -304,102 +309,56 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                             }
                         }
 
-                        while (true) { //shell
+
+                        while (true) { //이름
                             if ((char) (inData[4 + index]) == '+') {
                                 index++;
                                 break;
                             } else {
-                                PacketUser.shell = "" + (char) inData[4 + index];
+                                nameByte[byteI] = inData[4 + index];
+                                index++;
+                                byteI++;
+                            }
+                        }
+                        PacketUser.name = new String(nameByte, 0, byteI);
+
+                        while (true) { //가입일
+                            if ((char) (inData[4 + index]) == '+') {
+                                index++;
+                                break;
+                            } else {
+                                PacketUser.joinDate = PacketUser.joinDate + (char) inData[4 + index];
                                 index++;
                             }
                         }
 
-                        while (true) { //problem
+                        while (true) { //휴대전화
                             if ((char) (inData[4 + index]) == '+') {
                                 index++;
                                 break;
                             } else {
-                                PacketUser.problem = PacketUser.problem + (char) inData[4 + index];
+                                PacketUser.phone = PacketUser.phone + (char) inData[4 + index];
                                 index++;
                             }
                         }
 
-                        while (true) { //average
+                        while (true) { //현재비밀번호
                             if ((char) (inData[4 + index]) == '+') {
                                 index++;
                                 break;
                             } else {
-                                PacketUser.average = PacketUser.average + (char) inData[4 + index];
+                                PacketUser.nowPass = PacketUser.nowPass + (char) inData[4 + index];
                                 index++;
                             }
                         }
 
-                        while (true) { //ranking
-                            if ((char) (inData[4 + index]) == '+') {
-                                index++;
-                                break;
-                            } else {
-                                PacketUser.ranking = PacketUser.ranking + (char) inData[4 + index];
-                                index++;
-                            }
-                        }
-
-                        while (true) { //question
-                            if ((char) (inData[4 + index]) == '+') {
-                                index++;
-                                break;
-                            } else {
-                                PacketUser.question = PacketUser.question + (char) inData[4 + index];
-                                index++;
-                            }
-                        }
-
-                        while (true) { //solving
-                            if ((char) (inData[4 + index]) == '+') {
-                                index++;
-                                break;
-                            } else {
-                                PacketUser.solving = PacketUser.solving + (char) inData[4 + index];
-                                index++;
-                            }
-                        }
-                        while (true) { //attend
-                            if ((char) (inData[4 + index]) == '+') {
-                                index++;
-                                break;
-                            } else {
-                                PacketUser.attend = PacketUser.attend + (char) inData[4 + index];
-                                index++;
-                            }
-                        }
-                        while (true) { //purchase
-                            if ((char) (inData[4 + index]) == '+') {
-                                index++;
-                                break;
-                            } else {
-                                PacketUser.purchase = PacketUser.purchase + (char) inData[4 + index];
-                                index++;
-                            }
-                        }
-                        while (true) { //sale
-                            if ((char) (inData[4 + index]) == '+') {
-                                index++;
-                                break;
-                            } else {
-                                PacketUser.sale = PacketUser.sale + (char) inData[4 + index];
-                                index++;
-                            }
-                        }
-                        while (true) { //declaration
-                            if ((char) (inData[4 + index]) == '+') {
-                                index++;
-                                break;
-                            } else {
-                                PacketUser.declaration = PacketUser.declaration + (char) inData[4 + index];
-                                index++;
-                            }
-                        }
                     }
+                    Log.d(TAG,"id : " + PacketUser.userId);
+                    Log.d(TAG,"name : " + PacketUser.name);
+                    Log.d(TAG,"joinDate : " + PacketUser.joinDate);
+                    Log.d(TAG,"phone : " + PacketUser.phone);
+                    Log.d(TAG,"nowPass : " + PacketUser.nowPass);
+
                     check = (char) inData[4];
                     checkLength = (char) inData[3];
 

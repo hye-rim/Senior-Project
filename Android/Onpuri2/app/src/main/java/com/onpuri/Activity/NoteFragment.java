@@ -95,7 +95,7 @@ public class NoteFragment extends Fragment {
         mRecyclerSen.addItemDecoration(new DividerItemDecoration(dividerDrawable));
 
         mRecyclerSen.addOnItemTouchListener(
-                new RecycleItemClickListener(context, mRecyclerSen, new RecycleItemClickListener.OnItemClickListener() {
+                new RecycleItemClickListener(getActivity().getApplicationContext(), mRecyclerSen, new RecycleItemClickListener.OnItemClickListener() {
                     @Override
                     public void onLongItemClick(View view, int position) {
                         Log.v(TAG,"sententce item : " + position);
@@ -122,7 +122,7 @@ public class NoteFragment extends Fragment {
         mRecyclerWord.setAdapter(mWordAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerWord.addItemDecoration(new DividerItemDecoration(dividerDrawable));
         mRecyclerWord.addOnItemTouchListener(
-                new RecycleItemClickListener(context, mRecyclerWord, new RecycleItemClickListener.OnItemClickListener() {
+                new RecycleItemClickListener(getActivity().getApplicationContext(), mRecyclerWord, new RecycleItemClickListener.OnItemClickListener() {
                     @Override
                     public void onLongItemClick(View view, int position) {
                         Log.v(TAG, "word item : " + position);
