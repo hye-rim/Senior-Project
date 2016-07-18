@@ -12,8 +12,7 @@
         android:textColor="@color/black"
         android:lineSpacingExtra="3dp"
         android:ellipsize="end"
-        android:maxLines="2"
-        android:id="@+id/tv_sen_item"
+        android:id="@+id/tv_trans_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>

@@ -342,62 +342,6 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                                 index++;
                             }
                         }
-
-                        while (true) { //question
-                            if ((char) (inData[4 + index]) == '+') {
-                                index++;
-                                break;
-                            } else {
-                                PacketUser.question = PacketUser.question + (char) inData[4 + index];
-                                index++;
-                            }
-                        }
-
-                        while (true) { //solving
-                            if ((char) (inData[4 + index]) == '+') {
-                                index++;
-                                break;
-                            } else {
-                                PacketUser.solving = PacketUser.solving + (char) inData[4 + index];
-                                index++;
-                            }
-                        }
-                        while (true) { //attend
-                            if ((char) (inData[4 + index]) == '+') {
-                                index++;
-                                break;
-                            } else {
-                                PacketUser.attend = PacketUser.attend + (char) inData[4 + index];
-                                index++;
-                            }
-                        }
-                        while (true) { //purchase
-                            if ((char) (inData[4 + index]) == '+') {
-                                index++;
-                                break;
-                            } else {
-                                PacketUser.purchase = PacketUser.purchase + (char) inData[4 + index];
-                                index++;
-                            }
-                        }
-                        while (true) { //sale
-                            if ((char) (inData[4 + index]) == '+') {
-                                index++;
-                                break;
-                            } else {
-                                PacketUser.sale = PacketUser.sale + (char) inData[4 + index];
-                                index++;
-                            }
-                        }
-                        while (true) { //declaration
-                            if ((char) (inData[4 + index]) == '+') {
-                                index++;
-                                break;
-                            } else {
-                                PacketUser.declaration = PacketUser.declaration + (char) inData[4 + index];
-                                index++;
-                            }
-                        }
                     }
                     check = (char) inData[4];
                     checkLength = (char) inData[3];
