@@ -2,10 +2,15 @@ package com.onpuri.Activity;
 
 
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
@@ -13,9 +18,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.speech.tts.TextToSpeech;
 import android.widget.Toast;
 
+import com.onpuri.Adapter.TransListAdapter;
+import com.onpuri.DividerItemDecoration;
+import com.onpuri.EndlessRecyclerOnScrollListener;
 import com.onpuri.R;
 import com.onpuri.Server.PacketUser;
 import com.onpuri.Server.SocketConnection;
@@ -25,15 +32,11 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
-
-/**
- * Created by kutemsys on 2016-05-11.
- */
-public class HomeSentenceFragment extends Fragment implements View.OnClickListener, TextToSpeech.OnInitListener {
-
-    private static final String TAG = "HomeSentenceFragment";
+public class TransMoreFragment extends Fragment implements View.OnClickListener {
+    private static final String TAG = "TransMoreFragment";
+    private static View view;
+    ArrayList<String> list_trans;
     private worker_sentence_trans worker_sentence_trans;
 
     DataOutputStream dos;
@@ -42,16 +45,20 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
     byte[] inData = new byte[261];
     byte[] temp = new byte[261];
 
-    int i, index;
-    List trans = new ArrayList();
-
-    private static View view;
-    private Toast toast;
+    private static int current_page = 1;
+    private int ival = 0;
+    private int loadLimit = 3;
+    List trans = new ArrayList<>();
 
     TextView item;
     String sentence = "";
     String sentence_num = "";
-    TextToSpeech tts;
+    int i, index;
+    int byteI = 0;
+
+    private RecyclerView RecyclerView;
+    private TransListAdapter Adapter;
+    protected RecyclerView.LayoutManager LayoutManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -61,64 +68,90 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 parent.removeView(view);
         }
         try {
-            view = inflater.inflate(R.layout.fragment_home_sen, container, false);
-        } catch (InflateException e) {
-        }
+            view = inflater.inflate(R.layout.fragment_trans_more, container, false);
+        } catch (InflateException e) {}
+
+        list_trans = new ArrayList<String>();
 
         item = (TextView) view.findViewById(R.id.tv_sentence);
         if (getArguments() != null) { //클릭한 문장 출력
             sentence = getArguments().getString("sen");
-            sentence_num = getArguments().getString("sen_num");
+            sentence_num=getArguments().getString("sen_num");
             item.setText(sentence);
         }
-        translation();
+        loadData(current_page);
 
-        Button del_sen = (Button) view.findViewById(R.id.del_sen);
-        del_sen.setOnClickListener(this);
         Button add_note = (Button) view.findViewById(R.id.add_note);
         add_note.setOnClickListener(this);
         Button add_trans = (Button) view.findViewById(R.id.add_trans);
         add_trans.setOnClickListener(this);
-        Button add_listen = (Button) view.findViewById(R.id.add_listen);
-        add_listen.setOnClickListener(this);
 
-        TextView trans1 = (TextView) view.findViewById(R.id.trans1);
-        TextView trans2 = (TextView) view.findViewById(R.id.trans2);
-        TextView trans3 = (TextView) view.findViewById(R.id.trans3);
-        Button btn_trans_more = (Button) view.findViewById(R.id.btn_trans_more);
-        trans1.setOnClickListener(this);
-        trans2.setOnClickListener(this);
-        trans3.setOnClickListener(this);
-        btn_trans_more.setOnClickListener(this);
-
-        trans1.setText(trans.get(0).toString());
-        trans2.setText(trans.get(1).toString());
-        trans3.setText(trans.get(2).toString());
-
-        TextView listen1 = (TextView) view.findViewById(R.id.listen1);
-        TextView listen2 = (TextView) view.findViewById(R.id.listen2);
-        TextView listen3 = (TextView) view.findViewById(R.id.listen3);
-        Button btn_listen_more = (Button) view.findViewById(R.id.btn_listen_more);
-        listen1.setOnClickListener(this);
-        listen2.setOnClickListener(this);
-        listen3.setOnClickListener(this);
-        btn_listen_more.setOnClickListener(this);
-
-        tts = new TextToSpeech(getActivity(), this);
+        RecyclerView = (RecyclerView) view.findViewById(R.id.recycler_trans);
+        LayoutManager = new LinearLayoutManager(getActivity());
+        RecyclerView.setLayoutManager(LayoutManager);
+        Adapter = new TransListAdapter(list_trans, RecyclerView);
+        RecyclerView.setAdapter(Adapter);// Set CustomAdapter as the adapter for RecyclerView.
+        RecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener((LinearLayoutManager) LayoutManager) {
+            @Override
+            public void onLoadMore(int current_page){};
+        });
+        Adapter.notifyDataSetChanged();
 
         return view;
     }
 
-    @Override
-    public void onDestroy() {
-        if (tts != null) {
-            tts.stop();
-            tts.shutdown();
+    private void loadData(int current_page) {
+
+        if (worker_sentence_trans != null && worker_sentence_trans.isAlive()) {  //이미 동작하고 있을 경우 중지
+            worker_sentence_trans.interrupt();
         }
-        super.onDestroy();
+        worker_sentence_trans = new worker_sentence_trans(true);
+        worker_sentence_trans.start();
+        try {
+            worker_sentence_trans.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        for (int i = 0; i < loadLimit; i++) {
+            list_trans.add(trans.get(i).toString());
+            System.out.println(list_trans.get(i));
+        }
+
     }
 
+/*
+    private void loadMoreData(int current_page) {
+
+        loadLimit = ival+3;
+
+        if (worker_sentence_trans != null && worker_sentence_trans.isAlive()) {  //이미 동작하고 있을 경우 중지
+            worker_sentence_trans.interrupt();
+        }
+        worker_sentence_trans = new worker_sentence_trans(true);
+        worker_sentence_trans.start();
+        try {
+            worker_sentence_trans.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        for (int i = ival; i < loadLimit; i++) {
+            if (trans.get(i) == null) {
+                list_trans.add("없음");
+            } else
+                list_trans.add(trans.get(i).toString());
+            ival++;
+        }
+
+    }
+*/
     @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+    }
+
     public void onClick(View v) {
         final Bundle args = new Bundle();
         args.putString("sen", sentence);
@@ -126,25 +159,6 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
         final FragmentTransaction ft = getFragmentManager().beginTransaction();
 
         switch (v.getId()) {
-            case R.id.del_sen:
-                new AlertDialog.Builder(getActivity())
-                        .setTitle("문장을 삭제하시겠습니까?")
-                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                final HomeFragment hf = new HomeFragment();
-                                ft.replace(R.id.root_frame, hf);
-                                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                                ft.commit();
-                                toast = Toast.makeText(getActivity(), "삭제되었습니다(구현예정)", Toast.LENGTH_SHORT);
-                            }
-                        })
-                        .setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dlg, int sumthin) {
-                                toast = Toast.makeText(getActivity(), "취소되었습니다", Toast.LENGTH_SHORT);
-                            }
-
-                        }).show();
-                break;
             case R.id.add_note:
                 final CharSequence[] items = {"노트1", "노트2", "노트3"};
                 new AlertDialog.Builder(getActivity())
@@ -166,59 +180,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                 ft.commit();
                 break;
-            case R.id.btn_trans_more:
-                final TransMoreFragment tmf = new TransMoreFragment();
-                tmf.setArguments(args);
-                ft.replace(R.id.root_frame, tmf);
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                ft.commit();
-                break;
-            case R.id.add_listen:
-                final AddListenFragment alf = new AddListenFragment();
-                alf.setArguments(args);
-                ft.replace(R.id.root_frame, alf);
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                ft.addToBackStack(null);
-                ft.commit();
-                break;
-            case R.id.btn_listen_more:
-                final ListenMoreFragment lmf = new ListenMoreFragment();
-                lmf.setArguments(args);
-                ft.replace(R.id.root_frame, lmf);
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                ft.commit();
-                break;
-            case R.id.listen1:
-                tts.speak(sentence, TextToSpeech.QUEUE_FLUSH, null);
-                break;
-            case R.id.listen2:
-                toast = Toast.makeText(getActivity(), "두번째 음성 파일이 존재하지 않습니다", Toast.LENGTH_SHORT);
-                toast.show();
-                break;
-            case R.id.listen3:
-                toast = Toast.makeText(getActivity(), "세번째 음성 파일이 존재하지 않습니다", Toast.LENGTH_SHORT);
-                toast.show();
-                break;
         }
-    }
-
-    @Override
-    public void onInit(int status) {
-        tts.setLanguage(Locale.US);
-    }
-
-    private void translation() {
-        if(worker_sentence_trans != null && worker_sentence_trans.isAlive()){  //이미 동작하고 있을 경우 중지
-            worker_sentence_trans.interrupt();
-        }
-        worker_sentence_trans = new worker_sentence_trans(true);
-        worker_sentence_trans.start();
-        try {
-            worker_sentence_trans.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
     }
 
     class worker_sentence_trans extends Thread {
@@ -252,7 +214,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                     dos.flush();
                     dis = new DataInputStream(SocketConnection.socket.getInputStream());
 
-                    while( i < 3) {
+                    while (i < 3) {
                         dis.read(temp, 0, 4);
                         for (index = 0; index < 4; index++) {
                             inData[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.

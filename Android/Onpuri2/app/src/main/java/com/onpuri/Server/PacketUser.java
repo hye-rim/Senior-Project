@@ -23,13 +23,16 @@ public class PacketUser extends Application {
     static public char ACK_URG = 10, ACK_URG_LEN = 1;
     static public char USR_MSL = 11, USR_MSL_LEN; //user main sentence list
     static public char ACK_UMS = 12, ACK_UMS_LEN = 1; //ack user main sentence
+    static public char USR_SEN = 13;
+    static public char ACK_SEN = 14;
+    static public char USR_LEV = 99;
+    static public char ACK_LEV = 100;
+
     public static char SOF = 0xcc;//Decimal=204
     static public char CRC = 0x55;//Decimal=85
 
-    static public String userId = "", shell = "", problem = "", average = "",
-            ranking = "", question = "", solving = "", attend = "",
-            purchase = "", sale = "", declaration = "";
-
+    static public String userId = "", name = "", joinDate = "", phone = "",
+            nowPass = "";
     static public ArrayList<String> arrSentence = new ArrayList<String>();
     static public ArrayList<String> arrSentenceNum = new ArrayList<String>();
     static public int data_len, sentence_len;
@@ -54,7 +57,7 @@ public class PacketUser extends Application {
     }
     static public void setSentenceNum(String num) {
         arrSentenceNum.add(num);
-        System.out.println("stringnum : " + arrSentenceNum.get(0));
+        System.out.println("string_num : " + arrSentenceNum.get(0));
     }
 
     public String getSentence(int i){

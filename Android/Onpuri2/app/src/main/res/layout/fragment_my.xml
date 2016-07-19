@@ -86,9 +86,11 @@
             android:textSize="20dp"
             android:layout_gravity="center_vertical"/>
         <EditText
+            android:id="@+id/tv_userPhone"
             android:layout_width="150dp"
             android:layout_height="match_parent"
-            android:text = "010-0000-0000"/>
+            android:inputType="phone"
+            android:text = ""/>
     </LinearLayout>
     <LinearLayout
         android:layout_marginLeft="20dp"
@@ -102,9 +104,10 @@
             android:textSize="20dp"
             android:layout_gravity="center_vertical"/>
         <EditText
+            android:id="@+id/et_now_pass"
             android:layout_width="150dp"
             android:layout_height="match_parent"
-            android:text = "123456"
+            android:text = ""
             android:inputType="textPassword"
             android:singleLine="true"/>
     </LinearLayout>
@@ -120,9 +123,10 @@
             android:textColor="#030809"
             android:layout_gravity="center_vertical"/>
         <EditText
+            android:id="@+id/et_new_pass"
             android:layout_width="150dp"
             android:layout_height="match_parent"
-            android:text = "123456"
+            android:text = ""
             android:inputType="textPassword"
             android:singleLine="true"/>
     </LinearLayout>
@@ -140,9 +144,10 @@
             android:layout_gravity="center"
             />
         <EditText
+            android:id="@+id/et_new_pass_check"
             android:layout_width="150dp"
             android:layout_height="match_parent"
-            android:text = "123456"
+            android:text = ""
             android:inputType="textPassword"
             android:singleLine="true"/>
     </LinearLayout>
@@ -154,17 +159,19 @@
         android:gravity="center">
         <Button
             android:background="@drawable/btn_clilcked"
-            android:id = "@+id/btnOk"
+            android:id = "@+id/btn_my_ok"
             android:layout_width="120dp"
             android:layout_height="50dp"
             android:text="변경"
+            android:textColor="@color/black"
             android:onClick="onClick"
             android:layout_marginRight="5dp"
             android:textStyle="bold" />
         <Button
             android:background="@drawable/btn_clilcked"
             android:layout_marginLeft="5dp"
-            android:id = "@+id/btnCancle"
+            android:id = "@+id/btn_my_cancel"
+            android:textColor="@color/black"
             android:layout_width="120dp"
             android:layout_height="50dp"
             android:text="취소"

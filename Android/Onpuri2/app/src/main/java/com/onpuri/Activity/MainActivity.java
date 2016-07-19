@@ -1,28 +1,23 @@
 package com.onpuri.Activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
 
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,11 +26,8 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.onpuri.R;
 import com.onpuri.Server.ActivityList;
-import com.onpuri.Server.CloseSystem;
 import com.onpuri.Server.PacketUser;
 import com.onpuri.Server.SocketConnection;
-
-import org.w3c.dom.Text;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -77,6 +69,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     SharedPreferences setting;
     SharedPreferences.Editor editor;
+
+    String userId = "";
+    String name, joinDate, phone, nowPassword;
+    Bundle bundle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,8 +93,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mNavId = (TextView)findViewById(R.id.tv_nav_id);
 
         Intent intent = getIntent();
-        String userId = intent.getStringExtra("userId");
-        mNavId.setText(userId);
+        userId = intent.getStringExtra("UserId");
+        name = intent.getStringExtra("Name");
+        joinDate = intent.getStringExtra("JoinDate");
+        phone = intent.getStringExtra("Phone");
+        nowPassword = intent.getStringExtra("NowPass");
+
+        mNavId.setText(userId + " 님");
         /**
          * Lets inflate the very first fragment
          * Here , we are inflating the TabViewPager as the first Fragment
@@ -125,8 +126,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onBackPressed() {
         long tempTime = System.currentTimeMillis();
         long intervalTime = tempTime - backPressedTime;
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
 
         if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime) {
             if(mworker_out != null && mworker_out.isAlive()){  //이미 동작하고 있을 경우 중지
@@ -143,12 +142,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
                 mDrawerLayout.closeDrawer(GravityCompat.START);
-            }
-            if (fm.getBackStackEntryCount() > 0) {
-                fm.popBackStack();
-                ft.commit();
-            }
-            else {
+            } else {
                 super.onBackPressed();
             }
         }
@@ -203,45 +197,60 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             fragmentTransaction.replace(R.id.containerView,new TabViewPager()).commit();
         }
         if (item.getItemId() == R.id.nav_mypage) {
+            UserMyFragment MyFrament = new UserMyFragment();
+            bundle = new Bundle();
+            bundle.putString("MyId", userId);
+            bundle.putString("MyName", name);
+            bundle.putString("MyJoin", joinDate);
+            bundle.putString("MyPhone", phone);
+            bundle.putString("MyPass", nowPassword);
+            MyFrament.setArguments(bundle);
+
             FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.containerView,new UserMyFragment()).commit();
+            fragmentTransaction.replace(R.id.containerView,MyFrament).commit();
         }
         if (item.getItemId() == R.id.nav_myact) {
+            UserMyActFragment ActFrament = new UserMyActFragment();
+            bundle = new Bundle();
+            bundle.putString("ActId", userId);
+            ActFrament.setArguments(bundle);
+
             FragmentTransaction xfragmentTransaction = mFragmentManager.beginTransaction();
-            xfragmentTransaction.replace(R.id.containerView,new UserMyActFragment()).commit();
+            xfragmentTransaction.replace(R.id.containerView, ActFrament).commit();
         }
         if (item.getItemId() == R.id.nav_logout) {
             Logout();
         }
         if (item.getItemId() == R.id.nav_set) {
+            UserSetFragment SetFrament = new UserSetFragment();
+            bundle = new Bundle();
+            bundle.putString("SetId", userId);
+            SetFrament.setArguments(bundle);
+
             FragmentTransaction sfragmentTransaction = mFragmentManager.beginTransaction();
-            sfragmentTransaction.replace(R.id.containerView, new UserSetFragment()).commit();
+            sfragmentTransaction.replace(R.id.containerView, SetFrament).commit();
         }
         return false;
     }
 
     private void Logout() {
-        Log.d(TAG, "logout start");
         if(mworker_out != null && mworker_out.isAlive()){  //이미 동작하고 있을 경우 중지
             mworker_out.interrupt();
         }
-        Log.d(TAG, "logout interrupt");
+
         mworker_out = new worker_logout(true);
         mworker_out.start();
 
-        Log.d(TAG, "logout sever nenwnw");
         try {
             mworker_out.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        Log.d(TAG, "logout server ok");
         if (setting.getBoolean("autoLogin", false)) {
             editor.clear();
             editor.commit();
         }
-        Log.d(TAG, "shared ok");
 
         Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(loginIntent);

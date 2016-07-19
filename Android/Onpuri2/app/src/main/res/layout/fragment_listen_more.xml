@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#faf5b3">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="600dp"
+        android:background="#faf5b3">
+        <LinearLayout
+            android:paddingRight="5px"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:orientation="vertical"
+            android:backgroundTint="#662727"
+            android:backgroundTintMode="src_in">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:id="@+id/tv_sentence"
+                android:textSize="15dp"
+                android:text="영어 문장 내용"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:paddingRight="5px"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:orientation="vertical"
+            android:backgroundTint="#662727"
+            android:backgroundTintMode="src_in">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right">
+
+                <Button
+                    android:layout_width="100dp"
+                    android:layout_height="30dp"
+                    android:text="노트에 추가"
+                    android:id="@+id/add_note"
+                    android:textIsSelectable="false"
+                    android:layout_marginRight="20dp"
+                    android:gravity="center"
+                    android:textSize="10dp"
+                    android:layout_gravity="right" />
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal"
+            android:layout_gravity="center_vertical"
+            android:weightSum="1">
+            <TextView
+                android:layout_width="240dp"
+                android:layout_height="30dp"
+                android:text="듣기"
+                android:focusable="false"
+                android:textSize="15dp"
+                android:layout_marginLeft="15dp"
+                android:layout_gravity="left|center_vertical"
+                android:textStyle="bold"/>
+            <Button
+                android:id="@+id/add_trans"
+                android:layout_width="100dp"
+                android:layout_height="30dp"
+                android:textSize="10dp"
+                android:text="듣기 추가"
+                android:visibility="visible"
+                android:gravity="center"
+                android:layout_marginRight="20dp" />
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:scrollbars="vertical"
+            app:layoutManager="LinearLayoutManager"
+            android:id="@+id/recycler_trans"
+            android:layout_width="match_parent"
+            android:layout_height="375dp"
+            tools:listitem="@layout/listen_list">
+        </android.support.v7.widget.RecyclerView>
+
+    </LinearLayout>
+</ScrollView>
+
+

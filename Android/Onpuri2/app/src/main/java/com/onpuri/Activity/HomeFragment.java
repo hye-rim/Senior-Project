@@ -1,6 +1,5 @@
 package com.onpuri.Activity;
 
-import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,14 +13,12 @@ import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.onpuri.Adapter.RecycleviewAdapter;
 import com.onpuri.DividerItemDecoration;
 import com.onpuri.EndlessRecyclerOnScrollListener;
 import com.onpuri.R;
 import com.onpuri.Server.PacketUser;
 import com.onpuri.Server.SocketConnection;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -63,7 +60,7 @@ public class HomeFragment extends Fragment {
     private int ival = 0;
     private int loadLimit = 10;
     private int total = 0;
-
+    Bundle args = new Bundle();
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (view != null) {
@@ -88,17 +85,24 @@ public class HomeFragment extends Fragment {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_sentence);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
+        mAdapter = new RecycleviewAdapter(listSentence,mRecyclerView);
+
+        mRecyclerView.setAdapter(mAdapter);// Set CustomAdapter as the adapter for RecyclerView.
+        mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener((LinearLayoutManager) mLayoutManager) {
+            @Override
+            public void onLoadMore(int current_page) {
+                loadMoreData(current_page);
+            }
+        });
 
         mRecyclerView.addOnItemTouchListener(
-                new HomeItemClickListener(getActivity(), mRecyclerView ,new HomeItemClickListener.OnItemClickListener() {
+                new HomeItemClickListener(getActivity().getApplicationContext(), mRecyclerView ,new HomeItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        System.out.println(position);
-                        Bundle args1 = new Bundle();
-                        args1.putString("sen",listSentence.get(position));
-                        hsf.setArguments(args1);
-                        args1.putString("sen_num",listSentenceNum.get(position));
-                        hsf.setArguments(args1);
+                        mAdapter.notifyDataSetChanged();
+                        args.putString("sen", listSentence.get(position));
+                        args.putString("sen_num", listSentenceNum.get(position));
+                        hsf.setArguments(args);
 
                         FragmentTransaction ft = getFragmentManager().beginTransaction();
                         ft.add(R.id.root_frame, hsf);
@@ -112,16 +116,6 @@ public class HomeFragment extends Fragment {
                     }
                 })
         );
-
-        mAdapter = new RecycleviewAdapter(listSentence,mRecyclerView);
-
-        mRecyclerView.setAdapter(mAdapter);// Set CustomAdapter as the adapter for RecyclerView.
-        mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener((LinearLayoutManager) mLayoutManager) {
-            @Override
-            public void onLoadMore(int current_page) {
-                loadMoreData(current_page);
-            }
-        });
 
 
         Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_dark);
