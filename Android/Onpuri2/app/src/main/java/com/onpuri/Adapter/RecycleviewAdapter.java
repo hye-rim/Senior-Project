@@ -21,7 +21,6 @@ public class RecycleviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private final String TAG = "RecycleviewAdapter";
     private static final int VIEW_TYPE_CELL = 1;
     private static final int VIEW_TYPE_FOOTER = 0;
-
     private ArrayList<String> senList;
 
     public RecycleviewAdapter(ArrayList<String> listSentence, RecyclerView recyclerView) {
@@ -51,7 +50,6 @@ public class RecycleviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v;
         v = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_list, parent, false);
-
         return new ItemViewHolder(v);
     }
 

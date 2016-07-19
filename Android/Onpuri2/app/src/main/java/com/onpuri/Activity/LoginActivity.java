@@ -351,7 +351,6 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                                 index++;
                             }
                         }
-
                     }
                     Log.d(TAG,"id : " + PacketUser.userId);
                     Log.d(TAG,"name : " + PacketUser.name);

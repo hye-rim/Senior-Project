@@ -1,10 +1,8 @@
 package com.onpuri.Activity;
 
 import android.os.Bundle;
-import android.speech.tts.TextToSpeech;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.onpuri.R;
 
 /**
@@ -20,12 +17,13 @@ import com.onpuri.R;
  */
 
 public class AddTransFragment extends Fragment implements View.OnClickListener {
+    private static final String TAG = "AddTransFragment";
 
     private static View view;
     private Toast toast;
 
-    TextView item;
     String sentence="";
+    TextView item;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -39,17 +37,23 @@ public class AddTransFragment extends Fragment implements View.OnClickListener {
         } catch (InflateException e) {
     /* map is already there, just return view as it is */
         }
+
         item = (TextView) view.findViewById(R.id.tv_sentence);
         if (getArguments() != null) { //클릭한 문장 출력
             sentence = getArguments().getString("sen");
             item.setText(sentence);
         }
+
         Button btn_new_trans = (Button) view.findViewById(R.id.btn_new_trans);
         btn_new_trans.setOnClickListener(this);
         Button btn_new_trans_back = (Button) view.findViewById(R.id.btn_new_trans_back);
         btn_new_trans_back.setOnClickListener(this);
 
         return view;
+    }
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
     }
     @Override
     public void onClick(View v) {
@@ -64,4 +68,5 @@ public class AddTransFragment extends Fragment implements View.OnClickListener {
                 break;
         }
     }
+
 }
