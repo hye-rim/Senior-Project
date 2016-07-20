@@ -170,7 +170,7 @@ public class HomeFragment extends Fragment {
             listSentenceNum.add(userSentence.arrSentenceNum.get(i));
             ival++;
         }
-        mAdapter.notifyDataSetChanged();
+        mAdapter.notifyDataSetChanged ();
     }
 
     class worker_sentence_list extends Thread {
@@ -230,7 +230,7 @@ public class HomeFragment extends Fragment {
                         System.out.println("1 : " + inData[1]);
                         System.out.println("2 : " + inData[2]);
                         System.out.println("3 : " + inData[3]);
-                        System.out.println("5 : " + (char) inData[5]); //sentence - second char
+                        System.out.println("5 : " + (char) inData[5]);
 
                         PacketUser.sentence_len = ((int) inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);
 
@@ -256,8 +256,6 @@ public class HomeFragment extends Fragment {
 
                         userSentence.setSentence(str);
                         userSentence.setSentenceNum(num);
-
-                        System.out.println(total + "str :" + str);
                         total++;
                         i++;
                     }

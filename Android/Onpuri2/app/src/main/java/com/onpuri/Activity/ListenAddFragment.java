@@ -1,9 +1,9 @@
 package com.onpuri.Activity;
 
-import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,8 +26,7 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener 
     TextView item;
     String sentence = "";
 
-    static final String RECORDED_FILE = "/Docouments/recorded.mp4";
-    MediaPlayer player;
+    static final String RECORDED_FILE = "/DailyE_record/recorded.mp4";
     MediaRecorder recorder;
     boolean Islisten = true;
     boolean Isplay = true;
@@ -69,8 +68,7 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener 
             case R.id.listen:
                 Button btn_listen = (Button) view.findViewById(R.id.listen);
                 if (Islisten) {
-
-                      /*if (recorder != null) {
+                  /*  if (recorder != null) {
                         recorder.stop();
                         recorder.release();
                         recorder=null;

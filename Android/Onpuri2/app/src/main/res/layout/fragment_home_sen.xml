@@ -18,7 +18,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:id="@+id/tv_sentence"
-                android:textSize="15dp"
+                android:textSize="16dp"
                 android:text="영어 문장 내용"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
