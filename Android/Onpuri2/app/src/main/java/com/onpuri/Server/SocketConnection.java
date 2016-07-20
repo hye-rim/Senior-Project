@@ -1,11 +1,22 @@
 package com.onpuri.Server;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.widget.Toast;
+
+import com.onpuri.Activity.MainActivity;
+import com.onpuri.Activity.SplashActivity;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.StringWriter;
+
+import static android.app.PendingIntent.getActivities;
+import static android.app.PendingIntent.getActivity;
 
 /**
  * Created by kutemsys on 2016-03-29.

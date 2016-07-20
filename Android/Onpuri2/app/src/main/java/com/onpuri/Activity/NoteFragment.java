@@ -46,7 +46,6 @@ public class NoteFragment extends Fragment {
     private RecyclerView.Adapter mSenAdapter, mWordAdapter;
 
     protected RecyclerView.LayoutManager mLayoutManager;
-    private Context context;
 
     private FrameLayout mItemFrame;
     private FragmentManager mFragmentManager;
@@ -99,17 +98,18 @@ public class NoteFragment extends Fragment {
                     @Override
                     public void onLongItemClick(View view, int position) {
                         Log.v(TAG,"sententce item : " + position);
-
-                        if(  mRecyclerSen.getAdapter().getItemViewType(position) == VIEW_TYPE_CELL  ) {
+                        if( view.getId() != R.id.ll_sen_more&& view.getId() != R.id.btn_sen_more && mRecyclerWord.getAdapter().getItemViewType(position) == VIEW_TYPE_CELL  ) {
                             Bundle args = new Bundle();
-                            args.putString("senItemName", "문장 모음" );
+                            args.putString("senItemName", "단어 모음" );
                             noteSenItem.setArguments(args);
 
                             mTabHost.setVisibility(View.GONE);
                             mItemFrame.setVisibility(View.VISIBLE);
                             FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-                            fragmentTransaction.replace(R.id.note_item, noteSenItem).commit();
+                            fragmentTransaction.replace(R.id.note_item, noteSenItem)
+                                    .commit();
                         }
+
                     }
                 }));
 
@@ -134,7 +134,8 @@ public class NoteFragment extends Fragment {
                             mTabHost.setVisibility(View.GONE);
                             mItemFrame.setVisibility(View.VISIBLE);
                             FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-                            fragmentTransaction.add(R.id.note_item, noteWordItem).commit();
+                            fragmentTransaction.replace(R.id.note_item, noteWordItem)
+                                    .commit();
                         }
                     }
                 }));
@@ -150,5 +151,10 @@ public class NoteFragment extends Fragment {
             listSentence.add(new NoteData("문장모음 " + i));
             listWord.add(new NoteData("단어모음 " + i));
         }
+    }
+
+    void setVisible() {
+        mTabHost.setVisibility(View.GONE);
+        mItemFrame.setVisibility(View.VISIBLE);
     }
 }
