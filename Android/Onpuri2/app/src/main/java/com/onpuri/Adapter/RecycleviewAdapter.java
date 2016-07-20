@@ -60,11 +60,7 @@ public class RecycleviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
         itemViewHolder.mSenItem.setText(senList.get(position));
 
-        if (position % 2 == 0) {
-            itemViewHolder.itemView.setBackgroundColor(Color.parseColor("#faf5b3"));
-        } else {
-            itemViewHolder.itemView.setBackgroundColor(Color.parseColor("#FEE098"));
-        }
+        itemViewHolder.itemView.setBackgroundColor(Color.parseColor("#FDF5D2"));
     }
 
     @Override

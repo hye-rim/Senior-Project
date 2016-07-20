@@ -63,7 +63,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     DrawerLayout mDrawerLayout;
     NavigationView mNavigationView;
     FragmentManager mFragmentManager;
-    FragmentTransaction mFragmentTransaction;
 
     TextView mNavId;
 
@@ -106,8 +105,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
          */
 
         mFragmentManager = getSupportFragmentManager();
-        mFragmentTransaction = mFragmentManager.beginTransaction();
-        mFragmentTransaction.replace(R.id.containerView,new TabViewPager()).commit();
+        mFragmentManager.beginTransaction()
+                .add(R.id.containerView,new TabViewPager())
+                .commit();
 
         //Setup click events on the Navigation View Items.
         mNavigationView.setNavigationItemSelectedListener(this);
@@ -193,8 +193,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Handle navigation view item clicks here.
         mDrawerLayout.closeDrawers();
         if (item.getItemId() == R.id.nav_home) {
-            FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.containerView,new TabViewPager()).commit();
+            mFragmentManager.beginTransaction()
+                    .replace(R.id.containerView,new TabViewPager())
+                    .commit();
         }
         if (item.getItemId() == R.id.nav_mypage) {
             UserMyFragment MyFrament = new UserMyFragment();
@@ -206,8 +207,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             bundle.putString("MyPass", nowPassword);
             MyFrament.setArguments(bundle);
 
-            FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.containerView,MyFrament).commit();
+            mFragmentManager.beginTransaction()
+                    .replace(R.id.containerView,MyFrament)
+                    .commit();
+
         }
         if (item.getItemId() == R.id.nav_myact) {
             UserMyActFragment ActFrament = new UserMyActFragment();
@@ -215,8 +218,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             bundle.putString("ActId", userId);
             ActFrament.setArguments(bundle);
 
-            FragmentTransaction xfragmentTransaction = mFragmentManager.beginTransaction();
-            xfragmentTransaction.replace(R.id.containerView, ActFrament).commit();
+            mFragmentManager.beginTransaction()
+                    .replace(R.id.containerView, ActFrament)
+                    .commit();
         }
         if (item.getItemId() == R.id.nav_logout) {
             Logout();
@@ -227,8 +231,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             bundle.putString("SetId", userId);
             SetFrament.setArguments(bundle);
 
-            FragmentTransaction sfragmentTransaction = mFragmentManager.beginTransaction();
-            sfragmentTransaction.replace(R.id.containerView, SetFrament).commit();
+            mFragmentManager.beginTransaction()
+                    .replace(R.id.containerView, SetFrament)
+                    .commit();
         }
         return false;
     }

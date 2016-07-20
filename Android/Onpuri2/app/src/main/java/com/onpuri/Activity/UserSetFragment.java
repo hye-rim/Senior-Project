@@ -110,26 +110,34 @@ public class UserSetFragment extends Fragment implements View.OnClickListener {
         FragmentTransaction fragmentTransaction;
         switch (v.getId()){
             case R.id.btn_set_notice:
-                fragmentTransaction = mFragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.containerView, new UserSetNoticeFragment()).commit();
+                mFragmentManager.beginTransaction()
+                        .replace(R.id.containerView, new UserSetNoticeFragment())
+                        .commit();
                 break;
+
             case R.id.btn_set_question:
                 UserSetQuestionFragment setQuestionFragment = new UserSetQuestionFragment();
                 Bundle args = new Bundle();
                 args.putString("SetId",userId );
                 setQuestionFragment.setArguments(args);
 
-                fragmentTransaction = mFragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.containerView, setQuestionFragment).commit();
+                mFragmentManager.beginTransaction()
+                        .replace(R.id.containerView, setQuestionFragment)
+                        .commit();
                 break;
+
             case R.id.btn_set_version:
-                fragmentTransaction = mFragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.containerView, new UserSetVersionFragment()).commit();
+                mFragmentManager.beginTransaction()
+                        .replace(R.id.containerView, new UserSetVersionFragment())
+                        .commit();
                 break;
+
             case R.id.btn_set_tou:
-                fragmentTransaction = mFragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.containerView, new UserSetTouFragment()).commit();
+                mFragmentManager.beginTransaction()
+                        .replace(R.id.containerView, new UserSetTouFragment())
+                        .commit();
                 break;
+
             case R.id.btn_set_out:
                 AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
 
