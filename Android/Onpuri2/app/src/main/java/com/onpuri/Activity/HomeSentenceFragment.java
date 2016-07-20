@@ -71,6 +71,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
             sentence_num = getArguments().getString("sen_num");
             item.setText(sentence);
         }
+
         translation();
 
         Button del_sen = (Button) view.findViewById(R.id.del_sen);
@@ -85,24 +86,25 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
         TextView trans1 = (TextView) view.findViewById(R.id.trans1);
         TextView trans2 = (TextView) view.findViewById(R.id.trans2);
         TextView trans3 = (TextView) view.findViewById(R.id.trans3);
-        Button btn_trans_more = (Button) view.findViewById(R.id.btn_trans_more);
-        trans1.setOnClickListener(this);
-        trans2.setOnClickListener(this);
-        trans3.setOnClickListener(this);
-        btn_trans_more.setOnClickListener(this);
-
         trans1.setText(trans.get(0).toString());
         trans2.setText(trans.get(1).toString());
         trans3.setText(trans.get(2).toString());
+        Button trans_more = (Button) view.findViewById(R.id.trans_more);
+        trans1.setOnClickListener(this);
+        trans2.setOnClickListener(this);
+        trans3.setOnClickListener(this);
+        trans_more.setOnClickListener(this);
+
 
         TextView listen1 = (TextView) view.findViewById(R.id.listen1);
         TextView listen2 = (TextView) view.findViewById(R.id.listen2);
         TextView listen3 = (TextView) view.findViewById(R.id.listen3);
-        Button btn_listen_more = (Button) view.findViewById(R.id.btn_listen_more);
+        Button listen_more = (Button) view.findViewById(R.id.listen_more);
         listen1.setOnClickListener(this);
         listen2.setOnClickListener(this);
         listen3.setOnClickListener(this);
-        btn_listen_more.setOnClickListener(this);
+        listen_more.setOnClickListener(this);
+        listen1.setText("listen1");
 
         tts = new TextToSpeech(getActivity(), this);
 
@@ -120,10 +122,11 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
+        final FragmentTransaction ft = getFragmentManager().beginTransaction();
+
         final Bundle args = new Bundle();
         args.putString("sen", sentence);
         args.putString("sen_num", sentence_num);
-        final FragmentTransaction ft = getFragmentManager().beginTransaction();
 
         switch (v.getId()) {
             case R.id.del_sen:
@@ -160,32 +163,32 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                         }).show();
                 break;
             case R.id.add_trans:
-                final AddTransFragment atf = new AddTransFragment();
+                final TransAddFragment atf = new TransAddFragment();
                 atf.setArguments(args);
                 ft.replace(R.id.root_frame, atf);
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                ft.commit();
-                break;
-            case R.id.btn_trans_more:
-                final TransMoreFragment tmf = new TransMoreFragment();
-                tmf.setArguments(args);
-                ft.replace(R.id.root_frame, tmf);
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                ft.commit();
-                break;
-            case R.id.add_listen:
-                final AddListenFragment alf = new AddListenFragment();
-                alf.setArguments(args);
-                ft.replace(R.id.root_frame, alf);
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                 ft.addToBackStack(null);
                 ft.commit();
                 break;
-            case R.id.btn_listen_more:
+            case R.id.trans_more:
+                final TransMoreFragment tmf = new TransMoreFragment();
+                tmf.setArguments(args);
+                ft.replace(R.id.root_frame, tmf);
+                ft.addToBackStack(null);
+                ft.commit();
+                break;
+            case R.id.add_listen:
+                final ListenAddFragment alf = new ListenAddFragment();
+                alf.setArguments(args);
+                ft.replace(R.id.root_frame, alf);
+                ft.addToBackStack(null);
+                ft.addToBackStack(null);
+                ft.commit();
+                break;
+            case R.id.listen_more:
                 final ListenMoreFragment lmf = new ListenMoreFragment();
                 lmf.setArguments(args);
                 ft.replace(R.id.root_frame, lmf);
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                ft.addToBackStack(null);
                 ft.commit();
                 break;
             case R.id.listen1:
@@ -198,6 +201,30 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
             case R.id.listen3:
                 toast = Toast.makeText(getActivity(), "세번째 음성 파일이 존재하지 않습니다", Toast.LENGTH_SHORT);
                 toast.show();
+                break;
+            case R.id.trans1:
+                final TransDetailFragment tdf1 = new TransDetailFragment();
+                args.putString("sen_trans", trans.get(0).toString());
+                tdf1.setArguments(args);
+                ft.replace(R.id.root_frame, tdf1);
+                ft.addToBackStack(null);
+                ft.commit();
+                break;
+            case R.id.trans2:
+                final TransDetailFragment tdf2 = new TransDetailFragment();
+                args.putString("sen_trans", trans.get(1).toString());
+                tdf2.setArguments(args);
+                ft.replace(R.id.root_frame, tdf2);
+                ft.addToBackStack(null);
+                ft.commit();
+                break;
+            case R.id.trans3:
+                final TransDetailFragment tdf3 = new TransDetailFragment();
+                args.putString("sen_trans", trans.get(2).toString());
+                tdf3.setArguments(args);
+                ft.replace(R.id.root_frame, tdf3);
+                ft.addToBackStack(null);
+                ft.commit();
                 break;
         }
     }

@@ -2,12 +2,10 @@ package com.onpuri.Activity;
 
 
 import android.content.DialogInterface;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,7 +19,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.onpuri.Adapter.TransListAdapter;
-import com.onpuri.DividerItemDecoration;
 import com.onpuri.EndlessRecyclerOnScrollListener;
 import com.onpuri.R;
 import com.onpuri.Server.PacketUser;
@@ -36,6 +33,7 @@ import java.util.List;
 public class TransMoreFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "TransMoreFragment";
     private static View view;
+    private Toast toast;
     ArrayList<String> list_trans;
     private worker_sentence_trans worker_sentence_trans;
 
@@ -54,7 +52,6 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
     String sentence = "";
     String sentence_num = "";
     int i, index;
-    int byteI = 0;
 
     private RecyclerView RecyclerView;
     private TransListAdapter Adapter;
@@ -81,6 +78,8 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
         }
         loadData(current_page);
 
+        final TransDetailFragment tdf = new TransDetailFragment();
+
         Button add_note = (Button) view.findViewById(R.id.add_note);
         add_note.setOnClickListener(this);
         Button add_trans = (Button) view.findViewById(R.id.add_trans);
@@ -95,6 +94,42 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
             @Override
             public void onLoadMore(int current_page){};
         });
+        RecyclerView.addOnItemTouchListener(
+                new HomeItemClickListener(getActivity().getApplicationContext(), RecyclerView ,new HomeItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        Adapter.notifyDataSetChanged();
+                        Bundle args = new Bundle();
+                        args.putString("sen", sentence);
+                        args.putString("sen_trans", list_trans.get(position));
+                        tdf.setArguments(args);
+
+                        FragmentTransaction ft = getFragmentManager().beginTransaction();
+                        ft.add(R.id.root_frame, tdf);
+                        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                        ft.addToBackStack(null);
+                        ft.commit();
+                    }
+                    @Override
+                    public void onLongItemClick(View view, int position) {
+                        new AlertDialog.Builder(getActivity())
+                                .setTitle("선택한 해석을 삭제하시겠습니까?")
+                                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        toast = Toast.makeText(getActivity(), "삭제되었습니다(구현예정)", Toast.LENGTH_SHORT);
+                                        toast.show();
+                                    }
+                                })
+                                .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dlg, int sumthin) {
+                                        toast = Toast.makeText(getActivity(), "취소되었습니다", Toast.LENGTH_SHORT);
+                                        toast.show();
+                                    }
+
+                                }).show();
+                    }
+                })
+        );
         Adapter.notifyDataSetChanged();
 
         return view;
@@ -174,7 +209,7 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
                         }).show();
                 break;
             case R.id.add_trans:
-                final AddTransFragment atf = new AddTransFragment();
+                final TransAddFragment atf = new TransAddFragment();
                 atf.setArguments(args);
                 ft.replace(R.id.root_frame, atf);
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);

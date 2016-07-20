@@ -70,7 +70,7 @@
                 android:layout_gravity="left|center_vertical"
                 android:textStyle="bold"/>
             <Button
-                android:id="@+id/add_trans"
+                android:id="@+id/add_listen"
                 android:layout_width="100dp"
                 android:layout_height="30dp"
                 android:textSize="10dp"
@@ -83,12 +83,11 @@
         <android.support.v7.widget.RecyclerView
             android:scrollbars="vertical"
             app:layoutManager="LinearLayoutManager"
-            android:id="@+id/recycler_trans"
+            android:id="@+id/recycler_listen"
             android:layout_width="match_parent"
             android:layout_height="375dp"
             tools:listitem="@layout/listen_list">
         </android.support.v7.widget.RecyclerView>
-
     </LinearLayout>
 </ScrollView>
 

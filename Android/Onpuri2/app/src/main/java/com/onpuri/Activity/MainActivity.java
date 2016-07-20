@@ -139,7 +139,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
             if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
                 mDrawerLayout.closeDrawer(GravityCompat.START);
             } else {

@@ -16,9 +16,8 @@ import com.onpuri.R;
  * Created by kutemsys on 2016-07-16.
  */
 
-public class AddTransFragment extends Fragment implements View.OnClickListener {
-    private static final String TAG = "AddTransFragment";
-
+public class TransAddFragment extends Fragment implements View.OnClickListener {
+    private static final String TAG = "TransAddFragment";
     private static View view;
     private Toast toast;
 
@@ -33,7 +32,7 @@ public class AddTransFragment extends Fragment implements View.OnClickListener {
                 parent.removeView(view);
         }
         try {
-            view = inflater.inflate(R.layout.fragment_add_trans, container, false);
+            view = inflater.inflate(R.layout.fragment_trans_add, container, false);
         } catch (InflateException e) {
     /* map is already there, just return view as it is */
         }
