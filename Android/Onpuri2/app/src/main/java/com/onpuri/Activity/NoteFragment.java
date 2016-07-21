@@ -1,9 +1,8 @@
 package com.onpuri.Activity;
 
-import android.app.Activity;
-import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -20,10 +19,11 @@ import android.widget.TabHost;
 
 import com.onpuri.Adapter.NoteSenAdapter;
 import com.onpuri.Adapter.NoteWordAdapter;
+import com.onpuri.Data.NoteData;
+import com.onpuri.Data.NoteWordData;
 import com.onpuri.DividerItemDecoration;
-import com.onpuri.NoteData;
+import com.onpuri.Listener.RecycleItemClickListener;
 import com.onpuri.R;
-import com.onpuri.RecycleItemClickListener;
 
 import java.util.ArrayList;
 
@@ -40,7 +40,8 @@ public class NoteFragment extends Fragment {
     private static View view;
     private TabHost mTabHost;
 
-    ArrayList<NoteData> listSentence, listWord;
+    ArrayList<NoteData> listSentence;
+    ArrayList<NoteWordData> listWord;
 
     private RecyclerView mRecyclerSen, mRecyclerWord;
     private RecyclerView.Adapter mSenAdapter, mWordAdapter;
@@ -50,10 +51,6 @@ public class NoteFragment extends Fragment {
     private FrameLayout mItemFrame;
     private FragmentManager mFragmentManager;
 
-    private CustomOnClickListener customLister;
-    public interface CustomOnClickListener {
-        public void onClicked(int id);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -83,8 +80,6 @@ public class NoteFragment extends Fragment {
 
         initData();
         Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_light);
-        final NoteSenFragment noteSenItem = new NoteSenFragment();
-
 
         //Set Sentence Adapter for Sentence RecyclerView (NoteTab)
         mRecyclerSen = (RecyclerView) view.findViewById(R.id.recycle_note_sen);
@@ -93,6 +88,24 @@ public class NoteFragment extends Fragment {
         mRecyclerSen.setAdapter(mSenAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerSen.addItemDecoration(new DividerItemDecoration(dividerDrawable));
 
+        //Set Word Adapter for Word RecyclerView (NoteTab)
+        mRecyclerWord = (RecyclerView) view.findViewById(R.id.recycle_note_word);
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mWordAdapter = new NoteWordAdapter(listWord);
+        mRecyclerWord.setAdapter(mWordAdapter);// Set CustomAdapter as the adapter for RecyclerView.
+        mRecyclerWord.addItemDecoration(new DividerItemDecoration(dividerDrawable));
+
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        mSenAdapter.notifyDataSetChanged();
+        mWordAdapter.notifyDataSetChanged();
+
+        final NoteSenFragment noteSenItem = new NoteSenFragment();
         mRecyclerSen.addOnItemTouchListener(
                 new RecycleItemClickListener(getActivity().getApplicationContext(), mRecyclerSen, new RecycleItemClickListener.OnItemClickListener() {
                     @Override
@@ -100,7 +113,7 @@ public class NoteFragment extends Fragment {
                         Log.v(TAG,"sententce item : " + position);
                         if( view.getId() != R.id.ll_sen_more&& view.getId() != R.id.btn_sen_more && mRecyclerWord.getAdapter().getItemViewType(position) == VIEW_TYPE_CELL  ) {
                             Bundle args = new Bundle();
-                            args.putString("senItemName", "단어 모음" );
+                            args.putString("senItemName", "문장 모음" );
                             noteSenItem.setArguments(args);
 
                             mTabHost.setVisibility(View.GONE);
@@ -113,14 +126,7 @@ public class NoteFragment extends Fragment {
                     }
                 }));
 
-
         final NoteWordFragment noteWordItem = new NoteWordFragment();
-        //Set Word Adapter for Word RecyclerView (NoteTab)
-        mRecyclerWord = (RecyclerView) view.findViewById(R.id.recycle_note_word);
-        mLayoutManager = new LinearLayoutManager(getActivity());
-        mWordAdapter = new NoteWordAdapter(listWord);
-        mRecyclerWord.setAdapter(mWordAdapter);// Set CustomAdapter as the adapter for RecyclerView.
-        mRecyclerWord.addItemDecoration(new DividerItemDecoration(dividerDrawable));
         mRecyclerWord.addOnItemTouchListener(
                 new RecycleItemClickListener(getActivity().getApplicationContext(), mRecyclerWord, new RecycleItemClickListener.OnItemClickListener() {
                     @Override
@@ -140,17 +146,22 @@ public class NoteFragment extends Fragment {
                     }
                 }));
 
-        return view;
     }
 
     private void initData() {
         listSentence = new ArrayList<NoteData>();
-        listWord = new ArrayList<NoteData>();
+        listWord = new ArrayList<NoteWordData>();
 
         for(int i = 0; i < 3; i++) {
             listSentence.add(new NoteData("문장모음 " + i));
-            listWord.add(new NoteData("단어모음 " + i));
+            listWord.add(new NoteWordData("단어모음 " + i));
+/*
+            for(int j = 0; j < 20; i++) {
+                listWord.get(i).getData().add(new WordData("word" + j, "뜻" + j));
+                Log.d( TAG, String.valueOf(listWord.get(i).getData().get(j)) );
+            }*/
         }
+
     }
 
     void setVisible() {

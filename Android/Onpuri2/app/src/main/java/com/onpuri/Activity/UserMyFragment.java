@@ -14,7 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.onpuri.R;
-import com.onpuri.Server.ActivityList;
+import com.onpuri.ActivityList;
 
 
 public class UserMyFragment extends Fragment implements View.OnClickListener {
@@ -73,7 +73,7 @@ public class UserMyFragment extends Fragment implements View.OnClickListener {
         phone = new String();
         phone = getArguments().getString("MyPhone");
         tv_userPhone = (TextView)view.findViewById(R.id.tv_userPhone);
-        tv_userPhone.setText(phone);
+        tv_userPhone.setText(""+phone);
 
         nowPass = new String();
         nowPass = getArguments().getString("MyPass");

@@ -22,7 +22,7 @@ import android.widget.Toast;
 
 import com.onpuri.Adapter.TransListAdapter;
 import com.onpuri.DividerItemDecoration;
-import com.onpuri.EndlessRecyclerOnScrollListener;
+import com.onpuri.Listener.EndlessRecyclerOnScrollListener;
 import com.onpuri.R;
 import com.onpuri.Server.PacketUser;
 import com.onpuri.Server.SocketConnection;

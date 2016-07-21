@@ -15,7 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.onpuri.R;
-import com.onpuri.Server.ActivityList;
+import com.onpuri.ActivityList;
 import com.onpuri.Server.PacketInfo;
 import com.onpuri.Server.SocketConnection;
 
@@ -76,8 +76,6 @@ public class SplashActivity extends Activity {
             e.printStackTrace();
         }
 
-        tv_splash = (TextView)findViewById(R.id.tv_splash);
-        tv_splash.setText("");
         load = ".";
 
         String androID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID); //device ID get
