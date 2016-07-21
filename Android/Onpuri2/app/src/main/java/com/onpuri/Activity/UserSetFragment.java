@@ -20,7 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.onpuri.R;
-import com.onpuri.Server.ActivityList;
+import com.onpuri.ActivityList;
 import com.onpuri.Server.PacketInfo;
 import com.onpuri.Server.PacketUser;
 import com.onpuri.Server.SocketConnection;

@@ -6,7 +6,7 @@ package com.onpuri.Server;
 import android.app.Activity;
 import android.widget.Toast;
 
-import com.onpuri.Server.ActivityList;
+import com.onpuri.ActivityList;
 
 public class CloseSystem {
 

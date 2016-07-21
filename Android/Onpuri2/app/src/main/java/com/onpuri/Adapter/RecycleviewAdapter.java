@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.onpuri.EndlessRecyclerOnScrollListener;
+import com.onpuri.Listener.EndlessRecyclerOnScrollListener;
 import com.onpuri.R;
 
 import java.util.ArrayList;

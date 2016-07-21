@@ -1,4 +1,4 @@
-package com.onpuri;
+package com.onpuri.Listener;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;

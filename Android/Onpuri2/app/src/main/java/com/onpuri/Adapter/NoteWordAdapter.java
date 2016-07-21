@@ -14,7 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.onpuri.NoteData;
+import com.onpuri.Data.*;
 import com.onpuri.R;
 
 import java.util.ArrayList;
@@ -27,15 +27,15 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private static final int VIEW_TYPE_CELL = 0;
     private static final int VIEW_TYPE_FOOTER = 1;
 
-    private ArrayList<NoteData> noteWordList;
+    private ArrayList<NoteWordData> noteWordList;
 
     public TextView mWordItem;
     public ImageButton mWordMore;
     public Button mWordAdd;
     private EditText mAddItem, mChangeItem;
 
-    public NoteWordAdapter(ArrayList<NoteData> listWord) {
-        noteWordList = new ArrayList<NoteData>();
+    public NoteWordAdapter(ArrayList<NoteWordData> listWord) {
+        noteWordList = new ArrayList<NoteWordData>();
         noteWordList.addAll(listWord);
     }
 
@@ -82,14 +82,14 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         // Get element from your dataset at this position and replace the contents of the view with that element
         switch (getItemViewType(position)){
             case VIEW_TYPE_CELL:
-                Log.d(TAG, "Sentence Item set. - " + position);
+                Log.d(TAG, "Word Item set. - " + position);
 
                 final ItemViewHolder itemViewHolder = (ItemViewHolder)holder;
                 itemViewHolder.getTextView().setText(noteWordList.get(position).getName());
                 itemViewHolder.getTextView().setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View v){
-                        Log.d(TAG, "Sentence List clicked.");
+                        Log.d(TAG, "Word List clicked.");
                     }
                 });
 
@@ -167,22 +167,22 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     private void addItem(int position, String itemName) {
-        noteWordList.add(position,new NoteData(itemName));
+        noteWordList.add(position,new NoteWordData(itemName));
         Log.d(TAG, "noteWordList : " + position);
         notifyItemInserted(position);
-        notifyItemRangeChanged(0, getItemCount());
+        notifyDataSetChanged();
     }
 
     private void removeItem(int pos, String itemName){
         noteWordList.remove(pos);
-        notifyItemRangeChanged(0, getItemCount());
+        notifyDataSetChanged();
     }
 
     private void changeItem(int pos, String itemName){
         if(pos < noteWordList.size()) {
             noteWordList.get(pos).setName(itemName);
             Log.d(TAG, "noteWordList : " + pos);
-            notifyItemRangeChanged(0, getItemCount());
+            notifyDataSetChanged();
         }
     }
 

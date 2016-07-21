@@ -25,7 +25,7 @@ import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.onpuri.R;
-import com.onpuri.Server.ActivityList;
+import com.onpuri.ActivityList;
 import com.onpuri.Server.PacketUser;
 import com.onpuri.Server.SocketConnection;
 
@@ -127,27 +127,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         long tempTime = System.currentTimeMillis();
         long intervalTime = tempTime - backPressedTime;
 
-        if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime) {
-            if(mworker_out != null && mworker_out.isAlive()){  //이미 동작하고 있을 경우 중지
-                mworker_out.interrupt();
-            }
-            mworker_out = new worker_logout(true);
-            mworker_out.start();
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime) {
+                if (mworker_out != null && mworker_out.isAlive()) {  //이미 동작하고 있을 경우 중지
+                    mworker_out.interrupt();
+                }
 
-            try {
-                mworker_out.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                mworker_out = new worker_logout(true);
+                mworker_out.start();
+
+                try {
+                    mworker_out.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                if (setting.getBoolean("autoLogin", false) == false) {
+                    editor.clear();
+                    editor.commit();
+                }
+                finish();
             }
-            if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-                mDrawerLayout.closeDrawer(GravityCompat.START);
-            } else {
-                super.onBackPressed();
+            else{
+                backPressedTime = tempTime;
+                Toast.makeText(getApplicationContext(), "\'뒤로\' 버튼을 한번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT).show();
             }
-        }
-        else{
-            backPressedTime = tempTime;
-            Toast.makeText(getApplicationContext(), "\'뒤로\' 버튼을 한번 더 누르시면 종료됩니다." , Toast.LENGTH_SHORT).show();
         }
 
     }

@@ -15,7 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.onpuri.Adapter.RecycleviewAdapter;
 import com.onpuri.DividerItemDecoration;
-import com.onpuri.EndlessRecyclerOnScrollListener;
+import com.onpuri.Listener.EndlessRecyclerOnScrollListener;
+import com.onpuri.Listener.HomeItemClickListener;
 import com.onpuri.R;
 import com.onpuri.Server.PacketUser;
 import com.onpuri.Server.SocketConnection;
@@ -35,8 +36,8 @@ public class HomeFragment extends Fragment {
 
     private worker_sentence_list mworker_sentence;
 
-    ArrayList<String> listSentence;
-    ArrayList<String> listSentenceNum;
+    ArrayList<String> listSentence = new ArrayList<String>();
+    ArrayList<String> listSentenceNum = new ArrayList<String>();
     PacketUser userSentence;
 
     int i, index;
@@ -60,6 +61,9 @@ public class HomeFragment extends Fragment {
     private int ival = 0;
     private int loadLimit = 10;
     private int total = 0;
+    private int sentence_num = 0;
+
+    Bundle args = new Bundle();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -73,7 +77,9 @@ public class HomeFragment extends Fragment {
         } catch (InflateException e) {
             /* map is already there, just return view as it is */
         }
+        sentence_num = 0;
         userSentence = new PacketUser();
+
         listSentence = new ArrayList<String>();
         listSentenceNum = new ArrayList<String>();
 
@@ -119,10 +125,8 @@ public class HomeFragment extends Fragment {
                 })
         );
 
-
         Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_dark);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(dividerDrawable));
-
 
         return view;
     }
@@ -192,8 +196,9 @@ public class HomeFragment extends Fragment {
                 outData[1] = (byte) PacketUser.USR_MSL;
                 outData[2] = (byte) PacketUser.getSEQ();
                 outData[3] = (byte) PacketUser.USR_MSL_LEN;
-                outData[4] = (byte) 10;
-                outData[5] = (byte) 85;
+                outData[4] = (byte) ((byte) sentence_num/255);
+                outData[5] = (byte) ((byte) sentence_num%255);
+                outData[6] = (byte) 85;
                 try {
                     i = 0;
                     dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
@@ -258,6 +263,7 @@ public class HomeFragment extends Fragment {
                         userSentence.setSentenceNum(num);
                         total++;
                         i++;
+                        sentence_num = Integer.parseInt(num);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
