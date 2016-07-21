@@ -263,7 +263,7 @@ public class HomeFragment extends Fragment {
                         userSentence.setSentenceNum(num);
                         total++;
                         i++;
-                        sentence_num = Integer.parseInt(num);
+//                        sentence_num = Integer.parseInt(num);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();

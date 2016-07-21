@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.view.InflateException;
 import android.view.LayoutInflater;
@@ -61,6 +62,12 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
     }
     @Override
     public void onClick(View v) {
+        final FragmentTransaction ft = getFragmentManager().beginTransaction();
+
+        final Bundle args = new Bundle();
+        args.putString("sen", sentence);
+        args.putString("sen_trans", trans);
+
         switch (v.getId()) {
             case R.id.add_note:
                 final CharSequence[] items = {"노트1", "노트2", "노트3"};
@@ -81,8 +88,13 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
                 toast.show();
                 break;
             case R.id.item_edit:
-                toast = Toast.makeText(getActivity(), "편집(화면구현예정)", Toast.LENGTH_SHORT);
-                toast.show();
+                final TransEditFragment tef = new TransEditFragment();
+                args.putString("sen", sentence);
+                args.putString("sen_trans", trans);
+                tef.setArguments(args);
+                ft.replace(R.id.root_frame, tef);
+                ft.addToBackStack(null);
+                ft.commit();
                 break;
         }
     }

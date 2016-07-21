@@ -52,7 +52,9 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
     TextView item;
     String sentence = "";
     String sentence_num = "";
-    int i, index;
+    int i=0;
+    int index;
+    int count=0;
 
     private RecyclerView RecyclerView;
     private TransListAdapter Adapter;
@@ -148,10 +150,9 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
         for (int i = 0; i < loadLimit; i++) {
             list_trans.add(trans.get(i).toString());
-            System.out.println(list_trans.get(i));
+            ival++;
         }
 
     }
@@ -250,36 +251,44 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
                     dos.flush();
                     dis = new DataInputStream(SocketConnection.socket.getInputStream());
 
-                    while (i < 3) {
+                    while( i < 3) {
                         dis.read(temp, 0, 4);
                         for (index = 0; index < 4; index++) {
                             inData[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
                         }
-                        dis.read(temp, 0, 1 + (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]));
+                        if(inData[1] == PacketUser.ACK_SEN) {
+                            dis.read(temp, 0, 1 + (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]));
 
-                        for (index = 0; index <= (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]); index++) {
-                            inData[index + 4] = temp[index];    // 패킷의 Data부분을 inData에 추가해준다.
-                        }
-
-                        int SOF = inData[0];
-                        byte[] tmp = new byte[261];
-                        int trans_len;
-
-                        trans_len = ((int) inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);
-
-                        index = 0;
-                        int byteI = 0;
-                        while (true) { //solving
-                            if (index == trans_len)
-                                break;
-                            else {
-                                tmp[byteI] += inData[4 + index];
-                                index++;
-                                byteI++;
+                            for (index = 0; index <= (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]); index++) {
+                                inData[index + 4] = temp[index];    // 패킷의 Data부분을 inData에 추가해준다.
                             }
+
+                            int SOF = inData[0];
+                            byte[] tmp = new byte[261];
+                            int trans_len;
+
+                            trans_len = ((int) inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);
+
+                            index = 0;
+                            int byteI = 0;
+                            while (true) { //solving
+                                if (index == trans_len)
+                                    break;
+                                else {
+                                    tmp[byteI] += inData[4 + index];
+                                    index++;
+                                    byteI++;
+                                }
+                            }
+                            trans.add(new String(tmp, 0, byteI));
+                            i++;
                         }
-                        trans.add(new String(tmp, 0, byteI));
-                        i++;
+                        else {
+                            trans.add("none");
+                            trans.add("none");
+                            trans.add("none");
+                            i=4;
+                        }
                     }
                 } catch (IOException e) {
                     e.printStackTrace();

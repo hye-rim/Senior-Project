@@ -42,7 +42,8 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
     byte[] inData = new byte[261];
     byte[] temp = new byte[261];
 
-    int i, index;
+    int i=0;
+    int index;
     List trans = new ArrayList();
 
     private static View view;
@@ -279,36 +280,51 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                     dos.flush();
                     dis = new DataInputStream(SocketConnection.socket.getInputStream());
 
-                    while( i < 3) {
+                    while(i < 3) {
+                        Log.d(TAG, "while"+i);
                         dis.read(temp, 0, 4);
+                        System.out.println("read");
                         for (index = 0; index < 4; index++) {
                             inData[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
                         }
-                        dis.read(temp, 0, 1 + (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]));
+                        System.out.println("1 : " + inData[1]);
+                        if(inData[1] == PacketUser.ACK_SEN){
+                            Log.d(TAG, "해석있음"+i);
+                            dis.read(temp, 0, 1 + (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]));
 
-                        for (index = 0; index <= (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]); index++) {
-                            inData[index + 4] = temp[index];    // 패킷의 Data부분을 inData에 추가해준다.
-                        }
-
-                        int SOF = inData[0];
-                        byte[] tmp = new byte[261];
-                        int trans_len;
-
-                        trans_len = ((int) inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);
-
-                        index = 0;
-                        int byteI = 0;
-                        while (true) { //solving
-                            if (index == trans_len)
-                                break;
-                            else {
-                                tmp[byteI] += inData[4 + index];
-                                index++;
-                                byteI++;
+                            for (index = 0; index <= (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]); index++) {
+                                inData[index + 4] = temp[index];    // 패킷의 Data부분을 inData에 추가해준다.
                             }
+
+                            int SOF = inData[0];
+                            byte[] tmp = new byte[261];
+                            int trans_len;
+
+                            trans_len = ((int) inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);
+
+                            index = 0;
+                            int byteI = 0;
+                            while (true) { //solving
+                                if (index == trans_len)
+                                    break;
+                                else {
+                                    tmp[byteI] += inData[4 + index];
+                                    index++;
+                                    byteI++;
+                                }
+                            }
+                            trans.add(new String(tmp, 0, byteI));
+                            Log.d(TAG, "해석있음 끝"+i);
+                            i++;
                         }
-                        trans.add(new String(tmp, 0, byteI));
-                        i++;
+                        else {
+                            Log.d(TAG, "해석없음"+i);
+                            trans.add("none");
+                            Log.d(TAG, "해석없음 끝"+i);
+                            i++;
+                        }
+                        Log.d(TAG, "while 끝"+i);
+
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
