@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +47,8 @@ public class NoteWordFragment  extends Fragment implements View.OnClickListener 
 
     String itemName;
 
+    private FrameLayout mItemFrame;
+    private FragmentManager mFragmentManager;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (view != null) {
@@ -56,12 +61,14 @@ public class NoteWordFragment  extends Fragment implements View.OnClickListener 
         } catch (InflateException e) {
             //map is already there, just return view as it is
         }
+        mFragmentManager = getFragmentManager();
 
         tvItemName = (TextView)view.findViewById(R.id.note_word_name);
         if (getArguments() != null) {   //클릭한 단어이름 저장
             itemName = getArguments().getString("wordItemName");
             tvItemName.setText(itemName);
         }
+
 
         initData();
         Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_light);
@@ -100,7 +107,14 @@ public class NoteWordFragment  extends Fragment implements View.OnClickListener 
                 Toast.makeText(getActivity(),"내일 화면 추가 예정입니다.",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.note_word_test:
-                Toast.makeText(getActivity(),"내일 화면 추가 예정입니다.",Toast.LENGTH_SHORT).show();
+                NoteWordTestFragment noteWordTest = new NoteWordTestFragment();
+                Bundle args = new Bundle();
+                args.putInt("wordCount", itemWord.size() );
+                noteWordTest.setArguments(args);
+
+                FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.note_item, noteWordTest)
+                        .commit();
                 break;
             case R.id.note_word_edit:
                 Toast.makeText(getActivity(),"내일 화면 추가 예정입니다.",Toast.LENGTH_SHORT).show();

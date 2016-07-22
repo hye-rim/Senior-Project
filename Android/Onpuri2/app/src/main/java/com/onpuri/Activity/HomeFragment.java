@@ -9,10 +9,12 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.onpuri.Adapter.RecycleviewAdapter;
 import com.onpuri.DividerItemDecoration;
 import com.onpuri.Listener.EndlessRecyclerOnScrollListener;
@@ -20,6 +22,7 @@ import com.onpuri.Listener.HomeItemClickListener;
 import com.onpuri.R;
 import com.onpuri.Server.PacketUser;
 import com.onpuri.Server.SocketConnection;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -61,7 +64,7 @@ public class HomeFragment extends Fragment {
     private int ival = 0;
     private int loadLimit = 10;
     private int total = 0;
-    private int sentence_num = 0;
+    private int sentence_num;
 
     Bundle args = new Bundle();
 
@@ -191,14 +194,16 @@ public class HomeFragment extends Fragment {
         public void run() {
             super.run();
             while (isPlay) {
-                System.out.println("1");
+                int sNum = sentence_num/255;
+                int sNumN = sentence_num%255;
                 outData[0] = (byte) PacketUser.SOF;
                 outData[1] = (byte) PacketUser.USR_MSL;
                 outData[2] = (byte) PacketUser.getSEQ();
                 outData[3] = (byte) PacketUser.USR_MSL_LEN;
-                outData[4] = (byte) ((byte) sentence_num/255);
-                outData[5] = (byte) ((byte) sentence_num%255);
-                outData[6] = (byte) 85;
+                outData[4] = (byte) sNum;
+                outData[5] = (byte) sNumN;
+                outData[6] = (byte) PacketUser.CRC;
+                Log.d(TAG, outData[4] + ", " + outData[5] + ", " + outData[6]);
                 try {
                     i = 0;
                     dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
@@ -263,7 +268,8 @@ public class HomeFragment extends Fragment {
                         userSentence.setSentenceNum(num);
                         total++;
                         i++;
-//                        sentence_num = Integer.parseInt(num);
+                        sentence_num++;
+
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
