@@ -14,6 +14,7 @@ import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.onpuri.Adapter.RecycleviewAdapter;
 import com.onpuri.DividerItemDecoration;
@@ -65,6 +66,7 @@ public class HomeFragment extends Fragment {
     private int loadLimit = 10;
     private int total = 0;
     private int sentence_num;
+    private Boolean sentenceEnd = false;
 
     Bundle args = new Bundle();
 
@@ -86,7 +88,8 @@ public class HomeFragment extends Fragment {
         listSentence = new ArrayList<String>();
         listSentenceNum = new ArrayList<String>();
 
-        loadData(current_page);
+        if(!sentenceEnd)
+            loadData(current_page);
 
         final HomeSentenceFragment hsf = new HomeSentenceFragment();
 
@@ -101,6 +104,8 @@ public class HomeFragment extends Fragment {
             @Override
             public void onLoadMore(int current_page) {
                 loadMoreData(current_page);
+                if(sentenceEnd)
+                    Toast.makeText(getActivity(),"불러올 문장이 더이상 없습니다.", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -150,6 +155,7 @@ public class HomeFragment extends Fragment {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
         for (int i = 0; i < loadLimit; i++) {
             listSentence.add(userSentence.arrSentence.get(i));
             listSentenceNum.add(userSentence.arrSentenceNum.get(i));
@@ -159,8 +165,6 @@ public class HomeFragment extends Fragment {
 
     // adding 10 object creating dymically to arraylist and updating recyclerview when ever we reached last item
     private void loadMoreData(int current_page) {
-        loadLimit = ival+10;
-
         if (mworker_sentence != null && mworker_sentence.isAlive()) {  //이미 동작하고 있을 경우 중지
             mworker_sentence.interrupt();
         }
@@ -172,12 +176,23 @@ public class HomeFragment extends Fragment {
             e.printStackTrace();
         }
 
-        for (int i = ival; i < loadLimit; i++) {
-            listSentence.add(userSentence.arrSentence.get(i));
-            listSentenceNum.add(userSentence.arrSentenceNum.get(i));
-            ival++;
+        if(!sentenceEnd) {
+            loadLimit = ival + 10;
+
+            for (int i = ival; i < loadLimit; i++) {
+                listSentence.add(userSentence.arrSentence.get(i));
+                listSentenceNum.add(userSentence.arrSentenceNum.get(i));
+                ival++;
+            }
+            mAdapter.notifyDataSetChanged();
         }
-        mAdapter.notifyDataSetChanged ();
+
+        else{
+            if (mworker_sentence != null && mworker_sentence.isAlive()) {  //이미 동작하고 있을 경우 중지
+                mworker_sentence.interrupt();
+            }
+
+        }
     }
 
     class worker_sentence_list extends Thread {
@@ -194,23 +209,26 @@ public class HomeFragment extends Fragment {
         public void run() {
             super.run();
             while (isPlay) {
-                int sNum = sentence_num/255;
-                int sNumN = sentence_num%255;
+                int sNum = sentence_num/255 + 1;
+                int sNumN = sentence_num%255 + 1;
+
                 outData[0] = (byte) PacketUser.SOF;
                 outData[1] = (byte) PacketUser.USR_MSL;
                 outData[2] = (byte) PacketUser.getSEQ();
                 outData[3] = (byte) PacketUser.USR_MSL_LEN;
-                outData[4] = (byte) sNum;
-                outData[5] = (byte) sNumN;
+                outData[4] = (byte) sNum; //255이하일 때 1
+                outData[5] = (byte) sNumN; //255이하일 때 몫 + 1\
                 outData[6] = (byte) PacketUser.CRC;
-                Log.d(TAG, outData[4] + ", " + outData[5] + ", " + outData[6]);
+
                 try {
                     i = 0;
                     dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
                     dos.write(outData, 0, outData[3] + 5); // packet transmission
                     dos.flush();
 
+
                     dis = new DataInputStream(SocketConnection.socket.getInputStream());
+
                     while (i < 10) {
                         //문장
                         dis.read(temp, 0, 4);
@@ -218,63 +236,71 @@ public class HomeFragment extends Fragment {
                             inData[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
                         }
 
+                        if(inData[1] == PacketUser.ACK_NSEN){
+                            sentenceEnd = true;
+                            Log.d(TAG, "no more : " + String.valueOf(sentenceEnd));
+                            i = 10;
+                            isPlay = false;
+                        }
+
                         dis.read(temp, 0, 1 + (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]));
 
                         for (index = 0; index <= (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]); index++) {
                             inData[index + 4] = temp[index];    // 패킷의 Data부분을 inData에 추가해준다.
                         }
-                        //문장번호
-                        dis.read(temp, 0, 4);
-                        for (index = 0; index < 4; index++) {
-                            senData[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
-                        }
 
-                        dis.read(temp, 0, 1 + (senData[3] <= 0 ? (int) senData[3] + 256 : (int) senData[3]));
-
-                        for (index = 0; index <= (senData[3] <= 0 ? (int) senData[3] + 256 : (int) senData[3]); index++) {
-                            senData[index + 4] = temp[index];    // 패킷의 Data부분을 inData에 추가해준다.
-                        }
-
-                        int SOF = inData[0];
-                        System.out.println("0 : " + inData[0]);
-                        System.out.println("1 : " + inData[1]);
-                        System.out.println("2 : " + inData[2]);
-                        System.out.println("3 : " + inData[3]);
-                        System.out.println("5 : " + (char) inData[5]);
-
-                        PacketUser.sentence_len = ((int) inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);
-
-                        index = 0;
-                        String str = "";
-                        String num = Character.toString((char) senData[4])
-                                + Character.toString((char) senData[5])
-                                + Character.toString((char) senData[6]);
-
-                        System.out.println("len : " + PacketUser.sentence_len);
-                        System.out.println(num);
-
-                        while (true) { //solving
-                            System.out.print((char) inData[4 + index]);
-
-                            if (index == PacketUser.sentence_len)
-                                break;
-                            else {
-                                str += (char) inData[4 + index];
-                                index++;
+                        if(!sentenceEnd) {
+                            //문장번호
+                            dis.read(temp, 0, 4);
+                            for (index = 0; index < 4; index++) {
+                                senData[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
                             }
+
+                            dis.read(temp, 0, 1 + (senData[3] <= 0 ? (int) senData[3] + 256 : (int) senData[3]));
+
+                            for (index = 0; index <= (senData[3] <= 0 ? (int) senData[3] + 256 : (int) senData[3]); index++) {
+                                senData[index + 4] = temp[index];    // 패킷의 Data부분을 inData에 추가해준다.
+                            }
+
+                            int SOF = inData[0];
+                            System.out.println("0 : " + inData[0]);
+                            System.out.println("1 : " + inData[1]);
+                            System.out.println("2 : " + inData[2]);
+                            System.out.println("3 : " + inData[3]);
+                            System.out.println("5 : " + (char) inData[5]);
+
+                            PacketUser.sentence_len = ((int) inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);
+
+                            index = 0;
+                            String str = "";
+                            String num = Character.toString((char) senData[4])
+                                    + Character.toString((char) senData[5])
+                                    + Character.toString((char) senData[6]);
+
+                            System.out.println("len : " + PacketUser.sentence_len);
+                            System.out.println(num);
+
+                            while (true) { //한글?
+                                System.out.print((char) inData[4 + index]);
+                                if (index == PacketUser.sentence_len)
+                                    break;
+                                else {
+                                    str += (char) inData[4 + index];
+                                    index++;
+                                }
+                            }
+
+                            userSentence.setSentence(str);
+                            userSentence.setSentenceNum(num);
+                            total++;
+                            i++;
+                            sentence_num++;
                         }
-
-                        userSentence.setSentence(str);
-                        userSentence.setSentenceNum(num);
-                        total++;
-                        i++;
-                        sentence_num++;
-
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                isPlay = !isPlay;
+                isPlay = false;
 
             }
         }

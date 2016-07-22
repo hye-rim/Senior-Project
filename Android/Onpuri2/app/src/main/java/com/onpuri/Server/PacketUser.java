@@ -34,7 +34,7 @@ public class PacketUser extends Application {
             nowPass = "";
     public ArrayList<String> arrSentence = new ArrayList<String>();
     public ArrayList<String> arrSentenceNum = new ArrayList<String>();
-    public int data_len;
+    public static int data_len;
     public static int sentence_len;
 
     private static int SEQ = 0;

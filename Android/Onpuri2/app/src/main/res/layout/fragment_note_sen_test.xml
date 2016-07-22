@@ -8,12 +8,12 @@
         android:gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/pick_word_test" />
+        android:id="@+id/pick_sen_test" />
     <Button
         android:layout_marginTop="20dp"
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:background="@color/fuzzy_peach"
-        android:id="@+id/btn_word_test_start"
+        android:id="@+id/btn_sen_test_start"
         android:text="시험 시작"/>
 </LinearLayout>
