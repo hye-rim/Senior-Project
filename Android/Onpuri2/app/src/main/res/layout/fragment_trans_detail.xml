@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#faf5b3">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="600dp"
+        android:background="#faf5b3">
+        <LinearLayout
+            android:paddingRight="5px"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:orientation="vertical"
+            android:backgroundTint="#662727"
+            android:backgroundTintMode="src_in">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:id="@+id/tv_sentence"
+                android:textSize="15dp"
+                android:text="영어 문장 내용"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:paddingRight="5px"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:orientation="vertical"
+            android:backgroundTint="#662727"
+            android:backgroundTintMode="src_in">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right">
+
+                <Button
+                    android:layout_width="100dp"
+                    android:layout_height="30dp"
+                    android:text="노트에 추가"
+                    android:id="@+id/add_note"
+                    android:textIsSelectable="false"
+                    android:layout_marginRight="20dp"
+                    android:gravity="center"
+                    android:textSize="10dp"
+                    android:layout_gravity="right" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:textSize="14dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:textColor="@color/black"
+            android:lineSpacingExtra="3dp"
+            android:ellipsize="end"
+            android:id="@+id/trans_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="user id"/>
+
+        <TextView
+            android:textSize="16dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:textColor="@color/black"
+            android:lineSpacingExtra="3dp"
+            android:ellipsize="end"
+            android:id="@+id/trans_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="none" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:weightSum="1">
+            <TextView
+                android:textSize="14dp"
+                android:layout_marginLeft="8dp"
+                android:textColor="@color/black"
+                android:lineSpacingExtra="3dp"
+                android:ellipsize="end"
+                android:id="@+id/reco"
+                android:layout_width="60dp"
+                android:layout_height="match_parent"
+                android:text="추천수 : 00"
+                android:layout_weight="0.90" />
+            <TextView
+                android:textSize="14dp"
+                android:layout_marginRight="8dp"
+                android:textColor="@color/black"
+                android:lineSpacingExtra="3dp"
+                android:ellipsize="end"
+                android:id="@+id/day"
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
+                android:text="2016.00.00" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <FrameLayout
+                android:layout_width="200dp"
+                android:layout_height="match_parent">
+
+                <Button
+                    android:textSize="14dp"
+                    android:layout_width="150dp"
+                    android:layout_height="40dp"
+                    android:text="추천하기"
+                    android:id="@+id/item_reco"
+                    android:layout_marginLeft="8dp"
+                    android:gravity="center_vertical|center_horizontal" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <Button
+                    android:textSize="14dp"
+                    android:layout_width="150dp"
+                    android:layout_height="40dp"
+                    android:text="편집하기"
+                    android:id="@+id/item_edit"
+                    android:layout_marginRight="8dp"
+                    android:layout_gravity="right"
+                    android:gravity="center_vertical|center_horizontal" />
+            </FrameLayout>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+</ScrollView>
+
+

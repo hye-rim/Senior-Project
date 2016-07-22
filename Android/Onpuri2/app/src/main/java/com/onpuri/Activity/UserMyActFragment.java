@@ -1,16 +1,13 @@
 package com.onpuri.Activity;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,15 +20,9 @@ import android.widget.Toast;
 import com.onpuri.Adapter.MyActNewAdapter;
 import com.onpuri.Adapter.MyActRecordAdapter;
 import com.onpuri.Adapter.MyActTranslateAdapter;
-import com.onpuri.Adapter.NoteSenAdapter;
-import com.onpuri.Adapter.NoteWordAdapter;
-import com.onpuri.Adapter.RecycleviewAdapter;
 import com.onpuri.DividerItemDecoration;
-import com.onpuri.NoteData;
+import com.onpuri.Listener.RecyclerItemClickListener;
 import com.onpuri.R;
-import com.onpuri.RecycleItemClickListener;
-import com.onpuri.RecyclerItemClickListener;
-import com.onpuri.Server.ActivityList;
 
 import java.util.ArrayList;
 

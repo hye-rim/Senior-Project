@@ -13,7 +13,9 @@ import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.onpuri.Adapter.NoteSenItemAdapter;
 import com.onpuri.DividerItemDecoration;
@@ -21,12 +23,13 @@ import com.onpuri.R;
 
 import java.util.ArrayList;
 
+import static com.onpuri.R.drawable.default_profile;
 import static com.onpuri.R.drawable.divider_light;
 
 /**
  * Created by HYERIM on 2016-07-11.
  */
-public class NoteSenFragment extends Fragment {
+public class NoteSenFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "NoteSenFragment";
     private static View view;
 
@@ -35,6 +38,7 @@ public class NoteSenFragment extends Fragment {
     private RecyclerView mRecyclerSenItem;
     private RecyclerView.Adapter mSenAdapter;
     private TextView tvItemName;
+    private Button btn_listen, btn_test, btn_edit;
 
     protected RecyclerView.LayoutManager mLayoutManager;
     private Context context;
@@ -70,6 +74,13 @@ public class NoteSenFragment extends Fragment {
         mRecyclerSenItem.setAdapter(mSenAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerSenItem.addItemDecoration(new DividerItemDecoration(dividerDrawable));
 
+        btn_listen = (Button)view.findViewById(R.id.note_sen_listen);
+        btn_test = (Button)view.findViewById(R.id.note_sen_test);
+        btn_edit = (Button)view.findViewById(R.id.note_sen_edit);
+
+        btn_listen.setOnClickListener(this);
+        btn_test.setOnClickListener(this);
+        btn_edit.setOnClickListener(this);
 
         return view;
     }
@@ -79,6 +90,23 @@ public class NoteSenFragment extends Fragment {
 
         for(int i = 0; i < 10; i++) {
             itemSentence.add("문장 " + i);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.note_sen_listen:
+                Toast.makeText(getActivity(),"내일 화면 추가 예정입니다.",Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.note_sen_test:
+                Toast.makeText(getActivity(),"내일 화면 추가 예정입니다.",Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.note_sen_edit:
+                Toast.makeText(getActivity(),"내일 화면 추가 예정입니다.",Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                break;
         }
     }
 }

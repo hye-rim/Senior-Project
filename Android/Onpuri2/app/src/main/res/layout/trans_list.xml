@@ -30,7 +30,7 @@
             android:textColor="@color/black"
             android:lineSpacingExtra="3dp"
             android:ellipsize="end"
-            android:id="@+id/tv_trans_item_reco"
+            android:id="@+id/reco"
             android:layout_width="60dp"
             android:layout_height="match_parent"
             android:text="추천수 : 00"
@@ -41,7 +41,7 @@
             android:textColor="@color/black"
             android:lineSpacingExtra="3dp"
             android:ellipsize="end"
-            android:id="@+id/tv_trans_item_day"
+            android:id="@+id/day"
             android:layout_width="80dp"
             android:layout_height="match_parent"
             android:text="2016.00.00" />

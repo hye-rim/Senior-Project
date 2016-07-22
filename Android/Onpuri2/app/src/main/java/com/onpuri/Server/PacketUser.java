@@ -1,9 +1,6 @@
 package com.onpuri.Server;
 
 import android.app.Application;
-import android.content.Intent;
-import android.os.Bundle;
-import android.widget.ArrayAdapter;
 
 import java.util.ArrayList;
 
@@ -21,21 +18,23 @@ public class PacketUser extends Application {
     public static char USR_REG = 9;
     static public char USR_REG_LEN;
     static public char ACK_URG = 10, ACK_URG_LEN = 1;
-    static public char USR_MSL = 11, USR_MSL_LEN; //user main sentence list
+    static public char USR_MSL = 11, USR_MSL_LEN = 2; //user main sentence list
     static public char ACK_UMS = 12, ACK_UMS_LEN = 1; //ack user main sentence
     static public char USR_SEN = 13;
     static public char ACK_SEN = 14;
+    static public char ACK_NTRNAS = 15;
     static public char USR_LEV = 99;
     static public char ACK_LEV = 100;
 
     public static char SOF = 0xcc;//Decimal=204
     static public char CRC = 0x55;//Decimal=85
 
-    static public String userId = "", name = "", joinDate = "", phone = "",
+    public String userId = "", name = "", joinDate = "", phone = "",
             nowPass = "";
-    static public ArrayList<String> arrSentence = new ArrayList<String>();
-    static public ArrayList<String> arrSentenceNum = new ArrayList<String>();
-    static public int data_len, sentence_len;
+    public ArrayList<String> arrSentence = new ArrayList<String>();
+    public ArrayList<String> arrSentenceNum = new ArrayList<String>();
+    public int data_len;
+    public static int sentence_len;
 
     private static int SEQ = 0;
 
@@ -51,11 +50,11 @@ public class PacketUser extends Application {
             SEQ++;
     }
 
-    static public void setSentence(String str) {
+    public void setSentence(String str) {
         arrSentence.add(str);
         System.out.println("string : " + arrSentence.get(0));
     }
-    static public void setSentenceNum(String num) {
+    public void setSentenceNum(String num) {
         arrSentenceNum.add(num);
         System.out.println("string_num : " + arrSentenceNum.get(0));
     }

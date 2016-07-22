@@ -1,32 +1,24 @@
 package com.onpuri.Activity;
 
-import android.graphics.drawable.Drawable;
-import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
-import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.onpuri.R;
 
-import java.io.IOException;
-
 /**
  * Created by kutemsys on 2016-07-16.
  */
 
-public class AddListenFragment extends Fragment implements View.OnClickListener {
+public class ListenAddFragment extends Fragment implements View.OnClickListener {
 
     private static View view;
     private Toast toast;
@@ -34,8 +26,7 @@ public class AddListenFragment extends Fragment implements View.OnClickListener 
     TextView item;
     String sentence = "";
 
-    static final String RECORDED_FILE = "/Docouments/recorded.mp4";
-    MediaPlayer player;
+    static final String RECORDED_FILE = "/DailyE_record/recorded.mp4";
     MediaRecorder recorder;
     boolean Islisten = true;
     boolean Isplay = true;
@@ -48,7 +39,7 @@ public class AddListenFragment extends Fragment implements View.OnClickListener 
                 parent.removeView(view);
         }
         try {
-            view = inflater.inflate(R.layout.fragment_add_listen, container, false);
+            view = inflater.inflate(R.layout.fragment_listen_add, container, false);
         } catch (InflateException e) {
     /* map is already there, just return view as it is */
         }
@@ -77,8 +68,7 @@ public class AddListenFragment extends Fragment implements View.OnClickListener 
             case R.id.listen:
                 Button btn_listen = (Button) view.findViewById(R.id.listen);
                 if (Islisten) {
-
-                      /*if (recorder != null) {
+                  /*  if (recorder != null) {
                         recorder.stop();
                         recorder.release();
                         recorder=null;

@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.onpuri.Listener.EndlessRecyclerOnScrollListener;
 import com.onpuri.R;
 
 import java.util.ArrayList;
@@ -27,7 +28,6 @@ public class RecycleviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         this.senList=listSentence;
 
     }
-
     public class ItemViewHolder extends RecyclerView.ViewHolder {
         public TextView mSenItem;
 
@@ -60,11 +60,7 @@ public class RecycleviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
         itemViewHolder.mSenItem.setText(senList.get(position));
 
-        if (position % 2 == 0) {
-            itemViewHolder.itemView.setBackgroundColor(Color.parseColor("#faf5b3"));
-        } else {
-            itemViewHolder.itemView.setBackgroundColor(Color.parseColor("#FEE098"));
-        }
+        itemViewHolder.itemView.setBackgroundColor(Color.parseColor("#FDF5D2"));
     }
 
     @Override

@@ -4,7 +4,6 @@ import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Build;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,7 +15,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.onpuri.NoteData;
+import com.onpuri.Data.NoteData;
 import com.onpuri.R;
 
 import java.util.ArrayList;

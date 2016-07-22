@@ -12,9 +12,10 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.onpuri.R;
-import com.onpuri.Server.ActivityList;
+import com.onpuri.ActivityList;
 import com.onpuri.Server.PacketInfo;
 import com.onpuri.Server.SocketConnection;
 
@@ -44,9 +45,6 @@ public class SplashActivity extends Activity {
     private ActivityList actManager = ActivityList.getInstance();
 
     int i;
-    //data to the server
-    //String SOF,DATA;
-    //int OPC, SEQ, LEN, CRC;
 
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -78,8 +76,6 @@ public class SplashActivity extends Activity {
             e.printStackTrace();
         }
 
-        tv_splash = (TextView)findViewById(R.id.tv_splash);
-        tv_splash.setText("");
         load = ".";
 
         String androID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID); //device ID get
@@ -135,13 +131,6 @@ public class SplashActivity extends Activity {
     protected void onStop() {
         // TODO Auto-generated method stub
         super.onStop();
-        //if(socket != null) {
-   /*         try {
-              //  socket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }*/
-        //  }
     }
 
     Thread worker = new Thread() {
@@ -164,9 +153,15 @@ public class SplashActivity extends Activity {
                 dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
                 dos.write (outData,0,outData[3]+5);
                 dos.flush();
+            } catch (IOException e) {
+                Toast.makeText( getApplicationContext() ,"서버와의 연결이 현재 불가능합니다.",Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            }
+
+            try {
                 dis = new DataInputStream(SocketConnection.socket.getInputStream());
                 dis.read(inData);
-                //System.out.println("Data form server: " + ((char)inData[0].) + (char)inData[1]);
+
                 int SOF = inData[0];
 
                 System.out.println(inData[0]);
@@ -187,12 +182,6 @@ public class SplashActivity extends Activity {
     {//:: LG-F340L
         TelephonyManager mgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
         return mgr.getDeviceId();
-    }
-
-    public String getPhoneNumber()
-    {
-        TelephonyManager mgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-        return mgr.getLine1Number();
     }
 
     @Override

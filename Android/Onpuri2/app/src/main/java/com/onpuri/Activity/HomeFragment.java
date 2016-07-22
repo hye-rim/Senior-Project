@@ -15,7 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.onpuri.Adapter.RecycleviewAdapter;
 import com.onpuri.DividerItemDecoration;
-import com.onpuri.EndlessRecyclerOnScrollListener;
+import com.onpuri.Listener.EndlessRecyclerOnScrollListener;
+import com.onpuri.Listener.HomeItemClickListener;
 import com.onpuri.R;
 import com.onpuri.Server.PacketUser;
 import com.onpuri.Server.SocketConnection;
@@ -35,8 +36,8 @@ public class HomeFragment extends Fragment {
 
     private worker_sentence_list mworker_sentence;
 
-    ArrayList<String> listSentence;
-    ArrayList<String> listSentenceNum;
+    ArrayList<String> listSentence = new ArrayList<String>();
+    ArrayList<String> listSentenceNum = new ArrayList<String>();
     PacketUser userSentence;
 
     int i, index;
@@ -60,7 +61,10 @@ public class HomeFragment extends Fragment {
     private int ival = 0;
     private int loadLimit = 10;
     private int total = 0;
+    private int sentence_num = 0;
+
     Bundle args = new Bundle();
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (view != null) {
@@ -73,15 +77,17 @@ public class HomeFragment extends Fragment {
         } catch (InflateException e) {
             /* map is already there, just return view as it is */
         }
+        sentence_num = 0;
         userSentence = new PacketUser();
+
         listSentence = new ArrayList<String>();
         listSentenceNum = new ArrayList<String>();
-        loadData(current_page);
 
-        handler = new Handler();
+        loadData(current_page);
 
         final HomeSentenceFragment hsf = new HomeSentenceFragment();
 
+        handler = new Handler();
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_sentence);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -95,11 +101,13 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        mAdapter.notifyDataSetChanged();
+
         mRecyclerView.addOnItemTouchListener(
                 new HomeItemClickListener(getActivity().getApplicationContext(), mRecyclerView ,new HomeItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        mAdapter.notifyDataSetChanged();
+                        Bundle args = new Bundle();
                         args.putString("sen", listSentence.get(position));
                         args.putString("sen_num", listSentenceNum.get(position));
                         hsf.setArguments(args);
@@ -117,10 +125,8 @@ public class HomeFragment extends Fragment {
                 })
         );
 
-
         Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_dark);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(dividerDrawable));
-
 
         return view;
     }
@@ -128,15 +134,10 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
     }
     // By default, we add 10 objects for first time.
     private void loadData(int current_page) {
-
-        // I have not used current page for showing demo, if u use a webservice
-        // then it is useful for every call request
-
-        if(mworker_sentence != null && mworker_sentence.isAlive()){  //이미 동작하고 있을 경우 중지
+        if (mworker_sentence != null && mworker_sentence.isAlive()) {  //이미 동작하고 있을 경우 중지
             mworker_sentence.interrupt();
         }
         mworker_sentence = new worker_sentence_list(true);
@@ -146,24 +147,18 @@ public class HomeFragment extends Fragment {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        for (int i = ival; i < loadLimit; i++) {
+        for (int i = 0; i < loadLimit; i++) {
             listSentence.add(userSentence.arrSentence.get(i));
             listSentenceNum.add(userSentence.arrSentenceNum.get(i));
             ival++;
         }
-
     }
 
     // adding 10 object creating dymically to arraylist and updating recyclerview when ever we reached last item
     private void loadMoreData(int current_page) {
+        loadLimit = ival+10;
 
-        // I have not used current page for showing demo, if u use a webservice
-        // then it is useful for every call request
-
-        loadLimit = ival + 10;
-
-        if(mworker_sentence != null && mworker_sentence.isAlive()){  //이미 동작하고 있을 경우 중지
+        if (mworker_sentence != null && mworker_sentence.isAlive()) {  //이미 동작하고 있을 경우 중지
             mworker_sentence.interrupt();
         }
         mworker_sentence = new worker_sentence_list(true);
@@ -179,9 +174,7 @@ public class HomeFragment extends Fragment {
             listSentenceNum.add(userSentence.arrSentenceNum.get(i));
             ival++;
         }
-
-        mAdapter.notifyDataSetChanged();
-
+        mAdapter.notifyDataSetChanged ();
     }
 
     class worker_sentence_list extends Thread {
@@ -203,8 +196,9 @@ public class HomeFragment extends Fragment {
                 outData[1] = (byte) PacketUser.USR_MSL;
                 outData[2] = (byte) PacketUser.getSEQ();
                 outData[3] = (byte) PacketUser.USR_MSL_LEN;
-                outData[4] = (byte) 10;
-                outData[5] = (byte) 85;
+                outData[4] = (byte) ((byte) sentence_num/255);
+                outData[5] = (byte) ((byte) sentence_num%255);
+                outData[6] = (byte) 85;
                 try {
                     i = 0;
                     dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
@@ -241,15 +235,15 @@ public class HomeFragment extends Fragment {
                         System.out.println("1 : " + inData[1]);
                         System.out.println("2 : " + inData[2]);
                         System.out.println("3 : " + inData[3]);
-                        System.out.println("5 : " + (char) inData[5]); //sentence - second char
+                        System.out.println("5 : " + (char) inData[5]);
 
                         PacketUser.sentence_len = ((int) inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);
 
                         index = 0;
                         String str = "";
-                        String num = Character.toString((char)senData[4])
-                                + Character.toString((char)senData[5])
-                                + Character.toString((char)senData[6]);
+                        String num = Character.toString((char) senData[4])
+                                + Character.toString((char) senData[5])
+                                + Character.toString((char) senData[6]);
 
                         System.out.println("len : " + PacketUser.sentence_len);
                         System.out.println(num);
@@ -267,10 +261,9 @@ public class HomeFragment extends Fragment {
 
                         userSentence.setSentence(str);
                         userSentence.setSentenceNum(num);
-
-                        System.out.println(total + "str :" + str);
                         total++;
                         i++;
+//                        sentence_num = Integer.parseInt(num);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
