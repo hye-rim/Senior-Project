@@ -8,8 +8,8 @@ android {
         applicationId "com.onpuri"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 13
-        versionName "3.2"
+        versionCode 14
+        versionName "3.21"
     }
     buildTypes {
         release {

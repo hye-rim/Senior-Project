@@ -149,7 +149,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     editor.commit();
                 }
                 finish();
-
             }
             else{
                 backPressedTime = tempTime;
