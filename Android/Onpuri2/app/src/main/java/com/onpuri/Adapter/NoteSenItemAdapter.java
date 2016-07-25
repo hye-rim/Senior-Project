@@ -25,6 +25,7 @@ public class NoteSenItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     private TextView mSenItem;
     private TextView mSenEdit;
+
     private ImageButton mUp, mDown, mDelete;
 
     public NoteSenItemAdapter(ArrayList<String> listSentence, Boolean isEdit) {
@@ -118,6 +119,10 @@ public class NoteSenItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public int getItemViewType(int position) {
         return (isEdit ? VIEW_TYPE_EDIT : VIEW_TYPE_ITEM);
+    }
+
+    public ArrayList<String> getSenItemList() {
+        return senItemList;
     }
 
     @Override

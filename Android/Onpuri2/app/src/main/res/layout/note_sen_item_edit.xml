@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="100dp">
+    android:layout_height="60dp">
     <TextView
         android:textSize="16dp"
         android:layout_marginTop="3dp"
@@ -19,8 +19,8 @@
     <ImageButton
         android:layout_centerInParent="true"
         android:layout_toLeftOf="@+id/btn_sen_item_down"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:text="위"
         android:layout_gravity="center"
         android:background="@drawable/ic_up"
@@ -28,8 +28,8 @@
     <ImageButton
         android:layout_centerInParent="true"
         android:layout_toLeftOf="@+id/btn_sen_item_delete"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:text="아래"
         android:layout_gravity="center"
         android:background="@drawable/ic_down"
@@ -37,8 +37,8 @@
     <ImageButton
         android:layout_centerInParent="true"
         android:layout_alignParentRight="true"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:text="삭제"
         android:layout_gravity="center"
         android:background="@drawable/ic_delete"

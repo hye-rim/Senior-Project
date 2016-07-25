@@ -36,7 +36,6 @@ public class NoteSenFragment extends Fragment implements View.OnClickListener {
     ArrayList<String> itemSentence;
 
     private RecyclerView mRecyclerSenItem;
-    private RecyclerView.Adapter mSenAdapter;
     private TextView tvItemName;
     private Button btn_listen, btn_test, btn_edit;
 
@@ -100,7 +99,7 @@ public class NoteSenFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.note_sen_listen:
-                Toast.makeText(getActivity(),"내일 화면 추가 예정입니다.",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(),"기능 추가 예정입니다.",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.note_sen_test:
                 NoteSenTestFragment noteSenTest = new NoteSenTestFragment();
@@ -115,7 +114,9 @@ public class NoteSenFragment extends Fragment implements View.OnClickListener {
             case R.id.note_sen_edit:
                 isEdit = !isEdit;
                 mRecyclerSenItem.setAdapter(new NoteSenItemAdapter(itemSentence, isEdit));
-                Toast.makeText(getActivity(),"편집 모드 : " + String.valueOf(isEdit),Toast.LENGTH_SHORT).show();
+
+                if(isEdit)
+                    Toast.makeText(getActivity(),"편집 모드 : " + String.valueOf(isEdit),Toast.LENGTH_SHORT).show();
                 break;
             default:
                 break;
