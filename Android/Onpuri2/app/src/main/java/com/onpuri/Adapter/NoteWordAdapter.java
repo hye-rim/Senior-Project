@@ -167,22 +167,25 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     private void addItem(int position, String itemName) {
-        noteWordList.add(position,new NoteWordData(itemName));
+        noteWordList.add(position, new NoteWordData(itemName));
         Log.d(TAG, "noteWordList : " + position);
         notifyItemInserted(position);
-        notifyDataSetChanged();
     }
 
     private void removeItem(int pos, String itemName){
         noteWordList.remove(pos);
-        notifyDataSetChanged();
+        notifyItemRemoved(pos);
     }
 
     private void changeItem(int pos, String itemName){
-        if(pos < noteWordList.size()) {
-            noteWordList.get(pos).setName(itemName);
+        NoteWordData tmp;
+        if( getItemViewType(pos) == VIEW_TYPE_CELL ) {
+            tmp = noteWordList.get(pos);
+            noteWordList.remove(pos);
+            tmp.setName(itemName);
+            noteWordList.add(pos,tmp);
             Log.d(TAG, "noteWordList : " + pos);
-            notifyDataSetChanged();
+            notifyItemInserted(pos);
         }
     }
 

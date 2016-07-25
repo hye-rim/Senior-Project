@@ -20,13 +20,15 @@ public class NoteWordItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     private ArrayList<WordData> wordItemList = new ArrayList<>();
 
-    private TextView mWordItem, mWordItemMean;
+
 
     public NoteWordItemAdapter(ArrayList<WordData> listWord){
         wordItemList.addAll(listWord);
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
+        private TextView mWordItem, mWordItemMean;
+
         public ItemViewHolder(View v) {
             super(v);
             mWordItem = (TextView) v.findViewById(R.id.tv_note_word);
@@ -35,6 +37,9 @@ public class NoteWordItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         public TextView getTextViewWord() {  return mWordItem;  }
         public TextView getTextViewMean() { return mWordItemMean; }
     }
+
+
+
 
     //create new views(invoked by the layout manager)
     @Override
@@ -51,8 +56,8 @@ public class NoteWordItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         // Get element from your dataset at this position and replace the contents of the view with that element
         Log.d(TAG, "Word Item set. - " + position);
         ItemViewHolder itemViewHolder = (ItemViewHolder)holder;
-        itemViewHolder.getTextViewWord().setText(wordItemList.get(position).getWord());
-        itemViewHolder.getTextViewMean().setText(wordItemList.get(position).getMean());
+        itemViewHolder.mWordItem.setText(wordItemList.get(position).getWord());
+        itemViewHolder.mWordItemMean.setText(wordItemList.get(position).getMean());
         itemViewHolder.itemView.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
