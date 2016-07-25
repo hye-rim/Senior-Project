@@ -1,28 +1,23 @@
 package com.onpuri.Activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
 
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,12 +25,9 @@ import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.onpuri.R;
-import com.onpuri.Server.ActivityList;
-import com.onpuri.Server.CloseSystem;
+import com.onpuri.ActivityList;
 import com.onpuri.Server.PacketUser;
 import com.onpuri.Server.SocketConnection;
-
-import org.w3c.dom.Text;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -71,12 +63,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     DrawerLayout mDrawerLayout;
     NavigationView mNavigationView;
     FragmentManager mFragmentManager;
-    FragmentTransaction mFragmentTransaction;
 
     TextView mNavId;
 
     SharedPreferences setting;
     SharedPreferences.Editor editor;
+
+    String userId = "";
+    String name, joinDate, phone, nowPassword;
+    Bundle bundle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,7 +92,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mNavId = (TextView)findViewById(R.id.tv_nav_id);
 
         Intent intent = getIntent();
-        String userId = intent.getStringExtra("userId");
+        userId = intent.getStringExtra("UserId");
+        name = intent.getStringExtra("Name");
+        joinDate = intent.getStringExtra("JoinDate");
+        phone = intent.getStringExtra("Phone");
+        nowPassword = intent.getStringExtra("NowPass");
+
         mNavId.setText(userId + " 님");
         /**
          * Lets inflate the very first fragment
@@ -105,8 +105,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
          */
 
         mFragmentManager = getSupportFragmentManager();
-        mFragmentTransaction = mFragmentManager.beginTransaction();
-        mFragmentTransaction.replace(R.id.containerView,new TabViewPager()).commit();
+        mFragmentManager.beginTransaction()
+                .add(R.id.containerView,new TabViewPager())
+                .commit();
 
         //Setup click events on the Navigation View Items.
         mNavigationView.setNavigationItemSelectedListener(this);
@@ -125,36 +126,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onBackPressed() {
         long tempTime = System.currentTimeMillis();
         long intervalTime = tempTime - backPressedTime;
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
 
-        if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime) {
-            if(mworker_out != null && mworker_out.isAlive()){  //이미 동작하고 있을 경우 중지
-                mworker_out.interrupt();
-            }
-            mworker_out = new worker_logout(true);
-            mworker_out.start();
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime) {
+                if (mworker_out != null && mworker_out.isAlive()) {  //이미 동작하고 있을 경우 중지
+                    mworker_out.interrupt();
+                }
 
-            try {
-                mworker_out.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+                mworker_out = new worker_logout(true);
+                mworker_out.start();
 
-            if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-                mDrawerLayout.closeDrawer(GravityCompat.START);
+                try {
+                    mworker_out.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                if (setting.getBoolean("autoLogin", false) == false) {
+                    editor.clear();
+                    editor.commit();
+                }
+                finish();
             }
-            if (fm.getBackStackEntryCount() > 0) {
-                fm.popBackStack();
-                ft.commit();
+            else{
+                backPressedTime = tempTime;
+                Toast.makeText(getApplicationContext(), "\'뒤로\' 버튼을 한번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT).show();
             }
-            else {
-                super.onBackPressed();
-            }
-        }
-        else{
-            backPressedTime = tempTime;
-            Toast.makeText(getApplicationContext(), "\'뒤로\' 버튼을 한번 더 누르시면 종료됩니다." , Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -199,49 +198,69 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Handle navigation view item clicks here.
         mDrawerLayout.closeDrawers();
         if (item.getItemId() == R.id.nav_home) {
-            FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.containerView,new TabViewPager()).commit();
+            mFragmentManager.beginTransaction()
+                    .replace(R.id.containerView,new TabViewPager())
+                    .commit();
         }
         if (item.getItemId() == R.id.nav_mypage) {
-            FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.containerView,new UserMyFragment()).commit();
+            UserMyFragment MyFrament = new UserMyFragment();
+            bundle = new Bundle();
+            bundle.putString("MyId", userId);
+            bundle.putString("MyName", name);
+            bundle.putString("MyJoin", joinDate);
+            bundle.putString("MyPhone", phone);
+            bundle.putString("MyPass", nowPassword);
+            MyFrament.setArguments(bundle);
+
+            mFragmentManager.beginTransaction()
+                    .replace(R.id.containerView,MyFrament)
+                    .commit();
+
         }
         if (item.getItemId() == R.id.nav_myact) {
-            FragmentTransaction xfragmentTransaction = mFragmentManager.beginTransaction();
-            xfragmentTransaction.replace(R.id.containerView,new UserMyActFragment()).commit();
+            UserMyActFragment ActFrament = new UserMyActFragment();
+            bundle = new Bundle();
+            bundle.putString("ActId", userId);
+            ActFrament.setArguments(bundle);
+
+            mFragmentManager.beginTransaction()
+                    .replace(R.id.containerView, ActFrament)
+                    .commit();
         }
         if (item.getItemId() == R.id.nav_logout) {
             Logout();
         }
         if (item.getItemId() == R.id.nav_set) {
-            FragmentTransaction sfragmentTransaction = mFragmentManager.beginTransaction();
-            sfragmentTransaction.replace(R.id.containerView, new UserSetFragment()).commit();
+            UserSetFragment SetFrament = new UserSetFragment();
+            bundle = new Bundle();
+            bundle.putString("SetId", userId);
+            SetFrament.setArguments(bundle);
+
+            mFragmentManager.beginTransaction()
+                    .replace(R.id.containerView, SetFrament)
+                    .commit();
         }
         return false;
     }
 
     private void Logout() {
-        Log.d(TAG, "logout start");
         if(mworker_out != null && mworker_out.isAlive()){  //이미 동작하고 있을 경우 중지
             mworker_out.interrupt();
         }
-        Log.d(TAG, "logout interrupt");
+
         mworker_out = new worker_logout(true);
         mworker_out.start();
 
-        Log.d(TAG, "logout sever nenwnw");
         try {
             mworker_out.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        Log.d(TAG, "logout server ok");
         if (setting.getBoolean("autoLogin", false)) {
             editor.clear();
             editor.commit();
         }
-        Log.d(TAG, "shared ok");
 
         Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(loginIntent);

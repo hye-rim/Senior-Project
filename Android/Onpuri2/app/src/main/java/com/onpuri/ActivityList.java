@@ -1,4 +1,4 @@
-package com.onpuri.Server;
+package com.onpuri;
 
 import android.app.Activity;
 

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.onpuri.Data.WordData;
 import com.onpuri.R;
 
 import java.util.ArrayList;
@@ -17,23 +18,28 @@ import java.util.ArrayList;
 public class NoteWordItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final String TAG = "NoteWordItemAdapter";
 
-    private ArrayList<String> wordItemList;
+    private ArrayList<WordData> wordItemList = new ArrayList<>();
 
-    private TextView mWordItem;
 
-    public NoteWordItemAdapter(ArrayList<String> listWord){
+
+    public NoteWordItemAdapter(ArrayList<WordData> listWord){
         wordItemList.addAll(listWord);
-        wordItemList = new ArrayList<String>();
-
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
+        private TextView mWordItem, mWordItemMean;
+
         public ItemViewHolder(View v) {
             super(v);
             mWordItem = (TextView) v.findViewById(R.id.tv_note_word);
+            mWordItemMean = (TextView) v.findViewById(R.id.tv_note_word_mean);
         }
-        public TextView getTextView() {  return mWordItem;  }
+        public TextView getTextViewWord() {  return mWordItem;  }
+        public TextView getTextViewMean() { return mWordItemMean; }
     }
+
+
+
 
     //create new views(invoked by the layout manager)
     @Override
@@ -49,9 +55,10 @@ public class NoteWordItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         // Get element from your dataset at this position and replace the contents of the view with that element
         Log.d(TAG, "Word Item set. - " + position);
-        final ItemViewHolder itemViewHolder = (ItemViewHolder)holder;
-        itemViewHolder.getTextView().setText(wordItemList.get(position));
-        itemViewHolder.getTextView().setOnClickListener(new View.OnClickListener(){
+        ItemViewHolder itemViewHolder = (ItemViewHolder)holder;
+        itemViewHolder.mWordItem.setText(wordItemList.get(position).getWord());
+        itemViewHolder.mWordItemMean.setText(wordItemList.get(position).getMean());
+        itemViewHolder.itemView.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 Log.d(TAG, "Word List clicked.");

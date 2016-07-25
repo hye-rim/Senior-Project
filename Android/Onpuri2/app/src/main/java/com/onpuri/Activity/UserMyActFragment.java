@@ -1,33 +1,28 @@
 package com.onpuri.Activity;
 
-import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TabHost;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.onpuri.Adapter.MyActNewAdapter;
 import com.onpuri.Adapter.MyActRecordAdapter;
 import com.onpuri.Adapter.MyActTranslateAdapter;
-import com.onpuri.Adapter.NoteSenAdapter;
-import com.onpuri.Adapter.NoteWordAdapter;
-import com.onpuri.Adapter.RecycleviewAdapter;
 import com.onpuri.DividerItemDecoration;
-import com.onpuri.NoteData;
+import com.onpuri.Listener.RecyclerItemClickListener;
 import com.onpuri.R;
-import com.onpuri.RecycleItemClickListener;
-import com.onpuri.Server.ActivityList;
 
 import java.util.ArrayList;
 
@@ -46,8 +41,9 @@ public class UserMyActFragment extends Fragment {
     private RecyclerView mRecyclerNew, mRecyclerRecord, mRecyclerTrans;
     private RecyclerView.Adapter mNewAdapter, mRecordAdapter, mTransAdapter;
 
+    private TextView tv_userId;
+
     protected RecyclerView.LayoutManager mLayoutManager;
-    private Context context;
 
     private FrameLayout mItemFrame;
     private FragmentManager mFragmentManager;
@@ -80,6 +76,13 @@ public class UserMyActFragment extends Fragment {
         } catch (InflateException e) {
             //map is already there, just return view as it is
         }
+        Bundle extra = getArguments();
+        String userId = null;
+        userId = extra.getString("ActId");
+
+        tv_userId = (TextView)view.findViewById(R.id.tv_act_name);
+        tv_userId.setText(userId + " 님");
+
         mFragmentManager = getFragmentManager();
         mItemFrame = (FrameLayout)view.findViewById(R.id.my_act_item);
         mTabHost = (TabHost) view.findViewById(R.id.my_act_tab);
@@ -98,6 +101,11 @@ public class UserMyActFragment extends Fragment {
                 .setIndicator("해석문장")
                 .setContent(R.id.tab_act_translate));
 
+        for(int i=0;i<mTabHost.getTabWidget().getChildCount();i++){
+            mTabHost.getTabWidget().getChildAt(i)
+                    .setBackgroundColor(Color.parseColor("#FFAA78"));
+        }
+
         initData();
 
         Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_light);
@@ -105,59 +113,49 @@ public class UserMyActFragment extends Fragment {
         //Set Sentence Adapter for Sentence RecyclerView (NoteTab)
         mRecyclerNew = (RecyclerView) view.findViewById(R.id.recycle_act_new);
         mLayoutManager = new LinearLayoutManager(getActivity());
-        mNewAdapter = new RecycleviewAdapter(listNew,mRecyclerNew);
+        mNewAdapter = new MyActNewAdapter(getActivity().getApplicationContext(),listNew,mRecyclerNew);
         mRecyclerNew.setAdapter(mNewAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerNew.addItemDecoration(new DividerItemDecoration(dividerDrawable));
 
         mRecyclerNew.addOnItemTouchListener(
-                new RecycleItemClickListener(context, mRecyclerNew, new RecycleItemClickListener.OnItemClickListener() {
+                new RecyclerItemClickListener(getActivity().getApplicationContext(), mRecyclerNew, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
-                    public void onLongItemClick(View view, int position) {
-                        Log.v(TAG, "sententce item : " + position);
-
-                        /*
-                        Bundle args = new Bundle();
-                         args.putString("senItemName", "문장 모음" );
-                         noteSenItem.setArguments(args);
-
-                            mTabHost.setVisibility(View.GONE);
-                            mItemFrame.setVisibility(View.VISIBLE);
-                            FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-                            fragmentTransaction.replace(R.id.note_item, noteSenItem).commit();
-                        */
+                    public void onItemClick(View view, int position) {
+                        Toast.makeText(getActivity().getApplicationContext(), "선택한 문장으로의 이동은 구현예정입니다.", Toast.LENGTH_SHORT).show();
                     }
+
                 }));
 
         //Set Word Adapter for Word RecyclerView (NoteTab)
         mRecyclerRecord = (RecyclerView) view.findViewById(R.id.recycle_act_record);
         mLayoutManager = new LinearLayoutManager(getActivity());
-        mNewAdapter = new RecycleviewAdapter(listRecord,mRecyclerRecord);
+        mRecordAdapter = new MyActRecordAdapter(listRecord,mRecyclerRecord);
         mRecyclerRecord.setAdapter(mRecordAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerRecord.addItemDecoration(new DividerItemDecoration(dividerDrawable));
 
         mRecyclerRecord.addOnItemTouchListener(
-                new RecycleItemClickListener(context, mRecyclerRecord, new RecycleItemClickListener.OnItemClickListener() {
+                new RecyclerItemClickListener(getActivity().getApplicationContext(), mRecyclerNew, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
-                    public void onLongItemClick(View view, int position) {
-                        Log.v(TAG, "word item : " + position);
-
+                    public void onItemClick(View view, int position) {
+                        Toast.makeText(getActivity().getApplicationContext(), "선택한 문장으로의 이동은 구현예정입니다.", Toast.LENGTH_SHORT).show();
                     }
+
                 }));
 
         //Set Word Adapter for Word RecyclerView (NoteTab)
         mRecyclerTrans = (RecyclerView) view.findViewById(R.id.recycle_act_translate);
         mLayoutManager = new LinearLayoutManager(getActivity());
-        mNewAdapter = new RecycleviewAdapter(listTrans,mRecyclerTrans);
+        mTransAdapter = new MyActTranslateAdapter(listTrans,mRecyclerTrans);
         mRecyclerTrans.setAdapter(mTransAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerTrans.addItemDecoration(new DividerItemDecoration(dividerDrawable));
 
         mRecyclerTrans.addOnItemTouchListener(
-                new RecycleItemClickListener(context, mRecyclerTrans, new RecycleItemClickListener.OnItemClickListener() {
+                new RecyclerItemClickListener(getActivity().getApplicationContext(), mRecyclerNew, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
-                    public void onLongItemClick(View view, int position) {
-                        Log.v(TAG, "word item : " + position);
-
+                    public void onItemClick(View view, int position) {
+                        Toast.makeText(getActivity().getApplicationContext(), "선택한 문장으로의 이동은 구현예정입니다.", Toast.LENGTH_SHORT).show();
                     }
+
                 }));
 
 
@@ -170,7 +168,7 @@ public class UserMyActFragment extends Fragment {
         listTrans = new ArrayList<String>();
 
         for(int i = 0; i < 3; i++) {
-            listNew.add("문장모음 " + i);
+            listNew.add("등록문장 " + i);
             listRecord.add("녹음문장 " + i);
             listTrans.add("해석문장 " + i);
         }

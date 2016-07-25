@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="75dp"
+    android:gravity="center"
+    android:weightSum="1">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="180dp"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="8dp"
+        android:layout_weight="0.88">
+
+        <TextView
+            android:textSize="18dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:textColor="@color/black"
+            android:lineSpacingExtra="3dp"
+            android:ellipsize="end"
+            android:id="@+id/tv_listen_item"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
+            android:text="none"/>
+
+        <TextView
+            android:textSize="14dp"
+            android:layout_marginLeft="8dp"
+            android:textColor="@color/black"
+            android:lineSpacingExtra="3dp"
+            android:ellipsize="end"
+            android:id="@+id/item_reco"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:text="추천하기"
+            android:layout_marginRight="8dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:weightSum="1"
+        android:layout_marginRight="8dp"
+        android:gravity="right">
+
+        <TextView
+            android:textSize="14dp"
+            android:layout_marginRight="8dp"
+            android:textColor="@color/black"
+            android:lineSpacingExtra="3dp"
+            android:ellipsize="end"
+            android:id="@+id/username"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:text="닉네임"
+            android:layout_gravity="right"
+            android:gravity="left" />
+
+        <TextView
+            android:textSize="14dp"
+            android:layout_marginRight="8dp"
+            android:textColor="@color/black"
+            android:lineSpacingExtra="3dp"
+            android:ellipsize="end"
+            android:id="@+id/reco"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:text="추천수 : 00"
+            android:layout_gravity="right"
+            android:gravity="left" />
+
+        <TextView
+            android:textSize="14dp"
+            android:layout_marginRight="8dp"
+            android:textColor="@color/black"
+            android:lineSpacingExtra="3dp"
+            android:ellipsize="end"
+            android:id="@+id/day"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:text="2016.00.00"
+            android:layout_gravity="right"
+            android:gravity="left" />
+
+    </LinearLayout>
+
+</LinearLayout>

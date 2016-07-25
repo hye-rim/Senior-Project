@@ -1,28 +1,23 @@
-package com.onpuri.Activity;
-
-/**
- * Created by HYERIM on 2016-07-13.
- */
-
+package com.onpuri.Listener;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
-
-public class HomeItemClickListener implements RecyclerView.OnItemTouchListener {
+/**
+ * Created by HYERIM on 2016-07-18.
+ */
+public class RecyclerItemClickListener implements RecyclerView.OnItemTouchListener {
     private OnItemClickListener mListener;
 
     public interface OnItemClickListener {
         public void onItemClick(View view, int position);
-
-        public void onLongItemClick(View view, int position);
     }
 
     GestureDetector mGestureDetector;
 
-    public HomeItemClickListener(Context context, final RecyclerView recyclerView, OnItemClickListener listener) {
+    public RecyclerItemClickListener(Context context, final RecyclerView recyclerView, OnItemClickListener listener) {
         mListener = listener;
         mGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
             @Override
@@ -30,13 +25,6 @@ public class HomeItemClickListener implements RecyclerView.OnItemTouchListener {
                 return true;
             }
 
-            @Override
-            public void onLongPress(MotionEvent e) {
-                View child = recyclerView.findChildViewUnder(e.getX(), e.getY());
-                if (child != null && mListener != null) {
-                    mListener.onLongItemClick(child, recyclerView.getChildAdapterPosition(child));
-                }
-            }
         });
     }
 
@@ -44,7 +32,6 @@ public class HomeItemClickListener implements RecyclerView.OnItemTouchListener {
         View childView = view.findChildViewUnder(e.getX(), e.getY());
         if (childView != null && mListener != null && mGestureDetector.onTouchEvent(e)) {
             mListener.onItemClick(childView, view.getChildAdapterPosition(childView));
-            return true;
         }
         return false;
     }

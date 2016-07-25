@@ -22,21 +22,21 @@
             android:textColor="@color/black"
             android:textStyle="bold"/>
         <Button
-            android:id="@+id/sen_listen"
+            android:id="@+id/note_sen_listen"
             android:text="듣기"
             android:layout_centerInParent="true"
-            android:layout_toLeftOf="@+id/sen_test"
+            android:layout_toLeftOf="@+id/note_sen_test"
             android:layout_width="wrap_content"
             android:layout_height="match_parent" />
         <Button
-            android:id="@+id/sen_test"
+            android:id="@+id/note_sen_test"
             android:text="시험"
             android:layout_centerInParent="true"
-            android:layout_toLeftOf="@+id/sen_edit"
+            android:layout_toLeftOf="@+id/note_sen_edit"
             android:layout_width="wrap_content"
             android:layout_height="match_parent" />
         <Button
-            android:id="@+id/sen_edit"
+            android:id="@+id/note_sen_edit"
             android:text="편집"
             android:layout_centerInParent="true"
             android:layout_alignParentRight="true"

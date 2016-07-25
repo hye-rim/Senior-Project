@@ -15,7 +15,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.onpuri.R;
-import com.onpuri.Server.ActivityList;
+import com.onpuri.ActivityList;
 import com.onpuri.Server.CloseSystem;
 import com.onpuri.Server.PacketUser;
 import com.onpuri.Server.SocketConnection;
@@ -37,8 +37,8 @@ public class LoginActivity extends Activity implements View.OnClickListener {
     DataOutputStream dos;
     DataInputStream dis;
 
-    byte[] outData = new byte[261];
-    byte[] inData = new byte[261];
+    byte[] outData;
+    byte[] inData;
 
     Button btLogin, btNew;
     EditText et_loginId, et_loginPw;
@@ -47,7 +47,9 @@ public class LoginActivity extends Activity implements View.OnClickListener {
     SharedPreferences setting;
     SharedPreferences.Editor editor;
 
-    int i, index;
+    PacketUser mPacketUser;
+
+    int i;
     char check;
     char checkLength;
     boolean isLoginBtn;
@@ -63,6 +65,9 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         setContentView(R.layout.activity_login);
         CloseSystem = new CloseSystem(this); //backKey Event
         check = '5';
+
+        outData = new byte[261];
+        inData = new byte[261];
 
         btLogin = (Button) findViewById(R.id.btnLogin);
         btNew = (Button) findViewById(R.id.btnNew);
@@ -113,11 +118,19 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                     editor.putBoolean("autoLogin", true);
                     editor.commit();
                 }
+                else{
+                    loginChecked = false;
+                    editor.putBoolean("autoLogin", false);
+                    editor.clear();
+                    editor.commit();
+                }
                 // goto mainActivity
 
                 mainGo();
 
             } else {
+                editor.clear();
+                editor.commit();
                 Log.d(TAG, "Login failed");
                 // goto LoginActivity
             }
@@ -145,8 +158,13 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         if(mworker_login != null && mworker_login.isAlive()){  //이미 동작하고 있을 경우 중지
             mworker_login.interrupt();
         }
+
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-        intent.putExtra("userId", id);
+        intent.putExtra("UserId", mPacketUser.userId);
+        intent.putExtra("Name", mPacketUser.name);
+        intent.putExtra("JoinDate", mPacketUser.joinDate);
+        intent.putExtra("Phone",mPacketUser.phone);
+        intent.putExtra("NowPass", mPacketUser.nowPass);
 
         startActivity(intent);
         finish();
@@ -260,13 +278,14 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         public void run() {
             super.run();
             while (isPlay) {
+                mPacketUser = new PacketUser();
 
                 String toServerDataUser;
                 toServerDataUser = et_loginId.getText().toString() + "+" + et_loginPw.getText().toString();
                 System.out.println("data : " + toServerDataUser);
-                outData[0] = (byte) PacketUser.SOF;
-                outData[1] = (byte) PacketUser.USR_LOG;
-                outData[2] = (byte) PacketUser.getSEQ();
+                outData[0] = (byte) mPacketUser.SOF;
+                outData[1] = (byte) mPacketUser.USR_LOG;
+                outData[2] = (byte) mPacketUser.getSEQ();
                 outData[3] = (byte) toServerDataUser.length();
 
                 for (i = 4; i < 4 + toServerDataUser.length(); i++) {
@@ -289,116 +308,70 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                     System.out.println((char) inData[4]);
                     System.out.println(inData[5]);
 
-                    PacketUser.data_len = (int) inData[3];
-
+                    mPacketUser.data_len = (int) inData[3];
+                    byte[] nameByte = new byte[221];
+                    int byteI = 0;
                     if (inData[4] != '0') { //ID, PW가 틀렸을 경우 실행하지 않도록 한다.
-                        index = 0;
+                        int index = 0;
                         while (true) { //아이디
                             if ((char) (inData[4 + index]) == '+') {
                                 index++;
                                 break;
                             } else {
-                                PacketUser.userId = PacketUser.userId + (char) inData[4 + index];
+                                mPacketUser.userId = mPacketUser.userId + (char) inData[4 + index];
                                 index++;
                             }
                         }
 
-                        while (true) { //shell
+
+                        while (true) { //이름
                             if ((char) (inData[4 + index]) == '+') {
                                 index++;
                                 break;
                             } else {
-                                PacketUser.shell = "" + (char) inData[4 + index];
+                                nameByte[byteI] = inData[4 + index];
+                                index++;
+                                byteI++;
+                            }
+                        }
+                        mPacketUser.name = new String(nameByte, 0, byteI);
+
+                        while (true) { //가입일
+                            if ((char) (inData[4 + index]) == '+') {
+                                index++;
+                                break;
+                            } else {
+                                mPacketUser.joinDate = mPacketUser.joinDate + (char) inData[4 + index];
                                 index++;
                             }
                         }
 
-                        while (true) { //problem
+                        while (true) { //휴대전화
                             if ((char) (inData[4 + index]) == '+') {
                                 index++;
                                 break;
                             } else {
-                                PacketUser.problem = PacketUser.problem + (char) inData[4 + index];
+                                mPacketUser.phone = mPacketUser.phone + (char) inData[4 + index];
                                 index++;
                             }
                         }
 
-                        while (true) { //average
+                        while (true) { //현재비밀번호
                             if ((char) (inData[4 + index]) == '+') {
                                 index++;
                                 break;
                             } else {
-                                PacketUser.average = PacketUser.average + (char) inData[4 + index];
-                                index++;
-                            }
-                        }
-
-                        while (true) { //ranking
-                            if ((char) (inData[4 + index]) == '+') {
-                                index++;
-                                break;
-                            } else {
-                                PacketUser.ranking = PacketUser.ranking + (char) inData[4 + index];
-                                index++;
-                            }
-                        }
-
-                        while (true) { //question
-                            if ((char) (inData[4 + index]) == '+') {
-                                index++;
-                                break;
-                            } else {
-                                PacketUser.question = PacketUser.question + (char) inData[4 + index];
-                                index++;
-                            }
-                        }
-
-                        while (true) { //solving
-                            if ((char) (inData[4 + index]) == '+') {
-                                index++;
-                                break;
-                            } else {
-                                PacketUser.solving = PacketUser.solving + (char) inData[4 + index];
-                                index++;
-                            }
-                        }
-                        while (true) { //attend
-                            if ((char) (inData[4 + index]) == '+') {
-                                index++;
-                                break;
-                            } else {
-                                PacketUser.attend = PacketUser.attend + (char) inData[4 + index];
-                                index++;
-                            }
-                        }
-                        while (true) { //purchase
-                            if ((char) (inData[4 + index]) == '+') {
-                                index++;
-                                break;
-                            } else {
-                                PacketUser.purchase = PacketUser.purchase + (char) inData[4 + index];
-                                index++;
-                            }
-                        }
-                        while (true) { //sale
-                            if ((char) (inData[4 + index]) == '+') {
-                                index++;
-                                break;
-                            } else {
-                                PacketUser.sale = PacketUser.sale + (char) inData[4 + index];
-                                index++;
-                            }
-                        }
-                        while (true) { //declaration
-                            if ((char) (inData[4 + index]) == '+') {
-                                index++;
-                                break;
-                            } else {
-                                PacketUser.declaration = PacketUser.declaration + (char) inData[4 + index];
+                                mPacketUser.nowPass = mPacketUser.nowPass + (char) inData[4 + index];
                                 index++;
                             }
                         }
                     }
+                    Log.d(TAG,"id : " + mPacketUser.userId);
+                    Log.d(TAG,"name : " + mPacketUser.name);
+                    Log.d(TAG,"joinDate : " + mPacketUser.joinDate);
+                    Log.d(TAG,"phone : " + mPacketUser.phone);
+                    Log.d(TAG,"nowPass : " + mPacketUser.nowPass);
+
                     check = (char) inData[4];
                     checkLength = (char) inData[3];
 

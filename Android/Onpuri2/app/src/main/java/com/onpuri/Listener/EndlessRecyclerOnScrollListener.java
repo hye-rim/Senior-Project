@@ -1,7 +1,8 @@
-package com.onpuri;
+package com.onpuri.Listener;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.AbsListView;
 
 /**
  * Created by HYERIM on 2016-07-11.
@@ -48,6 +49,5 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
             loading = true;
         }
     }
-
     public abstract void onLoadMore(int current_page);
 }

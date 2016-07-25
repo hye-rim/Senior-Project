@@ -8,6 +8,7 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,7 +19,7 @@ import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.onpuri.R;
-import com.onpuri.Server.ActivityList;
+import com.onpuri.ActivityList;
 import com.onpuri.Server.CloseSystem;
 import com.onpuri.Server.PacketUser;
 import com.onpuri.Server.SocketConnection;
@@ -33,7 +34,8 @@ import java.util.regex.Pattern;
  */
 //Join Activity
 public class JoinActivity extends Activity {
-//    private com.onpuri.Server.CloseSystem closeSystem; //BackKeyPressed,close
+    private static final String TAG = "JoinActivity";
+    //    private com.onpuri.Server.CloseSystem closeSystem; //BackKeyPressed,close
     private final long FINISH_INTERVAL_TIME = 3000;
     private long backPressedTime = 0;
 
@@ -116,7 +118,9 @@ public class JoinActivity extends Activity {
                     tv_compareId.setText("사용 가능한 아이디입니다");
                 }
                 System.out.println("stop2");
-                mworker_check.interrupt();
+                if(mworker_check != null && mworker_check.isAlive()){  //이미 동작하고 있을 경우 중지
+                    mworker_check.interrupt();
+                }
             }
         });
 
@@ -189,10 +193,23 @@ public class JoinActivity extends Activity {
                     Toast.makeText(getApplicationContext(), "가입이 완료되었습니다.", Toast.LENGTH_SHORT).show();
                     if(worker_join.getState() == Thread.State.NEW)
                         worker_join.start();
+
+                    try {
+                        worker_join.join();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    if(worker_join != null && worker_join.isAlive()){  //이미 동작하고 있을 경우 중지
+                        worker_join.interrupt();
+                    }
+                    if(mworker_check != null && mworker_check.isAlive()){  //이미 동작하고 있을 경우 중지
+                        mworker_check.interrupt();
+                    }
                     Intent intent = new Intent(JoinActivity.this, LoginActivity.class);
                     startActivity(intent);
                     finish();
-                    worker_join.interrupt();
+
                 }
                 else if(checkID == 2){
                     Toast.makeText(getApplicationContext(), "중복된 ID입니다", Toast.LENGTH_SHORT).show();
@@ -262,6 +279,7 @@ public class JoinActivity extends Activity {
                 outData[3] = (byte) toServerDataUser.length ();
                 for (i = 4; i < 4 + toServerDataUser.length (); i++) {
                     outData[i] = (byte) toServerDataUser.charAt (i - 4);
+
                 }
                 outData[4 + toServerDataUser.length ()] = (byte) 85;
 
@@ -299,12 +317,16 @@ public class JoinActivity extends Activity {
             String toServerDataUser;
             toServerDataUser = et_newId.getText().toString() + "+" + et_newPw.getText().toString() + "+" + et_newName.getText().toString()
                     + "+" + et_newPhone1.getText().toString() + et_newPhone2.getText().toString() + et_newPhone3.getText().toString() ;
+
+            byte[] dataByte = toServerDataUser.getBytes();
+
             outData[0] = (byte) PacketUser.SOF;
             outData[1] = (byte) PacketUser.USR_REG;
             outData[2] = (byte) PacketUser.getSEQ();
             outData[3] = (byte) toServerDataUser.length();
             for (i = 4; i < 4 + toServerDataUser.length(); i++) {
-                outData[i] = (byte) toServerDataUser.charAt(i - 4);
+                outData[i] = (byte) dataByte[i-4];
+                Log.d(TAG, new String(dataByte));
             }
             outData[4 + toServerDataUser.length()] = (byte) 85;
 
@@ -345,7 +367,6 @@ public class JoinActivity extends Activity {
             return "";
         }
     };
-
 
     @Override
     public void onStart() {
