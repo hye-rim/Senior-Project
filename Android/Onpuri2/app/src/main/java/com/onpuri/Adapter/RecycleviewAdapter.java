@@ -1,16 +1,13 @@
 package com.onpuri.Adapter;
 
 import android.graphics.Color;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.onpuri.Listener.EndlessRecyclerOnScrollListener;
 import com.onpuri.R;
 
 import java.util.ArrayList;
@@ -37,14 +34,6 @@ public class RecycleviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
-    public class ProgressViewHolder extends RecyclerView.ViewHolder {
-        public ProgressBar progressBar;
-
-        public ProgressViewHolder(View v) {
-            super(v);
-            progressBar = (ProgressBar) v.findViewById(R.id.progressBar_home);
-        }
-    }
     //create new views(invoked by the layout manager)
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

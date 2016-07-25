@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.onpuri.Adapter.NoteWordItemAdapter;
+import com.onpuri.ChangedWordInterface;
 import com.onpuri.Data.WordData;
 import com.onpuri.DividerItemDecoration;
 import com.onpuri.R;
@@ -38,17 +39,19 @@ public class NoteWordFragment  extends Fragment implements View.OnClickListener 
     ArrayList<WordData> itemWord;
 
     private RecyclerView mRecyclerWordItem;
-    private RecyclerView.Adapter mWordAdapter;
     private TextView tvItemName;
     private Button btn_listen, btn_test, btn_edit;
 
     protected RecyclerView.LayoutManager mLayoutManager;
+    private RecyclerView.Adapter mWordAdapter;
     private Context context;
 
     String itemName;
 
     private FrameLayout mItemFrame;
     private FragmentManager mFragmentManager;
+    private Boolean isEdit = false;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (view != null) {
@@ -76,7 +79,7 @@ public class NoteWordFragment  extends Fragment implements View.OnClickListener 
         //Set Word Adapter for Word RecyclerView (NoteTab)
         mRecyclerWordItem = (RecyclerView) view.findViewById(R.id.recycle_note_word);
         mLayoutManager = new LinearLayoutManager(getActivity());
-        mWordAdapter = new NoteWordItemAdapter(itemWord);
+        mWordAdapter = new NoteWordItemAdapter(itemWord, isEdit, context);
         mRecyclerWordItem.setAdapter(mWordAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerWordItem.addItemDecoration(new DividerItemDecoration(dividerDrawable));
 
@@ -104,7 +107,7 @@ public class NoteWordFragment  extends Fragment implements View.OnClickListener 
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.note_word_listen:
-                Toast.makeText(getActivity(),"내일 화면 추가 예정입니다.",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(),"기능 추가 예정입니다.",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.note_word_test:
                 NoteWordTestFragment noteWordTest = new NoteWordTestFragment();
@@ -117,10 +120,19 @@ public class NoteWordFragment  extends Fragment implements View.OnClickListener 
                         .commit();
                 break;
             case R.id.note_word_edit:
-                Toast.makeText(getActivity(),"내일 화면 추가 예정입니다.",Toast.LENGTH_SHORT).show();
+                isEdit = !isEdit;
+                 mWordAdapter = new NoteWordItemAdapter(itemWord, isEdit, context);
+                 mRecyclerWordItem.setAdapter(mWordAdapter);// Set CustomAdapter as the adapter for RecyclerView.
+
+                if(isEdit)
+                    Toast.makeText(getActivity(),"아직 데이터 반영이 되지않습니다. " + String.valueOf(isEdit),Toast.LENGTH_SHORT).show();
                 break;
             default:
                 break;
         }
+    }
+
+    public ArrayList<WordData> setData(){
+        return itemWord;
     }
 }

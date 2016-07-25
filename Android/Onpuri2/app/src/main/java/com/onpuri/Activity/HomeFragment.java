@@ -191,6 +191,7 @@ public class HomeFragment extends Fragment {
             if (mworker_sentence != null && mworker_sentence.isAlive()) {  //이미 동작하고 있을 경우 중지
                 mworker_sentence.interrupt();
             }
+            Toast.makeText(getActivity(), "불러올 문장이 더이상 없습니다.", Toast.LENGTH_SHORT).show();
 
         }
     }
@@ -203,7 +204,7 @@ public class HomeFragment extends Fragment {
         }
 
         public void stopThread() {
-            isPlay = !isPlay;
+            isPlay = false;
         }
 
         public void run() {
