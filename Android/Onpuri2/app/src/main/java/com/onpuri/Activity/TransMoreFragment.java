@@ -45,8 +45,6 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
     byte[] temp = new byte[261];
 
     private static int current_page = 1;
-    private int ival = 0;
-    private int loadLimit = 3;
     List trans = new ArrayList<>();
 
     TextView item;
@@ -54,7 +52,7 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
     String sentence_num = "";
     int i=0;
     int index;
-    int count=0;
+    int count;
 
     private RecyclerView RecyclerView;
     private TransListAdapter Adapter;
@@ -150,39 +148,11 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        for (int i = 0; i < loadLimit; i++) {
+        for (int i = 0; i < count; i++) {
             list_trans.add(trans.get(i).toString());
-            ival++;
         }
-
     }
 
-/*
-    private void loadMoreData(int current_page) {
-
-        loadLimit = ival+3;
-
-        if (worker_sentence_trans != null && worker_sentence_trans.isAlive()) {  //이미 동작하고 있을 경우 중지
-            worker_sentence_trans.interrupt();
-        }
-        worker_sentence_trans = new worker_sentence_trans(true);
-        worker_sentence_trans.start();
-        try {
-            worker_sentence_trans.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        for (int i = ival; i < loadLimit; i++) {
-            if (trans.get(i) == null) {
-                list_trans.add("없음");
-            } else
-                list_trans.add(trans.get(i).toString());
-            ival++;
-        }
-
-    }
-*/
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -237,7 +207,7 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
                 Log.d(TAG, "worker trans start");
 
                 outData[0] = (byte) PacketUser.SOF;
-                outData[1] = (byte) PacketUser.USR_SEN;
+                outData[1] = (byte) PacketUser.USR_MTRANS;
                 outData[2] = (byte) PacketUser.getSEQ();
                 outData[3] = (byte) sentence_num.length();
                 for (int i = 4; i < 4 + sentence_num.length(); i++) {
@@ -251,12 +221,16 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
                     dos.flush();
                     dis = new DataInputStream(SocketConnection.socket.getInputStream());
 
-                    while( i < 3) {
+                    while(true) {
+                        Log.d(TAG, "while"+i);
                         dis.read(temp, 0, 4);
+                        System.out.println("read");
                         for (index = 0; index < 4; index++) {
                             inData[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
                         }
-                        if(inData[1] == PacketUser.ACK_SEN) {
+                        System.out.println("opc : " + inData[1]);
+                        if(inData[1] == PacketUser.ACK_SEN){
+                            Log.d(TAG, "해석있음"+i);
                             dis.read(temp, 0, 1 + (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]));
 
                             for (index = 0; index <= (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]); index++) {
@@ -281,15 +255,26 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
                                 }
                             }
                             trans.add(new String(tmp, 0, byteI));
+                            Log.d(TAG, "해석있음 끝"+i);
                             i++;
                         }
-                        else {
-                            trans.add("none");
-                            trans.add("none");
-                            trans.add("none");
-                            i=4;
+                        else if(inData[1] == PacketUser.ACK_NTRANS) {
+                            Log.d(TAG, "해석없음"+i);
+                            Log.d(TAG, "해석없음 끝"+i);
+                            count=i;
+                            break;
                         }
+                        else {
+                            trans.add("error");
+                            Log.d(TAG, "error"+i);
+                            count=i;
+                            break;
+                        }
+                        Log.d(TAG, "while 끝"+i);
                     }
+                    dis.read(temp);
+
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

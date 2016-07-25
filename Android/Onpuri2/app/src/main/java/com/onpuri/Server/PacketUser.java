@@ -22,7 +22,8 @@ public class PacketUser extends Application {
     static public char ACK_UMS = 12, ACK_UMS_LEN = 1; //ack user main sentence
     static public char USR_SEN = 13;
     static public char ACK_SEN = 14;
-    static public char ACK_NTRNAS = 15;
+    static public char ACK_NTRANS = 15;
+    static public char USR_MTRANS = 16;
     static public char ACK_NSEN = 90;
     static public char USR_LEV = 99;
     static public char ACK_LEV = 100;

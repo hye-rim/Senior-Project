@@ -100,12 +100,12 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
         TextView listen1 = (TextView) view.findViewById(R.id.listen1);
         TextView listen2 = (TextView) view.findViewById(R.id.listen2);
         TextView listen3 = (TextView) view.findViewById(R.id.listen3);
+        listen1.setText("listen1");
         Button listen_more = (Button) view.findViewById(R.id.listen_more);
         listen1.setOnClickListener(this);
         listen2.setOnClickListener(this);
         listen3.setOnClickListener(this);
         listen_more.setOnClickListener(this);
-        listen1.setText("listen1");
 
         tts = new TextToSpeech(getActivity(), this);
 
@@ -317,15 +317,23 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                             Log.d(TAG, "해석있음 끝"+i);
                             i++;
                         }
-                        else {
+                        else if(inData[1] == PacketUser.ACK_NTRANS) {
                             Log.d(TAG, "해석없음"+i);
-                            trans.add("none");
+                            for(int j=0; j<3-i; j++) {
+                                trans.add("none");
+                            }
                             Log.d(TAG, "해석없음 끝"+i);
                             i++;
+                            break;
+                        }
+                        else {
+                            trans.add("error");
                         }
                         Log.d(TAG, "while 끝"+i);
 
                     }
+                    dis.read(temp);
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

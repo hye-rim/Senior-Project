@@ -267,15 +267,16 @@ public class HomeFragment extends Fragment {
                             System.out.println("1 : " + inData[1]);
                             System.out.println("2 : " + inData[2]);
                             System.out.println("3 : " + inData[3]);
+                            System.out.println("4 : " + inData[4]);
                             System.out.println("5 : " + (char) inData[5]);
 
                             PacketUser.sentence_len = ((int) inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);
 
                             index = 0;
-                            String str = "";
+                            String str = ""; //문장
                             String num = Character.toString((char) senData[4])
                                     + Character.toString((char) senData[5])
-                                    + Character.toString((char) senData[6]);
+                                    + Character.toString((char) senData[6]); //문장번호
 
                             System.out.println("len : " + PacketUser.sentence_len);
                             System.out.println(num);
