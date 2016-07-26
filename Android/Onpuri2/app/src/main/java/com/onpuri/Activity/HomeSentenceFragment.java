@@ -166,7 +166,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
             case R.id.add_trans:
                 final TransAddFragment atf = new TransAddFragment();
                 atf.setArguments(args);
-                ft.replace(R.id.root_frame, atf);
+                ft.add(R.id.root_frame, atf);
                 ft.addToBackStack(null);
                 ft.commit();
                 break;

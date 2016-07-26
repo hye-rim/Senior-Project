@@ -121,7 +121,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         mDrawerToggle.syncState();
     }
+    public interface onKeyBackPressedListener {
+        public void onBack();
+    }
+    private onKeyBackPressedListener mOnKeyBackPressedListener;
 
+    public void setOnKeyBackPressedListener(onKeyBackPressedListener listener) {
+        mOnKeyBackPressedListener = listener;
+    }
     @Override
     public void onBackPressed() {
         long tempTime = System.currentTimeMillis();

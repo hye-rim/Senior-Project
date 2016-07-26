@@ -20,6 +20,7 @@
             android:textStyle="bold" />
     </LinearLayout>
     <EditText
+        android:id="@+id/new_trans"
         android:layout_width="match_parent"
         android:layout_height="180dp"
         android:hint="해석을 입력하세요"

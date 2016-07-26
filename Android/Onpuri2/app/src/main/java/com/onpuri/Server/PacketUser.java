@@ -20,10 +20,12 @@ public class PacketUser extends Application {
     static public char ACK_URG = 10, ACK_URG_LEN = 1;
     static public char USR_MSL = 11, USR_MSL_LEN = 2; //user main sentence list
     static public char ACK_UMS = 12, ACK_UMS_LEN = 1; //ack user main sentence
-    static public char USR_SEN = 13;
-    static public char ACK_SEN = 14;
-    static public char ACK_NTRANS = 15;
-    static public char USR_MTRANS = 16;
+    static public char USR_SEN = 13; //request sentence
+    static public char ACK_SEN = 14; //request sentence ACK
+    static public char ACK_NTRANS = 15; // no translation
+    static public char USR_MTRANS = 16; //more translation
+    static public char USR_ATRANS = 17; //add translation
+    static public char ACK_ATRANS = 18; //add translation ACK
     static public char ACK_NSEN = 90;
     static public char USR_LEV = 99;
     static public char ACK_LEV = 100;
