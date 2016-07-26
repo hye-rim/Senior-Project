@@ -1,5 +1,8 @@
 package com.onpuri.Activity;
 
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -70,10 +73,19 @@ public class NewSenFragment extends Fragment implements View.OnClickListener {
 
             case R.id.btn_new_camera:
                 Toast.makeText(getActivity(), "카메라 기능은 차후 구현 예정입니다.", Toast.LENGTH_SHORT).show();
+                checkVersion();
                 break;
 
             default:
                 break;
         }
     }
+
+    private void checkVersion() {
+        //현재 사용자 os 버전 체크
+        //if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+
+        //}
+    }
+
 }

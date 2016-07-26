@@ -121,9 +121,6 @@ public class NoteSenItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         return (isEdit ? VIEW_TYPE_EDIT : VIEW_TYPE_ITEM);
     }
 
-    public ArrayList<String> getSenItemList() {
-        return senItemList;
-    }
 
     @Override
     public int getItemCount() {
