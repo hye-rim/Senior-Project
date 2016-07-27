@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     String userId = "";
     String name, joinDate, phone, nowPassword;
+    PacketUser user;
     Bundle bundle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +100,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         nowPassword = intent.getStringExtra("NowPass");
 
         mNavId.setText(userId + " 님");
+        user = new PacketUser();
+        user.setuserId(userId);
+
         /**
          * Lets inflate the very first fragment
          * Here , we are inflating the TabViewPager as the first Fragment

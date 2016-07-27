@@ -101,23 +101,32 @@
                 android:text="none"
                 android:focusable="false"
                 android:textSize="15dp"
-                android:layout_marginLeft="15dp"/>
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:id="@+id/trans2"
                 android:text="none"
                 android:focusable="false"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:textSize="15dp"
-                android:layout_marginLeft="15dp"/>
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:id="@+id/trans3"
                 android:text="none"
                 android:focusable="false"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:textSize="15dp"
-                android:layout_marginLeft="15dp"/>
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"/>
             <Button
                 android:layout_width="100dp"
                 android:layout_height="30dp"
@@ -171,6 +180,7 @@
                 android:focusable="false"
                 android:textSize="15dp"
                 android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
                 android:background="#faf5b3"/>
             <TextView
                 android:layout_width="match_parent"
@@ -180,6 +190,7 @@
                 android:focusable="false"
                 android:textSize="15dp"
                 android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
                 android:background="#faf5b3"/>
             <TextView
                 android:layout_width="match_parent"
@@ -189,6 +200,7 @@
                 android:focusable="false"
                 android:textSize="15dp"
                 android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
                 android:background="#faf5b3"/>
             <Button
                 android:layout_width="100dp"

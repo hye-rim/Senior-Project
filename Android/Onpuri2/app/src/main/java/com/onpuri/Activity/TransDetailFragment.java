@@ -14,17 +14,26 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.onpuri.R;
+import com.onpuri.Server.PacketUser;
 
 
 public class TransDetailFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "TransAddFragment";
+    private com.onpuri.Server.PacketUser user;
     private static View view;
     private Toast toast;
 
     String sentence="";
     String trans="";
+    String userid="";
+    String day="";
+    String reco="";
+
     TextView item_sen;
     TextView item_trans;
+    TextView item_userid;
+    TextView item_day;
+    TextView item_reco;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -41,18 +50,34 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
 
         item_sen = (TextView) view.findViewById(R.id.tv_sentence);
         item_trans = (TextView)view.findViewById(R.id.trans_item);
+        item_userid = (TextView)view.findViewById(R.id.userid);
+        item_day = (TextView)view.findViewById(R.id.day);
+        item_reco = (TextView)view.findViewById(R.id.reco);
+
         if (getArguments() != null) { //클릭한 문장 출력
             sentence = getArguments().getString("sen");
             trans = getArguments().getString("sen_trans");
+            userid = getArguments().getString("userid");
+            day = getArguments().getString("day");
+            reco = getArguments().getString("reco");
+
             item_sen.setText(sentence);
             item_trans.setText(trans);
+            item_userid.setText(userid);
+            item_day.setText(day);
+            item_reco.setText(reco);
         }
+        reco = getArguments().getString("userId");
+
         Button add_note = (Button) view.findViewById(R.id.add_note);
         add_note.setOnClickListener(this);
         Button item_reco = (Button) view.findViewById(R.id.item_reco);
         item_reco.setOnClickListener(this);
         Button item_edit = (Button) view.findViewById(R.id.item_edit);
         item_edit.setOnClickListener(this);
+        Button del_trans= (Button) view.findViewById(R.id.del_trans);
+        del_trans.setOnClickListener(this);
+
 
         return view;
     }
@@ -72,7 +97,7 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
             case R.id.add_note:
                 final CharSequence[] items = {"노트1", "노트2", "노트3"};
                 new AlertDialog.Builder(getActivity())
-                        .setTitle("노트를 선택해 주세요(노트 연동은 구현 예정)")
+                        .setTitle("노트를 선택해 주세요")
                         .setItems(items, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int index) {
                                 Toast.makeText(getActivity(), items[index] + "선택", Toast.LENGTH_SHORT).show();
@@ -96,7 +121,24 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
                 ft.addToBackStack(null);
                 ft.commit();
                 break;
+            case R.id.del_trans:
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("선택한 해석을 삭제하시겠습니까?")
+                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                toast = Toast.makeText(getActivity(), "삭제되었습니다(구현예정)", Toast.LENGTH_SHORT);
+                                toast.show();
+                            }
+                        })
+                        .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dlg, int sumthin) {
+                                toast = Toast.makeText(getActivity(), "취소되었습니다", Toast.LENGTH_SHORT);
+                                toast.show();
+                            }
+
+                        }).show();
         }
+
     }
 
 }

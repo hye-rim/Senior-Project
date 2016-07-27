@@ -53,7 +53,9 @@ public class PacketUser extends Application {
         else
             SEQ++;
     }
-
+    public void setuserId(String str) {
+        userId = str;
+    }
     public void setSentence(String str) {
         arrSentence.add(str);
         System.out.println("string : " + arrSentence.get(0));
@@ -63,6 +65,7 @@ public class PacketUser extends Application {
         System.out.println("string_num : " + arrSentenceNum.get(0));
     }
 
+    public String getuserId() {return userId;}
     public String getSentence(int i){
         return arrSentence.get(i);
     }
