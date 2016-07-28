@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -68,8 +69,6 @@ public class HomeFragment extends Fragment {
     private int sentence_num;
     private Boolean sentenceEnd = false;
 
-    Bundle args = new Bundle();
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (view != null) {
@@ -88,10 +87,11 @@ public class HomeFragment extends Fragment {
         listSentence = new ArrayList<String>();
         listSentenceNum = new ArrayList<String>();
 
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
         if(!sentenceEnd)
             loadData(current_page);
-
-        final HomeSentenceFragment hsf = new HomeSentenceFragment();
 
         handler = new Handler();
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_sentence);
@@ -115,16 +115,19 @@ public class HomeFragment extends Fragment {
                 new HomeItemClickListener(getActivity().getApplicationContext(), mRecyclerView ,new HomeItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
+                        HomeSentenceFragment hsf = new HomeSentenceFragment();
+                        FragmentManager fm = getActivity().getSupportFragmentManager();
+
                         Bundle args = new Bundle();
                         args.putString("sen", listSentence.get(position));
                         args.putString("sen_num", listSentenceNum.get(position));
                         hsf.setArguments(args);
 
-                        FragmentTransaction ft = getFragmentManager().beginTransaction();
-                        ft.add(R.id.root_frame, hsf);
-                        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                        ft.replace(R.id.root_home, hsf);
                         ft.addToBackStack(null);
                         ft.commit();
+                        fm.executePendingTransactions();
                     }
                     @Override
                     public void onLongItemClick(View view, int position) {

@@ -152,11 +152,12 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
                         }).show();
                 break;
             case R.id.add_listen:
-                final ListenAddFragment alf = new ListenAddFragment();
+  /*              final ListenAddFragment alf = new ListenAddFragment();
                 alf.setArguments(args);
-                ft.replace(R.id.root_frame, alf);
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                ft.commit();
+                ft.replace(R.id.root_home, alf);
+                ft.addToBackStack(null);
+                ft.commit();*/
+                Toast.makeText(getActivity(), "구현중", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.listen1:
                 tts.speak(sentence, TextToSpeech.QUEUE_FLUSH, null);

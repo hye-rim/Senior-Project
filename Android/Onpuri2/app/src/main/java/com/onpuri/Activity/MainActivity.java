@@ -1,11 +1,13 @@
 package com.onpuri.Activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -15,7 +17,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -32,15 +33,16 @@ import com.onpuri.Server.SocketConnection;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "MainActivity" ;
     private ActivityList actManager = ActivityList.getInstance();
-    //private com.onpuri.Server.CloseSystem closeSystem; //BackKeyPressed,close
 
     private final long FINISH_INTERVAL_TIME = 3000;
     private long backPressedTime = 0;
+    Fragment f = null;
 
     private worker_logout mworker_out;
 
@@ -71,7 +73,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     String userId = "";
     String name, joinDate, phone, nowPassword;
-    PacketUser user;
     Bundle bundle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,9 +101,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         nowPassword = intent.getStringExtra("NowPass");
 
         mNavId.setText(userId + " 님");
-        user = new PacketUser();
-        user.setuserId(userId);
-
         /**
          * Lets inflate the very first fragment
          * Here , we are inflating the TabViewPager as the first Fragment
@@ -125,48 +123,60 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         mDrawerToggle.syncState();
     }
-    public interface onKeyBackPressedListener {
-        public void onBack();
-    }
-    private onKeyBackPressedListener mOnKeyBackPressedListener;
-
-    public void setOnKeyBackPressedListener(onKeyBackPressedListener listener) {
-        mOnKeyBackPressedListener = listener;
-    }
     @Override
     public void onBackPressed() {
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+
         long tempTime = System.currentTimeMillis();
         long intervalTime = tempTime - backPressedTime;
 
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime) {
-                if (mworker_out != null && mworker_out.isAlive()) {  //이미 동작하고 있을 경우 중지
-                    mworker_out.interrupt();
-                }
-
-                mworker_out = new worker_logout(true);
-                mworker_out.start();
-
-                try {
-                    mworker_out.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                if (setting.getBoolean("autoLogin", false) == false) {
-                    editor.clear();
-                    editor.commit();
-                }
-                finish();
+        }
+        else {
+            if(fm.getBackStackEntryCount() > 0) {
+                System.out.println("pop");
+                fm.popBackStack();
+                ft.commit();
             }
-            else{
-                backPressedTime = tempTime;
-                Toast.makeText(getApplicationContext(), "\'뒤로\' 버튼을 한번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT).show();
+            else {
+                System.out.println("close");
+                if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime) {
+                    if (mworker_out != null && mworker_out.isAlive()) {  //이미 동작하고 있을 경우 중지
+                        mworker_out.interrupt();
+                    }
+
+                    mworker_out = new worker_logout(true);
+                    mworker_out.start();
+
+                    try {
+                        mworker_out.join();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (setting.getBoolean("autoLogin", false) == false) {
+                        editor.clear();
+                        editor.commit();
+                    }
+                    finish();
+                }
+                else{
+                    backPressedTime = tempTime;
+                    Toast.makeText(getApplicationContext(), "\'뒤로\' 버튼을 한번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT).show();
+                }
             }
         }
+    }
 
+    public Fragment getbasefragment() {
+        for (Fragment fragment: getSupportFragmentManager().getFragments()) {
+            if (fragment.isVisible()) {
+                return (fragment);
+            }
+        }
+        return null;
     }
 
     @Override

@@ -68,13 +68,13 @@ public class TabViewPager extends Fragment {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    NoteFragment tab1 = new NoteFragment();
+                    NoteRootFragment tab1 = new NoteRootFragment();
                     return tab1;
                 case 1:
                     HomeRootFragment tab2 = new HomeRootFragment();
                     return tab2;
                 case 2:
-                    NewSenFragment tab3 = new NewSenFragment();
+                    NewSenFragment tab3 = new NewSenFragment();;
                     return tab3;
             }
             return null;

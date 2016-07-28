@@ -141,7 +141,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                         .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 final HomeFragment hf = new HomeFragment();
-                                ft.replace(R.id.root_frame, hf);
+                                ft.replace(R.id.root_home, hf);
                                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                                 ft.commit();
                                 toast = Toast.makeText(getActivity(), "삭제되었습니다(구현예정)", Toast.LENGTH_SHORT);
@@ -171,29 +171,30 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
             case R.id.add_trans:
                 final TransAddFragment atf = new TransAddFragment();
                 atf.setArguments(args);
-                ft.add(R.id.root_frame, atf);
+                ft.replace(R.id.root_home, atf);
                 ft.addToBackStack(null);
                 ft.commit();
                 break;
             case R.id.trans_more:
                 final TransMoreFragment tmf = new TransMoreFragment();
                 tmf.setArguments(args);
-                ft.replace(R.id.root_frame, tmf);
+                ft.replace(R.id.root_home, tmf);
                 ft.addToBackStack(null);
                 ft.commit();
                 break;
             case R.id.add_listen:
-                final ListenAddFragment alf = new ListenAddFragment();
+/*                final ListenAddFragment alf = new ListenAddFragment();
                 alf.setArguments(args);
-                ft.replace(R.id.root_frame, alf);
+                ft.replace(R.id.root_home, alf);
                 ft.addToBackStack(null);
-                ft.addToBackStack(null);
-                ft.commit();
+                ft.commit();*/
+                toast = Toast.makeText(getActivity(), "구현중", Toast.LENGTH_SHORT);
+                toast.show();
                 break;
             case R.id.listen_more:
                 final ListenMoreFragment lmf = new ListenMoreFragment();
                 lmf.setArguments(args);
-                ft.replace(R.id.root_frame, lmf);
+                ft.replace(R.id.root_home, lmf);
                 ft.addToBackStack(null);
                 ft.commit();
                 break;
@@ -201,12 +202,8 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 tts.speak(sentence, TextToSpeech.QUEUE_FLUSH, null);
                 break;
             case R.id.listen2:
-                toast = Toast.makeText(getActivity(), "두번째 음성 파일이 존재하지 않습니다", Toast.LENGTH_SHORT);
-                toast.show();
                 break;
             case R.id.listen3:
-                toast = Toast.makeText(getActivity(), "세번째 음성 파일이 존재하지 않습니다", Toast.LENGTH_SHORT);
-                toast.show();
                 break;
             case R.id.trans1:
                 final TransDetailFragment tdf1 = new TransDetailFragment();
@@ -215,7 +212,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 args.putString("day", day.get(0).toString());
                 args.putString("reco", reco.get(0).toString());
                 tdf1.setArguments(args);
-                ft.replace(R.id.root_frame, tdf1);
+                ft.replace(R.id.root_home, tdf1);
                 ft.addToBackStack(null);
                 ft.commit();
                 break;
@@ -226,7 +223,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 args.putString("day", day.get(1).toString());
                 args.putString("reco", reco.get(1).toString());
                 tdf2.setArguments(args);
-                ft.replace(R.id.root_frame, tdf2);
+                ft.replace(R.id.root_home, tdf2);
                 ft.addToBackStack(null);
                 ft.commit();
                 break;
@@ -237,7 +234,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 args.putString("day", day.get(2).toString());
                 args.putString("reco", reco.get(2).toString());
                 tdf3.setArguments(args);
-                ft.replace(R.id.root_frame, tdf3);
+                ft.replace(R.id.root_home, tdf3);
                 ft.addToBackStack(null);
                 ft.commit();
                 break;
@@ -293,7 +290,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                     dos.write(outData, 0, outData[3] + 5); // packet transmission
                     dos.flush();
                     dis = new DataInputStream(SocketConnection.socket.getInputStream());
-
+                    num=0;
                     while (num < 3) {
                         Log.d(TAG, "while" + num);
                         dis.read(temp, 0, 4);
@@ -352,16 +349,15 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                                     j++;
                                 }
                             }
-
                             String transinfo = new String(transinfobyte, 0, j);
                             int plus = transinfo.indexOf('+');
+                            System.out.println(transinfo);
 
                             trans.add(new String(transbyte, 0, i)); //해석
                             userid.add(transinfo.substring(0,plus)); //아이디
                             day.add(transinfo.substring(plus+1,plus+11)); //날짜
                             reco.add(transinfo.substring(plus+12,transinfo.length()-1)); //추천수
 
-                            Log.d(TAG, "해석있음 끝" + num);
                             num++;
                         }
                         else if (inData[1] == PacketUser.ACK_NTRANS) {
@@ -369,7 +365,6 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                             for (int j = 0; j < 3 - num; j++) {
                                 trans.add("none");
                             }
-                            Log.d(TAG, "해석없음 끝" + num);
                             num++;
                             break;
                         } else {

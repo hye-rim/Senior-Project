@@ -95,57 +95,62 @@ public class NoteFragment extends Fragment {
         mRecyclerWord.setAdapter(mWordAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerWord.addItemDecoration(new DividerItemDecoration(dividerDrawable));
 
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
         mSenAdapter.notifyDataSetChanged();
         mWordAdapter.notifyDataSetChanged();
 
-        final NoteSenFragment noteSenItem = new NoteSenFragment();
         mRecyclerSen.addOnItemTouchListener(
                 new RecycleItemClickListener(getActivity().getApplicationContext(), mRecyclerSen, new RecycleItemClickListener.OnItemClickListener() {
                     @Override
                     public void onLongItemClick(View view, int position) {
                         Log.v(TAG,"sententce item : " + position);
                         if( view.getId() != R.id.ll_sen_more&& view.getId() != R.id.btn_sen_more && mRecyclerWord.getAdapter().getItemViewType(position) == VIEW_TYPE_CELL  ) {
+                            NoteSenFragment noteSenItem = new NoteSenFragment();
+                            FragmentManager fm = getActivity().getSupportFragmentManager();
+
                             Bundle args = new Bundle();
                             args.putString("senItemName", "문장 모음" );
                             noteSenItem.setArguments(args);
-
-                            mTabHost.setVisibility(View.GONE);
-                            mItemFrame.setVisibility(View.VISIBLE);
-                            FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-                            fragmentTransaction.replace(R.id.note_item, noteSenItem)
+                            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                            ft.replace(R.id.root_note, noteSenItem)
+                                    .addToBackStack(null)
                                     .commit();
+                            fm.executePendingTransactions();
                         }
 
                     }
                 }));
 
-        final NoteWordFragment noteWordItem = new NoteWordFragment();
         mRecyclerWord.addOnItemTouchListener(
                 new RecycleItemClickListener(getActivity().getApplicationContext(), mRecyclerWord, new RecycleItemClickListener.OnItemClickListener() {
                     @Override
                     public void onLongItemClick(View view, int position) {
                         Log.v(TAG, "word item : " + position);
                         if( view.getId() != R.id.ll_word_more&& view.getId() != R.id.btn_word_more &&mRecyclerWord.getAdapter().getItemViewType(position) == VIEW_TYPE_CELL  ) {
+                            NoteWordFragment noteWordItem = new NoteWordFragment();
+                            FragmentManager fm = getActivity().getSupportFragmentManager();
+
                             Bundle args = new Bundle();
                             args.putString("wordItemName", "단어 모음" );
                             noteWordItem.setArguments(args);
 
-                            mTabHost.setVisibility(View.GONE);
-                            mItemFrame.setVisibility(View.VISIBLE);
-                            FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-                            fragmentTransaction.replace(R.id.note_item, noteWordItem)
+                            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                            ft.replace(R.id.root_note, noteWordItem)
+                                    .addToBackStack(null)
                                     .commit();
+                            fm.executePendingTransactions();
                         }
                     }
                 }));
+        return view;
+    }
 
+    public void onBackPressed(){
+
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 
     private void initData() {
@@ -164,8 +169,4 @@ public class NoteFragment extends Fragment {
 
     }
 
-    void setVisible() {
-        mTabHost.setVisibility(View.GONE);
-        mItemFrame.setVisibility(View.VISIBLE);
-    }
 }
