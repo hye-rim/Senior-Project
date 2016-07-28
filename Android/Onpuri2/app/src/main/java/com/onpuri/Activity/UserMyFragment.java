@@ -25,7 +25,6 @@ public class UserMyFragment extends Fragment implements View.OnClickListener {
 
     String userId, name, joinDate, phone, nowPass ;
 
-    private com.onpuri.Server.CloseSystem CloseSystem; //BackKeyPressed,close
     private ActivityList actManager = ActivityList.getInstance();
     private FragmentTransaction fragmentTransaction;
     private FragmentManager mFragmentManager;

@@ -69,8 +69,6 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
         }
         reco = getArguments().getString("userId");
 
-        Button add_note = (Button) view.findViewById(R.id.add_note);
-        add_note.setOnClickListener(this);
         Button item_reco = (Button) view.findViewById(R.id.item_reco);
         item_reco.setOnClickListener(this);
         Button item_edit = (Button) view.findViewById(R.id.item_edit);
@@ -94,20 +92,6 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
         args.putString("sen_trans", trans);
 
         switch (v.getId()) {
-            case R.id.add_note:
-                final CharSequence[] items = {"노트1", "노트2", "노트3"};
-                new AlertDialog.Builder(getActivity())
-                        .setTitle("노트를 선택해 주세요")
-                        .setItems(items, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int index) {
-                                Toast.makeText(getActivity(), items[index] + "선택", Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dlg, int sumthin) {
-                            }
-                        }).show();
-                break;
             case R.id.item_reco:
                 toast = Toast.makeText(getActivity(), "추천", Toast.LENGTH_SHORT);
                 toast.show();
@@ -117,7 +101,7 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
                 args.putString("sen", sentence);
                 args.putString("sen_trans", trans);
                 tef.setArguments(args);
-                ft.replace(R.id.root_frame, tef);
+                ft.replace(R.id.root_home, tef);
                 ft.addToBackStack(null);
                 ft.commit();
                 break;

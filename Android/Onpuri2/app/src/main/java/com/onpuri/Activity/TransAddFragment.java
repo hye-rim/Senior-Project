@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.InflateException;
@@ -80,22 +81,20 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
     }
     @Override
     public void onClick(View v) {
-        final FragmentTransaction ft = getFragmentManager().beginTransaction();
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
 
         switch (v.getId()) {
             case R.id.btn_new_trans:
                 Addtranslation();
                 toast = Toast.makeText(getActivity(), "등록되었습니다", Toast.LENGTH_SHORT);
                 toast.show();
-
-                final HomeFragment hf = new HomeFragment();
-                ft.replace(R.id.root_frame, hf);
-                ft.addToBackStack(null);
+                fm.popBackStack();
                 ft.commit();
                 break;
             case R.id.btn_new_trans_back:
-                toast = Toast.makeText(getActivity(), "취소", Toast.LENGTH_SHORT);
-                toast.show();
+                fm.popBackStack();
+                ft.commit();;
                 break;
         }
     }

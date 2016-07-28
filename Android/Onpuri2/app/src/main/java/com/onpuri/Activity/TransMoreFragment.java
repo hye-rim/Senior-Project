@@ -48,7 +48,6 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
     byte[] inData2 = new byte[261];
     byte[] temp = new byte[261];
 
-    private static int current_page = 1;
     List trans = new ArrayList();
     List userid = new ArrayList();
     List day = new ArrayList();
@@ -59,6 +58,7 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
     String sentence_num = "";
     int i=0;
     int num=0;
+    int a=0;
     int index;
     int count;
 
@@ -120,7 +120,7 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
                         tdf.setArguments(args);
 
                         FragmentTransaction ft = getFragmentManager().beginTransaction();
-                        ft.add(R.id.root_frame, tdf);
+                        ft.add(R.id.root_home, tdf);
                         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                         ft.addToBackStack(null);
                         ft.commit();
@@ -145,8 +145,6 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
                     }
                 })
         );
-        Adapter.notifyDataSetChanged();
-
         return view;
     }
 
@@ -162,11 +160,13 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        for (int i = 0; i < count; i++) {
+
+        for (int i = a; i < count; i++) {
             list_trans.add(trans.get(i).toString());
             list_userid.add(userid.get(i).toString());
             list_day.add(day.get(i).toString());
             list_reco.add(reco.get(i).toString());
+            a++;
         }
     }
 
@@ -200,8 +200,8 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
             case R.id.add_trans:
                 final TransAddFragment atf = new TransAddFragment();
                 atf.setArguments(args);
-                ft.replace(R.id.root_frame, atf);
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                ft.replace(R.id.root_home, atf);
+                ft.addToBackStack(null);
                 ft.commit();
                 break;
         }
@@ -299,24 +299,26 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
 
                             String transinfo = new String(transinfobyte, 0, j);
                             int plus = transinfo.indexOf('+');
+                            System.out.println("1111111111111111111111"+new String(transbyte, 0, i));
+                            System.out.println("1111111111111111111111"+transinfo);
 
                             trans.add(new String(transbyte, 0, i)); //해석
                             userid.add(transinfo.substring(0,plus)); //아이디
                             day.add(transinfo.substring(plus+1,plus+11)); //날짜
                             reco.add(transinfo.substring(plus+12,transinfo.length()-1)); //추천수
-
-                            Log.d(TAG, "해석있음 끝"+num);
                             num++;
                         }
                         else if(inData[1] == PacketUser.ACK_NTRANS) {
                             Log.d(TAG, "해석없음"+num);
-                            Log.d(TAG, "해석없음 끝"+num);
                             count=num;
                             break;
                         }
                         else {
-                            trans.add("error");
                             Log.d(TAG, "error"+num);
+                            System.out.println(inData[0]);
+                            System.out.println(inData[1]);
+                            System.out.println(inData[2]);
+                            System.out.println(inData[3]);
                             count=num;
                             break;
                         }

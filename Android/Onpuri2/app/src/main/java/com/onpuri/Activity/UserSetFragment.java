@@ -33,7 +33,6 @@ import java.io.IOException;
  * Created by kutemsys on 2016-05-26.
  */
 public class UserSetFragment extends Fragment implements View.OnClickListener {
-    private com.onpuri.Server.CloseSystem CloseSystem; //BackKeyPressed,close
     private ActivityList actManager = ActivityList.getInstance();
     private static View view;
 
@@ -100,9 +99,6 @@ public class UserSetFragment extends Fragment implements View.OnClickListener {
     public void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-    }
-    public void onBackPressed(){
-        CloseSystem.onBackPressed();
     }
 
     @Override

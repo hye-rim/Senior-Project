@@ -64,11 +64,6 @@ public class PacketUser extends Application {
         arrSentenceNum.add(num);
         System.out.println("string_num : " + arrSentenceNum.get(0));
     }
-
-    public String getuserId() {return userId;}
-    public String getSentence(int i){
-        return arrSentence.get(i);
-    }
     public ArrayList<String> copyList() {
         return arrSentence;
     }
