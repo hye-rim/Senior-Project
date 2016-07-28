@@ -218,11 +218,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         mDrawerLayout.closeDrawers();
-        if (item.getItemId() == R.id.nav_home) {
+ /*       if (item.getItemId() == R.id.nav_home) {
             mFragmentManager.beginTransaction()
                     .replace(R.id.containerView,new TabViewPager())
                     .commit();
-        }
+        }*/
         if (item.getItemId() == R.id.nav_mypage) {
             UserMyFragment MyFrament = new UserMyFragment();
             bundle = new Bundle();
