@@ -4,23 +4,19 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.onpuri.R;
 import com.onpuri.ActivityList;
+import com.onpuri.R;
 import com.onpuri.Server.PacketInfo;
 import com.onpuri.Server.PacketUser;
 import com.onpuri.Server.SocketConnection;
@@ -107,7 +103,8 @@ public class UserSetFragment extends Fragment implements View.OnClickListener {
         switch (v.getId()){
             case R.id.btn_set_notice:
                 mFragmentManager.beginTransaction()
-                        .replace(R.id.containerView, new UserSetNoticeFragment())
+                        .add(R.id.containerView, new UserSetNoticeFragment())
+                        .addToBackStack("fragBack")
                         .commit();
                 break;
 
@@ -118,19 +115,22 @@ public class UserSetFragment extends Fragment implements View.OnClickListener {
                 setQuestionFragment.setArguments(args);
 
                 mFragmentManager.beginTransaction()
-                        .replace(R.id.containerView, setQuestionFragment)
+                        .add(R.id.containerView, setQuestionFragment)
+                        .addToBackStack("fragBack")
                         .commit();
                 break;
 
             case R.id.btn_set_version:
                 mFragmentManager.beginTransaction()
-                        .replace(R.id.containerView, new UserSetVersionFragment())
+                        .add(R.id.containerView, new UserSetVersionFragment())
+                        .addToBackStack("fragBack")
                         .commit();
                 break;
 
             case R.id.btn_set_tou:
                 mFragmentManager.beginTransaction()
-                        .replace(R.id.containerView, new UserSetTouFragment())
+                        .add(R.id.containerView, new UserSetTouFragment())
+                        .addToBackStack("fragBack")
                         .commit();
                 break;
 

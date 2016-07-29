@@ -223,43 +223,51 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .commit();
         }*/
 
-        if (item.getItemId() == R.id.nav_mypage) {
-            UserMyFragment MyFrament = new UserMyFragment();
-            bundle = new Bundle();
-            bundle.putString("MyId", userId);
-            bundle.putString("MyName", name);
-            bundle.putString("MyJoin", joinDate);
-            bundle.putString("MyPhone", phone);
-            bundle.putString("MyPass", nowPassword);
-            MyFrament.setArguments(bundle);
+        switch (item.getItemId()){
+            case R.id.nav_mypage :
+                UserMyFragment MyFrament = new UserMyFragment();
+                bundle = new Bundle();
+                bundle.putString("MyId", userId);
+                bundle.putString("MyName", name);
+                bundle.putString("MyJoin", joinDate);
+                bundle.putString("MyPhone", phone);
+                bundle.putString("MyPass", nowPassword);
+                MyFrament.setArguments(bundle);
 
-            mFragmentManager.beginTransaction()
-                    .add(R.id.containerView,MyFrament)
-                    .commit();
+                mFragmentManager.beginTransaction()
+                        .add(R.id.containerView, MyFrament)
+                        .addToBackStack("fragBack")
+                        .commit();
+                break;
 
-        }
-        if (item.getItemId() == R.id.nav_myact) {
-            UserMyActFragment ActFrament = new UserMyActFragment();
-            bundle = new Bundle();
-            bundle.putString("ActId", userId);
-            ActFrament.setArguments(bundle);
+            case R.id.nav_myact:
+                UserMyActFragment ActFrament = new UserMyActFragment();
+                bundle = new Bundle();
+                bundle.putString("ActId", userId);
+                ActFrament.setArguments(bundle);
 
-            mFragmentManager.beginTransaction()
-                    .replace(R.id.containerView, ActFrament)
-                    .commit();
-        }
-        if (item.getItemId() == R.id.nav_logout) {
-            logout();
-        }
-        if (item.getItemId() == R.id.nav_set) {
-            UserSetFragment SetFrament = new UserSetFragment();
-            bundle = new Bundle();
-            bundle.putString("SetId", userId);
-            SetFrament.setArguments(bundle);
+                mFragmentManager.beginTransaction()
+                        .add(R.id.containerView, ActFrament)
+                        .addToBackStack("fragBack")
+                        .commit();
+                break;
 
-            mFragmentManager.beginTransaction()
-                    .replace(R.id.containerView, SetFrament)
-                    .commit();
+            case R.id.nav_logout:
+                logout();
+                break;
+
+            case R.id.nav_set:
+                UserSetFragment SetFrament = new UserSetFragment();
+                bundle = new Bundle();
+                bundle.putString("SetId", userId);
+                SetFrament.setArguments(bundle);
+
+                mFragmentManager.beginTransaction()
+                        .add(R.id.containerView, SetFrament)
+                        .addToBackStack("fragBack")
+                        .commit();
+                break;
+
         }
         return false;
     }
