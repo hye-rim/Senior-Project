@@ -6,26 +6,26 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
-
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.onpuri.R;
 import com.onpuri.ActivityList;
+import com.onpuri.R;
 import com.onpuri.Server.PacketUser;
 import com.onpuri.Server.SocketConnection;
 
@@ -89,20 +89,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         mNavigationView = (NavigationView) findViewById(R.id.nav_view) ;
-        mNavId = (TextView)findViewById(R.id.tv_nav_id);
+
+        //View header = LayoutInflater.from(this).inflate(R.layout.nav_header_main_sub, null);
+        //mNavigationView.addHeaderView(header);
+        View header = mNavigationView.getHeaderView(0);
+        mNavId = (TextView)header.findViewById(R.id.tv_nav_id);
+
 
         Intent intent = getIntent();
         userId = intent.getStringExtra("UserId");
+        Log.d(TAG, "id : " + userId);
         name = intent.getStringExtra("Name");
         joinDate = intent.getStringExtra("JoinDate");
         phone = intent.getStringExtra("Phone");
         nowPassword = intent.getStringExtra("NowPass");
 
         mNavId.setText(userId + " 님");
-        /**
-         * Lets inflate the very first fragment
-         * Here , we are inflating the TabViewPager as the first Fragment
-         */
 
         mFragmentManager = getSupportFragmentManager();
         mFragmentManager.beginTransaction()
@@ -120,10 +122,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
         mDrawerToggle.syncState();
+
+
     }
 
     @Override
     public void onBackPressed() {
+
         long tempTime = System.currentTimeMillis();
         long intervalTime = tempTime - backPressedTime;
 
@@ -131,6 +136,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
             if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime) {
+
+                if (setting.getBoolean("autoLogin", false) == false) {
+                    editor.clear();
+                    editor.commit();
+                }
+
                 if (mworker_out != null && mworker_out.isAlive()) {  //이미 동작하고 있을 경우 중지
                     mworker_out.interrupt();
                 }
@@ -143,12 +154,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-
-                if (setting.getBoolean("autoLogin", false) == false) {
-                    editor.clear();
-                    editor.commit();
-                }
-                finish();
+                ActivityCompat.finishAffinity(this);
+                System.runFinalizersOnExit(true);
+                System.exit(0);
             }
             else{
                 backPressedTime = tempTime;

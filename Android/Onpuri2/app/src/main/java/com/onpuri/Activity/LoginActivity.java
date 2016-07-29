@@ -113,8 +113,8 @@ public class LoginActivity extends Activity implements View.OnClickListener {
 
                 if(loginChecked) {
                     // if autoLogin Checked, save values
-                    editor.putString("id", id);
-                    editor.putString("pw", password);
+                    editor.putString("ID", id);
+                    editor.putString("PW", password);
                     editor.putBoolean("autoLogin", true);
                     editor.commit();
                 }
@@ -158,6 +158,12 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         if(mworker_login != null && mworker_login.isAlive()){  //이미 동작하고 있을 경우 중지
             mworker_login.interrupt();
         }
+
+        Log.d(TAG,"id : " + mPacketUser.userId);
+        Log.d(TAG,"name : " + mPacketUser.name);
+        Log.d(TAG,"joinDate : " + mPacketUser.joinDate);
+        Log.d(TAG,"phone : " + mPacketUser.phone);
+        Log.d(TAG,"nowPass : " + mPacketUser.nowPass);
 
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         intent.putExtra("UserId", mPacketUser.userId);
@@ -392,7 +398,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
 
         int i = 0;
         inData = new byte[inData.length]; //초기화가 되지않아....
-        //   SocketConnection.close();
+        //SocketConnection.close();
     }
     @Override
     protected void onDestroy()

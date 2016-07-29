@@ -1,29 +1,35 @@
 package com.onpuri.Activity;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v7.app.AlertDialog;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.onpuri.R;
 import com.onpuri.ActivityList;
+import com.onpuri.R;
 import com.onpuri.Server.PacketInfo;
 import com.onpuri.Server.SocketConnection;
-
-import org.w3c.dom.Text;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Hye-rim on 2016-03-18.
@@ -31,12 +37,13 @@ import java.io.IOException;
 //Loading Activity
 public class SplashActivity extends Activity {
     private static final String TAG = "SplashActivity";
+    private static final int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 1;
+
+    private TextView tvVersion;
     private ProgressBar spinner;
     DataOutputStream dos;
     DataInputStream dis;
 
-    TextView tv_splash, tvVersion;
-    String load = ".";
     byte[] outData = new byte[261];
     byte[] inData = new byte[261];
 
@@ -44,17 +51,25 @@ public class SplashActivity extends Activity {
 
     private ActivityList actManager = ActivityList.getInstance();
 
-    int i;
-
+    boolean isPermission;
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        actManager.addActivity(this);
         setContentView(R.layout.activity_splash);
 
+        if (Build.VERSION.SDK_INT >= 23) {
+            perrmissionWork();
+        } else {
+            splashWork();
+        }
+    }
+
+    private void splashWork() {
         spinner = (ProgressBar)findViewById(R.id.progressBar);
         spinner.setVisibility(ProgressBar.VISIBLE);
         spinner.setIndeterminate(true);
         spinner.setMax(100);
+
+        actManager.addActivity(this);
 
         PackageInfo pi = null;
         try {
@@ -67,8 +82,13 @@ public class SplashActivity extends Activity {
         tvVersion = (TextView)findViewById(R.id.tv_version);
         tvVersion.setText("Ver." + appVersion);
 
+        msplashTread = new splashThread(true);
+        msplashTread.start();
 
-        //if(worker.getState() == Thread.State.NEW)
+        if (worker != null && worker.isAlive()) {  //이미 동작하고 있을 경우 중지
+            worker.interrupt();
+        }
+
         worker.start();
         try {
             worker.join();
@@ -76,20 +96,99 @@ public class SplashActivity extends Activity {
             e.printStackTrace();
         }
 
-        load = ".";
-
         String androID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID); //device ID get
         Log.v("Device Id:", androID);
-        Log.v("getDeviceId();", getDeviceId());
         Log.v("Device Model:", Build.MODEL);
+    }
 
-        msplashTread = new splashThread(true);
-        msplashTread.start();
+    @TargetApi(Build.VERSION_CODES.M)
+    private void perrmissionWork() {
+        List<String> permissionsNeeded = new ArrayList<String>();
+
+        final List<String> permissionsList = new ArrayList<String>();
+        if (!addPermission(permissionsList, Manifest.permission.READ_PHONE_STATE))
+            permissionsNeeded.add("STATE");
+        if (!addPermission(permissionsList,Manifest.permission.WRITE_EXTERNAL_STORAGE))
+            permissionsNeeded.add("STORAGE");
+        if (!addPermission(permissionsList,Manifest.permission.INTERNET))
+            permissionsNeeded.add("INTERNET");
+
+        if (permissionsList.size() > 0) {
+            if (permissionsNeeded.size() > 0) {
+                // Need Rationale
+                String message = "You need to grant access to " + permissionsNeeded.get(0);
+                for (int i = 1; i < permissionsNeeded.size(); i++)
+                    message = message + ", " + permissionsNeeded.get(i);
+                showMessageOKCancel(message, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                requestPermissions(permissionsList.toArray(new String[permissionsList.size()]),
+                                        REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
+                            }
+                        });
+                return;
+            }
+            requestPermissions(
+                    permissionsList.toArray(new String[permissionsList.size()]),
+                    REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
+            return;
+        }
+        splashWork();
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    private boolean addPermission(List<String> permissionsList,String permission) {
+        if (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
+            permissionsList.add(permission);
+            // Check for Rationale Option
+            if (!shouldShowRequestPermissionRationale(permission))
+                return false;
+        }
+        return true;
+    }
+
+    private void showMessageOKCancel(String message,android.content.DialogInterface.OnClickListener onClickListener) {
+        new AlertDialog.Builder(this).setMessage(message)
+                .setPositiveButton("OK", onClickListener).setCancelable(false)
+                .setNegativeButton("Cancel", null).create().show();
 
     }
 
-    public void onBackPressed(){
-        super.onBackPressed ();
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS: {
+                Map<String, Integer> perms = new HashMap<String, Integer>();
+                // Initial
+                perms.put(Manifest.permission.READ_PHONE_STATE, PackageManager.PERMISSION_GRANTED);
+                perms.put(Manifest.permission.WRITE_EXTERNAL_STORAGE,PackageManager.PERMISSION_GRANTED);
+                perms.put(Manifest.permission.INTERNET, PackageManager.PERMISSION_GRANTED);
+
+                // Fill with results
+                for (int i = 0; i < permissions.length; i++)
+                    perms.put(permissions[i], grantResults[i]);
+                // Check for ACCESS_FINE_LOCATION
+                if (perms.get(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED
+                        && perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                        && perms.get(Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED
+                        ) {
+                    // All Permissions Granted
+                    splashWork();
+                } else {
+                    // Permission Denied
+                    Toast.makeText(this, "Some Permission is Denied", Toast.LENGTH_SHORT).show();
+                }
+            }
+            break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions,grantResults);
+        }
+    }
+
+    public String getDeviceId()
+    {//:: LG-F340L
+        TelephonyManager mgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+        return mgr.getDeviceId();
     }
 
     class splashThread extends Thread {
@@ -110,33 +209,28 @@ public class SplashActivity extends Activity {
                     synchronized(this){
                         //기다리는 시간
                         if((char)inData[4] == '1') { //1일 경우 1초 후 바로 넘어가도록 한다
-                            wait(1000);//Toast.makeText(getApplicationContext(), "접속성공", Toast.LENGTH_SHORT).show();
+                            wait(1000);
                             isPlay = !isPlay;
-
                         }
                         else
                             wait(5000);
                     }
                 }catch(InterruptedException ex){
                 }
-                finish();
 
                 Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
                 intent.setClass(SplashActivity.this, LoginActivity.class);
                 startActivity(intent);
+                finish();
             }
         }
-    }
-    @Override
-    protected void onStop() {
-        // TODO Auto-generated method stub
-        super.onStop();
     }
 
     Thread worker = new Thread() {
         public void run() {
             SocketConnection.start();
             String toServerData ;
+            int i;
 
             toServerData = getDeviceId()+"+"+Build.MODEL;
             outData[0] = (byte) PacketInfo.SOF;
@@ -154,7 +248,6 @@ public class SplashActivity extends Activity {
                 dos.write (outData,0,outData[3]+5);
                 dos.flush();
             } catch (IOException e) {
-                Toast.makeText( getApplicationContext() ,"서버와의 연결이 현재 불가능합니다.",Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
 
@@ -178,10 +271,14 @@ public class SplashActivity extends Activity {
         }
     };
 
-    public String getDeviceId()
-    {//:: LG-F340L
-        TelephonyManager mgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-        return mgr.getDeviceId();
+    public void onBackPressed(){
+        super.onBackPressed ();
+    }
+
+    @Override
+    protected void onStop() {
+        // TODO Auto-generated method stub
+        super.onStop();
     }
 
     @Override
