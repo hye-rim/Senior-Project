@@ -39,19 +39,19 @@ public class SplashActivity extends Activity {
     private static final String TAG = "SplashActivity";
     private static final int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 1;
 
-    private TextView tvVersion;
-    private ProgressBar spinner;
-    DataOutputStream dos;
-    DataInputStream dis;
+    private TextView tvVersion; //version name
+    private ProgressBar spinner; //progressbar
 
-    byte[] outData = new byte[261];
-    byte[] inData = new byte[261];
+    DataOutputStream dos; //out data stream
+    DataInputStream dis; //in data stream
 
-    private splashThread msplashTread;
+    byte[] outData = new byte[261]; // Stored out data
+    byte[] inData = new byte[261]; //Stored in data
+
+    private splashThread msplashTread; //Splash thread
 
     private ActivityList actManager = ActivityList.getInstance();
 
-    boolean isPermission;
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
@@ -107,9 +107,11 @@ public class SplashActivity extends Activity {
 
         final List<String> permissionsList = new ArrayList<String>();
         if (!addPermission(permissionsList, Manifest.permission.READ_PHONE_STATE))
-            permissionsNeeded.add("STATE");
+            permissionsNeeded.add("PHONE_STATE");
         if (!addPermission(permissionsList,Manifest.permission.WRITE_EXTERNAL_STORAGE))
-            permissionsNeeded.add("STORAGE");
+            permissionsNeeded.add("WRITE_STORAGE");
+        if (!addPermission(permissionsList,Manifest.permission.READ_EXTERNAL_STORAGE))
+            permissionsNeeded.add("READ_STORAGE");
         if (!addPermission(permissionsList,Manifest.permission.INTERNET))
             permissionsNeeded.add("INTERNET");
 
@@ -163,6 +165,7 @@ public class SplashActivity extends Activity {
                 perms.put(Manifest.permission.READ_PHONE_STATE, PackageManager.PERMISSION_GRANTED);
                 perms.put(Manifest.permission.WRITE_EXTERNAL_STORAGE,PackageManager.PERMISSION_GRANTED);
                 perms.put(Manifest.permission.INTERNET, PackageManager.PERMISSION_GRANTED);
+                perms.put(Manifest.permission.READ_EXTERNAL_STORAGE, PackageManager.PERMISSION_GRANTED);
 
                 // Fill with results
                 for (int i = 0; i < permissions.length; i++)
@@ -171,6 +174,7 @@ public class SplashActivity extends Activity {
                 if (perms.get(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED
                         && perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
                         && perms.get(Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED
+                        && perms.get(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
                         ) {
                     // All Permissions Granted
                     splashWork();

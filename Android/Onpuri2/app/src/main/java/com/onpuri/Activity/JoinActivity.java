@@ -8,7 +8,6 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,9 +17,8 @@ import android.widget.Toast;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.onpuri.R;
 import com.onpuri.ActivityList;
-import com.onpuri.Server.CloseSystem;
+import com.onpuri.R;
 import com.onpuri.Server.PacketUser;
 import com.onpuri.Server.SocketConnection;
 
@@ -315,20 +313,23 @@ public class JoinActivity extends Activity {
     Thread worker_join = new Thread() {
         public void run() {
             String toServerDataUser;
-            toServerDataUser = et_newId.getText().toString() + "+" + et_newPw.getText().toString() + "+" + et_newName.getText().toString()
-                    + "+" + et_newPhone1.getText().toString() + et_newPhone2.getText().toString() + et_newPhone3.getText().toString() ;
+            toServerDataUser = et_newId.getText().toString()
+                    + "+" + et_newPw.getText().toString()
+                    + "+" + et_newName.getText().toString()
+                    + "+" + et_newPhone1.getText().toString()
+                    + "-" + et_newPhone2.getText().toString()
+                    + "-" + et_newPhone3.getText().toString() ;
 
             byte[] dataByte = toServerDataUser.getBytes();
 
             outData[0] = (byte) PacketUser.SOF;
             outData[1] = (byte) PacketUser.USR_REG;
             outData[2] = (byte) PacketUser.getSEQ();
-            outData[3] = (byte) toServerDataUser.length();
-            for (i = 4; i < 4 + toServerDataUser.length(); i++) {
+            outData[3] = (byte) dataByte.length;
+            for (i = 4; i < 4 + dataByte.length ; i++) {
                 outData[i] = (byte) dataByte[i-4];
-                Log.d(TAG, new String(dataByte));
             }
-            outData[4 + toServerDataUser.length()] = (byte) 85;
+            outData[4 + dataByte.length] = (byte) 85;
 
             try {
                 dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
@@ -337,15 +338,8 @@ public class JoinActivity extends Activity {
                 dos.flush();
                 dis = new DataInputStream(SocketConnection.socket.getInputStream());
                 dis.read(inData);
-                //System.out.println("Data form server: " + ((char)inData[0].) + (char)inData[1]);
-                int SOF = inData[0];
 
-                System.out.println(inData[0]);
-                System.out.println(inData[1]);
-                System.out.println(inData[2]);
-                System.out.println(inData[3]);
-                System.out.println((char) inData[4]);
-                System.out.println(inData[5]);
+                int SOF = inData[0];
 
             } catch (IOException e) {
                 e.printStackTrace();

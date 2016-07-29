@@ -159,11 +159,11 @@ public class LoginActivity extends Activity implements View.OnClickListener {
             mworker_login.interrupt();
         }
 
-        Log.d(TAG,"id : " + mPacketUser.userId);
-        Log.d(TAG,"name : " + mPacketUser.name);
-        Log.d(TAG,"joinDate : " + mPacketUser.joinDate);
-        Log.d(TAG,"phone : " + mPacketUser.phone);
-        Log.d(TAG,"nowPass : " + mPacketUser.nowPass);
+        Log.d(TAG,"M id : " + mPacketUser.userId);
+        Log.d(TAG,"M name : " + mPacketUser.name);
+        Log.d(TAG,"M joinDate : " + mPacketUser.joinDate);
+        Log.d(TAG,"M phone : " + mPacketUser.phone);
+        Log.d(TAG,"M nowPass : " + mPacketUser.nowPass);
 
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         intent.putExtra("UserId", mPacketUser.userId);
@@ -179,39 +179,39 @@ public class LoginActivity extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         Intent intent;
 
-        if(checkAuto.isChecked()){
-            Log.d(TAG, "로그인");
-            String id = et_loginId.getText().toString();
-            String password = et_loginPw.getText().toString();
 
-            editor.putString("ID", id);
-            editor.putString("PW", password);
-            editor.putBoolean("autoLogin", true);
-            editor.commit();
+        switch (v.getId()) {
+            case R.id.btnNew :
+                intent = new Intent(LoginActivity.this, JoinActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.btnLogin:
+                if(loginChecked){
+                    Log.d(TAG, "로그인");
+                    String id = et_loginId.getText().toString();
+                    String password = et_loginPw.getText().toString();
 
-            mainGo();
+                    editor.putString("ID", id);
+                    editor.putString("PW", password);
+                    editor.putBoolean("autoLogin", true);
+                    editor.commit();
 
-        }else{
-            editor.clear();
-            editor.commit();
+                }else {
+                    editor.clear();
+                    editor.commit();
+                }
 
-            switch (v.getId()) {
-                case R.id.btnNew :
-                    intent = new Intent(LoginActivity.this, JoinActivity.class);
-                    startActivity(intent);
-                    break;
-                case R.id.btnLogin:
-                    id = et_loginId.getText().toString();
-                    pass = et_loginPw.getText().toString();
-                    Boolean validation = loginCorrect(id,pass);
+                id = et_loginId.getText().toString();
+                pass = et_loginPw.getText().toString();
+                Boolean validation = loginCorrect(id,pass);
 
-                    isLoginBtn = true;
+                isLoginBtn = true;
 
-                    if(validation)
-                        mainGo();
+                if(validation)
+                    mainGo();
 
-                    break;
-            }
+                break;
+
         }
     }
 
@@ -229,9 +229,6 @@ public class LoginActivity extends Activity implements View.OnClickListener {
             e.printStackTrace();
         }
 
-        //isPause = false;
-        System.out.println("result: " + (char)inData[4]);
-        // mworker_login.stopThread();
         if ( (check != '0' && check != '5') && checkLength != '1') {
             return true;
         }
