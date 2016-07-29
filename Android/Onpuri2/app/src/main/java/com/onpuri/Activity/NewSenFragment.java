@@ -149,9 +149,7 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                 if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    Intent intent = new Intent();
-                    intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivity(intent);
+                    openCamera();
                 }
             }
             else {
@@ -161,5 +159,8 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
     }
 
     private void openCamera() {
+        Intent intent = new Intent();
+        intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivity(intent);
     }
 }

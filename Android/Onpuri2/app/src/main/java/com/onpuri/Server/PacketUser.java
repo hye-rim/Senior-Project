@@ -20,9 +20,12 @@ public class PacketUser extends Application {
     static public char ACK_URG = 10, ACK_URG_LEN = 1;
     static public char USR_MSL = 11, USR_MSL_LEN = 2; //user main sentence list
     static public char ACK_UMS = 12, ACK_UMS_LEN = 1; //ack user main sentence
-    static public char USR_SEN = 13;
-    static public char ACK_SEN = 14;
-    static public char ACK_NTRNAS = 15;
+    static public char USR_SEN = 13; //request sentence
+    static public char ACK_SEN = 14; //request sentence ACK
+    static public char ACK_NTRANS = 15; // no translation
+    static public char USR_MTRANS = 16; //more translation
+    static public char USR_ATRANS = 17; //add translation
+    static public char ACK_ATRANS = 18; //add translation ACK
     static public char ACK_NSEN = 90;
     static public char USR_LEV = 99;
     static public char ACK_LEV = 100;
@@ -30,8 +33,7 @@ public class PacketUser extends Application {
     public static char SOF = 0xcc;//Decimal=204
     static public char CRC = 0x55;//Decimal=85
 
-    public String userId = "", name = "", joinDate = "", phone = "",
-            nowPass = "";
+    public String userId = "", name = "", joinDate = "", phone = "", nowPass = "";
     public ArrayList<String> arrSentence = new ArrayList<String>();
     public ArrayList<String> arrSentenceNum = new ArrayList<String>();
     public static int data_len;
@@ -50,7 +52,9 @@ public class PacketUser extends Application {
         else
             SEQ++;
     }
-
+    public void setuserId(String str) {
+        userId = str;
+    }
     public void setSentence(String str) {
         arrSentence.add(str);
         System.out.println("string : " + arrSentence.get(0));
@@ -58,10 +62,6 @@ public class PacketUser extends Application {
     public void setSentenceNum(String num) {
         arrSentenceNum.add(num);
         System.out.println("string_num : " + arrSentenceNum.get(0));
-    }
-
-    public String getSentence(int i){
-        return arrSentence.get(i);
     }
     public ArrayList<String> copyList() {
         return arrSentence;

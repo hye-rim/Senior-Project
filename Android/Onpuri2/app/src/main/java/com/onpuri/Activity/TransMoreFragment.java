@@ -36,25 +36,31 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
     private static View view;
     private Toast toast;
     ArrayList<String> list_trans;
+    ArrayList<String> list_userid;
+    ArrayList<String> list_day;
+    ArrayList<String> list_reco;
     private worker_sentence_trans worker_sentence_trans;
 
     DataOutputStream dos;
     DataInputStream dis;
     byte[] outData = new byte[261];
     byte[] inData = new byte[261];
+    byte[] inData2 = new byte[261];
     byte[] temp = new byte[261];
 
-    private static int current_page = 1;
-    private int ival = 0;
-    private int loadLimit = 3;
-    List trans = new ArrayList<>();
+    List trans = new ArrayList();
+    List userid = new ArrayList();
+    List day = new ArrayList();
+    List reco = new ArrayList();
 
     TextView item;
     String sentence = "";
     String sentence_num = "";
     int i=0;
+    int num=0;
+    int a=0;
     int index;
-    int count=0;
+    int count;
 
     private RecyclerView RecyclerView;
     private TransListAdapter Adapter;
@@ -72,6 +78,9 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
         } catch (InflateException e) {}
 
         list_trans = new ArrayList<String>();
+        list_userid = new ArrayList<String>();
+        list_day = new ArrayList<String>();
+        list_reco = new ArrayList<String>();
 
         item = (TextView) view.findViewById(R.id.tv_sentence);
         if (getArguments() != null) { //클릭한 문장 출력
@@ -79,7 +88,7 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
             sentence_num=getArguments().getString("sen_num");
             item.setText(sentence);
         }
-        loadData(current_page);
+        loadData();
 
         final TransDetailFragment tdf = new TransDetailFragment();
 
@@ -91,7 +100,7 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
         RecyclerView = (RecyclerView) view.findViewById(R.id.recycler_trans);
         LayoutManager = new LinearLayoutManager(getActivity());
         RecyclerView.setLayoutManager(LayoutManager);
-        Adapter = new TransListAdapter(list_trans, RecyclerView);
+        Adapter = new TransListAdapter(list_trans, list_day, list_reco, RecyclerView);
         RecyclerView.setAdapter(Adapter);// Set CustomAdapter as the adapter for RecyclerView.
         RecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener((LinearLayoutManager) LayoutManager) {
             @Override
@@ -105,10 +114,13 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
                         Bundle args = new Bundle();
                         args.putString("sen", sentence);
                         args.putString("sen_trans", list_trans.get(position));
+                        args.putString("userid", list_userid.get(position));
+                        args.putString("day", list_day.get(position));
+                        args.putString("reco", list_reco.get(position));
                         tdf.setArguments(args);
 
                         FragmentTransaction ft = getFragmentManager().beginTransaction();
-                        ft.add(R.id.root_frame, tdf);
+                        ft.add(R.id.root_home, tdf);
                         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                         ft.addToBackStack(null);
                         ft.commit();
@@ -133,12 +145,10 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
                     }
                 })
         );
-        Adapter.notifyDataSetChanged();
-
         return view;
     }
 
-    private void loadData(int current_page) {
+    private void loadData() {
 
         if (worker_sentence_trans != null && worker_sentence_trans.isAlive()) {  //이미 동작하고 있을 경우 중지
             worker_sentence_trans.interrupt();
@@ -150,39 +160,16 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        for (int i = 0; i < loadLimit; i++) {
+
+        for (int i = a; i < count; i++) {
             list_trans.add(trans.get(i).toString());
-            ival++;
+            list_userid.add(userid.get(i).toString());
+            list_day.add(day.get(i).toString());
+            list_reco.add(reco.get(i).toString());
+            a++;
         }
-
     }
 
-/*
-    private void loadMoreData(int current_page) {
-
-        loadLimit = ival+3;
-
-        if (worker_sentence_trans != null && worker_sentence_trans.isAlive()) {  //이미 동작하고 있을 경우 중지
-            worker_sentence_trans.interrupt();
-        }
-        worker_sentence_trans = new worker_sentence_trans(true);
-        worker_sentence_trans.start();
-        try {
-            worker_sentence_trans.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        for (int i = ival; i < loadLimit; i++) {
-            if (trans.get(i) == null) {
-                list_trans.add("없음");
-            } else
-                list_trans.add(trans.get(i).toString());
-            ival++;
-        }
-
-    }
-*/
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -213,8 +200,8 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
             case R.id.add_trans:
                 final TransAddFragment atf = new TransAddFragment();
                 atf.setArguments(args);
-                ft.replace(R.id.root_frame, atf);
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                ft.replace(R.id.root_home, atf);
+                ft.addToBackStack(null);
                 ft.commit();
                 break;
         }
@@ -237,7 +224,7 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
                 Log.d(TAG, "worker trans start");
 
                 outData[0] = (byte) PacketUser.SOF;
-                outData[1] = (byte) PacketUser.USR_SEN;
+                outData[1] = (byte) PacketUser.USR_MTRANS;
                 outData[2] = (byte) PacketUser.getSEQ();
                 outData[3] = (byte) sentence_num.length();
                 for (int i = 4; i < 4 + sentence_num.length(); i++) {
@@ -251,45 +238,95 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
                     dos.flush();
                     dis = new DataInputStream(SocketConnection.socket.getInputStream());
 
-                    while( i < 3) {
+                    while(true) {
+                        Log.d(TAG, "while"+i);
                         dis.read(temp, 0, 4);
+                        System.out.println("read");
                         for (index = 0; index < 4; index++) {
                             inData[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
                         }
-                        if(inData[1] == PacketUser.ACK_SEN) {
+                        System.out.println("opc : " + inData[1]);
+                        if(inData[1] == PacketUser.ACK_SEN){
+                            Log.d(TAG, "해석있음"+num);
+                            //해석 읽어오기
                             dis.read(temp, 0, 1 + (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]));
-
                             for (index = 0; index <= (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]); index++) {
                                 inData[index + 4] = temp[index];    // 패킷의 Data부분을 inData에 추가해준다.
                             }
 
-                            int SOF = inData[0];
-                            byte[] tmp = new byte[261];
-                            int trans_len;
-
-                            trans_len = ((int) inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);
+                            int trans_len = ((int) inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);
 
                             index = 0;
-                            int byteI = 0;
+                            int i = 0;
+                            byte[] transbyte = new byte[261];
+
                             while (true) { //solving
                                 if (index == trans_len)
                                     break;
                                 else {
-                                    tmp[byteI] += inData[4 + index];
+                                    transbyte[i] += inData[4 + index];
                                     index++;
-                                    byteI++;
+                                    i++;
                                 }
                             }
-                            trans.add(new String(tmp, 0, byteI));
-                            i++;
+
+                            //아이디-날짜-추천수 읽어오기
+                            dis.read(temp, 0, 4);
+                            System.out.println("info read");
+                            for (index = 0; index < 4; index++) {
+                                inData2[index] = temp[index];
+                            }
+                            dis.read(temp, 0, 1 + (inData2[3] <= 0 ? (int) inData2[3] + 256 : (int) inData2[3]));
+                            for (index = 0; index <= (inData2[3] <= 0 ? (int) inData2[3] + 256 : (int) inData2[3]); index++) {
+                                inData2[index + 4] = temp[index];
+                            }
+
+                            int len = ((int) inData2[3] <= 0 ? (int) inData2[3] + 256 : (int) inData2[3]);
+
+                            index = 0;
+                            int j = 0;
+                            byte[] transinfobyte = new byte[261];
+
+                            while (true) {
+                                if (index == len)
+                                    break;
+                                else {
+                                    transinfobyte[j] += inData2[4 + index];
+                                    index++;
+                                    j++;
+                                }
+                            }
+
+                            String transinfo = new String(transinfobyte, 0, j);
+                            int plus = transinfo.indexOf('+');
+                            System.out.println("1111111111111111111111"+new String(transbyte, 0, i));
+                            System.out.println("1111111111111111111111"+transinfo);
+
+                            trans.add(new String(transbyte, 0, i)); //해석
+                            userid.add(transinfo.substring(0,plus)); //아이디
+                            day.add(transinfo.substring(plus+1,plus+11)); //날짜
+                            reco.add(transinfo.substring(plus+12,transinfo.length()-1)); //추천수
+                            num++;
+                        }
+                        else if(inData[1] == PacketUser.ACK_NTRANS) {
+                            Log.d(TAG, "해석없음"+num);
+                            count=num;
+                            break;
                         }
                         else {
-                            trans.add("none");
-                            trans.add("none");
-                            trans.add("none");
-                            i=4;
+                            Log.d(TAG, "error"+num);
+                            System.out.println(inData[0]);
+                            System.out.println(inData[1]);
+                            System.out.println(inData[2]);
+                            System.out.println(inData[3]);
+                            count=num;
+                            break;
                         }
+                        Log.d(TAG, "while 끝"+num);
                     }
+                    dis.read(temp);
+
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

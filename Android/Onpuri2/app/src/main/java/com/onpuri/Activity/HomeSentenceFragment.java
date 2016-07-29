@@ -3,6 +3,7 @@ package com.onpuri.Activity;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
@@ -13,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.speech.tts.TextToSpeech;
 import android.widget.Toast;
 
 import com.onpuri.R;
@@ -40,11 +40,15 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
     DataInputStream dis;
     byte[] outData = new byte[261];
     byte[] inData = new byte[261];
+    byte[] inData2 = new byte[261];
     byte[] temp = new byte[261];
 
-    int i=0;
+    int num=0;
     int index;
     List trans = new ArrayList();
+    List userid = new ArrayList();
+    List day = new ArrayList();
+    List reco = new ArrayList();
 
     private static View view;
     private Toast toast;
@@ -100,12 +104,12 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
         TextView listen1 = (TextView) view.findViewById(R.id.listen1);
         TextView listen2 = (TextView) view.findViewById(R.id.listen2);
         TextView listen3 = (TextView) view.findViewById(R.id.listen3);
+        listen1.setText("listen1");
         Button listen_more = (Button) view.findViewById(R.id.listen_more);
         listen1.setOnClickListener(this);
         listen2.setOnClickListener(this);
         listen3.setOnClickListener(this);
         listen_more.setOnClickListener(this);
-        listen1.setText("listen1");
 
         tts = new TextToSpeech(getActivity(), this);
 
@@ -136,7 +140,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                         .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 final HomeFragment hf = new HomeFragment();
-                                ft.replace(R.id.root_frame, hf);
+                                ft.replace(R.id.root_home, hf);
                                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                                 ft.commit();
                                 toast = Toast.makeText(getActivity(), "삭제되었습니다(구현예정)", Toast.LENGTH_SHORT);
@@ -166,29 +170,30 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
             case R.id.add_trans:
                 final TransAddFragment atf = new TransAddFragment();
                 atf.setArguments(args);
-                ft.replace(R.id.root_frame, atf);
+                ft.replace(R.id.root_home, atf);
                 ft.addToBackStack(null);
                 ft.commit();
                 break;
             case R.id.trans_more:
                 final TransMoreFragment tmf = new TransMoreFragment();
                 tmf.setArguments(args);
-                ft.replace(R.id.root_frame, tmf);
+                ft.replace(R.id.root_home, tmf);
                 ft.addToBackStack(null);
                 ft.commit();
                 break;
             case R.id.add_listen:
-                final ListenAddFragment alf = new ListenAddFragment();
+/*                final ListenAddFragment alf = new ListenAddFragment();
                 alf.setArguments(args);
-                ft.replace(R.id.root_frame, alf);
+                ft.replace(R.id.root_home, alf);
                 ft.addToBackStack(null);
-                ft.addToBackStack(null);
-                ft.commit();
+                ft.commit();*/
+                toast = Toast.makeText(getActivity(), "구현중", Toast.LENGTH_SHORT);
+                toast.show();
                 break;
             case R.id.listen_more:
                 final ListenMoreFragment lmf = new ListenMoreFragment();
                 lmf.setArguments(args);
-                ft.replace(R.id.root_frame, lmf);
+                ft.replace(R.id.root_home, lmf);
                 ft.addToBackStack(null);
                 ft.commit();
                 break;
@@ -196,34 +201,39 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 tts.speak(sentence, TextToSpeech.QUEUE_FLUSH, null);
                 break;
             case R.id.listen2:
-                toast = Toast.makeText(getActivity(), "두번째 음성 파일이 존재하지 않습니다", Toast.LENGTH_SHORT);
-                toast.show();
                 break;
             case R.id.listen3:
-                toast = Toast.makeText(getActivity(), "세번째 음성 파일이 존재하지 않습니다", Toast.LENGTH_SHORT);
-                toast.show();
                 break;
             case R.id.trans1:
                 final TransDetailFragment tdf1 = new TransDetailFragment();
                 args.putString("sen_trans", trans.get(0).toString());
+                args.putString("userid", userid.get(0).toString());
+                args.putString("day", day.get(0).toString());
+                args.putString("reco", reco.get(0).toString());
                 tdf1.setArguments(args);
-                ft.replace(R.id.root_frame, tdf1);
+                ft.replace(R.id.root_home, tdf1);
                 ft.addToBackStack(null);
                 ft.commit();
                 break;
             case R.id.trans2:
                 final TransDetailFragment tdf2 = new TransDetailFragment();
                 args.putString("sen_trans", trans.get(1).toString());
+                args.putString("userid", userid.get(1).toString());
+                args.putString("day", day.get(1).toString());
+                args.putString("reco", reco.get(1).toString());
                 tdf2.setArguments(args);
-                ft.replace(R.id.root_frame, tdf2);
+                ft.replace(R.id.root_home, tdf2);
                 ft.addToBackStack(null);
                 ft.commit();
                 break;
             case R.id.trans3:
                 final TransDetailFragment tdf3 = new TransDetailFragment();
                 args.putString("sen_trans", trans.get(2).toString());
+                args.putString("userid", userid.get(2).toString());
+                args.putString("day", day.get(2).toString());
+                args.putString("reco", reco.get(2).toString());
                 tdf3.setArguments(args);
-                ft.replace(R.id.root_frame, tdf3);
+                ft.replace(R.id.root_home, tdf3);
                 ft.addToBackStack(null);
                 ft.commit();
                 break;
@@ -279,53 +289,91 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                     dos.write(outData, 0, outData[3] + 5); // packet transmission
                     dos.flush();
                     dis = new DataInputStream(SocketConnection.socket.getInputStream());
-
-                    while(i < 3) {
-                        Log.d(TAG, "while"+i);
+                    num=0;
+                    while (num < 3) {
+                        Log.d(TAG, "while" + num);
                         dis.read(temp, 0, 4);
                         System.out.println("read");
                         for (index = 0; index < 4; index++) {
-                            inData[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
+                            inData[index] = temp[index];
                         }
-                        System.out.println("1 : " + inData[1]);
-                        if(inData[1] == PacketUser.ACK_SEN){
-                            Log.d(TAG, "해석있음"+i);
+                        System.out.println("opc : " + inData[1]);
+                        if (inData[1] == PacketUser.ACK_SEN) {
+                            Log.d(TAG, "해석있음" + num);
+                            //해석 읽어오기
                             dis.read(temp, 0, 1 + (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]));
-
                             for (index = 0; index <= (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]); index++) {
-                                inData[index + 4] = temp[index];    // 패킷의 Data부분을 inData에 추가해준다.
+                                inData[index + 4] = temp[index];
                             }
 
-                            int SOF = inData[0];
-                            byte[] tmp = new byte[261];
-                            int trans_len;
-
-                            trans_len = ((int) inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);
+                            int trans_len = ((int) inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);
 
                             index = 0;
-                            int byteI = 0;
-                            while (true) { //solving
+                            int i = 0;
+                            byte[] transbyte = new byte[261];
+
+                            while (true) {
                                 if (index == trans_len)
                                     break;
                                 else {
-                                    tmp[byteI] += inData[4 + index];
+                                    transbyte[i] += inData[4 + index];
                                     index++;
-                                    byteI++;
+                                    i++;
                                 }
                             }
-                            trans.add(new String(tmp, 0, byteI));
-                            Log.d(TAG, "해석있음 끝"+i);
-                            i++;
-                        }
-                        else {
-                            Log.d(TAG, "해석없음"+i);
-                            trans.add("none");
-                            Log.d(TAG, "해석없음 끝"+i);
-                            i++;
-                        }
-                        Log.d(TAG, "while 끝"+i);
 
+                            //아이디-날짜-추천수 읽어오기
+                            dis.read(temp, 0, 4);
+                            System.out.println("info read");
+                            for (index = 0; index < 4; index++) {
+                                inData2[index] = temp[index];
+                            }
+                            dis.read(temp, 0, 1 + (inData2[3] <= 0 ? (int) inData2[3] + 256 : (int) inData2[3]));
+                            for (index = 0; index <= (inData2[3] <= 0 ? (int) inData2[3] + 256 : (int) inData2[3]); index++) {
+                                inData2[index + 4] = temp[index];
+                            }
+
+                            int len = ((int) inData2[3] <= 0 ? (int) inData2[3] + 256 : (int) inData2[3]);
+
+                            index = 0;
+                            int j = 0;
+                            byte[] transinfobyte = new byte[261];
+
+                            while (true) {
+                                if (index == len)
+                                    break;
+                                else {
+                                    transinfobyte[j] += inData2[4 + index];
+                                    index++;
+                                    j++;
+                                }
+                            }
+                            String transinfo = new String(transinfobyte, 0, j);
+                            int plus = transinfo.indexOf('+');
+                            System.out.println(transinfo);
+
+                            trans.add(new String(transbyte, 0, i)); //해석
+                            userid.add(transinfo.substring(0,plus)); //아이디
+                            day.add(transinfo.substring(plus+1,plus+11)); //날짜
+                            reco.add(transinfo.substring(plus+12,transinfo.length()-1)); //추천수
+
+                            num++;
+                        }
+                        else if (inData[1] == PacketUser.ACK_NTRANS) {
+                            Log.d(TAG, "해석없음" + num);
+                            for (int j = 0; j < 3 - num; j++) {
+                                trans.add("none");
+                            }
+                            num++;
+                            break;
+                        } else {
+                            trans.add("error");
+                            num++;
+                        }
+                        Log.d(TAG, "while 끝" + num);
                     }
+                    dis.read(temp);
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

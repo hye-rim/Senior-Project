@@ -4,12 +4,16 @@ package com.onpuri.Server;
  * Created by kutemsys on 2016-04-01.
  */
 import android.app.Activity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.widget.Toast;
 
+import com.onpuri.Activity.HomeFragment;
+import com.onpuri.Activity.HomeSentenceFragment;
 import com.onpuri.ActivityList;
+import com.onpuri.R;
 
 public class CloseSystem {
-
     private long backKeyPressedTime = 0;
     private Toast toast;
     private Activity activity;
@@ -21,8 +25,7 @@ public class CloseSystem {
     }
 
     public void onBackPressed() {
-
-        if (System.currentTimeMillis() > backKeyPressedTime + 3000) { //
+       if (System.currentTimeMillis() > backKeyPressedTime + 3000) { //
             backKeyPressedTime = System.currentTimeMillis();
             toast = Toast.makeText(activity, "\'뒤로\' 버튼을 한번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT);
             toast.show();
@@ -31,6 +34,7 @@ public class CloseSystem {
 
         if (System.currentTimeMillis() <= backKeyPressedTime + 3000) {
             //actManager.finishAllActivity();
+
             activity .moveTaskToBack(true);
             activity .finish();
             toast.cancel();

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -68,8 +69,6 @@ public class HomeFragment extends Fragment {
     private int sentence_num;
     private Boolean sentenceEnd = false;
 
-    Bundle args = new Bundle();
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (view != null) {
@@ -88,10 +87,11 @@ public class HomeFragment extends Fragment {
         listSentence = new ArrayList<String>();
         listSentenceNum = new ArrayList<String>();
 
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
         if(!sentenceEnd)
             loadData(current_page);
-
-        final HomeSentenceFragment hsf = new HomeSentenceFragment();
 
         handler = new Handler();
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_sentence);
@@ -115,16 +115,19 @@ public class HomeFragment extends Fragment {
                 new HomeItemClickListener(getActivity().getApplicationContext(), mRecyclerView ,new HomeItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
+                        HomeSentenceFragment hsf = new HomeSentenceFragment();
+                        FragmentManager fm = getActivity().getSupportFragmentManager();
+
                         Bundle args = new Bundle();
                         args.putString("sen", listSentence.get(position));
                         args.putString("sen_num", listSentenceNum.get(position));
                         hsf.setArguments(args);
 
-                        FragmentTransaction ft = getFragmentManager().beginTransaction();
-                        ft.add(R.id.root_frame, hsf);
-                        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                        ft.replace(R.id.root_home, hsf);
                         ft.addToBackStack(null);
                         ft.commit();
+                        fm.executePendingTransactions();
                     }
                     @Override
                     public void onLongItemClick(View view, int position) {
@@ -268,15 +271,16 @@ public class HomeFragment extends Fragment {
                             System.out.println("1 : " + inData[1]);
                             System.out.println("2 : " + inData[2]);
                             System.out.println("3 : " + inData[3]);
+                            System.out.println("4 : " + inData[4]);
                             System.out.println("5 : " + (char) inData[5]);
 
                             PacketUser.sentence_len = ((int) inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);
 
                             index = 0;
-                            String str = "";
+                            String str = ""; //문장
                             String num = Character.toString((char) senData[4])
                                     + Character.toString((char) senData[5])
-                                    + Character.toString((char) senData[6]);
+                                    + Character.toString((char) senData[6]); //문장번호
 
                             System.out.println("len : " + PacketUser.sentence_len);
                             System.out.println(num);

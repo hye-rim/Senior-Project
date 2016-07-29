@@ -12,7 +12,7 @@ import com.onpuri.R;
 
 public class HomeRootFragment extends Fragment {
 
-    private static final String TAG = "RootFragment";
+    private static final String TAG = "HomeRootFragment";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -26,7 +26,7 @@ public class HomeRootFragment extends Fragment {
 		 * When this container fragment is created, we fill it with our first
 		 * "real" fragment
 		 */
-        transaction.replace(R.id.root_frame, new HomeFragment());
+        transaction.replace(R.id.root_home, new HomeFragment());
 
         transaction.commit();
 

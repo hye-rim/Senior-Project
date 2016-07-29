@@ -19,6 +19,7 @@ import com.onpuri.R;
  */
 
 public class ListenAddFragment extends Fragment implements View.OnClickListener {
+    private static final String TAG = "ListenAddFragment";
 
     private static View view;
     private Toast toast;
@@ -26,7 +27,7 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener 
     TextView item;
     String sentence = "";
 
-    static final String RECORDED_FILE = "/DailyE_record/recorded.mp4";
+    static final String RECORDED_FILE = "/sdcard/DailyE_record/recorded.mp4";
     MediaRecorder recorder;
     boolean Islisten = true;
     boolean Isplay = true;
@@ -68,13 +69,14 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener 
             case R.id.listen:
                 Button btn_listen = (Button) view.findViewById(R.id.listen);
                 if (Islisten) {
-                  /*  if (recorder != null) {
+                    if (recorder != null) {
                         recorder.stop();
                         recorder.release();
                         recorder=null;
                     }
                     recorder = new MediaRecorder();
                     recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                    System.out.println("1");
                     recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
                     recorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
                     recorder.setOutputFile(RECORDED_FILE);
@@ -82,16 +84,17 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener 
                         Toast.makeText(getActivity(),"녹음시작", Toast.LENGTH_LONG).show();
                         recorder.prepare();
                         recorder.start();
+                        System.out.println("2");
                     } catch (Exception e) {
                         Log.e("error","Exception : ", e);
-                    }*/
+                    }
                     Islisten = false;
                     btn_listen.setText("중지");
                 } else {
-                    /*recorder.stop();
+                    recorder.stop();
                     recorder.release();
                     recorder = null;
-                    */
+
                     Islisten = true;
                     btn_listen.setText("녹음");
                 }
