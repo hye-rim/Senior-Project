@@ -16,15 +16,6 @@
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="20dp"
         android:gravity="center_vertical" />
-    <!--
-    <TextView
-        android:textSize="20dp"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:text="보유 쉘 : 0"
-        android:layout_gravity="center_vertical"
-        android:layout_marginLeft="20dp" />
-        -->
     <TabHost
         android:visibility="visible"
         android:id="@+id/my_act_tab"

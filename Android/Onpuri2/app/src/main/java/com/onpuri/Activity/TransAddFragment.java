@@ -94,7 +94,7 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.btn_new_trans_back:
                 fm.popBackStack();
-                ft.commit();;
+                ft.commit();
                 break;
         }
     }

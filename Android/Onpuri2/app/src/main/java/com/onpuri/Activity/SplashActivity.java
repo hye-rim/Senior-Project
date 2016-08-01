@@ -112,8 +112,8 @@ public class SplashActivity extends Activity {
             permissionsNeeded.add("WRITE_STORAGE");
         if (!addPermission(permissionsList,Manifest.permission.READ_EXTERNAL_STORAGE))
             permissionsNeeded.add("READ_STORAGE");
-        if (!addPermission(permissionsList,Manifest.permission.INTERNET))
-            permissionsNeeded.add("INTERNET");
+        if (!addPermission(permissionsList,Manifest.permission.RECORD_AUDIO))
+            permissionsNeeded.add("RECORD_AUDIO");
 
         if (permissionsList.size() > 0) {
             if (permissionsNeeded.size() > 0) {
@@ -164,8 +164,8 @@ public class SplashActivity extends Activity {
                 // Initial
                 perms.put(Manifest.permission.READ_PHONE_STATE, PackageManager.PERMISSION_GRANTED);
                 perms.put(Manifest.permission.WRITE_EXTERNAL_STORAGE,PackageManager.PERMISSION_GRANTED);
-                perms.put(Manifest.permission.INTERNET, PackageManager.PERMISSION_GRANTED);
                 perms.put(Manifest.permission.READ_EXTERNAL_STORAGE, PackageManager.PERMISSION_GRANTED);
+                perms.put(Manifest.permission.RECORD_AUDIO, PackageManager.PERMISSION_GRANTED);
 
                 // Fill with results
                 for (int i = 0; i < permissions.length; i++)
@@ -173,8 +173,8 @@ public class SplashActivity extends Activity {
                 // Check for ACCESS_FINE_LOCATION
                 if (perms.get(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED
                         && perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-                        && perms.get(Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED
                         && perms.get(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                        && perms.get(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
                         ) {
                     // All Permissions Granted
                     splashWork();

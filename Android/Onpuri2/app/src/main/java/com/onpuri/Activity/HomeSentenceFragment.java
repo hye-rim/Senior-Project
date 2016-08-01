@@ -185,7 +185,8 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 ft.commit();
                 break;
             case R.id.add_listen:
-               final ListenAddFragment alf = new ListenAddFragment();
+
+                final ListenAddFragment alf = new ListenAddFragment();
                 alf.setArguments(args);
                 ft.replace(R.id.root_home, alf);
                 ft.addToBackStack(null);

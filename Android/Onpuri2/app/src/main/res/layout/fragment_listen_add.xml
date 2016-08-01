@@ -24,25 +24,32 @@
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_gravity="center">
+        android:orientation="vertical"
+        android:layout_width="350dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal">
 
         <Button
             android:id="@+id/listen"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
             android:text="녹음"
             android:layout_gravity="center_horizontal"
-            android:layout_marginRight="20dp"/>
+            android:background="@color/fuzzy_peach"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="5dp" />
+
         <Button
             android:id="@+id/play"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
             android:text="재생"
             android:layout_gravity="center_horizontal"
-            android:layout_marginLeft="20dp"/>
+            android:background="@color/fuzzy_peach"
+            android:textColor="@color/never_forgotten"
+            android:layout_marginTop="5dp" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -50,6 +57,7 @@
         android:layout_height="100dp"
         android:orientation="horizontal"
         android:gravity="center">
+
         <Button
             android:id="@+id/btn_new_listen"
             android:layout_width="100dp"
