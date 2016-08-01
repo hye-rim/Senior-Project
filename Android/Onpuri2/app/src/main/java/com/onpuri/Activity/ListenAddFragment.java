@@ -1,23 +1,25 @@
 package com.onpuri.Activity;
 
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
+import android.Manifest;
+import android.annotation.TargetApi;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Environment;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.io.File;
@@ -28,6 +30,12 @@ import java.util.Locale;
 
 import com.onpuri.R;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 /**
  * Created by kutemsys on 2016-07-16.
@@ -35,6 +43,7 @@ import com.onpuri.R;
 
 public class ListenAddFragment extends Fragment implements View.OnClickListener, MediaRecorder.OnInfoListener {
     private static final String TAG = "ListenAddFragment";
+    private static final int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 1;
 
     private static View view;
     private Toast toast;
@@ -90,14 +99,19 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
         switch (v.getId()) {
             case R.id.listen:
                 Isstart = true;
+
                 if (!Islisten) {
                     Islisten = true;
                     btn_listen.setText("중지");
                     btn_play.setEnabled(false);
                     btn_play.setTextColor(Color.parseColor("#FEE098"));
-                    btnRecord();
-
-                } else {
+                    if(Build.VERSION.SDK_INT >= 23) {
+                        perrmissionWork();
+                    } else {
+                        btnRecord();
+                    }
+                }
+                else {
                     Islisten = false;
                     btn_listen.setText("녹음");
                     btn_play.setEnabled(true);
@@ -194,6 +208,8 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
                 break;
         }
     }
+
+    //파일 경로
     public static synchronized String GetFilePath() {
         String sdcard = Environment.getExternalStorageState();
         File file = null;
@@ -217,6 +233,78 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
             file.mkdirs();
         }
         return path;
+    }
+
+    //마시멜로 권한설정
+    private void perrmissionWork() {
+        String permissionsNeeded = new String();
+
+        final List<String> permissionsList = new ArrayList<String>();
+        if (!addPermission(permissionsList, Manifest.permission.RECORD_AUDIO))
+            permissionsNeeded = new String("RECORD_AUDIO");
+
+        if (permissionsList.size() > 0) {
+            if ( !permissionsNeeded.isEmpty() ) { //값이 있을 경우
+                // Need Rationale
+                String message = "You need to grant access to " + permissionsNeeded;
+                showMessageOKCancel(message, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        requestPermissions(permissionsList.toArray(new String[permissionsList.size()]),
+                                REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
+                    }
+                });
+                return;
+            }
+            requestPermissions(
+                    permissionsList.toArray(new String[permissionsList.size()]),
+                    REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
+            return;
+        }else{
+            btnRecord();
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    private boolean addPermission(List<String> permissionsList,String permission) {
+        if (getActivity().checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
+            permissionsList.add(permission);
+            // Check for Rationale Option
+            if (!shouldShowRequestPermissionRationale(permission))
+                return false;
+        }
+        return true;
+    }
+
+    private void showMessageOKCancel(String message,android.content.DialogInterface.OnClickListener onClickListener) {
+        new AlertDialog.Builder(getActivity()).setMessage(message)
+                .setPositiveButton("OK", onClickListener).setCancelable(false)
+                .setNegativeButton("Cancel", null).create().show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS: {
+                Map<String, Integer> perms = new HashMap<String, Integer>();
+                // Initial
+                perms.put(Manifest.permission.RECORD_AUDIO, PackageManager.PERMISSION_GRANTED);
+
+                // Fill with results
+                for (int i = 0; i < permissions.length; i++)
+                    perms.put(permissions[i], grantResults[i]);
+                if (perms.get(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED ) {
+                    // All Permissions Granted
+                    btnRecord();
+                } else {
+                    // Permission Denied
+                    Toast.makeText(getActivity(), "Some Permission is Denied", Toast.LENGTH_SHORT).show();
+                }
+            }
+            break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 
 }

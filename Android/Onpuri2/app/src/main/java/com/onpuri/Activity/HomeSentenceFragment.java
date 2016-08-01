@@ -135,17 +135,15 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
 
         switch (v.getId()) {
             case R.id.del_sen:
-                Toast.makeText(getActivity(), "구현예정입니다.", Toast.LENGTH_SHORT).show();
-
-              /*  new AlertDialog.Builder(getActivity())
+                new AlertDialog.Builder(getActivity())
                         .setTitle("문장을 삭제하시겠습니까?")
                         .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                final HomeFragment hf = new HomeFragment();
+                                /*final HomeFragment hf = new HomeFragment();
                                 ft.replace(R.id.root_home, hf);
                                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                                 ft.commit();
-                                toast = Toast.makeText(getActivity(), "삭제되었습니다(구현예정)", Toast.LENGTH_SHORT);
+                               */ toast = Toast.makeText(getActivity(), "구현예정", Toast.LENGTH_SHORT);
                             }
                         })
                         .setNegativeButton("취소", new DialogInterface.OnClickListener() {
@@ -153,7 +151,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                                 toast = Toast.makeText(getActivity(), "취소되었습니다", Toast.LENGTH_SHORT);
                             }
 
-                        }).show();*/
+                        }).show();
 
                 break;
             case R.id.add_note:

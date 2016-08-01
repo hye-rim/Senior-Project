@@ -186,15 +186,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        MenuItem searchItem = menu.findItem(R.id.action_search);
+        final MenuItem searchItem = menu.findItem(R.id.action_search);
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setQueryHint("두 자 이상 입력하세요");
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) { //입력 완료 후 구현 부분
-                Toast.makeText(getApplicationContext(), "검색 기능은 구현 예정입니다." ,Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "검색 기능은 구현 예정입니다.", Toast.LENGTH_SHORT).show();
                 SearchFragment searchFragment = new SearchFragment();
-
                 searchView.clearFocus();
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 fragmentManager.beginTransaction()
@@ -211,13 +210,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 return false;
             }
         });
+        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus){
+                    searchItem.collapseActionView();
+                    searchView.setQuery("",false);
+                }
+            }
+        });
 
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        if(null!=searchManager ) {
-            searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        }
-        // 검색필드를 항상 표시하고싶을 경우false, 아이콘으로 보이고 싶을 경우 true
-        searchView.setIconifiedByDefault(true);
         return true;
     }
 
