@@ -185,11 +185,11 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 ft.commit();
                 break;
             case R.id.add_listen:
-/*                final ListenAddFragment alf = new ListenAddFragment();
+                final ListenAddFragment alf = new ListenAddFragment();
                 alf.setArguments(args);
                 ft.replace(R.id.root_home, alf);
                 ft.addToBackStack(null);
-                ft.commit();*/
+                ft.commit();
                 toast = Toast.makeText(getActivity(), "구현중", Toast.LENGTH_SHORT);
                 toast.show();
                 break;
