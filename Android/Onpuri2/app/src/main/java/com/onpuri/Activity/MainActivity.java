@@ -1,51 +1,54 @@
 package com.onpuri.Activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
-
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.onpuri.R;
 import com.onpuri.ActivityList;
+import com.onpuri.R;
 import com.onpuri.Server.PacketUser;
 import com.onpuri.Server.SocketConnection;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-
     private static final String TAG = "MainActivity" ;
     private ActivityList actManager = ActivityList.getInstance();
 
+    ActionBarDrawerToggle mDrawerToggle;
+    DrawerLayout mDrawerLayout;
+    NavigationView mNavigationView;
+    FragmentManager mFragmentManager;
+    private GoogleApiClient client;
+
+    //Back Preesed
     private final long FINISH_INTERVAL_TIME = 3000;
     private long backPressedTime = 0;
-    Fragment f = null;
 
-    private worker_logout mworker_out;
-
+    //Socket
     DataOutputStream dos;
     DataInputStream dis;
 
@@ -54,26 +57,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     char check_out;
     char isOut = '0';
+    private worker_logout mworker_out;
 
-    ActionBarDrawerToggle mDrawerToggle;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
-
-    DrawerLayout mDrawerLayout;
-    NavigationView mNavigationView;
-    FragmentManager mFragmentManager;
-
-    TextView mNavId;
-
+    //User data - SharedPreferences
     SharedPreferences setting;
     SharedPreferences.Editor editor;
 
-    String userId = "";
-    String name, joinDate, phone, nowPassword;
-    Bundle bundle;
+    private String userId = "";
+    private String name, joinDate, phone, nowPassword;
+    private Bundle bundle;
+
+    private TextView mNavId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,26 +80,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setting = getSharedPreferences("setting",0);
         editor = setting.edit();
         mworker_out = null;
-        /**
-         *Setup the DrawerLayout and NavigationView
-         */
 
+        //Setup the DrawerLayout and NavigationView
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         mNavigationView = (NavigationView) findViewById(R.id.nav_view) ;
-        mNavId = (TextView)findViewById(R.id.tv_nav_id);
+
+        //View header = LayoutInflater.from(this).inflate(R.layout.nav_header_main_sub, null);
+        //mNavigationView.addHeaderView(header);
+        View header = mNavigationView.getHeaderView(0);
+        mNavId = (TextView)header.findViewById(R.id.tv_nav_id);
 
         Intent intent = getIntent();
         userId = intent.getStringExtra("UserId");
+        Log.d(TAG, "id : " + userId);
         name = intent.getStringExtra("Name");
         joinDate = intent.getStringExtra("JoinDate");
         phone = intent.getStringExtra("Phone");
         nowPassword = intent.getStringExtra("NowPass");
 
         mNavId.setText(userId + " 님");
-        /**
-         * Lets inflate the very first fragment
-         * Here , we are inflating the TabViewPager as the first Fragment
-         */
 
         mFragmentManager = getSupportFragmentManager();
         mFragmentManager.beginTransaction()
@@ -118,31 +112,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mDrawerToggle = new ActionBarDrawerToggle(this,mDrawerLayout, toolbar,R.string.app_name, R.string.app_name);
-
         mDrawerLayout.setDrawerListener(mDrawerToggle);
-
         mDrawerToggle.syncState();
+
     }
     @Override
     public void onBackPressed() {
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-
         long tempTime = System.currentTimeMillis();
         long intervalTime = tempTime - backPressedTime;
 
+        //Navigation Drawer OPEN / CLOSE
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         }
         else {
-            if(fm.getBackStackEntryCount() > 0) {
-                System.out.println("pop");
-                fm.popBackStack();
-                ft.commit();
+            //Fragment가 스택에 남아있을 경우
+            if(mFragmentManager.getBackStackEntryCount() > 0) {
+                Log.d(TAG,"pop");
+                mFragmentManager.popBackStack();
+                mFragmentManager.beginTransaction()
+                        .commit();
             }
             else {
-                System.out.println("close");
+                Log.d(TAG, "close");
+                //시간안에 2번 눌렀을 때
                 if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime) {
+                    if (setting.getBoolean("autoLogin", false) == false) {
+                        editor.clear();
+                        editor.commit();
+                    }
+
+                    //logout thread
                     if (mworker_out != null && mworker_out.isAlive()) {  //이미 동작하고 있을 경우 중지
                         mworker_out.interrupt();
                     }
@@ -156,12 +156,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         e.printStackTrace();
                     }
 
-                    if (setting.getBoolean("autoLogin", false) == false) {
-                        editor.clear();
-                        editor.commit();
-                    }
-                    finish();
+                    ActivityCompat.finishAffinity(this);
+                    System.runFinalizersOnExit(true);
+                    System.exit(0);
                 }
+
+                //First back preesed.
                 else{
                     backPressedTime = tempTime;
                     Toast.makeText(getApplicationContext(), "\'뒤로\' 버튼을 한번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT).show();
@@ -170,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    public Fragment getbasefragment() {
+    public Fragment getBaseFragment() {
         for (Fragment fragment: getSupportFragmentManager().getFragments()) {
             if (fragment.isVisible()) {
                 return (fragment);
@@ -185,7 +185,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getMenuInflater().inflate(R.menu.menu_main, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-
         return true;
     }
 
@@ -193,7 +192,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         mDrawerToggle.syncState();
-
     }
 
     @Override
@@ -218,53 +216,63 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         mDrawerLayout.closeDrawers();
- /*       if (item.getItemId() == R.id.nav_home) {
+        /*
+        if (item.getItemId() == R.id.nav_home) {
             mFragmentManager.beginTransaction()
                     .replace(R.id.containerView,new TabViewPager())
                     .commit();
         }*/
-        if (item.getItemId() == R.id.nav_mypage) {
-            UserMyFragment MyFrament = new UserMyFragment();
-            bundle = new Bundle();
-            bundle.putString("MyId", userId);
-            bundle.putString("MyName", name);
-            bundle.putString("MyJoin", joinDate);
-            bundle.putString("MyPhone", phone);
-            bundle.putString("MyPass", nowPassword);
-            MyFrament.setArguments(bundle);
 
-            mFragmentManager.beginTransaction()
-                    .replace(R.id.containerView,MyFrament)
-                    .commit();
+        switch (item.getItemId()){
+            case R.id.nav_mypage :
+                UserMyFragment MyFrament = new UserMyFragment();
+                bundle = new Bundle();
+                bundle.putString("MyId", userId);
+                bundle.putString("MyName", name);
+                bundle.putString("MyJoin", joinDate);
+                bundle.putString("MyPhone", phone);
+                bundle.putString("MyPass", nowPassword);
+                MyFrament.setArguments(bundle);
 
-        }
-        if (item.getItemId() == R.id.nav_myact) {
-            UserMyActFragment ActFrament = new UserMyActFragment();
-            bundle = new Bundle();
-            bundle.putString("ActId", userId);
-            ActFrament.setArguments(bundle);
+                mFragmentManager.beginTransaction()
+                        .add(R.id.containerView, MyFrament)
+                        .addToBackStack("fragBack")
+                        .commit();
+                break;
 
-            mFragmentManager.beginTransaction()
-                    .replace(R.id.containerView, ActFrament)
-                    .commit();
-        }
-        if (item.getItemId() == R.id.nav_logout) {
-            Logout();
-        }
-        if (item.getItemId() == R.id.nav_set) {
-            UserSetFragment SetFrament = new UserSetFragment();
-            bundle = new Bundle();
-            bundle.putString("SetId", userId);
-            SetFrament.setArguments(bundle);
+            case R.id.nav_myact:
+                UserMyActFragment ActFrament = new UserMyActFragment();
+                bundle = new Bundle();
+                bundle.putString("ActId", userId);
+                ActFrament.setArguments(bundle);
 
-            mFragmentManager.beginTransaction()
-                    .replace(R.id.containerView, SetFrament)
-                    .commit();
+                mFragmentManager.beginTransaction()
+                        .add(R.id.containerView, ActFrament)
+                        .addToBackStack("fragBack")
+                        .commit();
+                break;
+
+            case R.id.nav_logout:
+                logout();
+                break;
+
+            case R.id.nav_set:
+                UserSetFragment SetFrament = new UserSetFragment();
+                bundle = new Bundle();
+                bundle.putString("SetId", userId);
+                SetFrament.setArguments(bundle);
+
+                mFragmentManager.beginTransaction()
+                        .add(R.id.containerView, SetFrament)
+                        .addToBackStack("fragBack")
+                        .commit();
+                break;
+
         }
         return false;
     }
 
-    private void Logout() {
+    private void logout() {
         if(mworker_out != null && mworker_out.isAlive()){  //이미 동작하고 있을 경우 중지
             mworker_out.interrupt();
         }
@@ -289,25 +297,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "MainSub Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app deep link URI is correct.
-                Uri.parse("android-app://com.onpuri/http/host/path")
-        );
-        AppIndex.AppIndexApi.start(client, viewAction);
-    }
 
     class worker_logout extends Thread {
         private boolean isPlay = false;
@@ -363,13 +352,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
             }
         }
-
-
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "MainSub Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://com.onpuri/http/host/path")
+        );
+        AppIndex.AppIndexApi.start(client, viewAction);
+    }
 
     @Override
     protected void onStop() {

@@ -33,8 +33,7 @@ public class PacketUser extends Application {
     public static char SOF = 0xcc;//Decimal=204
     static public char CRC = 0x55;//Decimal=85
 
-    public String userId = "", name = "", joinDate = "", phone = "",
-            nowPass = "";
+    public String userId = "", name = "", joinDate = "", phone = "", nowPass = "";
     public ArrayList<String> arrSentence = new ArrayList<String>();
     public ArrayList<String> arrSentenceNum = new ArrayList<String>();
     public static int data_len;

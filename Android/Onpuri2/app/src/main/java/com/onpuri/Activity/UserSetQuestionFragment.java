@@ -84,15 +84,15 @@ public class UserSetQuestionFragment extends Fragment implements View.OnClickLis
                     Toast.makeText(getActivity(), "No email clients installed on device!", Toast.LENGTH_LONG).show();
                 }
 
-                fragmentTransaction = mFragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.containerView,new TabViewPager()).commit();
-
+                mFragmentManager.popBackStack();
+                mFragmentManager.beginTransaction()
+                        .commit();
                 break;
 
             case R.id.btn_question_cancel:
-                fragmentTransaction = mFragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.containerView,new TabViewPager()).commit();
-
+                mFragmentManager.popBackStack();
+                mFragmentManager.beginTransaction()
+                        .commit();
                 break;
         }
     }

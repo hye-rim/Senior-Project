@@ -52,7 +52,7 @@ public class UserMyFragment extends Fragment implements View.OnClickListener {
         } catch (InflateException e) {
     /* map is already there, just return view as it is */
         }
-        mFragmentManager = getFragmentManager();
+        mFragmentManager = getActivity().getSupportFragmentManager();
 
         userId = new String();
         userId = getArguments().getString("MyId");
@@ -91,16 +91,17 @@ public class UserMyFragment extends Fragment implements View.OnClickListener {
         switch (v.getId()){
             case R.id.btn_my_ok:
                 Toast.makeText(getActivity(), "정보수정은 구현예정입니다.", Toast.LENGTH_SHORT).show();
-
-                fragmentTransaction = mFragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.containerView, new TabViewPager()).commit();
-
+                mFragmentManager.popBackStack();
+                mFragmentManager.beginTransaction()
+                        .commit();
                 break;
+
             case R.id.btn_my_cancel:
-                fragmentTransaction = mFragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.containerView, new TabViewPager()).commit();
-
+                mFragmentManager.popBackStack();
+                mFragmentManager.beginTransaction()
+                        .commit();
                 break;
+
             default:
                 break;
         }

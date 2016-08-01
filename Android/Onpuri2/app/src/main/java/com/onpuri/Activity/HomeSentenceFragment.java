@@ -3,18 +3,17 @@ package com.onpuri.Activity;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.util.Xml;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.speech.tts.TextToSpeech;
 import android.widget.Toast;
 
 import com.onpuri.R;
@@ -136,7 +135,9 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
 
         switch (v.getId()) {
             case R.id.del_sen:
-                new AlertDialog.Builder(getActivity())
+                Toast.makeText(getActivity(), "구현예정입니다.", Toast.LENGTH_SHORT).show();
+
+              /*  new AlertDialog.Builder(getActivity())
                         .setTitle("문장을 삭제하시겠습니까?")
                         .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
@@ -152,7 +153,8 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                                 toast = Toast.makeText(getActivity(), "취소되었습니다", Toast.LENGTH_SHORT);
                             }
 
-                        }).show();
+                        }).show();*/
+
                 break;
             case R.id.add_note:
                 final CharSequence[] items = {"노트1", "노트2", "노트3"};
@@ -183,13 +185,13 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 ft.commit();
                 break;
             case R.id.add_listen:
-/*                final ListenAddFragment alf = new ListenAddFragment();
+               final ListenAddFragment alf = new ListenAddFragment();
                 alf.setArguments(args);
                 ft.replace(R.id.root_home, alf);
                 ft.addToBackStack(null);
-                ft.commit();*/
-                toast = Toast.makeText(getActivity(), "구현중", Toast.LENGTH_SHORT);
-                toast.show();
+                ft.commit();
+           /*     toast = Toast.makeText(getActivity(), "구현중", Toast.LENGTH_SHORT);
+                toast.show();*/
                 break;
             case R.id.listen_more:
                 final ListenMoreFragment lmf = new ListenMoreFragment();

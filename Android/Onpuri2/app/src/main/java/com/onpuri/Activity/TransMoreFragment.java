@@ -299,8 +299,6 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
 
                             String transinfo = new String(transinfobyte, 0, j);
                             int plus = transinfo.indexOf('+');
-                            System.out.println("1111111111111111111111"+new String(transbyte, 0, i));
-                            System.out.println("1111111111111111111111"+transinfo);
 
                             trans.add(new String(transbyte, 0, i)); //해석
                             userid.add(transinfo.substring(0,plus)); //아이디
@@ -315,10 +313,6 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
                         }
                         else {
                             Log.d(TAG, "error"+num);
-                            System.out.println(inData[0]);
-                            System.out.println(inData[1]);
-                            System.out.println(inData[2]);
-                            System.out.println(inData[3]);
                             count=num;
                             break;
                         }

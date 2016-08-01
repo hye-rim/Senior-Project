@@ -1,7 +1,5 @@
 package com.onpuri.Activity;
 
-import android.Manifest;
-import android.media.MediaRecorder;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -70,7 +68,7 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener 
         switch (v.getId()) {
             case R.id.listen:
                 Button btn_listen = (Button) view.findViewById(R.id.listen);
-                if (Islisten) {
+                if (Islisten) { //Islisten==true
                     if (recorder != null) {
                         recorder.stop();
                         recorder.release();
@@ -92,11 +90,11 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener 
                     }
                     Islisten = false;
                     btn_listen.setText("중지");
-                } else {
+                }
+                else { //Islisten==false
                     recorder.stop();
                     recorder.release();
                     recorder = null;
-
                     Islisten = true;
                     btn_listen.setText("녹음");
                 }
