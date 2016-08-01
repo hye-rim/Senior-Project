@@ -135,6 +135,8 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
 
         switch (v.getId()) {
             case R.id.del_sen:
+                Toast.makeText(getActivity(), "구현예정입니다.", Toast.LENGTH_SHORT).show();
+                /*
                 new AlertDialog.Builder(getActivity())
                         .setTitle("문장을 삭제하시겠습니까?")
                         .setPositiveButton("확인", new DialogInterface.OnClickListener() {
@@ -152,6 +154,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                             }
 
                         }).show();
+                        */
                 break;
             case R.id.add_note:
                 final CharSequence[] items = {"노트1", "노트2", "노트3"};
