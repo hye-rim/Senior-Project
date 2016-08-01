@@ -2,9 +2,15 @@ package com.onpuri.Activity;
 
 
 import android.Manifest;
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -18,17 +24,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.onpuri.R;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by kutemsys on 2016-05-03.
  */
 //문장등록 tab
 public class NewSenFragment extends Fragment implements View.OnClickListener{
-    //private ArrayList<View> history;
     private static View view;
+    private static final int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 1;
+    private static final int REQ_CODE_SELECT_IMAGE = 2;
+
     private Button btn_ok, btn_cancel, btn_gallery, btn_camera;
 
     ViewPager viewPager;
@@ -73,12 +89,16 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
                 break;
 
             case R.id.btn_new_picture:
-                Toast.makeText(getActivity(), "갤러리 기능은 차후 구현 예정입니다.", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "갤러리 기능은 차후 구현 예정입니다.", Toast.LENGTH_SHORT).show();
+                openGallery();
                 break;
 
             case R.id.btn_new_camera:
-                Toast.makeText(getActivity(), "카메라 기능은 차후 구현 예정입니다.", Toast.LENGTH_SHORT).show();
-                checkVersion();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    perrmissionWork();
+                } else {
+                    openCamera();
+                }
                 break;
 
             default:
@@ -86,76 +106,11 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
         }
     }
 
-    private void checkVersion() {
-        //현재 사용자의 OS버전이 마시멜로우 인지 체크한다.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            //사용자 단말기의 권한 중 전화걸기 권한이 허용되어 있는지 체크한다.
-            int permissionResult = ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.CAMERA);
-
-            // CAMERA 권한이 없을 떄
-            if (permissionResult == PackageManager.PERMISSION_DENIED) {
-                //  Package는 Android Application의 ID이다.
-                //CAMERA 권한조사  거부한 이력이 없다면 false를 리턴한다.
-
-                if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
-
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-                    dialog.setTitle("권한이 필요합니다.")
-                            .setMessage("이 기능을 사용하기 위해서는 단말기의 \"카메라\"권한이 필요합니다. 계속하시겠습니까?")
-                            .setPositiveButton("네", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                        requestPermissions(new String[]{Manifest.permission.CAMERA}, 1000);
-                                    }
-                                }
-                            })
-                            .setNegativeButton("아니요", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    Toast.makeText(getActivity(), "기능을 취소했습니다.", Toast.LENGTH_SHORT).show();
-                                }
-                            })
-                            .create()
-                            .show();
-
-                }
-                // 최초로 권한을 요청 할 때
-                else {
-                    // CAMERA 권한을 안드로이드 OS에 요청합니다.
-                    requestPermissions(new String[]{Manifest.permission.CAMERA}, 1000);
-                }
-            }
-            //CAMERA권한이 있을 경우
-            else {
-                openCamera();
-            }
-
-        }
-        // 사용자의 버전이 마시멜로우 이하일때
-        else {
-            openCamera();
-        }
-
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        // 사용자 요청, 요청한 권한들, 응답들
-
-        if (requestCode == 1000) {
-            // 요청한 권한을 사용자가 허용했다면
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    openCamera();
-                }
-            }
-            else {
-                Toast.makeText(getActivity(), "권한요청을 거부했습니다.", Toast.LENGTH_SHORT).show();
-            }
-        }
+    private void openGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
+        intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, REQ_CODE_SELECT_IMAGE);
     }
 
     private void openCamera() {
@@ -163,4 +118,98 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
         intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivity(intent);
     }
+
+    private void perrmissionWork() {
+        String permissionsNeeded = new String();
+
+        final List<String> permissionsList = new ArrayList<String>();
+        if (!addPermission(permissionsList, Manifest.permission.CAMERA))
+            permissionsNeeded = new String("CAMERA");
+
+        if (permissionsList.size() > 0) {
+            if ( !permissionsNeeded.isEmpty() ) { //값이 있을 경우
+                // Need Rationale
+                String message = "You need to grant access to " + permissionsNeeded;
+                showMessageOKCancel(message, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        requestPermissions(permissionsList.toArray(new String[permissionsList.size()]),
+                                REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
+                    }
+                });
+                return;
+            }
+            requestPermissions(
+                    permissionsList.toArray(new String[permissionsList.size()]),
+                    REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
+            return;
+        }else{
+            openCamera();
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    private boolean addPermission(List<String> permissionsList,String permission) {
+        if (getActivity().checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
+            permissionsList.add(permission);
+            // Check for Rationale Option
+            if (!shouldShowRequestPermissionRationale(permission))
+                return false;
+        }
+        return true;
+    }
+
+    private void showMessageOKCancel(String message,android.content.DialogInterface.OnClickListener onClickListener) {
+        new AlertDialog.Builder(getActivity()).setMessage(message)
+                .setPositiveButton("OK", onClickListener).setCancelable(false)
+                .setNegativeButton("Cancel", null).create().show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS: {
+                Map<String, Integer> perms = new HashMap<String, Integer>();
+                // Initial
+                perms.put(Manifest.permission.CAMERA, PackageManager.PERMISSION_GRANTED);
+
+                // Fill with results
+                for (int i = 0; i < permissions.length; i++)
+                    perms.put(permissions[i], grantResults[i]);
+                if (perms.get(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED ) {
+                    // All Permissions Granted
+                    openCamera();
+                } else {
+                    // Permission Denied
+                    Toast.makeText(getActivity(), "Some Permission is Denied", Toast.LENGTH_SHORT).show();
+                }
+            }
+            break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions,grantResults);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == REQ_CODE_SELECT_IMAGE)
+        {
+            if(resultCode == Activity.RESULT_OK)
+            {
+                try {
+                    //이미지 데이터를 비트맵으로 받아온다.
+                    Bitmap image_bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), data.getData());
+                    ImageView image = (ImageView)view.findViewById(R.id.imageView1);
+
+                    //배치해놓은 ImageView에 set
+                    image.setImageBitmap(image_bitmap);
+
+                }
+                catch (FileNotFoundException e) { 		e.printStackTrace(); 			}
+                catch (IOException e)                 {		e.printStackTrace(); 			}
+                catch (Exception e)		         {             e.printStackTrace();			}
+            }
+        }
+    }
+
 }

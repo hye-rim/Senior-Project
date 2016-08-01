@@ -1,10 +1,16 @@
 package com.onpuri.Activity;
 
+import android.Manifest;
+import android.annotation.TargetApi;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
@@ -17,6 +23,10 @@ import android.widget.Toast;
 import com.onpuri.R;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by kutemsys on 2016-07-16.
@@ -24,6 +34,7 @@ import java.io.IOException;
 
 public class ListenAddFragment extends Fragment implements View.OnClickListener, MediaRecorder.OnInfoListener {
     private static final String TAG = "ListenAddFragment";
+    private static final int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 1;
 
     private static View view;
     private Toast toast;
@@ -78,38 +89,6 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.listen:
-                Button btn_listen = (Button) view.findViewById(R.id.listen);
-                /*
-                if (Islisten) {
-                    if (recorder != null) {
-                        recorder.stop();
-                        recorder.release();
-                        recorder=null;
-                    }
-                    recorder = new MediaRecorder();
-                    recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-                    recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-                    recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-                    recorder.setOutputFile(RECORDED_FILE);
-                    try {
-                        Toast.makeText(getActivity(),"녹음시작", Toast.LENGTH_LONG).show();
-                        recorder.prepare();
-                        recorder.start();
-                        System.out.println("2");
-                    } catch (Exception e) {
-                        Log.e("error","Exception : ", e);
-                    }
-                    Islisten = false;
-                    btn_listen.setText("중지");
-                } else {
-                    recorder.stop();
-                    recorder.release();
-                    recorder = null;
-
-                    Islisten = true;
-                    btn_listen.setText("녹음");
-                }
-                */
                 if (Islisten) {
                     Islisten = false;
                     btn_listen.setText("중지하기");
@@ -117,7 +96,11 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
                 } else {
                     Islisten = true;
                     btn_listen.setText("녹음하기");
-                    btnRecord();
+                    if (Build.VERSION.SDK_INT >= 23) {
+                        perrmissionWork();
+                    } else {
+                        btnRecord();
+                    }
                 }
 
                 break;
@@ -196,6 +179,78 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
             case MediaRecorder.MEDIA_RECORDER_INFO_MAX_FILESIZE_REACHED :
                 onBtnStop();
                 break;
+        }
+    }
+
+    //마시멜로 권한설정
+    private void perrmissionWork() {
+        String permissionsNeeded = new String();
+
+        final List<String> permissionsList = new ArrayList<String>();
+        if (!addPermission(permissionsList, Manifest.permission.RECORD_AUDIO))
+            permissionsNeeded = new String("RECORD_AUDIO");
+
+        if (permissionsList.size() > 0) {
+            if ( !permissionsNeeded.isEmpty() ) { //값이 있을 경우
+                // Need Rationale
+                String message = "You need to grant access to " + permissionsNeeded;
+                showMessageOKCancel(message, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        requestPermissions(permissionsList.toArray(new String[permissionsList.size()]),
+                                REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
+                    }
+                });
+                return;
+            }
+            requestPermissions(
+                    permissionsList.toArray(new String[permissionsList.size()]),
+                    REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
+            return;
+        }else{
+            btnRecord();
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    private boolean addPermission(List<String> permissionsList,String permission) {
+        if (getActivity().checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
+            permissionsList.add(permission);
+            // Check for Rationale Option
+            if (!shouldShowRequestPermissionRationale(permission))
+                return false;
+        }
+        return true;
+    }
+
+    private void showMessageOKCancel(String message,android.content.DialogInterface.OnClickListener onClickListener) {
+        new AlertDialog.Builder(getActivity()).setMessage(message)
+                .setPositiveButton("OK", onClickListener).setCancelable(false)
+                .setNegativeButton("Cancel", null).create().show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS: {
+                Map<String, Integer> perms = new HashMap<String, Integer>();
+                // Initial
+                perms.put(Manifest.permission.RECORD_AUDIO, PackageManager.PERMISSION_GRANTED);
+
+                // Fill with results
+                for (int i = 0; i < permissions.length; i++)
+                    perms.put(permissions[i], grantResults[i]);
+                if (perms.get(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED ) {
+                    // All Permissions Granted
+                    btnRecord();
+                } else {
+                    // Permission Denied
+                    Toast.makeText(getActivity(), "Some Permission is Denied", Toast.LENGTH_SHORT).show();
+                }
+            }
+            break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 }
