@@ -26,6 +26,10 @@ public class PacketUser extends Application {
     static public char USR_MTRANS = 16; //more translation
     static public char USR_ATRANS = 17; //add translation
     static public char ACK_ATRANS = 18; //add translation ACK
+    static public char ACK_NLISTEN = 19; // no recoder
+    static public char USR_MLISTEN = 20; //more recoder
+    static public char USR_ALISTEN = 21; //add recoder
+    static public char ACK_ALISTEN = 22; //add recoder ACK
     static public char ACK_NSEN = 90;
     static public char USR_LEV = 99;
     static public char ACK_LEV = 100;

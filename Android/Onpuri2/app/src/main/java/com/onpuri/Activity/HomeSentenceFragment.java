@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -43,15 +44,15 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
     byte[] inData2 = new byte[261];
     byte[] temp = new byte[261];
 
+    private static View view;
+    private Toast toast;
+
     int num=0;
     int index;
     List trans = new ArrayList();
     List userid = new ArrayList();
     List day = new ArrayList();
     List reco = new ArrayList();
-
-    private static View view;
-    private Toast toast;
 
     TextView item;
     String sentence = "";
@@ -104,7 +105,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
         TextView listen1 = (TextView) view.findViewById(R.id.listen1);
         TextView listen2 = (TextView) view.findViewById(R.id.listen2);
         TextView listen3 = (TextView) view.findViewById(R.id.listen3);
-        listen1.setText("listen1");
+        listen1.setText("TTS");
         Button listen_more = (Button) view.findViewById(R.id.listen_more);
         listen1.setOnClickListener(this);
         listen2.setOnClickListener(this);
@@ -127,6 +128,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
+        final FragmentManager fm = getActivity().getSupportFragmentManager();
         final FragmentTransaction ft = getFragmentManager().beginTransaction();
 
         final Bundle args = new Bundle();
@@ -139,11 +141,9 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                         .setTitle("문장을 삭제하시겠습니까?")
                         .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                /*final HomeFragment hf = new HomeFragment();
-                                ft.replace(R.id.root_home, hf);
-                                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                                fm.popBackStack();
                                 ft.commit();
-                               */ toast = Toast.makeText(getActivity(), "구현예정", Toast.LENGTH_SHORT);
+                               toast = Toast.makeText(getActivity(), "삭제되었습니다(구현예정)", Toast.LENGTH_SHORT);
                             }
                         })
                         .setNegativeButton("취소", new DialogInterface.OnClickListener() {
@@ -183,14 +183,11 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 ft.commit();
                 break;
             case R.id.add_listen:
-
                 final ListenAddFragment alf = new ListenAddFragment();
                 alf.setArguments(args);
                 ft.replace(R.id.root_home, alf);
                 ft.addToBackStack(null);
                 ft.commit();
-           /*     toast = Toast.makeText(getActivity(), "구현중", Toast.LENGTH_SHORT);
-                toast.show();*/
                 break;
             case R.id.listen_more:
                 final ListenMoreFragment lmf = new ListenMoreFragment();

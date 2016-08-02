@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -58,7 +59,7 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
     String sentence_num = "";
     int i=0;
     int num=0;
-    int a=0;
+    int j=0;
     int index;
     int count;
 
@@ -131,6 +132,10 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
                                 .setTitle("선택한 해석을 삭제하시겠습니까?")
                                 .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int whichButton) {
+                                     /*   final FragmentManager fm = getActivity().getSupportFragmentManager();
+                                        final FragmentTransaction ft = getFragmentManager().beginTransaction();
+                                        fm.popBackStack();
+                                        ft.commit();*/
                                         toast = Toast.makeText(getActivity(), "삭제되었습니다(구현예정)", Toast.LENGTH_SHORT);
                                         toast.show();
                                     }
@@ -149,7 +154,6 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
     }
 
     private void loadData() {
-
         if (worker_sentence_trans != null && worker_sentence_trans.isAlive()) {  //이미 동작하고 있을 경우 중지
             worker_sentence_trans.interrupt();
         }
@@ -160,13 +164,12 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        for (int i = a; i < count; i++) {
+        for (int i = j; i < count; i++) {
             list_trans.add(trans.get(i).toString());
             list_userid.add(userid.get(i).toString());
             list_day.add(day.get(i).toString());
             list_reco.add(reco.get(i).toString());
-            a++;
+            j++;
         }
     }
 

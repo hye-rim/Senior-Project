@@ -58,6 +58,16 @@
                     android:textColor="@color/black"/>
             </LinearLayout>
         </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/fuzzy_peach"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp">
+        </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="35dp"
@@ -87,14 +97,32 @@
                 android:background="@color/never_forgotten"
                 android:textColor="@color/black"/>
         </LinearLayout>
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="horizontal" android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:weightSum="1">
+            <TextView
+                android:textSize="18dp"
+                android:textColor="@color/black"
+                android:lineSpacingExtra="3dp"
+                android:ellipsize="end"
+                android:id="@+id/listen_tts"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="none"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="8dp" />
+        </LinearLayout>
 
         <android.support.v7.widget.RecyclerView
             android:scrollbars="vertical"
             app:layoutManager="LinearLayoutManager"
             android:id="@+id/recycler_listen"
             android:layout_width="match_parent"
-            android:layout_height="375dp"
-            tools:listitem="@layout/listen_list">
+            android:layout_height="300dp"
+            tools:listitem="@layout/listen_list"
+            android:layout_marginTop="2dp">
         </android.support.v7.widget.RecyclerView>
     </LinearLayout>
 </ScrollView>

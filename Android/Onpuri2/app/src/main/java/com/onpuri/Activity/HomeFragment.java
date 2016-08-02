@@ -131,7 +131,6 @@ public class HomeFragment extends Fragment {
                     }
                     @Override
                     public void onLongItemClick(View view, int position) {
-                        // do whatever
                     }
                 })
         );

@@ -45,7 +45,6 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
     int sentence_num;
     TextView item;
     EditText trans;
-    WebView mview;
 
     int i;
 
@@ -114,6 +113,7 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
 
     class worker_add_trans extends Thread {
         private boolean isPlay = false;
+        String AddTrans = trans.getText().toString();
 
         public worker_add_trans(boolean isPlay) {
             this.isPlay = isPlay;
@@ -127,7 +127,6 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
             super.run();
             while (isPlay) {
                 Log.d(TAG, "worker add trans start");
-                String AddTrans = trans.getText().toString();
                 byte[] dataByte = AddTrans.getBytes();
                 outData[0] = (byte) PacketUser.SOF;
                 outData[1] = (byte) PacketUser.USR_ATRANS;
@@ -144,8 +143,9 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
 
                 try {
                     dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
-                    dos.write(outData, 0, outData[3] + 7); // packet transmission
+                    dos.write(outData, 0, outData[3]+7); // packet transmission
                     dos.flush();
+
                     dis = new DataInputStream(SocketConnection.socket.getInputStream());
                     dis.read(temp, 0, 4);
                     for (int index = 0; index < 4; index++) {

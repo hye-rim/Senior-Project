@@ -22,13 +22,20 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
 import com.onpuri.R;
+import com.onpuri.Server.PacketUser;
+import com.onpuri.Server.SocketConnection;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,13 +50,22 @@ import java.util.Map;
 
 public class ListenAddFragment extends Fragment implements View.OnClickListener, MediaRecorder.OnInfoListener {
     private static final String TAG = "ListenAddFragment";
+    private worker_add_listen worker_add_listen;
     private static final int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 1;
 
+    DataOutputStream dos;
+    DataInputStream dis;
+    FileInputStream fis;
+    BufferedInputStream bis;
+    byte[] outData = new byte[261];
+    byte[] inData = new byte[261];
+    byte[] temp = new byte[261];
     private static View view;
     private Toast toast;
 
     TextView item;
     String sentence = "";
+    int sentence_num;
 
     boolean Islisten = false;
     boolean Isplay = false;
@@ -58,7 +74,8 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
     Button btn_listen, btn_play;
     MediaPlayer mPlayer = null;
     MediaRecorder mRecorder = null;
-    String mFilePath;
+    String mFilePath = "";
+    private static String mFileName;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -74,6 +91,7 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
         item = (TextView) view.findViewById(R.id.tv_sentence);
         if (getArguments() != null) {
             sentence = getArguments().getString("sen");
+            sentence_num=Integer.parseInt(getArguments().getString("sen_num"));
             item.setText(sentence);
         }
 
@@ -122,7 +140,7 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
 
             case R.id.play:
                 if(!Isstart) {
-                    toast = Toast.makeText(getActivity(), "녹음파일이 없습니다", Toast.LENGTH_SHORT);
+                    toast = Toast.makeText(getActivity(), "진행된 녹음이 없습니다", Toast.LENGTH_SHORT);
                     toast.show();
                     break;
                 }
@@ -142,8 +160,11 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
                 break;
 
             case R.id.btn_new_listen:
-                toast = Toast.makeText(getActivity(), "등록", Toast.LENGTH_SHORT);
+                //AddListen();
+                toast = Toast.makeText(getActivity(), "등록되었습니다(구현예정)", Toast.LENGTH_SHORT);
                 toast.show();
+                fm.popBackStack();
+                ft.commit();
                 break;
 
             case R.id.btn_new_listen_back:
@@ -176,12 +197,12 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
         }
         mRecorder.start();
     }
-    public void onBtnStop() {
+    private void onBtnStop() {
         mRecorder.stop();
         mRecorder.release();
     }
 
-    public void onBtnPlay() {
+    private void onBtnPlay() {
         if( mPlayer != null ) {
             mPlayer.stop();
             mPlayer.release();
@@ -223,9 +244,10 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
         SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat( "MMdd_HHmmss", Locale.KOREA );
         Date currentTime = new Date ( );
         String mTime = mSimpleDateFormat.format ( currentTime );
+        mFileName = "record "+mTime+".mp3";
 
         String dir = file.getAbsolutePath() + String.format("/Daily E");
-        String path = file.getAbsolutePath() + String.format("/Daily E/record %s.mp3",mTime);
+        String path = file.getAbsolutePath() + String.format("/Daily E/%s", mFileName);
 
         file = new File(dir);
         if ( !file.exists() )
@@ -262,6 +284,87 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
             return;
         }else{
             btnRecord();
+        }
+    }
+
+    private void AddListen() {
+        if(worker_add_listen != null && worker_add_listen.isAlive()){  //이미 동작하고 있을 경우 중지
+            worker_add_listen.interrupt();
+        }
+        worker_add_listen = new worker_add_listen(true);
+        worker_add_listen.start();
+        try {
+            worker_add_listen.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    class worker_add_listen extends Thread {
+        private boolean isPlay = false;
+        int control=0;
+
+        public worker_add_listen(boolean isPlay) {
+            this.isPlay = isPlay;
+        }
+
+        public void stopThread() {
+            isPlay = !isPlay;
+        }
+
+        public void run() {
+            super.run();
+            while (isPlay) {
+                Log.d(TAG, "worker add listen start");
+                outData[0] = (byte) PacketUser.SOF;
+                outData[1] = (byte) PacketUser.USR_ALISTEN;
+                outData[2] = (byte) PacketUser.getSEQ();
+
+                try {
+                    dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
+
+                    File f = new File(mFileName);
+                    fis = new FileInputStream(f);
+                    bis = new BufferedInputStream(fis);
+                    int size = 4096;
+                    byte[] dataByte = new byte[size];
+
+                    outData[3] = (byte) dataByte.length;
+                    while((bis.read(dataByte)) != -1) {
+                        control++;
+                        if(control % 100 == 0) {
+                            System.out.println("전송중" + control/100);
+                            for (int i = 4; i < 4+dataByte.length; i++) {
+                                outData[i] = (byte) dataByte[i-4];
+                                Log.d(TAG, new String(outData));
+                            }
+                        }
+                        outData[4 + dataByte.length] = (byte) (sentence_num/255 +1) ;
+                        outData[5 + dataByte.length] = (byte) (sentence_num%255 +1) ;
+                        outData[6 + dataByte.length] = (byte) PacketUser.CRC;
+
+                    }
+                    dos.write(outData, 0, outData[3]+7);
+                    dos.flush();
+                    bis.close();
+                    fis.close();
+
+                    dis = new DataInputStream(SocketConnection.socket.getInputStream());
+                    dis.read(temp, 0, 4);
+                    for (int index = 0; index < 4; index++) {
+                        inData[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
+                    }
+                    if(inData[1] == PacketUser.ACK_ALISTEN) {
+                        Log.d(TAG, "등록완료");
+                    }
+                    dis.read(temp);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                isPlay = !isPlay;
+            }
         }
     }
 
