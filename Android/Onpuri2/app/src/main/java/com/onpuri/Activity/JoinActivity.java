@@ -8,6 +8,7 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,12 +20,11 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.onpuri.ActivityList;
 import com.onpuri.R;
-import com.onpuri.Server.PacketUser;
-import com.onpuri.Server.SocketConnection;
+import com.onpuri.Thread.WorkerIdCheck;
+import com.onpuri.Thread.WorkerJoin;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.IOException;
 import java.util.regex.Pattern;
 
 /**
@@ -33,18 +33,17 @@ import java.util.regex.Pattern;
 //Join Activity
 public class JoinActivity extends Activity {
     private static final String TAG = "JoinActivity";
-    //    private com.onpuri.Server.CloseSystem closeSystem; //BackKeyPressed,close
     private final long FINISH_INTERVAL_TIME = 3000;
     private long backPressedTime = 0;
 
-    Button btCheck, btJoin, btCancel;
     DataOutputStream dos;
     DataInputStream dis;
 
     byte[] outData = new byte[261];
     byte[] inData = new byte[261];
 
-    private worker_check mworker_check;
+    private WorkerIdCheck worker_check;
+    private WorkerJoin worker_join;
 
     int i;
     char check = '5';
@@ -54,10 +53,8 @@ public class JoinActivity extends Activity {
     EditText et_newId, et_newPw, et_comparePw;
     EditText et_newName, et_newPhone1, et_newPhone2, et_newPhone3;
     TextView tv_comparePw, tv_compareId;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
+    Button btCheck, btJoin, btCancel;
+
     private GoogleApiClient client;
 
     private ActivityList actManager = ActivityList.getInstance();
@@ -66,22 +63,10 @@ public class JoinActivity extends Activity {
         super.onCreate(savedInstanceState);
         actManager.addActivity(this);
         setContentView(R.layout.activity_join);
-        //closeSystem = new CloseSystem(this); //backKey Event
-
-
-        btCheck = (Button) findViewById(R.id.btnCheck);
-        btJoin = (Button) findViewById(R.id.btnJoin);
-        btCancel = (Button) findViewById(R.id.btnJoinCancel);
 
         et_newId = (EditText) findViewById(R.id.et_newId);
-        et_newId.setFilters(new InputFilter[]{filterAlphaNum});
-        et_newId.setPrivateImeOptions("defaultInputmode=english;");
         tv_compareId = (TextView)findViewById(R.id.tv_compareId);
-
         et_newPw = (EditText) findViewById(R.id.et_newPw);
-        et_newPw.setFilters(new InputFilter[]{filterAlphaNum});
-        et_newPw.setPrivateImeOptions("defaultInputmode=english;");
-
         et_newName = (EditText) findViewById(R.id.et_newName);
         et_newPhone1 = (EditText) findViewById(R.id.et_newPhone1);
         et_newPhone2 = (EditText) findViewById(R.id.et_newPhone2);
@@ -89,25 +74,34 @@ public class JoinActivity extends Activity {
         et_comparePw = (EditText) findViewById(R.id.et_comparePw);
         tv_comparePw = (TextView) findViewById(R.id.tv_comparePw);
 
+        btCheck = (Button) findViewById(R.id.btnCheck);
+        btJoin = (Button) findViewById(R.id.btnJoin);
+        btCancel = (Button) findViewById(R.id.btnJoinCancel);
+
+
+        et_newId.setFilters(new InputFilter[]{filterAlphaNum});
+        et_newId.setPrivateImeOptions("defaultInputmode=english;");
+
+        et_newPw.setFilters(new InputFilter[]{filterAlphaNum});
+        et_newPw.setPrivateImeOptions("defaultInputmode=english;");
 
         btCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                worker_check = new WorkerIdCheck(true, et_newId.getText ().toString ());
+                worker_check.start();
 
-                mworker_check = new worker_check(true);
-                mworker_check.start();
-                //}
-
-                System.out.println("abc");
                 try {
-                    mworker_check.join();
+                    worker_check.join();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                System.out.println("abc2");
+
+                check = worker_check.getCheck();
+
                 //중복확인
                 if (check == '0') {
-                    System.out.println("qq" + check + "\n");
+                    Log.d(TAG, "check : " + check);
                     checkID = 2;
                     tv_compareId.setText("사용 불가능한 아이디입니다");
                     et_newId.setText(null);
@@ -115,9 +109,9 @@ public class JoinActivity extends Activity {
                     checkID = 1;
                     tv_compareId.setText("사용 가능한 아이디입니다");
                 }
-                System.out.println("stop2");
-                if(mworker_check != null && mworker_check.isAlive()){  //이미 동작하고 있을 경우 중지
-                    mworker_check.interrupt();
+
+                if(worker_check != null && worker_check.isAlive()){  //이미 동작하고 있을 경우 중지
+                    worker_check.interrupt();
                 }
             }
         });
@@ -189,8 +183,15 @@ public class JoinActivity extends Activity {
             public void onClick(View view) {
                 if(checkID == 1 && checkPw) {
                     Toast.makeText(getApplicationContext(), "가입이 완료되었습니다.", Toast.LENGTH_SHORT).show();
-                    if(worker_join.getState() == Thread.State.NEW)
-                        worker_join.start();
+                    String joinData = et_newId.getText().toString()
+                            + "+" + et_newPw.getText().toString()
+                            + "+" + et_newName.getText().toString()
+                            + "+" + et_newPhone1.getText().toString()
+                            + "-" + et_newPhone2.getText().toString()
+                            + "-" + et_newPhone3.getText().toString() ;
+
+                    worker_join = new WorkerJoin(true, joinData);
+                    worker_join.start();
 
                     try {
                         worker_join.join();
@@ -201,9 +202,7 @@ public class JoinActivity extends Activity {
                     if(worker_join != null && worker_join.isAlive()){  //이미 동작하고 있을 경우 중지
                         worker_join.interrupt();
                     }
-                    if(mworker_check != null && mworker_check.isAlive()){  //이미 동작하고 있을 경우 중지
-                        mworker_check.interrupt();
-                    }
+
                     Intent intent = new Intent(JoinActivity.this, LoginActivity.class);
                     startActivity(intent);
                     finish();
@@ -230,123 +229,23 @@ public class JoinActivity extends Activity {
             }
         });
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     public void onBackPressed(){
-        //super.onBackPressed();
-
         long tempTime = System.currentTimeMillis();
         long intervalTime = tempTime - backPressedTime;
 
-        if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime)
-        {
+        if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime){
             super.onBackPressed();
         }
-        else
-        {
+        else{
             backPressedTime = tempTime;
             Toast.makeText(getApplicationContext(), "\'뒤로\' 버튼을 한번 더 누르시면 \n로그인화면으로 이동합니다." , Toast.LENGTH_SHORT).show();
         }
 
     }
 
-
-    class worker_check extends Thread {
-        private boolean isPlay = false;
-
-        public worker_check (boolean isPlay) {
-            this.isPlay = isPlay;
-        }
-
-        public void stopThread () {
-            isPlay = !isPlay;
-        }
-
-        public void run () {
-            super.run ();
-            while (isPlay) {
-
-                String toServerDataUser;
-                toServerDataUser = et_newId.getText ().toString ();
-                outData[0] = (byte) PacketUser.SOF;
-                outData[1] = (byte) PacketUser.USR_CHK;
-                outData[2] = (byte) PacketUser.getSEQ();
-                outData[3] = (byte) toServerDataUser.length ();
-                for (i = 4; i < 4 + toServerDataUser.length (); i++) {
-                    outData[i] = (byte) toServerDataUser.charAt (i - 4);
-
-                }
-                outData[4 + toServerDataUser.length ()] = (byte) 85;
-
-
-                try {
-                    dos = new DataOutputStream (SocketConnection.socket.getOutputStream ());
-                    dos.write (outData,0,outData[3]+5); // packet transmission
-                    dos.flush();
-                    dis = new DataInputStream (SocketConnection.socket.getInputStream ());
-                    dis.read (inData);
-                    //System.out.println("Data form server: " + ((char)inData[0].) + (char)inData[1]);
-                    int SOF = inData[0];
-                    System.out.println (inData[0]);
-                    System.out.println (inData[1]);
-                    System.out.println (inData[2]);
-                    System.out.println (inData[3]);
-                    System.out.println ((char) inData[4]);
-                    System.out.println (inData[5]);
-                    check = (char) inData[4];
-                    System.out.println(check+"\n");
-                    if( check == '0' || check == '1')
-                        isPlay = !isPlay;
-
-                } catch (IOException e) {
-                    e.printStackTrace ();
-                }
-
-            }
-        }
-
-    }
-
-    Thread worker_join = new Thread() {
-        public void run() {
-            String toServerDataUser;
-            toServerDataUser = et_newId.getText().toString()
-                    + "+" + et_newPw.getText().toString()
-                    + "+" + et_newName.getText().toString()
-                    + "+" + et_newPhone1.getText().toString()
-                    + "-" + et_newPhone2.getText().toString()
-                    + "-" + et_newPhone3.getText().toString() ;
-
-            byte[] dataByte = toServerDataUser.getBytes();
-
-            outData[0] = (byte) PacketUser.SOF;
-            outData[1] = (byte) PacketUser.USR_REG;
-            outData[2] = (byte) PacketUser.getSEQ();
-            outData[3] = (byte) dataByte.length;
-            for (i = 4; i < 4 + dataByte.length ; i++) {
-                outData[i] = (byte) dataByte[i-4];
-            }
-            outData[4 + dataByte.length] = (byte) 85;
-
-            try {
-                dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
-                dos.write (outData,0,outData[3]+5); // packet transmission
-
-                dos.flush();
-                dis = new DataInputStream(SocketConnection.socket.getInputStream());
-                dis.read(inData);
-
-                int SOF = inData[0];
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }
-    };
 
     //edittext 영문+숫자만 입력되도록 하는 함수
     public InputFilter filterAlphaNum = new InputFilter() {

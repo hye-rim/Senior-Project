@@ -12,21 +12,22 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="90dp"
+            android:layout_height="120dp"
             android:orientation="vertical"
             android:backgroundTint="#662727"
-            android:backgroundTintMode="src_in">
+            android:backgroundTintMode="src_in"
+            android:weightSum="1">
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="match_parent"
                 android:id="@+id/tv_sentence"
-                android:textSize="16dp"
+                android:textSize="17dp"
                 android:text="영어 문장 내용"
                 android:textColor="@android:color/black"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-                android:textStyle="bold"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="10dp"
+                android:layout_weight="0.95" />
 
         </LinearLayout>
         <LinearLayout

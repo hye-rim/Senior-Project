@@ -17,13 +17,7 @@ import android.widget.Toast;
 
 import com.onpuri.ActivityList;
 import com.onpuri.R;
-import com.onpuri.Server.PacketInfo;
-import com.onpuri.Server.PacketUser;
-import com.onpuri.Server.SocketConnection;
-
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import com.onpuri.Thread.WorkerLeave;
 
 /**
  * Created by kutemsys on 2016-05-26.
@@ -40,13 +34,7 @@ public class UserSetFragment extends Fragment implements View.OnClickListener {
     SharedPreferences setting;
     SharedPreferences.Editor editor;
 
-    DataOutputStream dos;
-    DataInputStream dis;
-
-    byte[] outData = new byte[261];
-    byte[] inData = new byte[261];
-    private char check_out;
-    private worker_leave mworker_leave;
+    private WorkerLeave mworker_leave;
 
     public static UserSetFragment newInstance() {
         UserSetFragment fragment = new UserSetFragment();
@@ -163,7 +151,7 @@ public class UserSetFragment extends Fragment implements View.OnClickListener {
 
     }
     private void Leave() {
-        mworker_leave = new worker_leave(true);
+        mworker_leave = new WorkerLeave(true);
         mworker_leave.start();
 
         try {
@@ -183,58 +171,5 @@ public class UserSetFragment extends Fragment implements View.OnClickListener {
         Intent loginIntent = new Intent(getActivity(), SplashActivity.class);
         startActivity(loginIntent);
 
-    }
-    class worker_leave extends Thread {
-        private boolean isPlay = false;
-        private byte isGenerated;
-
-        public worker_leave(boolean isPlay) {
-            this.isPlay = isPlay;
-        }
-
-        public void setThread() {
-            isPlay = !isPlay;
-        }
-
-        public void run() {
-            super.run();
-            while (isPlay) {
-
-                byte out = 1;
-
-                outData[0] = (byte) PacketUser.SOF;
-                outData[1] = (byte) PacketUser.USR_LEV;
-                outData[2] = (byte) PacketInfo.getSEQ();
-                outData[3] = out;
-                outData[4] = out;
-                outData[5] = (byte) 85;
-
-                try {
-                    dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
-                    dos.write(outData, 0, outData[3] + 5);
-                    dos.flush();
-                    dis = new DataInputStream(SocketConnection.socket.getInputStream());
-                    dis.read(inData);
-                    //System.out.println("Data form server: " + ((char)inData[0].) + (char)inData[1]);
-                    int SOF = inData[0];
-
-                    check_out = (char) inData[4];
-
-                    System.out.println(inData[0]);
-                    System.out.println(inData[1]);
-                    System.out.println(inData[2]);
-                    System.out.println(inData[3]);
-                    System.out.println((char) inData[4]);
-                    System.out.println(inData[5]);
-
-                    if (check_out == '0' || check_out == '1')
-                        isPlay = !isPlay;
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }
     }
 }

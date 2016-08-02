@@ -10,13 +10,11 @@ import java.util.ArrayList;
 public class PacketUser extends Application {
     static public char USR_LOG = 3, USR_LOG_LEN;
     static public char ACK_ULG = 4, ACK_MRY_LEN;
-    static public char USR_OUT = 5, USR_OUT_LEN = 1;
+    static public char USR_OUT = 5, USR_OUT_LEN = 1; //로그아웃
     static public char ACK_URO = 6, ACK_URO_LEN = 1;
-    public static char USR_CHK = 7;
-    static public char USR_CHK_LEN;
+    public static char USR_CHK = 7, USR_CHK_LEN;
     static public char ACK_UCK = 8, ACK_UCK_LEN = 1;
-    public static char USR_REG = 9;
-    static public char USR_REG_LEN;
+    public static char USR_REG = 9 , USR_REG_LEN;
     static public char ACK_URG = 10, ACK_URG_LEN = 1;
     static public char USR_MSL = 11, USR_MSL_LEN = 2; //user main sentence list
     static public char ACK_UMS = 12, ACK_UMS_LEN = 1; //ack user main sentence
@@ -30,16 +28,22 @@ public class PacketUser extends Application {
     static public char USR_MLISTEN = 20; //more recoder
     static public char USR_ALISTEN = 21; //add recoder
     static public char ACK_ALISTEN = 22; //add recoder ACK
-    static public char ACK_NSEN = 90;
-    static public char USR_LEV = 99;
-    static public char ACK_LEV = 100;
+    static public char USR_SEARCH = 30; //search
+    static public char ACK_SEARCH = 31; //search ACK
+    static public char ACK_NSEARCH = 32; //no search ACK
+
+    static public char ACK_NSEN = 90; //no sentence ACK
+    static public char USR_LEV = 99; //user leave
+    static public char ACK_LEV = 100; // user leave ACK
 
     public static char SOF = 0xcc;//Decimal=204
     static public char CRC = 0x55;//Decimal=85
 
     public String userId = "", name = "", joinDate = "", phone = "", nowPass = "";
+
     public ArrayList<String> arrSentence = new ArrayList<String>();
     public ArrayList<String> arrSentenceNum = new ArrayList<String>();
+
     public static int data_len;
     public static int sentence_len;
 
@@ -56,17 +60,21 @@ public class PacketUser extends Application {
         else
             SEQ++;
     }
+
     public void setuserId(String str) {
         userId = str;
     }
+
     public void setSentence(String str) {
         arrSentence.add(str);
         System.out.println("string : " + arrSentence.get(0));
     }
+
     public void setSentenceNum(String num) {
         arrSentenceNum.add(num);
         System.out.println("string_num : " + arrSentenceNum.get(0));
     }
+
     public ArrayList<String> copyList() {
         return arrSentence;
     }

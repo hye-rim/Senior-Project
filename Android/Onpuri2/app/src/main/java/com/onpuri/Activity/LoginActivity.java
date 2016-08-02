@@ -285,21 +285,22 @@ public class LoginActivity extends Activity implements View.OnClickListener {
 
                 String toServerDataUser;
                 toServerDataUser = et_loginId.getText().toString() + "+" + et_loginPw.getText().toString();
-                System.out.println("data : " + toServerDataUser);
+                byte[] dataByte = toServerDataUser.getBytes();
+
                 outData[0] = (byte) mPacketUser.SOF;
                 outData[1] = (byte) mPacketUser.USR_LOG;
                 outData[2] = (byte) mPacketUser.getSEQ();
-                outData[3] = (byte) toServerDataUser.length();
-
-                for (i = 4; i < 4 + toServerDataUser.length(); i++) {
-                    outData[i] = (byte) toServerDataUser.charAt(i - 4);
+                outData[3] = (byte) dataByte.length;
+                for (i = 4; i < 4 + dataByte.length; i++) {
+                    outData[i] = (byte) dataByte[i - 4];
                 }
-
-                outData[4 + toServerDataUser.length()] = (byte) 85;
+                outData[4 + dataByte.length] = (byte) 85;
                 try {
                     dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
                     dos.write(outData,0,outData[3]+5); // packet transmission
                     dos.flush();
+
+
                     dis = new DataInputStream(SocketConnection.socket.getInputStream());
                     dis.read(inData);
                     //System.out.println("Data form server: " + ((char)inData[0].) + (char)inData[1]);

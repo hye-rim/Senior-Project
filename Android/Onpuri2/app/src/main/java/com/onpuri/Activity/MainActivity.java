@@ -1,7 +1,5 @@
 package com.onpuri.Activity;
 
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -11,7 +9,6 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -30,12 +27,7 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.onpuri.ActivityList;
 import com.onpuri.R;
-import com.onpuri.Server.PacketUser;
-import com.onpuri.Server.SocketConnection;
-
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import com.onpuri.Thread.WorkerLogout;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "MainActivity" ;
@@ -51,16 +43,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private final long FINISH_INTERVAL_TIME = 3000;
     private long backPressedTime = 0;
 
-    //Socket
-    DataOutputStream dos;
-    DataInputStream dis;
-
-    byte[] outData = new byte[261];
-    byte[] inData = new byte[261];
-
-    char check_out;
-    char isOut = '0';
-    private worker_logout mworker_out;
+    private WorkerLogout mworker_out;
 
     //User data - SharedPreferences
     SharedPreferences setting;
@@ -68,9 +51,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private String userId = "";
     private String name, joinDate, phone, nowPassword;
-    private Bundle bundle;
 
     private TextView mNavId;
+    private Bundle bundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,19 +128,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         editor.commit();
                     }
 
-                    //logout thread
-                    if (mworker_out != null && mworker_out.isAlive()) {  //이미 동작하고 있을 경우 중지
-                        mworker_out.interrupt();
-                    }
-
-                    mworker_out = new worker_logout(true);
-                    mworker_out.start();
-
-                    try {
-                        mworker_out.join();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    outThreadCheck();
 
                     ActivityCompat.finishAffinity(this);
                     System.runFinalizersOnExit(true);
@@ -194,8 +165,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public boolean onQueryTextSubmit(String query) { //입력 완료 후 구현 부분
                 Toast.makeText(getApplicationContext(), "검색 기능은 구현 예정입니다.", Toast.LENGTH_SHORT).show();
                 SearchFragment searchFragment = new SearchFragment();
-                searchView.clearFocus();
                 FragmentManager fragmentManager = getSupportFragmentManager();
+
+                Bundle args = new Bundle();
+                args.putString("searchText", query);
+                searchFragment.setArguments(args);
+
+                searchView.clearFocus();
+
                 fragmentManager.beginTransaction()
                         .replace(R.id.root_home, searchFragment)
                         .addToBackStack(null)
@@ -251,12 +228,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         mDrawerLayout.closeDrawers();
-        /*
-        if (item.getItemId() == R.id.nav_home) {
-            mFragmentManager.beginTransaction()
-                    .replace(R.id.containerView,new TabViewPager())
-                    .commit();
-        }*/
 
         switch (item.getItemId()){
             case R.id.nav_mypage :
@@ -302,92 +273,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .addToBackStack("fragBack")
                         .commit();
                 break;
-
         }
         return false;
     }
 
     private void logout() {
-        if(mworker_out != null && mworker_out.isAlive()){  //이미 동작하고 있을 경우 중지
-            mworker_out.interrupt();
-        }
-
-        mworker_out = new worker_logout(true);
-        mworker_out.start();
-
-        try {
-            mworker_out.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        outThreadCheck(); //스레드 중지 후 재시작
 
         if (setting.getBoolean("autoLogin", false)) {
             editor.clear();
             editor.commit();
         }
-
         Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(loginIntent);
         finish();
 
     }
 
-
-    class worker_logout extends Thread {
-        private boolean isPlay = false;
-        private byte isGenerated;
-
-        public worker_logout(boolean isPlay) {
-            this.isPlay = isPlay;
+    public void outThreadCheck(){
+        if(mworker_out != null && mworker_out.isAlive()){  //이미 동작하고 있을 경우 중지
+            mworker_out.interrupt();
         }
 
-        public void setThread() {
-            isPlay = !isPlay;
-        }
+        mworker_out = new WorkerLogout(true);
+        mworker_out.start();
 
-        public void run() {
-            super.run();
-            while (isPlay) {
-
-                // SocketConnection.start();
-                String toServerDataUser;
-                System.out.println("1");
-                outData[0] = (byte) PacketUser.SOF;
-                outData[1] = (byte) PacketUser.USR_OUT;
-                outData[2] = (byte) PacketUser.getSEQ();
-                outData[3] = (byte) PacketUser.USR_OUT_LEN;
-                outData[4] = (byte) isOut;
-                outData[5] = (byte) 85;
-
-                try {
-                    System.out.println("1");
-                    dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
-                    dos.write(outData, 0, outData[3] + 5); // packet transmission
-                    dos.flush();
-
-                    System.out.println("2");
-                    dis = new DataInputStream(SocketConnection.socket.getInputStream());
-                    dis.read(inData);
-                    System.out.println("Data form server: " + ((char) inData[4]) + (char) inData[1]);
-                    int SOF = inData[0];
-
-                    System.out.println(inData[0]);
-                    System.out.println(inData[1]);
-                    System.out.println(inData[2]);
-                    System.out.println(inData[3]);
-                    System.out.println((char) inData[4]); //이게 로그아웃 데이터 값 0,1 인데 서버에서 보내는 패킷보고 바꿔줄겡
-                    System.out.println(inData[5]);
-
-                    check_out = (char) inData[4];
-
-                    System.out.println("outData : " + (char) outData[4] + "  inData : " + (char) inData[4]);
-                    if (check_out == '0' || check_out == '1')
-                        isPlay = !isPlay;
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+        try {
+            mworker_out.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -401,11 +315,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Action viewAction = Action.newAction(
                 Action.TYPE_VIEW, // TODO: choose an action type.
                 "MainSub Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
                 // make sure this auto-generated web page URL is correct.
                 // Otherwise, set the URL to null.
                 Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app deep link URI is correct.
                 Uri.parse("android-app://com.onpuri/http/host/path")
         );
         AppIndex.AppIndexApi.start(client, viewAction);
@@ -417,19 +329,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "MainSub Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
+                Action.TYPE_VIEW,
+                "MainSub Page",
                 Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app deep link URI is correct.
                 Uri.parse("android-app://com.onpuri/http/host/path")
         );
         AppIndex.AppIndexApi.end(client, viewAction);
-        //   SocketConnection.close();
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
         client.disconnect();
     }
 
@@ -438,5 +343,4 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onDestroy();
         actManager.removeActivity(this);
     }
-
 }
