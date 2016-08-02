@@ -65,7 +65,6 @@ public class HomeFragment extends Fragment {
     private static int current_page = 1;
     private int ival = 0;
     private int loadLimit = 10;
-    private int total = 0;
     private int sentence_num;
     private Boolean sentenceEnd = false;
 
@@ -123,11 +122,12 @@ public class HomeFragment extends Fragment {
                         args.putString("sen_num", listSentenceNum.get(position));
                         hsf.setArguments(args);
 
-                        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                        ft.replace(R.id.root_home, hsf);
-                        ft.addToBackStack(null);
-                        ft.commit();
+                        fm.beginTransaction()
+                                .replace(R.id.root_home, hsf)
+                                .addToBackStack(null)
+                                .commit();
                         fm.executePendingTransactions();
+
                     }
                     @Override
                     public void onLongItemClick(View view, int position) {
@@ -266,38 +266,19 @@ public class HomeFragment extends Fragment {
                                 senData[index + 4] = temp[index];    // 패킷의 Data부분을 inData에 추가해준다.
                             }
 
-                            int SOF = inData[0];
-                            System.out.println("0 : " + inData[0]);
-                            System.out.println("1 : " + inData[1]);
-                            System.out.println("2 : " + inData[2]);
-                            System.out.println("3 : " + inData[3]);
-                            System.out.println("4 : " + inData[4]);
-                            System.out.println("5 : " + (char) inData[5]);
-
                             PacketUser.sentence_len = ((int) inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);
 
-                            index = 0;
-                            String str = ""; //문장
+                            String str = new String (inData, 4, PacketUser.sentence_len); //문장
                             String num = Character.toString((char) senData[4])
                                     + Character.toString((char) senData[5])
                                     + Character.toString((char) senData[6]); //문장번호
 
+                            userSentence.setSentence(str);
+                            userSentence.setSentenceNum(num);
+
                             System.out.println("len : " + PacketUser.sentence_len);
                             System.out.println(num);
 
-                            while (true) { //한글?
-                                System.out.print((char) inData[4 + index]);
-                                if (index == PacketUser.sentence_len)
-                                    break;
-                                else {
-                                    str += (char) inData[4 + index];
-                                    index++;
-                                }
-                            }
-
-                            userSentence.setSentence(str);
-                            userSentence.setSentenceNum(num);
-                            total++;
                             i++;
                             sentence_num++;
                         }
