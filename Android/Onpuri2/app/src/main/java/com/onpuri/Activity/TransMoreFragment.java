@@ -1,13 +1,15 @@
 package com.onpuri.Activity;
 
 
+import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AlertDialog;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,10 +18,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.onpuri.Adapter.TransListAdapter;
+import com.onpuri.DividerItemDecoration;
 import com.onpuri.Listener.EndlessRecyclerOnScrollListener;
 import com.onpuri.Listener.HomeItemClickListener;
 import com.onpuri.R;
@@ -32,14 +36,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.onpuri.R.drawable.divider_dark;
+
 public class TransMoreFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "TransMoreFragment";
-    private static View view;
-    private Toast toast;
-    ArrayList<String> list_trans;
-    ArrayList<String> list_userid;
-    ArrayList<String> list_day;
-    ArrayList<String> list_reco;
     private worker_sentence_trans worker_sentence_trans;
 
     DataOutputStream dos;
@@ -49,6 +49,13 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
     byte[] inData2 = new byte[261];
     byte[] temp = new byte[261];
 
+    private static View view;
+    private Toast toast;
+
+    ArrayList<String> list_trans;
+    ArrayList<String> list_userid;
+    ArrayList<String> list_day;
+    ArrayList<String> list_reco;
     List trans = new ArrayList();
     List userid = new ArrayList();
     List day = new ArrayList();
@@ -89,13 +96,12 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
             sentence_num=getArguments().getString("sen_num");
             item.setText(sentence);
         }
+
         loadData();
 
-        final TransDetailFragment tdf = new TransDetailFragment();
-
-        Button add_note = (Button) view.findViewById(R.id.add_note);
+        ImageButton add_note = (ImageButton) view.findViewById(R.id.add_note);
         add_note.setOnClickListener(this);
-        Button add_trans = (Button) view.findViewById(R.id.add_trans);
+        ImageButton add_trans = (ImageButton) view.findViewById(R.id.add_trans);
         add_trans.setOnClickListener(this);
 
         RecyclerView = (RecyclerView) view.findViewById(R.id.recycler_trans);
@@ -112,6 +118,9 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
                     @Override
                     public void onItemClick(View view, int position) {
                         Adapter.notifyDataSetChanged();
+                        final TransDetailFragment tdf = new TransDetailFragment();
+                        FragmentTransaction ft = getFragmentManager().beginTransaction();
+
                         Bundle args = new Bundle();
                         args.putString("sen", sentence);
                         args.putString("sen_trans", list_trans.get(position));
@@ -120,36 +129,18 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
                         args.putString("reco", list_reco.get(position));
                         tdf.setArguments(args);
 
-                        FragmentTransaction ft = getFragmentManager().beginTransaction();
                         ft.add(R.id.root_home, tdf);
                         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                         ft.addToBackStack(null);
                         ft.commit();
                     }
-                    @Override
                     public void onLongItemClick(View view, int position) {
-                        new AlertDialog.Builder(getActivity())
-                                .setTitle("선택한 해석을 삭제하시겠습니까?")
-                                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int whichButton) {
-                                     /*   final FragmentManager fm = getActivity().getSupportFragmentManager();
-                                        final FragmentTransaction ft = getFragmentManager().beginTransaction();
-                                        fm.popBackStack();
-                                        ft.commit();*/
-                                        toast = Toast.makeText(getActivity(), "삭제되었습니다(구현예정)", Toast.LENGTH_SHORT);
-                                        toast.show();
-                                    }
-                                })
-                                .setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dlg, int sumthin) {
-                                        toast = Toast.makeText(getActivity(), "취소되었습니다", Toast.LENGTH_SHORT);
-                                        toast.show();
-                                    }
-
-                                }).show();
                     }
                 })
         );
+        Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_dark);
+        RecyclerView.addItemDecoration(new DividerItemDecoration(dividerDrawable));
+
         return view;
     }
 

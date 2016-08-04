@@ -29,19 +29,28 @@
                 android:layout_marginTop="10dp"/>
 
         </LinearLayout>
-
-        <Button
-            android:layout_width="80dp"
-            android:layout_height="20dp"
-            android:text="노트에 추가"
-            android:id="@+id/add_note"
-            android:textIsSelectable="false"
-            android:layout_marginRight="20dp"
-            android:gravity="center"
-            android:textSize="10dp"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="vertical"
+        android:backgroundTint="#662727"
+        android:backgroundTintMode="src_in"
+        android:layout_marginBottom="3dp">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:background="@color/never_forgotten"
-            android:textColor="@color/black"/>
+            android:layout_marginRight="10dp">
+
+            <ImageButton
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:id="@+id/add_note"
+                android:background="@drawable/addnote_icon"
+                android:layout_marginRight="10dp" />
+        </LinearLayout>
+    </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -49,7 +58,10 @@
             android:orientation="horizontal"
             android:layout_gravity="center_vertical"
             android:weightSum="1"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:background="@color/never_forgotten"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp">
             <TextView
                 android:layout_width="60dp"
                 android:layout_height="30dp"
@@ -60,17 +72,15 @@
                 android:layout_gravity="left|center_vertical"
                 android:textStyle="bold"
                 android:layout_weight="0.9"
-                android:textColor="@color/black"/>
-            <Button
-                android:id="@+id/add_trans"
-                android:layout_width="80dp"
+                android:textColor="@color/black"
+                android:gravity="center_vertical" />
+            <ImageButton
+                android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:textSize="10dp"
-                android:text="해석 추가"
-                android:visibility="visible"
-                android:gravity="center"
-                android:background="@color/never_forgotten"
-                android:textColor="@color/black" />
+                android:id="@+id/add_trans"
+                android:layout_marginRight="30dp"
+                android:background="@drawable/add_icon"
+                android:layout_gravity="center" />
         </LinearLayout>
 
         <android.support.v7.widget.RecyclerView

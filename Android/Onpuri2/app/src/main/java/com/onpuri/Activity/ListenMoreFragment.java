@@ -1,5 +1,6 @@
 package com.onpuri.Activity;
 
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -8,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.InflateException;
@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -71,14 +72,12 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
             item.setText(sentence);
         }
 
-        Button add_note = (Button) view.findViewById(R.id.add_note);
+        ImageButton tts_sen = (ImageButton) view.findViewById(R.id.tts);
+        tts_sen.setOnClickListener(this);
+        ImageButton add_note = (ImageButton) view.findViewById(R.id.add_note);
         add_note.setOnClickListener(this);
-        Button add_listen = (Button) view.findViewById(R.id.add_listen);
+        ImageButton add_listen = (ImageButton) view.findViewById(R.id.add_listen);
         add_listen.setOnClickListener(this);
-
-        TextView listenTTS = (TextView) view.findViewById(R.id.listen_tts);
-        listenTTS.setText("TTS");
-        listenTTS.setOnClickListener(this);
 
         tts = new TextToSpeech(getActivity(), this);
 
@@ -122,6 +121,9 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
                     }
                 })
         );
+        Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_dark);
+        RecyclerView.addItemDecoration(new DividerItemDecoration(dividerDrawable));
+
         return view;
     }
 
@@ -163,8 +165,7 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
                 ft.addToBackStack(null);
                 ft.commit();
                 break;
-            case R.id.listen_tts:
-                System.out.println("Aaaaaaaaaaaa");
+            case R.id.tts:
                 tts.speak(sentence, TextToSpeech.QUEUE_FLUSH, null);
                 break;
         }

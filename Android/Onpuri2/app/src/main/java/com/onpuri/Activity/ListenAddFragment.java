@@ -1,5 +1,6 @@
 package com.onpuri.Activity;
 
+import android.app.AlertDialog;
 import android.graphics.Color;
 import android.Manifest;
 import android.annotation.TargetApi;
@@ -13,7 +14,6 @@ import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
@@ -160,7 +160,7 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
                 break;
 
             case R.id.btn_new_listen:
-                //AddListen();
+                AddListen();
                 toast = Toast.makeText(getActivity(), "등록되었습니다(구현예정)", Toast.LENGTH_SHORT);
                 toast.show();
                 fm.popBackStack();
@@ -287,87 +287,6 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
         }
     }
 
-    private void AddListen() {
-        if(worker_add_listen != null && worker_add_listen.isAlive()){  //이미 동작하고 있을 경우 중지
-            worker_add_listen.interrupt();
-        }
-        worker_add_listen = new worker_add_listen(true);
-        worker_add_listen.start();
-        try {
-            worker_add_listen.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    class worker_add_listen extends Thread {
-        private boolean isPlay = false;
-        int control=0;
-
-        public worker_add_listen(boolean isPlay) {
-            this.isPlay = isPlay;
-        }
-
-        public void stopThread() {
-            isPlay = !isPlay;
-        }
-
-        public void run() {
-            super.run();
-            while (isPlay) {
-                Log.d(TAG, "worker add listen start");
-                outData[0] = (byte) PacketUser.SOF;
-                outData[1] = (byte) PacketUser.USR_ALISTEN;
-                outData[2] = (byte) PacketUser.getSEQ();
-
-                try {
-                    dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
-
-                    File f = new File(mFileName);
-                    fis = new FileInputStream(f);
-                    bis = new BufferedInputStream(fis);
-                    int size = 4096;
-                    byte[] dataByte = new byte[size];
-
-                    outData[3] = (byte) dataByte.length;
-                    while((bis.read(dataByte)) != -1) {
-                        control++;
-                        if(control % 100 == 0) {
-                            System.out.println("전송중" + control/100);
-                            for (int i = 4; i < 4+dataByte.length; i++) {
-                                outData[i] = (byte) dataByte[i-4];
-                                Log.d(TAG, new String(outData));
-                            }
-                        }
-                        outData[4 + dataByte.length] = (byte) (sentence_num/255 +1) ;
-                        outData[5 + dataByte.length] = (byte) (sentence_num%255 +1) ;
-                        outData[6 + dataByte.length] = (byte) PacketUser.CRC;
-
-                    }
-                    dos.write(outData, 0, outData[3]+7);
-                    dos.flush();
-                    bis.close();
-                    fis.close();
-
-                    dis = new DataInputStream(SocketConnection.socket.getInputStream());
-                    dis.read(temp, 0, 4);
-                    for (int index = 0; index < 4; index++) {
-                        inData[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
-                    }
-                    if(inData[1] == PacketUser.ACK_ALISTEN) {
-                        Log.d(TAG, "등록완료");
-                    }
-                    dis.read(temp);
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                isPlay = !isPlay;
-            }
-        }
-    }
-
     @TargetApi(Build.VERSION_CODES.M)
     private boolean addPermission(List<String> permissionsList,String permission) {
         if (getActivity().checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
@@ -410,4 +329,86 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
         }
     }
 
+    private void AddListen() {
+        if(worker_add_listen != null && worker_add_listen.isAlive()){  //이미 동작하고 있을 경우 중지
+            worker_add_listen.interrupt();
+        }
+        worker_add_listen = new worker_add_listen(true);
+        worker_add_listen.start();
+        try {
+            worker_add_listen.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    class worker_add_listen extends Thread {
+        private boolean isPlay = false;
+        int control=0;
+
+        public worker_add_listen(boolean isPlay) {
+            this.isPlay = isPlay;
+        }
+
+        public void stopThread() {
+            isPlay = !isPlay;
+        }
+
+        public void run() {
+            super.run();
+            while (isPlay) {
+                Log.d(TAG, "worker add listen start");
+                outData[0] = (byte) PacketUser.SOF;
+                outData[1] = (byte) PacketUser.USR_ALISTEN;
+                outData[2] = (byte) PacketUser.getSEQ();
+
+                try {
+                    dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
+                    System.out.println("11111111111111111");
+                    File f = new File(mFileName);
+                    fis = new FileInputStream(f);
+                    bis = new BufferedInputStream(fis);
+                    int size = 4096;
+                    byte[] dataByte = new byte[size];
+                    System.out.println("2222222222222222");
+                    outData[3] = (byte) dataByte.length;
+                    while((bis.read(dataByte)) != -1) {
+                        control++;
+                        if(control % 100 == 0) {
+                            System.out.println("전송중" + control/100);
+                            for (int i = 4; i < 4+dataByte.length; i++) {
+                                outData[i] = (byte) dataByte[i-4];
+                                Log.d(TAG, new String(outData));
+                            }
+                        }
+                        System.out.println("3333333333");
+                        outData[4 + dataByte.length] = (byte) (sentence_num/255 +1) ;
+                        outData[5 + dataByte.length] = (byte) (sentence_num%255 +1) ;
+                        outData[6 + dataByte.length] = (byte) PacketUser.CRC;
+
+                    }
+                    System.out.println("11111111111111111"+outData);
+                  /*  dos.write(outData, 0, outData[3]+7);
+                    dos.flush();
+                    bis.close();
+                    fis.close();
+
+                    dis = new DataInputStream(SocketConnection.socket.getInputStream());
+                    dis.read(temp, 0, 4);
+                    for (int index = 0; index < 4; index++) {
+                        inData[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
+                    }
+                    if(inData[1] == PacketUser.ACK_ALISTEN) {
+                        Log.d(TAG, "등록완료");
+                    }
+                    dis.read(temp);*/
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                isPlay = !isPlay;
+            }
+        }
+    }
 }

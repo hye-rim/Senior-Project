@@ -34,35 +34,24 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:weightSum="1">
+            android:weightSum="1"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:gravity="center_vertical">
 
             <TextView
-                android:textSize="15dp"
+                android:textSize="14dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:textColor="@color/black"
                 android:lineSpacingExtra="3dp"
                 android:ellipsize="end"
                 android:id="@+id/userid"
-                android:layout_width="245dp"
+                android:layout_width="320dp"
                 android:layout_height="30dp"
                 android:text="user id"
-                android:layout_marginBottom="3dp"
-                android:layout_weight="0.80"
                 android:gravity="center_vertical" />
 
-            <Button
-                android:layout_width="40dp"
-                android:layout_height="20dp"
-                android:text="삭제"
-                android:id="@+id/del_trans"
-                android:textIsSelectable="false"
-                android:layout_marginRight="20dp"
-                android:gravity="center"
-                android:textSize="10dp"
-                android:background="@color/never_forgotten"
-                android:textColor="@color/black"
-                android:layout_gravity="center" />
         </LinearLayout>
 
         <TextView

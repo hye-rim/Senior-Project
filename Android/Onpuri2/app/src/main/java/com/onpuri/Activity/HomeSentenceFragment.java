@@ -1,22 +1,31 @@
 package com.onpuri.Activity;
 
 
+import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AlertDialog;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.onpuri.Adapter.SenListenListAdapter;
+import com.onpuri.Adapter.SenTransListAdapter;
+import com.onpuri.DividerItemDecoration;
+import com.onpuri.Listener.HomeItemClickListener;
 import com.onpuri.R;
 import com.onpuri.Server.PacketUser;
 import com.onpuri.Server.SocketConnection;
@@ -27,6 +36,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import static com.onpuri.R.drawable.divider_dark;
 
 
 /**
@@ -49,16 +60,35 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
 
     int num=0;
     int index;
+    ArrayList<String> list_trans;
+    ArrayList<String> list_trans_userid;
+    ArrayList<String> list_trans_day;
+    ArrayList<String> list_trans_reco;
     List trans = new ArrayList();
-    List userid = new ArrayList();
-    List day = new ArrayList();
-    List reco = new ArrayList();
+    List tuserid = new ArrayList();
+    List tday = new ArrayList();
+    List treco = new ArrayList();
+
+    ArrayList<String> list_listen;
+    ArrayList<String> list_listen_userid;
+    ArrayList<String> list_listen_day;
+    ArrayList<String> list_listen_reco;
+    List listen = new ArrayList();
+    List ltuserid = new ArrayList();
+    List ltday = new ArrayList();
+    List ltreco = new ArrayList();
 
     TextView item;
     String sentence = "";
     String sentence_num = "";
     TextToSpeech tts;
 
+    private RecyclerView TransRecyclerView;
+    private SenTransListAdapter TransAdapter;
+    protected RecyclerView.LayoutManager TransLayoutManager;
+    private RecyclerView ListenRecyclerView;
+    private SenListenListAdapter ListenAdapter;
+    protected RecyclerView.LayoutManager ListenLayoutManager;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (view != null) {
@@ -68,8 +98,13 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
         }
         try {
             view = inflater.inflate(R.layout.fragment_home_sen, container, false);
-        } catch (InflateException e) {
-        }
+        } catch (InflateException e) {}
+
+        list_trans = new ArrayList<String>();
+        list_trans_userid = new ArrayList<String>();
+        list_trans_day = new ArrayList<String>();
+        list_trans_reco = new ArrayList<String>();
+        list_listen = new ArrayList<String>();
 
         item = (TextView) view.findViewById(R.id.tv_sentence);
         if (getArguments() != null) { //클릭한 문장 출력
@@ -79,38 +114,73 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
         }
 
         translation();
+        listen();
 
-        Button del_sen = (Button) view.findViewById(R.id.del_sen);
+        ImageButton tts_sen = (ImageButton) view.findViewById(R.id.tts);
+        tts_sen.setOnClickListener(this);
+        ImageButton del_sen = (ImageButton) view.findViewById(R.id.del_sen);
         del_sen.setOnClickListener(this);
-        Button add_note = (Button) view.findViewById(R.id.add_note);
+        ImageButton add_note = (ImageButton) view.findViewById(R.id.add_note);
         add_note.setOnClickListener(this);
-        Button add_trans = (Button) view.findViewById(R.id.add_trans);
+        ImageButton add_trans = (ImageButton) view.findViewById(R.id.add_trans);
         add_trans.setOnClickListener(this);
-        Button add_listen = (Button) view.findViewById(R.id.add_listen);
+        ImageButton add_listen = (ImageButton) view.findViewById(R.id.add_listen);
         add_listen.setOnClickListener(this);
 
-        TextView trans1 = (TextView) view.findViewById(R.id.trans1);
-        TextView trans2 = (TextView) view.findViewById(R.id.trans2);
-        TextView trans3 = (TextView) view.findViewById(R.id.trans3);
-        trans1.setText(trans.get(0).toString());
-        trans2.setText(trans.get(1).toString());
-        trans3.setText(trans.get(2).toString());
         Button trans_more = (Button) view.findViewById(R.id.trans_more);
-        trans1.setOnClickListener(this);
-        trans2.setOnClickListener(this);
-        trans3.setOnClickListener(this);
         trans_more.setOnClickListener(this);
-
-
-        TextView listen1 = (TextView) view.findViewById(R.id.listen1);
-        TextView listen2 = (TextView) view.findViewById(R.id.listen2);
-        TextView listen3 = (TextView) view.findViewById(R.id.listen3);
-        listen1.setText("TTS");
         Button listen_more = (Button) view.findViewById(R.id.listen_more);
-        listen1.setOnClickListener(this);
-        listen2.setOnClickListener(this);
-        listen3.setOnClickListener(this);
         listen_more.setOnClickListener(this);
+
+        TransRecyclerView = (RecyclerView) view.findViewById(R.id.trans_list);
+        TransLayoutManager = new LinearLayoutManager(getActivity());
+        TransRecyclerView.setLayoutManager(TransLayoutManager);
+        TransAdapter = new SenTransListAdapter(list_trans, TransRecyclerView);
+        TransRecyclerView.setAdapter(TransAdapter);// Set CustomAdapter as the adapter for RecyclerView.
+        TransRecyclerView.addOnItemTouchListener(
+                new HomeItemClickListener(getActivity().getApplicationContext(), TransRecyclerView ,new HomeItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        final TransDetailFragment tdf = new TransDetailFragment();
+                        FragmentManager fm = getActivity().getSupportFragmentManager();
+
+                        Bundle args = new Bundle();
+                        args.putString("sen", sentence);
+                        args.putString("sen_trans", list_trans.get(position));
+                        args.putString("userid", list_trans_userid.get(position));
+                        args.putString("day", list_trans_day.get(position));
+                        args.putString("reco", list_trans_reco.get(position));
+                        tdf.setArguments(args);
+
+                        fm.beginTransaction()
+                                .replace(R.id.root_home, tdf)
+                                .addToBackStack(null)
+                                .commit();
+                    }
+                    public void onLongItemClick(View view, int position) {
+                    }
+                })
+        );
+        Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_dark);
+        TransRecyclerView.addItemDecoration(new DividerItemDecoration(dividerDrawable));
+
+        ListenRecyclerView = (RecyclerView) view.findViewById(R.id.listen_list);
+        ListenLayoutManager = new LinearLayoutManager(getActivity());
+        ListenRecyclerView.setLayoutManager(ListenLayoutManager);
+        ListenAdapter = new SenListenListAdapter(list_listen, ListenRecyclerView);
+        ListenRecyclerView.setAdapter(ListenAdapter);// Set CustomAdapter as the adapter for RecyclerView.
+        ListenRecyclerView.addOnItemTouchListener(
+                new HomeItemClickListener(getActivity().getApplicationContext(), ListenRecyclerView ,new HomeItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        toast = Toast.makeText(getActivity(), position + "번째 클릭", Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
+                    public void onLongItemClick(View view, int position) {
+                    }
+                })
+        );
+        ListenRecyclerView.addItemDecoration(new DividerItemDecoration(dividerDrawable));
 
         tts = new TextToSpeech(getActivity(), this);
 
@@ -157,7 +227,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
             case R.id.add_note:
                 final CharSequence[] items = {"노트1", "노트2", "노트3"};
                 new AlertDialog.Builder(getActivity())
-                        .setTitle("노트를 선택해 주세요(노트 연동은 구현 예정)")
+                        .setTitle("노트를 선택해 주세요(구현 예정)")
                         .setItems(items, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int index) {
                                 Toast.makeText(getActivity(), items[index] + "선택", Toast.LENGTH_SHORT).show();
@@ -196,45 +266,8 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 ft.addToBackStack(null);
                 ft.commit();
                 break;
-            case R.id.listen1:
-                tts.speak(sentence, TextToSpeech.QUEUE_FLUSH, null);
-                break;
-            case R.id.listen2:
-                break;
-            case R.id.listen3:
-                break;
-            case R.id.trans1:
-                final TransDetailFragment tdf1 = new TransDetailFragment();
-                args.putString("sen_trans", trans.get(0).toString());
-                args.putString("userid", userid.get(0).toString());
-                args.putString("day", day.get(0).toString());
-                args.putString("reco", reco.get(0).toString());
-                tdf1.setArguments(args);
-                ft.replace(R.id.root_home, tdf1);
-                ft.addToBackStack(null);
-                ft.commit();
-                break;
-            case R.id.trans2:
-                final TransDetailFragment tdf2 = new TransDetailFragment();
-                args.putString("sen_trans", trans.get(1).toString());
-                args.putString("userid", userid.get(1).toString());
-                args.putString("day", day.get(1).toString());
-                args.putString("reco", reco.get(1).toString());
-                tdf2.setArguments(args);
-                ft.replace(R.id.root_home, tdf2);
-                ft.addToBackStack(null);
-                ft.commit();
-                break;
-            case R.id.trans3:
-                final TransDetailFragment tdf3 = new TransDetailFragment();
-                args.putString("sen_trans", trans.get(2).toString());
-                args.putString("userid", userid.get(2).toString());
-                args.putString("day", day.get(2).toString());
-                args.putString("reco", reco.get(2).toString());
-                tdf3.setArguments(args);
-                ft.replace(R.id.root_home, tdf3);
-                ft.addToBackStack(null);
-                ft.commit();
+            case R.id.tts :
+            tts.speak(sentence, TextToSpeech.QUEUE_FLUSH, null);
                 break;
         }
     }
@@ -254,6 +287,18 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
             worker_sentence_trans.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+        for (int i = 0; i < 3; i++) {
+            list_trans.add(trans.get(i).toString());
+            list_trans_userid.add(tuserid.get(i).toString());
+            list_trans_day.add(tday.get(i).toString());
+            list_trans_reco.add(treco.get(i).toString());
+        }
+
+    }
+    private void listen() {
+        for (int i = 0; i < 3; i++) {
+            list_listen.add("구현중");
         }
 
     }
@@ -349,13 +394,11 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                             }
                             String transinfo = new String(transinfobyte, 0, j);
                             int plus = transinfo.indexOf('+');
-                            System.out.println(transinfo);
 
                             trans.add(new String(transbyte, 0, i)); //해석
-                            userid.add(transinfo.substring(0,plus)); //아이디
-                            day.add(transinfo.substring(plus+1,plus+11)); //날짜
-                            reco.add(transinfo.substring(plus+12,transinfo.length()-1)); //추천수
-
+                            tuserid.add(transinfo.substring(0,plus)); //아이디
+                            tday.add(transinfo.substring(plus+1,plus+11)); //날짜
+                            treco.add(transinfo.substring(plus+12,transinfo.length()-1)); //추천수
                             num++;
                         }
                         else if (inData[1] == PacketUser.ACK_NTRANS) {

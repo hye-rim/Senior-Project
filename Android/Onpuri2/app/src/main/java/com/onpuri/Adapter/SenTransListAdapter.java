@@ -12,43 +12,33 @@ import com.onpuri.R;
 
 import java.util.ArrayList;
 
-public class TransListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
-    private final String TAG = "TransListAdapter";
+public class SenTransListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
+    private final String TAG = "SenTransListAdapter";
     private ArrayList<String> transList;
-    private ArrayList<String> dayList;
-    private ArrayList<String> recoList;
 
-    public TransListAdapter(ArrayList<String> list_trans, ArrayList<String> list_day, ArrayList<String> list_reco,RecyclerView TransrecyclerView) {
+    public SenTransListAdapter(ArrayList<String> list_trans, RecyclerView TransRecyclerView) {
         this.transList=list_trans;
-        this.dayList=list_day;
-        this.recoList=list_reco;
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
         public TextView trans;
-        public TextView day;
-        public TextView reco;
         public ItemViewHolder(View v) {
             super(v);
-            trans = (TextView) v.findViewById(R.id.tv_trans_item);
-            day = (TextView) v.findViewById(R.id.day);
-            reco = (TextView) v.findViewById(R.id.reco);
+            trans = (TextView) v.findViewById(R.id.item);
         }
     }
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v;
-        v = LayoutInflater.from(parent.getContext()).inflate(R.layout.trans_list, parent, false);
+        v = LayoutInflater.from(parent.getContext()).inflate(R.layout.sen_list, parent, false);
         return new ItemViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        Log.d(TAG, "trans list " + position + " set.");
+        Log.d(TAG, "sen trans list " + position + " set.");
         ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
         itemViewHolder.trans.setText(transList.get(position));
-        itemViewHolder.day.setText(dayList.get(position));
-        itemViewHolder.reco.setText(recoList.get(position));
     }
 
     @Override
