@@ -74,8 +74,7 @@
             android:backgroundTint="#3f0808"
             android:backgroundTintMode="src_in"
             android:foregroundTint="#c82a2a"
-            android:foregroundTintMode="src_in"
-            android:layout_marginBottom="3dp">
+            android:foregroundTintMode="src_in">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="30dp"

@@ -244,10 +244,10 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
         SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat( "MMdd_HHmmss", Locale.KOREA );
         Date currentTime = new Date ( );
         String mTime = mSimpleDateFormat.format ( currentTime );
-        mFileName = "record "+mTime+".mp3";
 
         String dir = file.getAbsolutePath() + String.format("/Daily E");
-        String path = file.getAbsolutePath() + String.format("/Daily E/%s", mFileName);
+        String path = file.getAbsolutePath() + String.format("/Daily E/record %s.mp3", mTime);
+        mFileName = path;
 
         file = new File(dir);
         if ( !file.exists() )
@@ -345,7 +345,6 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
 
     class worker_add_listen extends Thread {
         private boolean isPlay = false;
-        int control=0;
 
         public worker_add_listen(boolean isPlay) {
             this.isPlay = isPlay;
@@ -365,34 +364,25 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
 
                 try {
                     dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
-                    System.out.println("11111111111111111");
-                    File f = new File(mFileName);
-                    fis = new FileInputStream(f);
-                    bis = new BufferedInputStream(fis);
-                    int size = 4096;
-                    byte[] dataByte = new byte[size];
-                    System.out.println("2222222222222222");
-                    outData[3] = (byte) dataByte.length;
-                    while((bis.read(dataByte)) != -1) {
-                        control++;
-                        if(control % 100 == 0) {
-                            System.out.println("전송중" + control/100);
-                            for (int i = 4; i < 4+dataByte.length; i++) {
-                                outData[i] = (byte) dataByte[i-4];
-                                Log.d(TAG, new String(outData));
-                            }
-                        }
-                        System.out.println("3333333333");
-                        outData[4 + dataByte.length] = (byte) (sentence_num/255 +1) ;
-                        outData[5 + dataByte.length] = (byte) (sentence_num%255 +1) ;
-                        outData[6 + dataByte.length] = (byte) PacketUser.CRC;
+                    fis = new FileInputStream(new File(mFileName));
+                    byte[] buffer = new byte[4096];
 
+                    int fileSize=0;
+                    int n;
+                    while((n = fis.read(buffer))!=-1) { //파일크기
+                        fileSize += n;
                     }
-                    System.out.println("11111111111111111"+outData);
-                  /*  dos.write(outData, 0, outData[3]+7);
+                    String filesize = Integer.toString(fileSize);
+                    outData[3] = (byte) filesize.length(); //파일크기의 길이
+
+                    for(int i=0; i<filesize.length(); i++) {
+                        outData[4+i] = (byte) Character.getNumericValue(filesize.charAt(i));
+                    }
+
                     dos.flush();
-                    bis.close();
                     fis.close();
+
+                  /*  dos.write(outData, 0, outData[3]+7);
 
                     dis = new DataInputStream(SocketConnection.socket.getInputStream());
                     dis.read(temp, 0, 4);

@@ -36,7 +36,6 @@ public class SenTransListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        Log.d(TAG, "sen trans list " + position + " set.");
         ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
         itemViewHolder.trans.setText(transList.get(position));
     }

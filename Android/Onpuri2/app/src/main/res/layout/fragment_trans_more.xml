@@ -63,7 +63,7 @@
             android:layout_marginLeft="3dp"
             android:layout_marginRight="3dp">
             <TextView
-                android:layout_width="60dp"
+                android:layout_width="300dp"
                 android:layout_height="30dp"
                 android:text="해석"
                 android:focusable="false"
@@ -71,9 +71,9 @@
                 android:layout_marginLeft="15dp"
                 android:layout_gravity="left|center_vertical"
                 android:textStyle="bold"
-                android:layout_weight="0.9"
                 android:textColor="@color/black"
-                android:gravity="center_vertical" />
+                android:gravity="center_vertical"
+                android:layout_marginRight="3dp" />
             <ImageButton
                 android:layout_width="20dp"
                 android:layout_height="20dp"
@@ -89,7 +89,9 @@
             android:id="@+id/recycler_trans"
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            tools:listitem="@layout/trans_list">
+            tools:listitem="@layout/trans_list"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp">
         </android.support.v7.widget.RecyclerView>
 
     </LinearLayout>

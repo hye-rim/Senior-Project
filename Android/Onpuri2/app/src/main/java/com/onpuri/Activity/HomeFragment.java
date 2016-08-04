@@ -265,20 +265,31 @@ public class HomeFragment extends Fragment {
                             }
 
                             PacketUser.sentence_len = ((int) inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);
+                            int len = ((int) senData[3] <= 0 ? (int) senData[3] + 256 : (int) senData[3]);
 
-                            String str = new String (inData, 4, PacketUser.sentence_len); //문장
-                            String num = Character.toString((char) senData[4])
+                        /*    String seninfo = new String(senData, 4, len);
+                            int plus = seninfo.indexOf('+');
+                            String senNum = seninfo.substring(0,plus); //문장번호
+                            seninfo = seninfo.substring(plus+1,seninfo.length());
+                            plus = seninfo.indexOf('+');
+                            String transNum = seninfo.substring(0, plus); //해석수
+                            String ListenNum = seninfo.substring(plus+1, seninfo.length()); //듣기수
+                         */
+                            String sen = new String (inData, 4, PacketUser.sentence_len); //문장
+                            String senNum = Character.toString((char) senData[4])
                                     + Character.toString((char) senData[5])
                                     + Character.toString((char) senData[6]); //문장번호
 
-                            userSentence.setSentence(str);
-                            userSentence.setSentenceNum(num);
-
-                            System.out.println("len : " + PacketUser.sentence_len);
-                            System.out.println(num);
+                            userSentence.setSentence(sen);
+                            userSentence.setSentenceNum(senNum);
+                   /*         userSentence.setSentenceTransNum(transNum);
+                            userSentence.setSentenceListenNum(ListenNum);*/
 
                             i++;
                             sentence_num++;
+
+
+
                         }
                     }
                 } catch (IOException e) {

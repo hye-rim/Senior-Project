@@ -43,6 +43,8 @@ public class PacketUser extends Application {
 
     public ArrayList<String> arrSentence = new ArrayList<String>();
     public ArrayList<String> arrSentenceNum = new ArrayList<String>();
+    public ArrayList<String> arrSentenceTransNum = new ArrayList<String>();
+    public ArrayList<String> arrSentenceListenNum = new ArrayList<String>();
 
     public static int data_len;
     public static int sentence_len;
@@ -67,12 +69,16 @@ public class PacketUser extends Application {
 
     public void setSentence(String str) {
         arrSentence.add(str);
-        System.out.println("string : " + arrSentence.get(0));
     }
 
     public void setSentenceNum(String num) {
         arrSentenceNum.add(num);
-        System.out.println("string_num : " + arrSentenceNum.get(0));
+    }
+    public void setSentenceTransNum(String num) {
+        arrSentenceTransNum.add(num);
+    }
+    public void setSentenceListenNum(String num) {
+        arrSentenceListenNum.add(num);
     }
 
     public ArrayList<String> copyList() {

@@ -36,7 +36,6 @@ public class SenListenListAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        Log.d(TAG, "sen trans list " + position + " set.");
         ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
         itemViewHolder.listen.setText(listenList.get(position));
     }
