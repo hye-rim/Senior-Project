@@ -20,17 +20,26 @@ public class RecycleviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private static final int VIEW_TYPE_CELL = 1;
     private static final int VIEW_TYPE_FOOTER = 0;
     private ArrayList<String> senList;
+    private ArrayList<String> transList;
+    private ArrayList<String> listenList;
 
-    public RecycleviewAdapter(ArrayList<String> listSentence, RecyclerView recyclerView) {
+    public RecycleviewAdapter(ArrayList<String> listSentence, ArrayList<String> listTransNum, ArrayList<String> listListenNum, RecyclerView recyclerView) {
         this.senList=listSentence;
+        this.transList=listTransNum;
+        this.listenList=listListenNum;
 
     }
     public class ItemViewHolder extends RecyclerView.ViewHolder {
         public TextView mSenItem;
+        public TextView mTransItem;
+        public TextView mListenItem;
 
         public ItemViewHolder(View v) {
             super(v);
             mSenItem = (TextView) v.findViewById(R.id.tv_sen_item);
+            mTransItem = (TextView) v.findViewById(R.id.transcount);
+            mListenItem = (TextView) v.findViewById(R.id.listencount);
+
         }
     }
 
@@ -48,6 +57,8 @@ public class RecycleviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
         itemViewHolder.mSenItem.setText(senList.get(position));
+        itemViewHolder.mTransItem.setText(transList.get(position));
+        itemViewHolder.mListenItem.setText(listenList.get(position));
 
         itemViewHolder.itemView.setBackgroundColor(Color.parseColor("#FDF5D2"));
     }

@@ -43,6 +43,8 @@ public class HomeFragment extends Fragment {
 
     ArrayList<String> listSentence = new ArrayList<String>();
     ArrayList<String> listSentenceNum = new ArrayList<String>();
+    ArrayList<String> listTransNum = new ArrayList<String>();
+    ArrayList<String> listListenNum = new ArrayList<String>();
     PacketUser userSentence;
 
     int i, index;
@@ -85,6 +87,8 @@ public class HomeFragment extends Fragment {
 
         listSentence = new ArrayList<String>();
         listSentenceNum = new ArrayList<String>();
+        listTransNum = new ArrayList<String>();
+        listListenNum = new ArrayList<String>();
 
         FragmentManager fm = getActivity().getSupportFragmentManager();
         fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
@@ -96,7 +100,7 @@ public class HomeFragment extends Fragment {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_sentence);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new RecycleviewAdapter(listSentence,mRecyclerView);
+        mAdapter = new RecycleviewAdapter(listSentence, listTransNum, listListenNum, mRecyclerView);
 
         mRecyclerView.setAdapter(mAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener((LinearLayoutManager) mLayoutManager) {
@@ -160,6 +164,8 @@ public class HomeFragment extends Fragment {
         for (int i = 0; i < loadLimit; i++) {
             listSentence.add(userSentence.arrSentence.get(i));
             listSentenceNum.add(userSentence.arrSentenceNum.get(i));
+            listTransNum.add(userSentence.arrSentenceTransNum.get(i));
+            listListenNum.add(userSentence.arrSentenceListenNum.get(i));
             ival++;
         }
     }
@@ -183,6 +189,8 @@ public class HomeFragment extends Fragment {
             for (int i = ival; i < loadLimit; i++) {
                 listSentence.add(userSentence.arrSentence.get(i));
                 listSentenceNum.add(userSentence.arrSentenceNum.get(i));
+                listTransNum.add(userSentence.arrSentenceTransNum.get(i));
+                listListenNum.add(userSentence.arrSentenceListenNum.get(i));
                 ival++;
             }
             mAdapter.notifyDataSetChanged();
@@ -267,36 +275,29 @@ public class HomeFragment extends Fragment {
                             PacketUser.sentence_len = ((int) inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);
                             int len = ((int) senData[3] <= 0 ? (int) senData[3] + 256 : (int) senData[3]);
 
-                        /*    String seninfo = new String(senData, 4, len);
+                            String sen = new String (inData, 4, PacketUser.sentence_len); //문장
+
+                            String seninfo = new String(senData, 4, len);
                             int plus = seninfo.indexOf('+');
                             String senNum = seninfo.substring(0,plus); //문장번호
                             seninfo = seninfo.substring(plus+1,seninfo.length());
                             plus = seninfo.indexOf('+');
                             String transNum = seninfo.substring(0, plus); //해석수
-                            String ListenNum = seninfo.substring(plus+1, seninfo.length()); //듣기수
-                         */
-                            String sen = new String (inData, 4, PacketUser.sentence_len); //문장
-                            String senNum = Character.toString((char) senData[4])
-                                    + Character.toString((char) senData[5])
-                                    + Character.toString((char) senData[6]); //문장번호
+                            String ListenNum = seninfo.substring(plus+1, seninfo.length()-1); //듣기수
 
                             userSentence.setSentence(sen);
                             userSentence.setSentenceNum(senNum);
-                   /*         userSentence.setSentenceTransNum(transNum);
-                            userSentence.setSentenceListenNum(ListenNum);*/
+                            userSentence.setSentenceTransNum(transNum);
+                            userSentence.setSentenceListenNum(ListenNum);
 
                             i++;
                             sentence_num++;
-
-
-
                         }
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 isPlay = false;
-
             }
         }
     }

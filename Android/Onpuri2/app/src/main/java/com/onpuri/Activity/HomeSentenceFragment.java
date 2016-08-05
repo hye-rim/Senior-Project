@@ -141,21 +141,24 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 new HomeItemClickListener(getActivity().getApplicationContext(), TransRecyclerView ,new HomeItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        final TransDetailFragment tdf = new TransDetailFragment();
-                        FragmentManager fm = getActivity().getSupportFragmentManager();
+                        System.out.println("num : " + num);
+                        if(position<num) {
+                            final TransDetailFragment tdf = new TransDetailFragment();
+                            FragmentManager fm = getActivity().getSupportFragmentManager();
 
-                        Bundle args = new Bundle();
-                        args.putString("sen", sentence);
-                        args.putString("sen_trans", list_trans.get(position));
-                        args.putString("userid", list_trans_userid.get(position));
-                        args.putString("day", list_trans_day.get(position));
-                        args.putString("reco", list_trans_reco.get(position));
-                        tdf.setArguments(args);
+                            Bundle args = new Bundle();
+                            args.putString("sen", sentence);
+                            args.putString("sen_trans", list_trans.get(position));
+                            args.putString("userid", list_trans_userid.get(position));
+                            args.putString("day", list_trans_day.get(position));
+                            args.putString("reco", list_trans_reco.get(position));
+                            tdf.setArguments(args);
 
-                        fm.beginTransaction()
-                                .replace(R.id.root_home, tdf)
-                                .addToBackStack(null)
-                                .commit();
+                            fm.beginTransaction()
+                                    .replace(R.id.root_home, tdf)
+                                    .addToBackStack(null)
+                                    .commit();
+                        }
                     }
                     public void onLongItemClick(View view, int position) {
                     }
@@ -335,7 +338,6 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                     dis = new DataInputStream(SocketConnection.socket.getInputStream());
                     num=0;
                     while (num < 3) {
-                        Log.d(TAG, "while" + num);
                         dis.read(temp, 0, 4);
                         System.out.println("read");
                         for (index = 0; index < 4; index++) {
@@ -343,7 +345,6 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                         }
                         System.out.println("opc : " + inData[1]);
                         if (inData[1] == PacketUser.ACK_SEN) {
-                            Log.d(TAG, "해석있음" + num);
                             //해석 읽어오기
                             dis.read(temp, 0, 1 + (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]));
                             for (index = 0; index <= (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]); index++) {
@@ -368,7 +369,6 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
 
                             //아이디-날짜-추천수 읽어오기
                             dis.read(temp, 0, 4);
-                            System.out.println("info read");
                             for (index = 0; index < 4; index++) {
                                 inData2[index] = temp[index];
                             }
@@ -402,17 +402,16 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                             num++;
                         }
                         else if (inData[1] == PacketUser.ACK_NTRANS) {
-                            Log.d(TAG, "해석없음" + num);
                             for (int j = 0; j < 3 - num; j++) {
                                 trans.add("none");
+                                tuserid.add(" ");
+                                tday.add(" ");
+                                treco.add(" ");
                             }
-                            num++;
                             break;
                         } else {
                             trans.add("error");
-                            num++;
                         }
-                        Log.d(TAG, "while 끝" + num);
                     }
                     dis.read(temp);
 

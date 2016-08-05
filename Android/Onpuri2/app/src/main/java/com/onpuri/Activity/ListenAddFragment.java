@@ -56,10 +56,10 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
     DataOutputStream dos;
     DataInputStream dis;
     FileInputStream fis;
-    BufferedInputStream bis;
-    byte[] outData = new byte[261];
-    byte[] inData = new byte[261];
+    byte[] outData;
     byte[] temp = new byte[261];
+    byte[] inData = new byte[261];
+    byte[] reData = new byte[261];
     private static View view;
     private Toast toast;
 
@@ -94,7 +94,6 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
             sentence_num=Integer.parseInt(getArguments().getString("sen_num"));
             item.setText(sentence);
         }
-
         btn_listen = (Button) view.findViewById(R.id.listen);
         btn_listen.setOnClickListener(this);
         btn_play = (Button) view.findViewById(R.id.play);
@@ -160,7 +159,7 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
                 break;
 
             case R.id.btn_new_listen:
-                AddListen();
+                //AddListen();
                 toast = Toast.makeText(getActivity(), "등록되었습니다(구현예정)", Toast.LENGTH_SHORT);
                 toast.show();
                 fm.popBackStack();
@@ -186,8 +185,8 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
         mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 
-        mRecorder.setMaxDuration(5 * 1000);
-        mRecorder.setMaxFileSize(5 * 1000 * 1000);
+    //    mRecorder.setMaxDuration(5 * 1000);
+      //  mRecorder.setMaxFileSize(5 * 1000 * 1000);
         mRecorder.setOnInfoListener(this);
 
         try {
@@ -199,6 +198,7 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
     }
     private void onBtnStop() {
         mRecorder.stop();
+        mRecorder.reset();
         mRecorder.release();
     }
 
@@ -358,10 +358,6 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
             super.run();
             while (isPlay) {
                 Log.d(TAG, "worker add listen start");
-                outData[0] = (byte) PacketUser.SOF;
-                outData[1] = (byte) PacketUser.USR_ALISTEN;
-                outData[2] = (byte) PacketUser.getSEQ();
-
                 try {
                     dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
                     fis = new FileInputStream(new File(mFileName));
@@ -373,12 +369,23 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
                         fileSize += n;
                     }
                     String filesize = Integer.toString(fileSize);
+                    outData = new byte[filesize.length()+fileSize+5];
+
+                    outData[0] = (byte) PacketUser.SOF;
+                    outData[1] = (byte) PacketUser.USR_ALISTEN;
+                    outData[2] = (byte) PacketUser.getSEQ();
                     outData[3] = (byte) filesize.length(); //파일크기의 길이
 
                     for(int i=0; i<filesize.length(); i++) {
                         outData[4+i] = (byte) Character.getNumericValue(filesize.charAt(i));
                     }
+                    for(int j=0; j< fileSize; j++) {
+                        outData[(4+filesize.length())+j]=buffer[j];
+                    }
+                    outData[(4+filesize.length())+fileSize]= (byte) PacketUser.CRC;
 
+                    System.out.println("outData :" + outData.length);
+                    System.out.println("outData :" + outData);
                     dos.flush();
                     fis.close();
 
