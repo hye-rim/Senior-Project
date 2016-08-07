@@ -1,5 +1,7 @@
 package com.onpuri.Activity;
 
+import android.app.AlertDialog;
+import android.graphics.Color;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.DialogInterface;
@@ -10,7 +12,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
@@ -20,7 +23,19 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import com.onpuri.R;
+import com.onpuri.Server.PacketUser;
+import com.onpuri.Server.SocketConnection;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,29 +43,39 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 /**
  * Created by kutemsys on 2016-07-16.
  */
 
 public class ListenAddFragment extends Fragment implements View.OnClickListener, MediaRecorder.OnInfoListener {
     private static final String TAG = "ListenAddFragment";
+    private worker_add_listen worker_add_listen;
     private static final int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 1;
 
+    DataOutputStream dos;
+    DataInputStream dis;
+    FileInputStream fis;
+    byte[] outData;
+    byte[] temp = new byte[261];
+    byte[] inData = new byte[261];
+    byte[] reData = new byte[261];
     private static View view;
     private Toast toast;
 
     TextView item;
     String sentence = "";
+    int sentence_num;
 
-    static final String RECORDED_FILE = "/sdcard/DailyE_record/recorded.mp4";
-    MediaRecorder recorder;
-    boolean Islisten = true;
-    boolean Isplay = true;
+    boolean Islisten = false;
+    boolean Isplay = false;
+    boolean Isstart = false;
 
     Button btn_listen, btn_play;
     MediaPlayer mPlayer = null;
     MediaRecorder mRecorder = null;
-    String mFilePath;
+    String mFilePath = "";
+    private static String mFileName;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -61,15 +86,14 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
         }
         try {
             view = inflater.inflate(R.layout.fragment_listen_add, container, false);
-        } catch (InflateException e) {
-    /* map is already there, just return view as it is */
-        }
+        } catch (InflateException e) {}
+
         item = (TextView) view.findViewById(R.id.tv_sentence);
-        if (getArguments() != null) { //클릭한 문장 출력
+        if (getArguments() != null) {
             sentence = getArguments().getString("sen");
+            sentence_num=Integer.parseInt(getArguments().getString("sen_num"));
             item.setText(sentence);
         }
-
         btn_listen = (Button) view.findViewById(R.id.listen);
         btn_listen.setOnClickListener(this);
         btn_play = (Button) view.findViewById(R.id.play);
@@ -80,48 +104,71 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
         Button btn_new_trans_back = (Button) view.findViewById(R.id.btn_new_listen_back);
         btn_new_trans_back.setOnClickListener(this);
 
-        String sdRootPath = Environment.getExternalStorageDirectory().getAbsolutePath();
-        mFilePath = sdRootPath + "/record.mp3";
+        mFilePath = GetFilePath();
         return view;
     }
 
     @Override
     public void onClick(View v) {
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+
         switch (v.getId()) {
             case R.id.listen:
-                if (Islisten) {
-                    Islisten = false;
-                    btn_listen.setText("중지하기");
-                    onBtnStop();
-                } else {
+                Isstart = true;
+
+                if (!Islisten) {
                     Islisten = true;
-                    btn_listen.setText("녹음하기");
-                    if (Build.VERSION.SDK_INT >= 23) {
+                    btn_listen.setText("중지");
+                    btn_play.setEnabled(false);
+                    btn_play.setTextColor(Color.parseColor("#FEE098"));
+                    if(Build.VERSION.SDK_INT >= 23) {
                         perrmissionWork();
                     } else {
                         btnRecord();
                     }
                 }
-
-                break;
-            case R.id.play:
-                if (Isplay) {
-                    Isplay = false;
-                    btn_play.setText("정지하기");
-
-                } else {
-                    Isplay = true;
-                    btn_play.setText("재생하기");
-                    onBtnPlay();
+                else {
+                    Islisten = false;
+                    btn_listen.setText("녹음");
+                    btn_play.setEnabled(true);
+                    btn_play.setTextColor(Color.parseColor("#000000"));
+                    onBtnStop();
                 }
                 break;
-            case R.id.btn_new_listen:
-                toast = Toast.makeText(getActivity(), "등록", Toast.LENGTH_SHORT);
-                toast.show();
+
+            case R.id.play:
+                if(!Isstart) {
+                    toast = Toast.makeText(getActivity(), "진행된 녹음이 없습니다", Toast.LENGTH_SHORT);
+                    toast.show();
+                    break;
+                }
+                if (!Isplay) {
+                    Isplay = true;
+                    btn_play.setText("정지");
+                    btn_listen.setEnabled(false);
+                    btn_listen.setTextColor(Color.parseColor("#FEE098"));
+                    onBtnPlay();
+                }
+                 else {
+                    Isplay = false;
+                    btn_play.setText("재생");
+                    btn_listen.setEnabled(true);
+                    btn_listen.setTextColor(Color.parseColor("#000000"));
+                }
                 break;
-            case R.id.btn_new_listen_back:
-                toast = Toast.makeText(getActivity(), "취소", Toast.LENGTH_SHORT);
+
+            case R.id.btn_new_listen:
+                //AddListen();
+                toast = Toast.makeText(getActivity(), "등록되었습니다(구현예정)", Toast.LENGTH_SHORT);
                 toast.show();
+                fm.popBackStack();
+                ft.commit();
+                break;
+
+            case R.id.btn_new_listen_back:
+                fm.popBackStack();
+                ft.commit();
                 break;
         }
     }
@@ -132,13 +179,14 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
             mRecorder = null;
         }
         mRecorder = new MediaRecorder();
+
         mRecorder.setOutputFile(mFilePath);
         mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
         mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 
-        mRecorder.setMaxDuration(5 * 1000);
-        mRecorder.setMaxFileSize(5 * 1000 * 1000);
+    //    mRecorder.setMaxDuration(5 * 1000);
+      //  mRecorder.setMaxFileSize(5 * 1000 * 1000);
         mRecorder.setOnInfoListener(this);
 
         try {
@@ -148,13 +196,13 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
         }
         mRecorder.start();
     }
-    public void onBtnStop() {
+    private void onBtnStop() {
         mRecorder.stop();
+        mRecorder.reset();
         mRecorder.release();
-
     }
 
-    public void onBtnPlay() {
+    private void onBtnPlay() {
         if( mPlayer != null ) {
             mPlayer.stop();
             mPlayer.release();
@@ -180,6 +228,33 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
                 onBtnStop();
                 break;
         }
+    }
+
+    //파일 경로
+    public static synchronized String GetFilePath() {
+        String sdcard = Environment.getExternalStorageState();
+        File file = null;
+
+        if ( !sdcard.equals(Environment.MEDIA_MOUNTED)) {
+            file = Environment.getRootDirectory();
+        }
+        else {
+            file = Environment.getExternalStorageDirectory();
+        }
+        SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat( "MMdd_HHmmss", Locale.KOREA );
+        Date currentTime = new Date ( );
+        String mTime = mSimpleDateFormat.format ( currentTime );
+
+        String dir = file.getAbsolutePath() + String.format("/Daily E");
+        String path = file.getAbsolutePath() + String.format("/Daily E/record %s.mp3", mTime);
+        mFileName = path;
+
+        file = new File(dir);
+        if ( !file.exists() )
+        {
+            file.mkdirs();
+        }
+        return path;
     }
 
     //마시멜로 권한설정
@@ -251,6 +326,86 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
             break;
             default:
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    private void AddListen() {
+        if(worker_add_listen != null && worker_add_listen.isAlive()){  //이미 동작하고 있을 경우 중지
+            worker_add_listen.interrupt();
+        }
+        worker_add_listen = new worker_add_listen(true);
+        worker_add_listen.start();
+        try {
+            worker_add_listen.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    class worker_add_listen extends Thread {
+        private boolean isPlay = false;
+
+        public worker_add_listen(boolean isPlay) {
+            this.isPlay = isPlay;
+        }
+
+        public void stopThread() {
+            isPlay = !isPlay;
+        }
+
+        public void run() {
+            super.run();
+            while (isPlay) {
+                Log.d(TAG, "worker add listen start");
+                try {
+                    dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
+                    fis = new FileInputStream(new File(mFileName));
+                    byte[] buffer = new byte[4096];
+
+                    int fileSize=0;
+                    int n;
+                    while((n = fis.read(buffer))!=-1) { //파일크기
+                        fileSize += n;
+                    }
+                    String filesize = Integer.toString(fileSize);
+                    outData = new byte[filesize.length()+fileSize+5];
+
+                    outData[0] = (byte) PacketUser.SOF;
+                    outData[1] = (byte) PacketUser.USR_ALISTEN;
+                    outData[2] = (byte) PacketUser.getSEQ();
+                    outData[3] = (byte) filesize.length(); //파일크기의 길이
+
+                    for(int i=0; i<filesize.length(); i++) {
+                        outData[4+i] = (byte) Character.getNumericValue(filesize.charAt(i));
+                    }
+                    for(int j=0; j< fileSize; j++) {
+                        outData[(4+filesize.length())+j]=buffer[j];
+                    }
+                    outData[(4+filesize.length())+fileSize]= (byte) PacketUser.CRC;
+
+                    System.out.println("outData :" + outData.length);
+                    System.out.println("outData :" + outData);
+                    dos.flush();
+                    fis.close();
+
+                  /*  dos.write(outData, 0, outData[3]+7);
+
+                    dis = new DataInputStream(SocketConnection.socket.getInputStream());
+                    dis.read(temp, 0, 4);
+                    for (int index = 0; index < 4; index++) {
+                        inData[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
+                    }
+                    if(inData[1] == PacketUser.ACK_ALISTEN) {
+                        Log.d(TAG, "등록완료");
+                    }
+                    dis.read(temp);*/
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                isPlay = !isPlay;
+            }
         }
     }
 }

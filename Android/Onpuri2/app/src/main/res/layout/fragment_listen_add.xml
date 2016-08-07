@@ -6,43 +6,49 @@
     android:background="#faf5b3">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="120dp"
         android:orientation="vertical"
         android:backgroundTint="#662727"
         android:backgroundTintMode="src_in">
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="match_parent"
             android:id="@+id/tv_sentence"
-            android:textSize="16dp"
+            android:textSize="17dp"
             android:text="영어 문장 내용"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:textStyle="bold"
             android:textColor="@android:color/black"
             android:layout_marginTop="10dp"/>
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_gravity="center">
+        android:orientation="vertical"
+        android:layout_width="350dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal">
 
         <Button
             android:id="@+id/listen"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
             android:text="녹음"
             android:layout_gravity="center_horizontal"
-            android:layout_marginRight="20dp"/>
+            android:background="@color/fuzzy_peach"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="5dp" />
+
         <Button
             android:id="@+id/play"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
             android:text="재생"
             android:layout_gravity="center_horizontal"
-            android:layout_marginLeft="20dp"/>
+            android:background="@color/fuzzy_peach"
+            android:textColor="@color/black"
+            android:layout_marginTop="5dp" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -50,6 +56,7 @@
         android:layout_height="100dp"
         android:orientation="horizontal"
         android:gravity="center">
+
         <Button
             android:id="@+id/btn_new_listen"
             android:layout_width="100dp"

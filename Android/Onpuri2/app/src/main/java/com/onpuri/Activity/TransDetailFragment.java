@@ -1,16 +1,15 @@
 package com.onpuri.Activity;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AlertDialog;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.onpuri.R;
@@ -73,9 +72,6 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
         item_reco.setOnClickListener(this);
         Button item_edit = (Button) view.findViewById(R.id.item_edit);
         item_edit.setOnClickListener(this);
-        Button del_trans= (Button) view.findViewById(R.id.del_trans);
-        del_trans.setOnClickListener(this);
-
 
         return view;
     }
@@ -105,22 +101,7 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
                 ft.addToBackStack(null);
                 ft.commit();
                 break;
-            case R.id.del_trans:
-                new AlertDialog.Builder(getActivity())
-                        .setTitle("선택한 해석을 삭제하시겠습니까?")
-                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                toast = Toast.makeText(getActivity(), "삭제되었습니다(구현예정)", Toast.LENGTH_SHORT);
-                                toast.show();
-                            }
-                        })
-                        .setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dlg, int sumthin) {
-                                toast = Toast.makeText(getActivity(), "취소되었습니다", Toast.LENGTH_SHORT);
-                                toast.show();
-                            }
 
-                        }).show();
         }
 
     }

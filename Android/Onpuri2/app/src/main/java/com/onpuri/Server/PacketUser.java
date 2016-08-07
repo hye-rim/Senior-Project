@@ -24,7 +24,10 @@ public class PacketUser extends Application {
     static public char USR_MTRANS = 16; //more translation
     static public char USR_ATRANS = 17; //add translation
     static public char ACK_ATRANS = 18; //add translation ACK
-
+    static public char ACK_NLISTEN = 19; // no recoder
+    static public char USR_MLISTEN = 20; //more recoder
+    static public char USR_ALISTEN = 21; //add recoder
+    static public char ACK_ALISTEN = 22; //add recoder ACK
     static public char USR_SEARCH = 30; //search
     static public char ACK_SEARCH = 31; //search ACK
     static public char ACK_NSEARCH = 32; //no search ACK
@@ -40,6 +43,8 @@ public class PacketUser extends Application {
 
     public ArrayList<String> arrSentence = new ArrayList<String>();
     public ArrayList<String> arrSentenceNum = new ArrayList<String>();
+    public ArrayList<String> arrSentenceTransNum = new ArrayList<String>();
+    public ArrayList<String> arrSentenceListenNum = new ArrayList<String>();
 
     public static int data_len;
     public static int sentence_len;
@@ -64,12 +69,16 @@ public class PacketUser extends Application {
 
     public void setSentence(String str) {
         arrSentence.add(str);
-        System.out.println("string : " + arrSentence.get(0));
     }
 
     public void setSentenceNum(String num) {
         arrSentenceNum.add(num);
-        System.out.println("string_num : " + arrSentenceNum.get(0));
+    }
+    public void setSentenceTransNum(String num) {
+        arrSentenceTransNum.add(num);
+    }
+    public void setSentenceListenNum(String num) {
+        arrSentenceListenNum.add(num);
     }
 
     public ArrayList<String> copyList() {

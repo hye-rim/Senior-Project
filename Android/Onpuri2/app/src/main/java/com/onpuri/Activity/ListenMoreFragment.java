@@ -1,11 +1,14 @@
 package com.onpuri.Activity;
 
+import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AlertDialog;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.InflateException;
@@ -13,15 +16,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.onpuri.DividerItemDecoration;
+import com.onpuri.Listener.EndlessRecyclerOnScrollListener;
 import com.onpuri.Listener.HomeItemClickListener;
 import com.onpuri.Adapter.ListenListAdapter;
 import com.onpuri.R;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Locale;
+
+import static com.onpuri.R.drawable.divider_dark;
 
 
 public class ListenMoreFragment extends Fragment implements View.OnClickListener, TextToSpeech.OnInitListener {
@@ -52,9 +62,8 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
         }
 
         list_listen = new ArrayList<String>();
-        list_listen.add(0,"listen1");
+        list_listen.add(0,"none");
         list_listen.add(1,"none");
-        list_listen.add(2,"none");
 
         item = (TextView) view.findViewById(R.id.tv_sentence);
         if (getArguments() != null) { //클릭한 문장 출력
@@ -63,9 +72,11 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
             item.setText(sentence);
         }
 
-        Button add_note = (Button) view.findViewById(R.id.add_note);
+        ImageButton tts_sen = (ImageButton) view.findViewById(R.id.tts);
+        tts_sen.setOnClickListener(this);
+        ImageButton add_note = (ImageButton) view.findViewById(R.id.add_note);
         add_note.setOnClickListener(this);
-        Button add_listen = (Button) view.findViewById(R.id.add_listen);
+        ImageButton add_listen = (ImageButton) view.findViewById(R.id.add_listen);
         add_listen.setOnClickListener(this);
 
         tts = new TextToSpeech(getActivity(), this);
@@ -75,29 +86,27 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
         RecyclerView.setLayoutManager(LayoutManager);
         Adapter = new ListenListAdapter(list_listen, RecyclerView);
         RecyclerView.setAdapter(Adapter);// Set CustomAdapter as the adapter for RecyclerView.
-      /*  RecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener((LinearLayoutManager) LayoutManager) {
+        RecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener((LinearLayoutManager) LayoutManager) {
             @Override
             public void onLoadMore(int current_page){};
-        });*/
+        });
 
         RecyclerView.addOnItemTouchListener(
                 new HomeItemClickListener(getActivity().getApplicationContext(), RecyclerView ,new HomeItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        if(position == 0) {
-                            tts.speak(sentence, TextToSpeech.QUEUE_FLUSH, null);
-                        }
-                        else {
-                            toast = Toast.makeText(getActivity(),"음성파일이 존재하지 않습니다", Toast.LENGTH_SHORT);
-                            toast.show();
-                        }
                     }
+
                     @Override
                     public void onLongItemClick(View view, int position) {
                         new AlertDialog.Builder(getActivity())
                                 .setTitle("선택한 듣기를 삭제하시겠습니까?")
                                 .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int whichButton) {
+                                        final FragmentManager fm = getActivity().getSupportFragmentManager();
+                                        final FragmentTransaction ft = getFragmentManager().beginTransaction();
+                                        fm.popBackStack();
+                                        ft.commit();
                                         toast = Toast.makeText(getActivity(), "삭제되었습니다(구현예정)", Toast.LENGTH_SHORT);
                                         toast.show();
                                     }
@@ -112,11 +121,12 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
                     }
                 })
         );
-
-        Adapter.notifyDataSetChanged();
+        Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_dark);
+        RecyclerView.addItemDecoration(new DividerItemDecoration(dividerDrawable));
 
         return view;
     }
+
     @Override
     public void onDestroy() {
         if (tts != null) {
@@ -125,11 +135,8 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
         }
         super.onDestroy();
     }
-    @Override
-    public void onInit(int status) {
-        tts.setLanguage(Locale.US);
-    }
 
+    @Override
     public void onClick(View v) {
         final Bundle args = new Bundle();
         args.putString("sen", sentence);
@@ -152,17 +159,20 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
                         }).show();
                 break;
             case R.id.add_listen:
-  /*              final ListenAddFragment alf = new ListenAddFragment();
+                final ListenAddFragment alf = new ListenAddFragment();
                 alf.setArguments(args);
                 ft.replace(R.id.root_home, alf);
                 ft.addToBackStack(null);
-                ft.commit();*/
-                Toast.makeText(getActivity(), "구현중", Toast.LENGTH_SHORT).show();
+                ft.commit();
                 break;
-            case R.id.listen1:
+            case R.id.tts:
                 tts.speak(sentence, TextToSpeech.QUEUE_FLUSH, null);
                 break;
         }
     }
 
+    @Override
+    public void onInit(int status) {
+        tts.setLanguage(Locale.US);
+    }
 }

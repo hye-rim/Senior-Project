@@ -1,11 +1,14 @@
 package com.onpuri.Activity;
 
 import android.app.Activity;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.InflateException;
 import android.view.KeyEvent;
@@ -17,6 +20,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.onpuri.DividerItemDecoration;
 import com.onpuri.R;
 import com.onpuri.Server.PacketUser;
 import com.onpuri.Server.SocketConnection;
@@ -24,6 +29,8 @@ import com.onpuri.Server.SocketConnection;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+
+import static com.onpuri.R.drawable.divider_dark;
 
 /**
  * Created by kutemsys on 2016-07-16.
@@ -45,7 +52,6 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
     int sentence_num;
     TextView item;
     EditText trans;
-    WebView mview;
 
     int i;
 
@@ -94,7 +100,7 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.btn_new_trans_back:
                 fm.popBackStack();
-                ft.commit();;
+                ft.commit();
                 break;
         }
     }
@@ -114,6 +120,7 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
 
     class worker_add_trans extends Thread {
         private boolean isPlay = false;
+        String AddTrans = trans.getText().toString();
 
         public worker_add_trans(boolean isPlay) {
             this.isPlay = isPlay;
@@ -127,7 +134,6 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
             super.run();
             while (isPlay) {
                 Log.d(TAG, "worker add trans start");
-                String AddTrans = trans.getText().toString();
                 byte[] dataByte = AddTrans.getBytes();
                 outData[0] = (byte) PacketUser.SOF;
                 outData[1] = (byte) PacketUser.USR_ATRANS;
@@ -144,8 +150,9 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
 
                 try {
                     dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
-                    dos.write(outData, 0, outData[3] + 7); // packet transmission
+                    dos.write(outData, 0, outData[3]+7); // packet transmission
                     dos.flush();
+
                     dis = new DataInputStream(SocketConnection.socket.getInputStream());
                     dis.read(temp, 0, 4);
                     for (int index = 0; index < 4; index++) {
