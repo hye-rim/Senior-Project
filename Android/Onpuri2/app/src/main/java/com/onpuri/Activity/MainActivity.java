@@ -1,5 +1,6 @@
 package com.onpuri.Activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -28,6 +29,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.onpuri.ActivityList;
 import com.onpuri.R;
 import com.onpuri.Thread.WorkerLogout;
+import com.tsengvn.typekit.TypekitContextWrapper;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "MainActivity" ;
@@ -71,8 +73,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         mNavigationView = (NavigationView) findViewById(R.id.nav_view) ;
 
-        //View header = LayoutInflater.from(this).inflate(R.layout.nav_header_main_sub, null);
-        //mNavigationView.addHeaderView(header);
         View header = mNavigationView.getHeaderView(0);
         mNavId = (TextView)header.findViewById(R.id.tv_nav_id);
 
@@ -142,6 +142,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
         }
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
     }
 
     public Fragment getBaseFragment() {

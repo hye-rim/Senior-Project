@@ -1,6 +1,7 @@
 package com.onpuri.Activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import com.onpuri.ActivityList;
 import com.onpuri.R;
 import com.onpuri.Thread.WorkerIdCheck;
 import com.onpuri.Thread.WorkerJoin;
+import com.tsengvn.typekit.TypekitContextWrapper;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -247,6 +249,10 @@ public class JoinActivity extends Activity {
     }
 
 
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
+    }
     //edittext 영문+숫자만 입력되도록 하는 함수
     public InputFilter filterAlphaNum = new InputFilter() {
         @Override
