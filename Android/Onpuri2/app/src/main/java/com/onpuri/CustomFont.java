@@ -12,6 +12,7 @@ public class CustomFont extends Application {
 
         Typekit.getInstance()
                 .addNormal(Typekit.createFromAsset(this, "NanumBarunGothic.ttf"))
-                .addBold(Typekit.createFromAsset(this, "NanumBarunGothicBold.ttf"));
+                .addBold(Typekit.createFromAsset(this, "NanumBarunGothicBold.ttf"))
+                .addCustom1(Typekit.createFromAsset(this, "NanumBarunGothic.ttf"));
     }
 }

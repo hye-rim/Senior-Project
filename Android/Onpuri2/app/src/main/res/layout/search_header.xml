@@ -54,6 +54,7 @@
     <TextView
         android:textSize="16dp"
         android:text="내용"
+        android:id="@+id/tv_word_search"
         android:textColor="@color/black"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"

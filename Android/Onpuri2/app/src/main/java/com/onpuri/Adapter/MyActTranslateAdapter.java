@@ -70,14 +70,6 @@ public class MyActTranslateAdapter  extends RecyclerView.Adapter<RecyclerView.Vi
 
             }
         });
-
-        if (position % 2 == 0) {
-            itemViewHolder.itemView.setBackgroundColor(Color.parseColor("#FEE098"));
-        } else {
-            itemViewHolder.itemView.setBackgroundColor(Color.parseColor("#faf5b3"));
-        }
-
-
     }
 
     @Override
