@@ -66,11 +66,9 @@ public class PacketUser extends Application {
     public void setuserId(String str) {
         userId = str;
     }
-
     public void setSentence(String str) {
         arrSentence.add(str);
     }
-
     public void setSentenceNum(String num) {
         arrSentenceNum.add(num);
     }

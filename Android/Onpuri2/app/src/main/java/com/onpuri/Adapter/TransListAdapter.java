@@ -44,7 +44,6 @@ public class TransListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        Log.d(TAG, "trans list " + position + " set.");
         ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
         itemViewHolder.trans.setText(transList.get(position));
         itemViewHolder.day.setText(dayList.get(position));

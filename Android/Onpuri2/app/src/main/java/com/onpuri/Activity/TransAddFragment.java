@@ -37,7 +37,7 @@ import static com.onpuri.R.drawable.divider_dark;
  */
 public class TransAddFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "TransAddFragment";
-    private worker_add_trans worker_add_trans;
+    private WorkerTransAdd worker_add_trans;
 
     DataOutputStream dos;
     DataInputStream dis;
@@ -48,10 +48,12 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
     private static View view;
     private Toast toast;
 
+    TextView item;
     String sentence="";
     int sentence_num;
-    TextView item;
+
     EditText trans;
+    String addTrans="";
 
     int i;
 
@@ -67,6 +69,8 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
         } catch (InflateException e) {}
 
         trans = (EditText) view.findViewById(R.id.new_trans);
+        addTrans = trans.getText().toString();
+
         item = (TextView) view.findViewById(R.id.tv_sentence);
         if (getArguments() != null) { //클릭한 문장 출력
             sentence = getArguments().getString("sen");
@@ -108,21 +112,21 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
         if(worker_add_trans != null && worker_add_trans.isAlive()){  //이미 동작하고 있을 경우 중지
             worker_add_trans.interrupt();
         }
-        worker_add_trans = new worker_add_trans(true);
+        worker_add_trans = new WorkerTransAdd(true);
         worker_add_trans.start();
         try {
             worker_add_trans.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
     }
+    class WorkerTransAdd extends Thread {
 
-    class worker_add_trans extends Thread {
+
         private boolean isPlay = false;
-        String AddTrans = trans.getText().toString();
 
-        public worker_add_trans(boolean isPlay) {
+
+        public WorkerTransAdd(boolean isPlay) {
             this.isPlay = isPlay;
         }
 
@@ -133,24 +137,21 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
         public void run() {
             super.run();
             while (isPlay) {
-                Log.d(TAG, "worker add trans start");
-                byte[] dataByte = AddTrans.getBytes();
+                byte[] dataByte = addTrans.getBytes();
                 outData[0] = (byte) PacketUser.SOF;
                 outData[1] = (byte) PacketUser.USR_ATRANS;
                 outData[2] = (byte) PacketUser.getSEQ();
                 outData[3] = (byte) dataByte.length;
-                for (i = 4; i < 4+dataByte.length; i++) {
-                    outData[i] = (byte) dataByte[i-4];
-                    Log.d(TAG, new String(outData));
-                    Log.d(TAG, new String(dataByte));
+                for (i = 4; i < 4 + dataByte.length; i++) {
+                    outData[i] = (byte) dataByte[i - 4];
                 }
-                outData[4 + dataByte.length] = (byte) (sentence_num/255 +1) ;
-                outData[5 + dataByte.length] = (byte) (sentence_num%255 +1) ;
+                outData[4 + dataByte.length] = (byte) (sentence_num / 255 + 1);
+                outData[5 + dataByte.length] = (byte) (sentence_num % 255 + 1);
                 outData[6 + dataByte.length] = (byte) PacketUser.CRC;
 
                 try {
                     dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
-                    dos.write(outData, 0, outData[3]+7); // packet transmission
+                    dos.write(outData, 0, outData[3] + 7); // packet transmission
                     dos.flush();
 
                     dis = new DataInputStream(SocketConnection.socket.getInputStream());
@@ -158,8 +159,8 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
                     for (int index = 0; index < 4; index++) {
                         inData[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
                     }
-                    if(inData[1] == PacketUser.ACK_ATRANS) {
-                        Log.d(TAG, "등록완료");
+                    if (inData[1] == PacketUser.ACK_ATRANS) {
+
                     }
                     dis.read(temp);
 

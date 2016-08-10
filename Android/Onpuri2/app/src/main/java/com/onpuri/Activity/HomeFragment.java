@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,7 +24,6 @@ import com.onpuri.Listener.HomeItemClickListener;
 import com.onpuri.R;
 import com.onpuri.Server.PacketUser;
 import com.onpuri.Server.SocketConnection;
-import com.tsengvn.typekit.TypekitContextWrapper;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -296,6 +294,7 @@ public class HomeFragment extends Fragment {
                             sentence_num++;
                         }
                     }
+                    dis.read(temp);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

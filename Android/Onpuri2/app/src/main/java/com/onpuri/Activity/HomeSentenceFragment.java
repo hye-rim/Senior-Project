@@ -12,7 +12,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,7 +45,7 @@ import static com.onpuri.R.drawable.divider_dark;
 public class HomeSentenceFragment extends Fragment implements View.OnClickListener, TextToSpeech.OnInitListener {
 
     private static final String TAG = "HomeSentenceFragment";
-    private worker_sentence_trans worker_sentence_trans;
+    private WorkerTrans worker_sentence_trans;
 
     DataOutputStream dos;
     DataInputStream dis;
@@ -54,12 +53,12 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
     byte[] inData = new byte[261];
     byte[] inData2 = new byte[261];
     byte[] temp = new byte[261];
-
     private static View view;
     private Toast toast;
 
-    int num=0;
+    int count, num=0;
     int index;
+
     ArrayList<String> list_trans;
     ArrayList<String> list_trans_userid;
     ArrayList<String> list_trans_day;
@@ -284,7 +283,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
         if(worker_sentence_trans != null && worker_sentence_trans.isAlive()){  //이미 동작하고 있을 경우 중지
             worker_sentence_trans.interrupt();
         }
-        worker_sentence_trans = new worker_sentence_trans(true);
+        worker_sentence_trans = new WorkerTrans(true);
         worker_sentence_trans.start();
         try {
             worker_sentence_trans.join();
@@ -292,12 +291,19 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
             e.printStackTrace();
         }
         for (int i = 0; i < 3; i++) {
-            list_trans.add(trans.get(i).toString());
-            list_trans_userid.add(tuserid.get(i).toString());
-            list_trans_day.add(tday.get(i).toString());
-            list_trans_reco.add(treco.get(i).toString());
+            if(i < count) {
+                list_trans.add(trans.get(i).toString());
+                list_trans_userid.add(tuserid.get(i).toString());
+                list_trans_day.add(tday.get(i).toString());
+                list_trans_reco.add(treco.get(i).toString());
+            }
+    /*        else {
+                list_trans.add("없당");
+                list_trans_userid.add(" ");
+                list_trans_day.add(" ");
+                list_trans_reco.add(" ");
+            }*/
         }
-
     }
     private void listen() {
         for (int i = 0; i < 3; i++) {
@@ -306,22 +312,15 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
 
     }
 
-    class worker_sentence_trans extends Thread {
+    class WorkerTrans extends Thread {
+
         private boolean isPlay = false;
 
-        public worker_sentence_trans(boolean isPlay) {
-            this.isPlay = isPlay;
-        }
-
-        public void stopThread() {
-            isPlay = !isPlay;
-        }
+        public WorkerTrans(boolean isPlay) {this.isPlay = isPlay;}
 
         public void run() {
             super.run();
             while (isPlay) {
-                Log.d(TAG, "worker trans start");
-
                 outData[0] = (byte) PacketUser.SOF;
                 outData[1] = (byte) PacketUser.USR_SEN;
                 outData[2] = (byte) PacketUser.getSEQ();
@@ -336,7 +335,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                     dos.write(outData, 0, outData[3] + 5); // packet transmission
                     dos.flush();
                     dis = new DataInputStream(SocketConnection.socket.getInputStream());
-                    num=0;
+                    int num = 0;
                     while (num < 3) {
                         dis.read(temp, 0, 4);
                         System.out.println("read");
@@ -396,25 +395,19 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                             int plus = transinfo.indexOf('+');
 
                             trans.add(new String(transbyte, 0, i)); //해석
-                            tuserid.add(transinfo.substring(0,plus)); //아이디
-                            tday.add(transinfo.substring(plus+1,plus+11)); //날짜
-                            treco.add(transinfo.substring(plus+12,transinfo.length()-1)); //추천수
+                            tuserid.add(transinfo.substring(0, plus)); //아이디
+                            tday.add(transinfo.substring(plus + 1, plus + 11)); //날짜
+                            treco.add(transinfo.substring(plus + 12, transinfo.length() - 1)); //추천수
                             num++;
-                        }
-                        else if (inData[1] == PacketUser.ACK_NTRANS) {
-                            for (int j = 0; j < 3 - num; j++) {
-                                trans.add("none");
-                                tuserid.add(" ");
-                                tday.add(" ");
-                                treco.add(" ");
-                            }
+                        } else if (inData[1] == PacketUser.ACK_NTRANS) {
+                            count = num;
                             break;
                         } else {
-                            trans.add("error");
+                            count = num;
+                            break;
                         }
                     }
                     dis.read(temp);
-
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
