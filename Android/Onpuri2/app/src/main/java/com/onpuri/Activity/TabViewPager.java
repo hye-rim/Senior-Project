@@ -3,6 +3,7 @@ package com.onpuri.Activity;
 /**
  * Created by kutemsys on 2016-06-27.
  */
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.onpuri.R;
+import com.tsengvn.typekit.TypekitContextWrapper;
 
 //Fragment Tab 설정
 public class TabViewPager extends Fragment {

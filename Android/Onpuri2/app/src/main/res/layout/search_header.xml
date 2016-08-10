@@ -16,14 +16,14 @@
         android:id="@+id/rl_search_word"
         android:visibility="visible"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="3dp"
+        android:layout_marginLeft="15dp">
         <TextView
             android:text="word"
             android:textSize="18dp"
             android:textStyle="bold"
-            android:layout_marginTop="3dp"
-            android:layout_marginBottom="3dp"
-            android:layout_marginLeft="15dp"
             android:layout_marginRight="8dp"
             android:layout_centerInParent="true"
             android:layout_alignParentLeft="true"
@@ -31,35 +31,32 @@
             android:id="@+id/tv_search_word"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
-        <Button
-            android:layout_centerInParent="true"
+        <ImageButton
             android:layout_toRightOf="@+id/tv_search_word"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:textSize="14dp"
-            android:text="재생"
-            android:layout_gravity="center"
-            android:id="@+id/btn_search_word_listen"/>
-        <Button
-            android:layout_centerInParent="true"
-            android:layout_alignParentRight="true"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:textSize="14dp"
-            android:text="노트에 추가"
-            android:layout_gravity="center"
-            android:layout_marginRight="15dp"
-            android:id="@+id/btn_search_word_add"/>
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:background="@drawable/tts_icon"
+            android:id="@+id/btn_search_word_listen"
+            android:layout_marginRight="8dp" />
+        <ImageButton
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:background="@drawable/addnote_icon"
+            android:id="@+id/btn_search_word_add"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/btn_search_word_listen"
+            android:layout_toEndOf="@+id/btn_search_word_listen" />
     </RelativeLayout>
     <TextView
         android:textSize="16dp"
         android:text="내용"
+        android:id="@+id/tv_word_search"
         android:textColor="@color/black"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
-        android:layout_height="150dp" />
+        android:layout_height="100dp" />
     <TextView
         android:textSize="16dp"
         android:layout_width="wrap_content"
@@ -68,6 +65,6 @@
         android:text="문장"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:gravity="center_vertical" />
 </LinearLayout>

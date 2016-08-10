@@ -141,7 +141,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                     @Override
                     public void onItemClick(View view, int position) {
                         System.out.println("num : " + num);
-                        if(position<num) {
+                        if(position < num) {
                             final TransDetailFragment tdf = new TransDetailFragment();
                             FragmentManager fm = getActivity().getSupportFragmentManager();
 
@@ -163,6 +163,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                     }
                 })
         );
+
         Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_dark);
         TransRecyclerView.addItemDecoration(new DividerItemDecoration(dividerDrawable));
 
@@ -297,12 +298,12 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 list_trans_day.add(tday.get(i).toString());
                 list_trans_reco.add(treco.get(i).toString());
             }
-    /*        else {
-                list_trans.add("없당");
+            else {
+                list_trans.add("none");
                 list_trans_userid.add(" ");
                 list_trans_day.add(" ");
                 list_trans_reco.add(" ");
-            }*/
+            }
         }
     }
     private void listen() {
@@ -335,14 +336,14 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                     dos.write(outData, 0, outData[3] + 5); // packet transmission
                     dos.flush();
                     dis = new DataInputStream(SocketConnection.socket.getInputStream());
+
                     int num = 0;
                     while (num < 3) {
                         dis.read(temp, 0, 4);
-                        System.out.println("read");
                         for (index = 0; index < 4; index++) {
                             inData[index] = temp[index];
                         }
-                        System.out.println("opc : " + inData[1]);
+
                         if (inData[1] == PacketUser.ACK_SEN) {
                             //해석 읽어오기
                             dis.read(temp, 0, 1 + (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]));
@@ -399,6 +400,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                             tday.add(transinfo.substring(plus + 1, plus + 11)); //날짜
                             treco.add(transinfo.substring(plus + 12, transinfo.length() - 1)); //추천수
                             num++;
+                            count = num;
                         } else if (inData[1] == PacketUser.ACK_NTRANS) {
                             count = num;
                             break;
@@ -407,11 +409,12 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                             break;
                         }
                     }
+                    System.out.println("count : " + count);
                     dis.read(temp);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                isPlay = !isPlay;
+                isPlay = false;
             }
         }
     }

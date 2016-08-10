@@ -231,43 +231,35 @@ public class HomeFragment extends Fragment {
                 outData[6] = (byte) PacketUser.CRC;
 
                 try {
-                    i = 0;
                     dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
                     dos.write(outData, 0, outData[3] + 5); // packet transmission
                     dos.flush();
-
-
                     dis = new DataInputStream(SocketConnection.socket.getInputStream());
 
+                    i = 0;
                     while (i < 10) {
                         //문장
                         dis.read(temp, 0, 4);
                         for (index = 0; index < 4; index++) {
                             inData[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
                         }
+                        System.out.println("opc : " + inData[1]);
 
-                        if(inData[1] == PacketUser.ACK_NSEN){
-                            sentenceEnd = true;
-                            Log.d(TAG, "no more : " + String.valueOf(sentenceEnd));
-                            i = 10;
-                            isPlay = false;
-                        }
+                        if(inData[1] == PacketUser.ACK_UMS){
+                            //문장 데이터
+                            dis.read(temp, 0, 1 + (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]));
+                            for (index = 0; index <= (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]); index++) {
+                                inData[index + 4] = temp[index];    // 패킷의 Data부분을 inData에 추가해준다.
+                            }
 
-                        dis.read(temp, 0, 1 + (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]));
-
-                        for (index = 0; index <= (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]); index++) {
-                            inData[index + 4] = temp[index];    // 패킷의 Data부분을 inData에 추가해준다.
-                        }
-
-                        if(!sentenceEnd) {
-                            //문장번호
+                            //문장번호+해석수+듣기수
                             dis.read(temp, 0, 4);
                             for (index = 0; index < 4; index++) {
                                 senData[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
                             }
 
+                            //문장번호+해석수+듣기수 데이터
                             dis.read(temp, 0, 1 + (senData[3] <= 0 ? (int) senData[3] + 256 : (int) senData[3]));
-
                             for (index = 0; index <= (senData[3] <= 0 ? (int) senData[3] + 256 : (int) senData[3]); index++) {
                                 senData[index + 4] = temp[index];    // 패킷의 Data부분을 inData에 추가해준다.
                             }
@@ -276,8 +268,12 @@ public class HomeFragment extends Fragment {
                             int len = ((int) senData[3] <= 0 ? (int) senData[3] + 256 : (int) senData[3]);
 
                             String sen = new String (inData, 4, PacketUser.sentence_len); //문장
+                            System.out.println(i);
+                            System.out.println("sen : " + sen);
 
                             String seninfo = new String(senData, 4, len);
+                            System.out.println(i + "seninfo : " + seninfo);
+
                             int plus = seninfo.indexOf('+');
                             String senNum = seninfo.substring(0,plus); //문장번호
                             seninfo = seninfo.substring(plus+1,seninfo.length());
@@ -293,8 +289,11 @@ public class HomeFragment extends Fragment {
                             i++;
                             sentence_num++;
                         }
+                        else if(inData[1] == PacketUser.ACK_NSEN){
+                            sentenceEnd = true;
+                            break;
+                        }
                     }
-                    dis.read(temp);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

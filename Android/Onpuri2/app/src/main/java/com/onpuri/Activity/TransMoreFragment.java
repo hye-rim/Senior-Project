@@ -227,7 +227,7 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
                         for (index = 0; index < 4; index++) {
                             inData[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
                         }
-                        System.out.println("opc : " + inData[1]);
+
                         if (inData[1] == PacketUser.ACK_SEN) {
                             //해석 읽어오기
                             dis.read(temp, 0, 1 + (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]));
