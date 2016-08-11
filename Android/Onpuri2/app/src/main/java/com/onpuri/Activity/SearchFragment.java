@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,7 +51,7 @@ public class SearchFragment extends Fragment {
     private static final String TAG = "SearchFragment" ;
     private static View view;
     private TextToSpeech tts;
-    private Button btn_listen;
+    private ImageButton btn_listen;
     private TextView tv_sen, tv_word, tv_word_title;
     private ListView list;
 
@@ -85,7 +86,7 @@ public class SearchFragment extends Fragment {
         View header = inflater.inflate(R.layout.search_header, null, false);
         tv_word = (TextView)header.findViewById(R.id.tv_word_search);
         list = (ListView)view.findViewById(R.id.list_search_sen);
-        btn_listen = (Button)header.findViewById(R.id.btn_search_word_listen);
+        btn_listen = (ImageButton)header.findViewById(R.id.btn_search_word_listen);
         tv_word_title = (TextView)header.findViewById(R.id.tv_search_word);
         loadData();
 

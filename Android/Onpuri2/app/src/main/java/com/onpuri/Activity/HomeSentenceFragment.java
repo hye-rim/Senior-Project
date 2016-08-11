@@ -58,8 +58,11 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
     private static View view;
     private Toast toast;
 
-    int count, num=0;
+    int count=-1;
+    int num=0;
     int index;
+    int j=0;
+
     ArrayList<String> list_trans;
     ArrayList<String> list_trans_userid;
     ArrayList<String> list_trans_day;
@@ -293,10 +296,11 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
             e.printStackTrace();
         }
         for (int i = 0; i < count; i++) {
-            list_trans.add(trans.get(i).toString());
-            list_trans_userid.add(tuserid.get(i).toString());
-            list_trans_day.add(tday.get(i).toString());
-            list_trans_reco.add(treco.get(i).toString());
+            list_trans.add(trans.get(j).toString());
+            list_trans_userid.add(tuserid.get(j).toString());
+            list_trans_day.add(tday.get(j).toString());
+            list_trans_reco.add(treco.get(j).toString());
+            j++;
         }
 
     }
@@ -331,6 +335,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                     outData[i] = (byte) sentence_num.charAt(i - 4);
                 }
                 outData[4 + sentence_num.length()] = (byte) 85;
+                Log.d(TAG, "opc : " + outData[1]);
 
                 try {
                     dos = new DataOutputStream(SocketConnection.socket.getOutputStream());

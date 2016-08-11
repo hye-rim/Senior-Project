@@ -238,7 +238,6 @@ public class HomeFragment extends Fragment {
                     dos.write(outData, 0, outData[3] + 5); // packet transmission
                     dos.flush();
 
-
                     dis = new DataInputStream(SocketConnection.socket.getInputStream());
 
                     while (i < 10) {
@@ -278,8 +277,9 @@ public class HomeFragment extends Fragment {
                             int len = ((int) senData[3] <= 0 ? (int) senData[3] + 256 : (int) senData[3]);
 
                             String sen = new String (inData, 4, PacketUser.sentence_len); //문장
-
+                            System.out.println(sen);
                             String seninfo = new String(senData, 4, len);
+                            System.out.println(seninfo);
                             int plus = seninfo.indexOf('+');
                             String senNum = seninfo.substring(0,plus); //문장번호
                             seninfo = seninfo.substring(plus+1,seninfo.length());

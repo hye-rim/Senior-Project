@@ -308,7 +308,6 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
                             count=num;
                             break;
                         }
-                        Log.d(TAG, "while 끝"+count);
                     }
                     dis.read(temp);
 
