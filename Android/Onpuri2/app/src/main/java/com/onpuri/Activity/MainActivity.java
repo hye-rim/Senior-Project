@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private String userId = "";
     private String name, joinDate, phone, nowPassword;
 
-    private TextView mNavId;
+    private TextView mNavId, mToolbarTitle;
     private Bundle bundle;
 
     @Override
@@ -65,11 +65,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
-        setting = getSharedPreferences("setting",0);
+        setting = getSharedPreferences("setting", 0);
         editor = setting.edit();
         mworker_out = null;
 
         //Setup the DrawerLayout and NavigationView
+        mToolbarTitle = (TextView)findViewById(R.id.toolbar_title);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         mNavigationView = (NavigationView) findViewById(R.id.nav_view) ;
 
@@ -102,6 +103,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mDrawerToggle.syncState();
 
     }
+
+    @Override
+    public void setTitle(CharSequence title) {
+        if(getSupportActionBar() == null)
+            return;
+
+        if(mToolbarTitle != null){
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            mToolbarTitle.setText(title);
+        }else{
+            getSupportActionBar().setDisplayShowTitleEnabled(true);
+            super.setTitle(title);
+        }
+
+
+    }
+
     @Override
     public void onBackPressed() {
         long tempTime = System.currentTimeMillis();

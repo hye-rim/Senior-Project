@@ -20,7 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.onpuri.Adapter.NoteWordItemAdapter;
-import com.onpuri.ChangedWordInterface;
 import com.onpuri.Data.WordData;
 import com.onpuri.DividerItemDecoration;
 import com.onpuri.R;

@@ -142,7 +142,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                     @Override
                     public void onItemClick(View view, int position) {
                         System.out.println("num : " + num);
-                        if(position<num) {
+                        if(position < num) {
                             final TransDetailFragment tdf = new TransDetailFragment();
                             FragmentManager fm = getActivity().getSupportFragmentManager();
 
@@ -164,6 +164,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                     }
                 })
         );
+
         Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_dark);
         TransRecyclerView.addItemDecoration(new DividerItemDecoration(dividerDrawable));
 

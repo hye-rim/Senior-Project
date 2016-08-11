@@ -26,6 +26,7 @@ import com.onpuri.R;
 
 import java.util.ArrayList;
 
+import static com.onpuri.R.drawable.divider_dark;
 import static com.onpuri.R.drawable.divider_light;
 
 /**
@@ -108,7 +109,7 @@ public class UserMyActFragment extends Fragment {
 
         initData();
 
-        Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_light);
+        Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_dark);
 
         //Set Sentence Adapter for Sentence RecyclerView (NoteTab)
         mRecyclerNew = (RecyclerView) view.findViewById(R.id.recycle_act_new);
