@@ -55,14 +55,15 @@ public class SearchFragment extends Fragment {
         } catch (InflateException e) {
             /* map is already there, just return view as it is */
         }
+
         Bundle extra = getArguments();
         searchText = null;
         searchText = extra.getString("searchText");
         Log.e(TAG, "data : " + searchText);
 
+        View header = inflater.inflate(R.layout.search_header, null, false);
         list = (ListView)view.findViewById(R.id.list_search_sen);
-        btn_listen = (Button)view.findViewById(R.id.btn_search_word_listen);
-
+        btn_listen = (Button)header.findViewById(R.id.btn_search_word_listen);
         loadData();
 
         tts = new TextToSpeech(getActivity(), new TextToSpeech.OnInitListener() {
@@ -86,8 +87,17 @@ public class SearchFragment extends Fragment {
             }
         });
 
-        Adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, searchList);
-        list.setAdapter(Adapter);
+        list.addHeaderView(header);
+        list.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, searchList){
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View viewList = super.getView(position, convertView, parent);
+                TextView textView = ((TextView) viewList.findViewById(android.R.id.text1));
+                textView.setHeight(140); // Height
+                textView.setMaxLines(2);
+                return viewList;
+            }
+        });
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -106,6 +116,7 @@ public class SearchFragment extends Fragment {
                 fm.executePendingTransactions();
             }
         });
+
 
         return view;
     }

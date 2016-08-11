@@ -1,6 +1,7 @@
 package com.onpuri.Activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import com.onpuri.ActivityList;
 import com.onpuri.Server.CloseSystem;
 import com.onpuri.Server.PacketUser;
 import com.onpuri.Server.SocketConnection;
+import com.tsengvn.typekit.TypekitContextWrapper;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -154,6 +156,10 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         });
     }
 
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
+    }
     private void mainGo(){
         if(mworker_login != null && mworker_login.isAlive()){  //이미 동작하고 있을 경우 중지
             mworker_login.interrupt();

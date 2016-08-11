@@ -1,5 +1,6 @@
 package com.onpuri.Activity;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,6 +25,7 @@ import com.onpuri.Listener.HomeItemClickListener;
 import com.onpuri.R;
 import com.onpuri.Server.PacketUser;
 import com.onpuri.Server.SocketConnection;
+import com.tsengvn.typekit.TypekitContextWrapper;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

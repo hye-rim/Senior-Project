@@ -22,6 +22,7 @@ import com.onpuri.ActivityList;
 import com.onpuri.R;
 import com.onpuri.Server.PacketInfo;
 import com.onpuri.Server.SocketConnection;
+import com.tsengvn.typekit.TypekitContextWrapper;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -270,6 +271,11 @@ public class SplashActivity extends Activity {
 
         }
     };
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
+    }
 
     public void onBackPressed(){
         super.onBackPressed ();
