@@ -58,7 +58,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
     private static View view;
     private Toast toast;
 
-    int num=0;
+    int count, num=0;
     int index;
     ArrayList<String> list_trans;
     ArrayList<String> list_trans_userid;
@@ -291,7 +291,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < count; i++) {
             list_trans.add(trans.get(i).toString());
             list_trans_userid.add(tuserid.get(i).toString());
             list_trans_day.add(tday.get(i).toString());
@@ -333,17 +333,17 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
 
                 try {
                     dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
-                    dos.write(outData, 0, outData[3] + 5); // packet transmission
+                    dos.write(outData, 0, outData[3]+5); // packet transmission
                     dos.flush();
                     dis = new DataInputStream(SocketConnection.socket.getInputStream());
                     num=0;
                     while (num < 3) {
                         dis.read(temp, 0, 4);
-                        System.out.println("read");
+                        Log.d(TAG, "read");
                         for (index = 0; index < 4; index++) {
                             inData[index] = temp[index];
                         }
-                        System.out.println("opc : " + inData[1]);
+                        Log.d(TAG, "opc : " + inData[1]);
                         if (inData[1] == PacketUser.ACK_SEN) {
                             //해석 읽어오기
                             dis.read(temp, 0, 1 + (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]));
@@ -400,18 +400,16 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                             tday.add(transinfo.substring(plus+1,plus+11)); //날짜
                             treco.add(transinfo.substring(plus+12,transinfo.length()-1)); //추천수
                             num++;
+                            count=num;
                         }
                         else if (inData[1] == PacketUser.ACK_NTRANS) {
-                            for (int j = 0; j < 3 - num; j++) {
-                                trans.add("none");
-                                tuserid.add(" ");
-                                tday.add(" ");
-                                treco.add(" ");
-                            }
+                            count=num;
                             break;
                         } else {
-                            trans.add("error");
+                            count=num;
+                            break;
                         }
+                        Log.d(TAG, "while 끝"+count);
                     }
                     dis.read(temp);
 

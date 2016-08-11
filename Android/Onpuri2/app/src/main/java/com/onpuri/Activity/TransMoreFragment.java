@@ -301,16 +301,14 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
                             num++;
                         }
                         else if(inData[1] == PacketUser.ACK_NTRANS) {
-                            Log.d(TAG, "해석없음"+num);
                             count=num;
                             break;
                         }
                         else {
-                            Log.d(TAG, "error"+num);
                             count=num;
                             break;
                         }
-                        Log.d(TAG, "while 끝"+num);
+                        Log.d(TAG, "while 끝"+count);
                     }
                     dis.read(temp);
 

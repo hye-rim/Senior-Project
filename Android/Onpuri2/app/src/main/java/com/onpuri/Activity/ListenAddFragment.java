@@ -159,7 +159,7 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
                 break;
 
             case R.id.btn_new_listen:
-                //AddListen();
+                AddListen();
                 toast = Toast.makeText(getActivity(), "등록되었습니다(구현예정)", Toast.LENGTH_SHORT);
                 toast.show();
                 fm.popBackStack();
@@ -185,8 +185,6 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
         mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 
-    //    mRecorder.setMaxDuration(5 * 1000);
-      //  mRecorder.setMaxFileSize(5 * 1000 * 1000);
         mRecorder.setOnInfoListener(this);
 
         try {
@@ -369,37 +367,42 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
                         fileSize += n;
                     }
                     String filesize = Integer.toString(fileSize);
-                    outData = new byte[filesize.length()+fileSize+5];
+                    System.out.println("파일 크기 : " + filesize);
 
+                    outData = new byte[filesize.length()+fileSize+7];
                     outData[0] = (byte) PacketUser.SOF;
                     outData[1] = (byte) PacketUser.USR_ALISTEN;
                     outData[2] = (byte) PacketUser.getSEQ();
                     outData[3] = (byte) filesize.length(); //파일크기의 길이
+                    System.out.println(outData[0]);
+                    System.out.println(outData[1]);
+                    System.out.println(outData[2]);
+                    System.out.println(outData[3]);
 
                     for(int i=0; i<filesize.length(); i++) {
                         outData[4+i] = (byte) Character.getNumericValue(filesize.charAt(i));
+                        System.out.println( outData[4+i]);
                     }
                     for(int j=0; j< fileSize; j++) {
                         outData[(4+filesize.length())+j]=buffer[j];
                     }
-                    outData[(4+filesize.length())+fileSize]= (byte) PacketUser.CRC;
-
-                    System.out.println("outData :" + outData.length);
-                    System.out.println("outData :" + outData);
+                    outData[(4+filesize.length())+fileSize] = (byte) (sentence_num/255 +1) ;
+                    outData[(5+filesize.length())+fileSize] = (byte) (sentence_num%255 +1) ;
+                    outData[(6+filesize.length())+fileSize]= (byte) PacketUser.CRC;
+                    dos.write(outData, 0, (7+filesize.length())+fileSize);
                     dos.flush();
                     fis.close();
-
-                  /*  dos.write(outData, 0, outData[3]+7);
 
                     dis = new DataInputStream(SocketConnection.socket.getInputStream());
                     dis.read(temp, 0, 4);
                     for (int index = 0; index < 4; index++) {
                         inData[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
+                        System.out.println(inData[index]);
                     }
                     if(inData[1] == PacketUser.ACK_ALISTEN) {
                         Log.d(TAG, "등록완료");
                     }
-                    dis.read(temp);*/
+                    dis.read(temp);
 
                 } catch (IOException e) {
                     e.printStackTrace();
