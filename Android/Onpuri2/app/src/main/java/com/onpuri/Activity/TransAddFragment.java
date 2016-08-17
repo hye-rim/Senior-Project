@@ -141,8 +141,6 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
                 outData[3] = (byte) dataByte.length;
                 for (i = 4; i < 4+dataByte.length; i++) {
                     outData[i] = (byte) dataByte[i-4];
-                    Log.d(TAG, new String(outData));
-                    Log.d(TAG, new String(dataByte));
                 }
                 outData[4 + dataByte.length] = (byte) (sentence_num/255 +1) ;
                 outData[5 + dataByte.length] = (byte) (sentence_num%255 +1) ;

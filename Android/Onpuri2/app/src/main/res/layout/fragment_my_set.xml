@@ -3,6 +3,14 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FAF5B3">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="center_horizontal"
+        android:background="#A9A9A9" />
+
     <Button
         android:id="@+id/btn_set_notice"
         android:textColor="@color/black"
@@ -12,6 +20,14 @@
         android:text="     공지사항"
         android:layout_width="match_parent"
         android:layout_height="50dp"/>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="center_horizontal"
+        android:background="#A9A9A9"></LinearLayout>
+
     <Button
         android:id="@+id/btn_set_question"
         android:textColor="@color/black"
@@ -21,6 +37,14 @@
         android:text="     문의"
         android:layout_width="match_parent"
         android:layout_height="50dp" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="center_horizontal"
+        android:background="#A9A9A9" />
+
     <Button
         android:id="@+id/btn_set_version"
         android:textColor="@color/black"
@@ -30,6 +54,14 @@
         android:text="     버전정보"
         android:layout_width="match_parent"
         android:layout_height="50dp" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="center_horizontal"
+        android:background="#A9A9A9" />
+
     <Button
         android:id="@+id/btn_set_tou"
         android:textColor="@color/black"
@@ -39,6 +71,14 @@
         android:text="     이용약관"
         android:layout_width="match_parent"
         android:layout_height="50dp" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="center_horizontal"
+        android:background="#A9A9A9" />
+
     <Button
         android:id="@+id/btn_set_out"
         android:textColor="@color/black"
@@ -48,4 +88,11 @@
         android:text="     회원탈퇴"
         android:layout_width="match_parent"
         android:layout_height="50dp" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="center_horizontal"
+        android:background="#A9A9A9" />
 </LinearLayout>
