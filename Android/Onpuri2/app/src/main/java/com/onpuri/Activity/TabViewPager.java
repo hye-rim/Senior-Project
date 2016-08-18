@@ -24,6 +24,8 @@ public class TabViewPager extends Fragment {
     public static TabLayout tabLayout;
     public static ViewPager viewPager;
     public static int int_items = 3;
+    private String userId;
+    private Bundle bundle;
 
     @Nullable
     @Override
@@ -34,6 +36,9 @@ public class TabViewPager extends Fragment {
         View x = inflater.inflate(R.layout.tab_layout, null);
         tabLayout = (TabLayout) x.findViewById(R.id.tabs);
         viewPager = (ViewPager) x.findViewById(R.id.viewpager);
+
+        userId = null;
+        userId = getArguments().getString("UserId");
 
         /**
          *Set an Apater for the View Pager
@@ -72,9 +77,15 @@ public class TabViewPager extends Fragment {
                 case 0:
                     NoteRootFragment tab1 = new NoteRootFragment();
                     return tab1;
+
                 case 1:
                     HomeRootFragment tab2 = new HomeRootFragment();
+                    bundle = new Bundle();
+                    bundle.putString("UserId", userId); //아이디 전송
+                    tab2.setArguments(bundle);
+
                     return tab2;
+
                 case 2:
                     NewSenFragment tab3 = new NewSenFragment();;
                     return tab3;

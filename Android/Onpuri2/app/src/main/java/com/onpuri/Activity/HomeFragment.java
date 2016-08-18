@@ -60,6 +60,7 @@ public class HomeFragment extends Fragment {
     private int loadLimit = 10;
     private int sentence_num;
     private Boolean sentenceEnd = false;
+    private String userId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -73,6 +74,10 @@ public class HomeFragment extends Fragment {
         } catch (InflateException e) {
             /* map is already there, just return view as it is */
         }
+        //HomeRootFragment로부터 데이터 받아오기
+        userId = null;
+        userId = getArguments().getString("UserId"); //UserId라는 키에 해당되는 String 값 받아옴
+
         sentence_num = 0;
         userSentence = new PacketUser();
 
@@ -98,6 +103,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onLoadMore(int current_page) {
                 loadMoreData(current_page);
+                sentenceEnd = mworker_sentence.getSentenceEnd();
                 if(sentenceEnd)
                     Toast.makeText(getActivity(),"불러올 문장이 더이상 없습니다.", Toast.LENGTH_SHORT).show();
             }
@@ -150,6 +156,7 @@ public class HomeFragment extends Fragment {
             e.printStackTrace();
         }
 
+        sentence_num = mworker_sentence.getSentence_num();
         sentenceEnd = mworker_sentence.getSentenceEnd();
         userSentence = mworker_sentence.getUserSentence();
 
@@ -175,6 +182,7 @@ public class HomeFragment extends Fragment {
             e.printStackTrace();
         }
 
+        sentence_num = mworker_sentence.getSentence_num();
         sentenceEnd = mworker_sentence.getSentenceEnd();
         userSentence = mworker_sentence.getUserSentence();
 
@@ -192,6 +200,8 @@ public class HomeFragment extends Fragment {
         }
 
         else{
+            sentence_num = mworker_sentence.getSentence_num();
+
             if (mworker_sentence != null && mworker_sentence.isAlive()) {  //이미 동작하고 있을 경우 중지
                 mworker_sentence.interrupt();
             }

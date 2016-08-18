@@ -87,9 +87,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         mNavId.setText(userId + " 님");
 
+        //TabViewpager 선언 및 데이터 전송
+        TabViewPager tabViewPager = new TabViewPager();
+        bundle = new Bundle();
+        bundle.putString("UserId", userId); //아이디 전송
+        tabViewPager.setArguments(bundle);
+
         mFragmentManager = getSupportFragmentManager();
         mFragmentManager.beginTransaction()
-                .add(R.id.containerView,new TabViewPager())
+                .add(R.id.containerView, tabViewPager)
                 .commit();
 
         //Setup click events on the Navigation View Items.

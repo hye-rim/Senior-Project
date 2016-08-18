@@ -88,7 +88,10 @@ public class UserMyFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_my_ok:
+                //sof+opc+seq+길이+휴대폰+새 비밀번호+crc
+
                 Toast.makeText(getActivity(), "정보수정은 구현예정입니다.", Toast.LENGTH_SHORT).show();
+
                 mFragmentManager.popBackStack();
                 mFragmentManager.beginTransaction()
                         .commit();
