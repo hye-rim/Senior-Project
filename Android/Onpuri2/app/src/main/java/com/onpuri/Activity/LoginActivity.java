@@ -282,5 +282,4 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         super.onDestroy();
         actManager.removeActivity(this);
     }
-
 }

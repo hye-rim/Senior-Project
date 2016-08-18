@@ -48,6 +48,7 @@ public class workerSentenceAdd extends Thread {
                 outData[i] = (byte) dataByte[i-4];
             }
             outData[6 + dataByte.length] = (byte) PacketUser.CRC;
+            Log.d(TAG, addsen);
 
             try {
                 dos = new DataOutputStream(SocketConnection.socket.getOutputStream());

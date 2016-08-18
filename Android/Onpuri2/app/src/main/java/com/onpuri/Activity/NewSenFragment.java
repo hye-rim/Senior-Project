@@ -78,7 +78,7 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
         viewPager = (ViewPager)getActivity().findViewById(R.id.viewpager);
 
         sen = (EditText) view.findViewById(R.id.sentence);
-        addsen = sen.getText().toString();
+
 
         btn_ok = (Button)view.findViewById(R.id.btn_new_sen);
         btn_cancel = (Button)view.findViewById(R.id.btn_new_sen_back);
@@ -97,14 +97,15 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_new_sen:
-            //    Addsentence();
+                addsen = sen.getText().toString();
+                Addsentence();
                 Toast.makeText(getActivity(), "등록되었습니다.", Toast.LENGTH_SHORT).show();
-                sen.setText("문장을 입력하세요");
+                sen.setText(null);
                 viewPager.setCurrentItem(1);
                 break;
 
             case R.id.btn_new_sen_back:
-                sen.setText("문장을 입력하세요");
+                sen.setText(null);
                 viewPager.setCurrentItem(1);
                 break;
 
@@ -206,6 +207,7 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
             }
             break;
             default:
+                super.onRequestPermissionsResult(requestCode, permissions,grantResults);
                 super.onRequestPermissionsResult(requestCode, permissions,grantResults);
         }
     }
