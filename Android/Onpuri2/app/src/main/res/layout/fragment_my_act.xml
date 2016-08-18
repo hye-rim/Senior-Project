@@ -17,6 +17,7 @@
         android:layout_marginLeft="20dp"
         android:gravity="center_vertical" />
     <TabHost
+        android:textSize="20dp"
         android:visibility="visible"
         android:id="@+id/my_act_tab"
         android:layout_width="match_parent"

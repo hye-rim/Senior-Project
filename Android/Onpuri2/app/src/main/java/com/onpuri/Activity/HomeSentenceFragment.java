@@ -302,13 +302,11 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
             list_trans_reco.add(treco.get(j).toString());
             j++;
         }
-
     }
     private void listen() {
         for (int i = 0; i < 3; i++) {
             list_listen.add("구현중");
         }
-
     }
 
     class worker_sentence_trans extends Thread {

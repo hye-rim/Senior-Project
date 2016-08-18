@@ -31,8 +31,8 @@ public class PacketUser extends Application {
     static public char USR_SEARCH = 30; //search
     static public char ACK_SEARCH = 31; //search ACK
     static public char ACK_NSEARCH = 32; //no search ACK
-    static public char USR_ASEN = 17; //add sentence
-    static public char ACK_ASEN = 18; //add sentence ACK
+    static public char USR_ASEN = 40; //add sentence
+    static public char ACK_ASEN = 41; //add sentence ACK
 
     static public char ACK_NSEN = 90; //no sentence ACK
     static public char USR_LEV = 99; //user leave
