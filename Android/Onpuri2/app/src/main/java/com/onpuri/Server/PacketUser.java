@@ -8,17 +8,17 @@ import java.util.ArrayList;
  * Created by kutemsys on 2016-03-28.
  */
 public class PacketUser extends Application {
-    static public char USR_LOG = 3, USR_LOG_LEN;
-    static public char ACK_ULG = 4, ACK_MRY_LEN;
+    static public char USR_LOG = 3, USR_LOG_LEN; //로그인
+    static public char ACK_ULG = 4, ACK_MRY_LEN; //로그인 응답 (아이디, 이름, 가입일, 휴대전화, 현재 비밀번호)
     static public char USR_OUT = 5, USR_OUT_LEN = 1; //로그아웃
-    static public char ACK_URO = 6, ACK_URO_LEN = 1;
+    static public char ACK_URO = 6, ACK_URO_LEN = 1; //로그아웃 응답
     public static char USR_CHK = 7, USR_CHK_LEN;
     static public char ACK_UCK = 8, ACK_UCK_LEN = 1;
     public static char USR_REG = 9 , USR_REG_LEN;
     static public char ACK_URG = 10, ACK_URG_LEN = 1;
-    static public char USR_MSL = 11, USR_MSL_LEN = 2; //user main sentence list
-    static public char ACK_UMS = 12, ACK_UMS_LEN = 1; //ack user main sentence
-    static public char USR_SEN = 13; //request sentence
+    static public char USR_MSL = 11, USR_MSL_LEN = 2; //홈 문장리스트 (user main sentence list) , 크기
+    static public char ACK_UMS = 12, ACK_UMS_LEN = 1; //홈 문자리스트 응답 (ack user main sentence)
+    static public char USR_SEN = 13; //요청 문장(request sentence)
     static public char ACK_SEN = 14; //request sentence ACK
     static public char ACK_NTRANS = 15; // no translation
     static public char USR_MTRANS = 16; //more translation
@@ -28,13 +28,13 @@ public class PacketUser extends Application {
     static public char USR_MLISTEN = 20; //more recoder
     static public char USR_ALISTEN = 21; //add recoder
     static public char ACK_ALISTEN = 22; //add recoder ACK
-    static public char USR_SEARCH = 30; //search
-    static public char ACK_SEARCH = 31; //search ACK
-    static public char ACK_NSEARCH = 32; //no search ACK
+    static public char USR_SEARCH = 30; //검색 문장,단어 (search)
+    static public char ACK_SEARCH = 31; //검색 문장 응답(search ACK)
+    static public char ACK_NSEARCH = 32; //검색 문장 결과 없을 때 (no search ACK)
 
-    static public char ACK_NSEN = 90; //no sentence ACK
-    static public char USR_LEV = 99; //user leave
-    static public char ACK_LEV = 100; // user leave ACK
+    static public char ACK_NSEN = 90; //홈 문장 리스트 없을 경우(no sentence ACK)
+    static public char USR_LEV = 99; //회원 탈퇴(user leave)
+    static public char ACK_LEV = 100; //회원 탈퇴 응답(user leave ACK)
 
     public static char SOF = 0xcc;//Decimal=204
     static public char CRC = 0x55;//Decimal=85

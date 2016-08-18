@@ -18,6 +18,8 @@ import com.onpuri.R;
 /**
  * Created by HYERIM on 2016-07-18.
  */
+
+//질문 프래그먼트
 public class UserSetQuestionFragment extends Fragment implements View.OnClickListener {
     private static View view;
 

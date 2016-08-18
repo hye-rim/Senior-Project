@@ -12,7 +12,7 @@ import java.io.IOException;
 /**
  * Created by kutemsys on 2016-08-02.
  */
-public class WorkerSearch extends Thread {
+public class workerSearch extends Thread {
     private static final String TAG = "Thread - WorkerSearch";
     //Socket
     DataOutputStream dos;
@@ -31,7 +31,7 @@ public class WorkerSearch extends Thread {
 
     private PacketUser userSentence;
 
-    public WorkerSearch(boolean isPlay, String searchStr) {
+    public workerSearch(boolean isPlay, String searchStr) {
         this.isPlay = isPlay;
         toServerDataUser = searchStr;
     }

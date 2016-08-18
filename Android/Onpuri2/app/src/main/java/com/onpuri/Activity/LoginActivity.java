@@ -20,6 +20,7 @@ import com.onpuri.ActivityList;
 import com.onpuri.Server.CloseSystem;
 import com.onpuri.Server.PacketUser;
 import com.onpuri.Server.SocketConnection;
+import com.onpuri.Thread.workerLogin;
 import com.tsengvn.typekit.TypekitContextWrapper;
 
 import java.io.DataInputStream;
@@ -36,12 +37,6 @@ public class LoginActivity extends Activity implements View.OnClickListener {
     private String id, pass;
     private com.onpuri.Server.CloseSystem CloseSystem; // BackKeyPressed,close
 
-    DataOutputStream dos;
-    DataInputStream dis;
-
-    byte[] outData;
-    byte[] inData;
-
     Button btLogin, btNew;
     EditText et_loginId, et_loginPw;
     CheckBox checkAuto;
@@ -56,7 +51,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
     char checkLength;
     boolean isLoginBtn;
 
-    private worker_login mworker_login;
+    private workerLogin mworker_login;
 
     private ActivityList actManager = ActivityList.getInstance();
     private boolean loginChecked;
@@ -67,9 +62,6 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         setContentView(R.layout.activity_login);
         CloseSystem = new CloseSystem(this); //backKey Event
         check = '5';
-
-        outData = new byte[261];
-        inData = new byte[261];
 
         btLogin = (Button) findViewById(R.id.btnLogin);
         btNew = (Button) findViewById(R.id.btnNew);
@@ -161,6 +153,8 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
     }
     private void mainGo(){
+        mPacketUser = mworker_login.getmPacketUser();
+
         if(mworker_login != null && mworker_login.isAlive()){  //이미 동작하고 있을 경우 중지
             mworker_login.interrupt();
         }
@@ -226,7 +220,8 @@ public class LoginActivity extends Activity implements View.OnClickListener {
             mworker_login.interrupt();
         }
 
-        mworker_login = new worker_login(true);
+        String toServerDataUser = et_loginId.getText().toString() + "+" + et_loginPw.getText().toString();
+        mworker_login = new workerLogin(true, toServerDataUser, check, checkLength);
         mworker_login.start();
 
         try {
@@ -234,6 +229,9 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+        check = mworker_login.getCheck();
+        checkLength = mworker_login.getCheckLength();
 
         if ( (check != '0' && check != '5') && checkLength != '1') {
             return true;
@@ -243,7 +241,6 @@ public class LoginActivity extends Activity implements View.OnClickListener {
             return false;
         }
         else if (setting.getString("id","").equals(null)) {
-            // sign in first
             Toast.makeText(getApplicationContext(), "가입을 먼저 해주세요.", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -260,7 +257,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         CloseSystem.onBackPressed();
     }
 
-    //edittext 영문+숫자만 입력되도록 하는 함수
+    //EditText 영문+숫자만 입력되도록 하는 함수
     public InputFilter filterAlphaNum = new InputFilter() {
         @Override
         public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend){
@@ -274,135 +271,10 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         }
     };
 
-    class worker_login extends Thread{
-        private boolean isPlay = false;
-
-        public worker_login(boolean isPlay){
-            this.isPlay = isPlay;
-        }
-
-        public void stopThread(){
-            isPlay = !isPlay;
-        }
-        public void run() {
-            super.run();
-            while (isPlay) {
-                mPacketUser = new PacketUser();
-
-                String toServerDataUser;
-                toServerDataUser = et_loginId.getText().toString() + "+" + et_loginPw.getText().toString();
-                byte[] dataByte = toServerDataUser.getBytes();
-
-                outData[0] = (byte) mPacketUser.SOF;
-                outData[1] = (byte) mPacketUser.USR_LOG;
-                outData[2] = (byte) mPacketUser.getSEQ();
-                outData[3] = (byte) dataByte.length;
-                for (i = 4; i < 4 + dataByte.length; i++) {
-                    outData[i] = (byte) dataByte[i - 4];
-                }
-                outData[4 + dataByte.length] = (byte) 85;
-                try {
-                    dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
-                    dos.write(outData,0,outData[3]+5); // packet transmission
-                    dos.flush();
-
-
-                    dis = new DataInputStream(SocketConnection.socket.getInputStream());
-                    dis.read(inData);
-                    //System.out.println("Data form server: " + ((char)inData[0].) + (char)inData[1]);
-                    int SOF = inData[0];
-                    System.out.println(inData[0]);
-                    System.out.println(inData[1]);
-                    System.out.println(inData[2]);
-                    System.out.println(inData[3]);
-                    System.out.println((char) inData[4]);
-                    System.out.println(inData[5]);
-
-                    mPacketUser.data_len = (int) inData[3];
-                    byte[] nameByte = new byte[221];
-                    int byteI = 0;
-                    if (inData[4] != '0') { //ID, PW가 틀렸을 경우 실행하지 않도록 한다.
-                        int index = 0;
-                        while (true) { //아이디
-                            if ((char) (inData[4 + index]) == '+') {
-                                index++;
-                                break;
-                            } else {
-                                mPacketUser.userId = mPacketUser.userId + (char) inData[4 + index];
-                                index++;
-                            }
-                        }
-
-
-                        while (true) { //이름
-                            if ((char) (inData[4 + index]) == '+') {
-                                index++;
-                                break;
-                            } else {
-                                nameByte[byteI] = inData[4 + index];
-                                index++;
-                                byteI++;
-                            }
-                        }
-                        mPacketUser.name = new String(nameByte, 0, byteI);
-
-                        while (true) { //가입일
-                            if ((char) (inData[4 + index]) == '+') {
-                                index++;
-                                break;
-                            } else {
-                                mPacketUser.joinDate = mPacketUser.joinDate + (char) inData[4 + index];
-                                index++;
-                            }
-                        }
-
-                        while (true) { //휴대전화
-                            if ((char) (inData[4 + index]) == '+') {
-                                index++;
-                                break;
-                            } else {
-                                mPacketUser.phone = mPacketUser.phone + (char) inData[4 + index];
-                                index++;
-                            }
-                        }
-
-                        while (true) { //현재비밀번호
-                            if ((char) (inData[4 + index]) == '+') {
-                                index++;
-                                break;
-                            } else {
-                                mPacketUser.nowPass = mPacketUser.nowPass + (char) inData[4 + index];
-                                index++;
-                            }
-                        }
-                    }
-                    Log.d(TAG,"id : " + mPacketUser.userId);
-                    Log.d(TAG,"name : " + mPacketUser.name);
-                    Log.d(TAG,"joinDate : " + mPacketUser.joinDate);
-                    Log.d(TAG,"phone : " + mPacketUser.phone);
-                    Log.d(TAG,"nowPass : " + mPacketUser.nowPass);
-
-                    check = (char) inData[4];
-                    checkLength = (char) inData[3];
-
-                    if (check == '0' || checkLength != '1')
-                        isPlay = !isPlay;
-
-                }catch(IOException e){
-                    e.printStackTrace();
-                }
-
-
-            }
-        }
-    }
     @Override
     protected void onStop(){
         super.onStop();
-
         int i = 0;
-        inData = new byte[inData.length]; //초기화가 되지않아....
-        //SocketConnection.close();
     }
     @Override
     protected void onDestroy()

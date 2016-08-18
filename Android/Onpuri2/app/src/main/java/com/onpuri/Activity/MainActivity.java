@@ -28,7 +28,7 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.onpuri.ActivityList;
 import com.onpuri.R;
-import com.onpuri.Thread.WorkerLogout;
+import com.onpuri.Thread.workerLogout;
 import com.tsengvn.typekit.TypekitContextWrapper;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private final long FINISH_INTERVAL_TIME = 3000;
     private long backPressedTime = 0;
 
-    private WorkerLogout mworker_out;
+    private workerLogout mworker_out;
 
     //User data - SharedPreferences
     SharedPreferences setting;
@@ -318,7 +318,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mworker_out.interrupt();
         }
 
-        mworker_out = new WorkerLogout(true);
+        mworker_out = new workerLogout(true);
         mworker_out.start();
 
         try {

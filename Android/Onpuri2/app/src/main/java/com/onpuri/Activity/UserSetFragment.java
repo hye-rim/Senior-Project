@@ -17,13 +17,14 @@ import android.widget.Toast;
 
 import com.onpuri.ActivityList;
 import com.onpuri.R;
-import com.onpuri.Thread.WorkerLeave;
+import com.onpuri.Thread.workerLeave;
 
 /**
  * Created by kutemsys on 2016-05-26.
  */
+
+//설정 프래그먼트
 public class UserSetFragment extends Fragment implements View.OnClickListener {
-    private ActivityList actManager = ActivityList.getInstance();
     private static View view;
 
     Button btn_notice, btn_question, btn_version, btn_tou, btn_out;
@@ -34,7 +35,7 @@ public class UserSetFragment extends Fragment implements View.OnClickListener {
     SharedPreferences setting;
     SharedPreferences.Editor editor;
 
-    private WorkerLeave mworker_leave;
+    private workerLeave mworker_leave;
 
     public static UserSetFragment newInstance() {
         UserSetFragment fragment = new UserSetFragment();
@@ -151,7 +152,7 @@ public class UserSetFragment extends Fragment implements View.OnClickListener {
 
     }
     private void Leave() {
-        mworker_leave = new WorkerLeave(true);
+        mworker_leave = new workerLeave(true);
         mworker_leave.start();
 
         try {

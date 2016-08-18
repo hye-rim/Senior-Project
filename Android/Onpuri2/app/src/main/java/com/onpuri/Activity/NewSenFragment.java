@@ -89,8 +89,8 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
                 break;
 
             case R.id.btn_new_picture:
-                //Toast.makeText(getActivity(), "갤러리 기능은 차후 구현 예정입니다.", Toast.LENGTH_SHORT).show();
                 openGallery();
+                Toast.makeText(getActivity(), "텍스트 변환은 차후 추가 예정입니다.", Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.btn_new_camera:

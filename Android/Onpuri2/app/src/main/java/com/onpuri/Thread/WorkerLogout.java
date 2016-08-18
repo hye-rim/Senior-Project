@@ -10,7 +10,7 @@ import java.io.IOException;
 /**
  * Created by kutemsys on 2016-08-02.
  */
-public class WorkerLogout extends Thread {
+public class workerLogout extends Thread {
     //Socket
     DataOutputStream dos;
     DataInputStream dis;
@@ -23,7 +23,7 @@ public class WorkerLogout extends Thread {
 
     private boolean isPlay = false;
 
-    public WorkerLogout(boolean isPlay) {
+    public workerLogout(boolean isPlay) {
         this.isPlay = isPlay;
     }
 

@@ -12,7 +12,7 @@ import java.io.IOException;
  * Created by kutemsys on 2016-08-02.
  */
 //회원탈퇴 Thread
-public class WorkerLeave extends Thread {
+public class workerLeave extends Thread {
     private boolean isPlay = false;
 
     DataOutputStream dos;
@@ -22,7 +22,7 @@ public class WorkerLeave extends Thread {
     byte[] inData = new byte[261];
     private char check_out;
 
-    public WorkerLeave(boolean isPlay) {
+    public workerLeave(boolean isPlay) {
         this.isPlay = isPlay;
     }
 

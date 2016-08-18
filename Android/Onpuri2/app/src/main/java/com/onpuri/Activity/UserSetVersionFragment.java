@@ -17,6 +17,8 @@ import com.onpuri.R;
 /**
  * Created by HYERIM on 2016-07-18.
  */
+
+//버전정보 프래그먼트
 public class UserSetVersionFragment extends Fragment {
     private static final String TAG = "UserSetVersionFragment";
     private static View view;
