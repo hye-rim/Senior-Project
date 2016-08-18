@@ -3,6 +3,7 @@ package com.onpuri.Activity;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,8 +11,9 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.Settings;
-import android.support.v7.app.AlertDialog;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.ProgressBar;
@@ -26,7 +28,6 @@ import com.tsengvn.typekit.TypekitContextWrapper;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,11 +46,11 @@ public class SplashActivity extends Activity {
 
     DataOutputStream dos; //out data stream
     DataInputStream dis; //in data stream
-
     byte[] outData = new byte[261]; // Stored out data
     byte[] inData = new byte[261]; //Stored in data
 
     private splashThread msplashTread; //Splash thread
+    private boolean isFail = false;
 
     private ActivityList actManager = ActivityList.getInstance();
 
@@ -77,6 +78,7 @@ public class SplashActivity extends Activity {
             pi = getPackageManager().getPackageInfo(getPackageName(), 0);
         } catch (PackageManager.NameNotFoundException e) {
             Log.e(TAG, e.getMessage());
+            Log.e(TAG, "정보 가져오기 실패");
         }
         String appVersion = pi.versionName;
 
@@ -94,12 +96,37 @@ public class SplashActivity extends Activity {
         try {
             worker.join();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            isFail = true;
+            Log.e(TAG, "서버 접속 실패!");
         }
 
         String androID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID); //device ID get
-        Log.v("Device Id:", androID);
-        Log.v("Device Model:", Build.MODEL);
+        Log.d("Device Id:", androID);
+        Log.d("Device Model:", Build.MODEL);
+    }
+
+    private void failServer() {
+        final boolean[] isDialogOk = {false};
+        if(isFail){
+            Handler mHandler = new Handler(Looper.getMainLooper());
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    // 내용
+                    if (!SplashActivity.this.isFinishing()) {
+                        AlertDialog.Builder alert = new AlertDialog.Builder(SplashActivity.this);
+                        alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                SplashActivity.this.finish();
+                            }
+                        });
+                        alert.setMessage("서버 접속에 실패 하였습니다.");
+                        alert.show();
+                    }
+                }
+            }, 0);
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -213,62 +240,73 @@ public class SplashActivity extends Activity {
                             wait(1000);
                             isPlay = !isPlay;
                         }
-                        else
+                        else {
                             wait(5000);
+                            if(isFail)
+                                failServer();
+                        }
                     }
                 }catch(InterruptedException ex){
+                    isFail = true;
+                    Log.e(TAG, "서버 접속 실패!");
                 }
 
-                Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
-                intent.setClass(SplashActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
+                if(!isFail) {
+                    Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
+                    intent.setClass(SplashActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+
             }
         }
     }
 
     Thread worker = new Thread() {
         public void run() {
-            SocketConnection.start();
+            isFail = !SocketConnection.startTest(); //실패 : false 반환되므로 true로 전환
             String toServerData ;
             int i;
 
-            toServerData = getDeviceId()+"+"+Build.MODEL;
-            outData[0] = (byte) PacketInfo.SOF;
-            outData[1] = (byte)PacketInfo.MPC_RDY;
-            outData[2] = (byte)PacketInfo.getSEQ();
-            outData[3] = (byte)toServerData.length();
-            for(i = 4; i < 4+toServerData.length() ; i++)
-            {
-                outData[i] = (byte)toServerData.charAt(i-4);
+            if(!isFail){
+
+                toServerData = getDeviceId() + "+" + Build.MODEL;
+                outData[0] = (byte) PacketInfo.SOF;
+                outData[1] = (byte) PacketInfo.MPC_RDY;
+                outData[2] = (byte) PacketInfo.getSEQ();
+                outData[3] = (byte) toServerData.length();
+                for (i = 4; i < 4 + toServerData.length(); i++) {
+                    outData[i] = (byte) toServerData.charAt(i - 4);
+                }
+                outData[4 + toServerData.length()] = (byte) 85;
+
+                try {
+                    dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
+                    dos.write(outData, 0, outData[3] + 5);
+                    dos.flush();
+                } catch (Exception e) {
+                    isFail = true;
+                    Log.e(TAG, "서버 접속 실패!");
+                }
+
+                try {
+                    dis = new DataInputStream(SocketConnection.socket.getInputStream());
+                    dis.read(inData);
+
+                    int SOF = inData[0];
+
+                    System.out.println(inData[0]);
+                    System.out.println(inData[1]);
+                    System.out.println(inData[2]);
+                    System.out.println(inData[3]);
+                    System.out.println((char) inData[4]);
+                    System.out.println(inData[5]);
+
+                } catch (Exception e) {
+                    isFail = true;
+                    Log.e(TAG, "서버 접속 실패!");
+                }
             }
-            outData[4+toServerData.length()] = (byte)85;
-
-            try {
-                dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
-                dos.write (outData,0,outData[3]+5);
-                dos.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            try {
-                dis = new DataInputStream(SocketConnection.socket.getInputStream());
-                dis.read(inData);
-
-                int SOF = inData[0];
-
-                System.out.println(inData[0]);
-                System.out.println(inData[1]);
-                System.out.println(inData[2]);
-                System.out.println(inData[3]);
-                System.out.println((char)inData[4]);
-                System.out.println(inData[5]);
-
-            }catch(IOException e){
-                e.printStackTrace();
-            }
-
         }
     };
 

@@ -1,13 +1,11 @@
 package com.onpuri.Activity;
 
 import android.annotation.TargetApi;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
@@ -15,28 +13,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.onpuri.R;
-import com.onpuri.Thread.WorkerSearch;
+import com.onpuri.Thread.workerSearch;
 
-import org.w3c.dom.Text;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -56,7 +47,7 @@ public class SearchFragment extends Fragment {
     private ListView list;
 
     String searchText;
-    private WorkerSearch mworker_search;
+    private workerSearch mworker_search;
     ArrayList<String> searchList = new ArrayList<String>();
     ArrayList<String> sentenceNumList = new ArrayList<String>();
     ArrayAdapter<String> Adapter;
@@ -161,12 +152,6 @@ public class SearchFragment extends Fragment {
                     String apiURL = "https://openapi.naver.com/v1/search/encyc.xml?query="+ text +"&display=1&start=1";
                     URL url = new URL(apiURL);
 
-            /*
-            HttpURLConnection con = (HttpURLConnection)url.openConnection();
-            con.setRequestMethod("GET");
-            con.setRequestProperty("X-Naver-Client-Id", clientId);
-            con.setRequestProperty("X-Naver-Client-Secret", clientSecret);
-*/
                     URLConnection urlConn;
                     //url 연결
                     urlConn = url.openConnection();
@@ -194,47 +179,6 @@ public class SearchFragment extends Fragment {
                                 Log.d(TAG, b);
                                 String tag = parser.getName();
                                 switch (tag) {
-                                    /*
-                                    case "item":
-                                        b = b + "...";
-                                        Log.d(TAG, b);
-                                        break;
-
-                                    case "title":
-                                        if (b != null)
-                                            b = b + (parser.nextText());
-                                        Log.d(TAG, b);
-                                        break;
-                                    case "link":
-                                        if (b != null)
-                                            b = b + (parser.nextText());
-                                        break;
-
-                                    case "image":
-                                        if (b != null)
-                                            b = b + (parser.nextText());
-                                        break;
-                                    case "author":
-                                        if (b != null)
-                                            b = b + (parser.nextText());
-                                        break;
-                                    case "discount":
-                                        if (b != null)
-                                            b = b + (parser.nextText());
-                                        break;
-                                    case "publisher":
-                                        if (b != null)
-                                            b = b + (parser.nextText());
-                                        break;
-                                    case "pubdate":
-                                        if (b != null)
-                                            b = b + (parser.nextText());
-                                        break;
-                                    case "isbn":
-                                        if (b != null)
-                                            b = b + (parser.nextText());
-                                        break;
-                                        */
                                     case "description":
                                         if (b != null)
                                             b = b + (parser.nextText());
@@ -247,8 +191,9 @@ public class SearchFragment extends Fragment {
                             case XmlPullParser.END_TAG: {
                                 String tag = parser.getName();
                                 if (tag.equals("item")) {
-                                    b.replaceFirst("Naver", "");
-                                    b.replaceFirst("Search Result", "");
+                                    b = b.replace("Naver Search Result", "");
+                                    b = b.replace("." , "\n");
+
                                     final String finalB = b;
                                     getActivity().runOnUiThread(new Runnable() {
                                         @Override
@@ -265,23 +210,6 @@ public class SearchFragment extends Fragment {
                         eventType = parser.next();
                     }
 
-/*
-            // response 수신
-            int responseCode = con.getResponseCode();
-            if (responseCode == 200) {
-                BufferedReader in = new BufferedReader(
-                        new InputStreamReader(con.getInputStream()));
-                String inputLine;
-                StringBuffer response = new StringBuffer();
-                while ((inputLine = in.readLine()) != null) {
-                    response.append(inputLine);
-                }
-                in.close();
-                tv_word.setText(response.toString());
-            } else {
-                tv_word.setText("API 호출 에러 발생 : 에러코드=" + responseCode);
-            }
-            */
                 } catch (MalformedURLException e) {
                     Log.e(TAG, "MalformedURLException");
                     tv_word.setText("구현 예정입니다");
@@ -303,7 +231,7 @@ public class SearchFragment extends Fragment {
         if (mworker_search != null && mworker_search.isAlive()) {  //이미 동작하고 있을 경우 중지
             mworker_search.interrupt();
         }
-        mworker_search = new WorkerSearch(true, searchText);
+        mworker_search = new workerSearch(true, searchText);
         mworker_search.start();
         try {
             mworker_search.join();

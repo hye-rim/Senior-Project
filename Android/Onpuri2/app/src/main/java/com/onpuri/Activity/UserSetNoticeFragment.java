@@ -16,6 +16,8 @@ import com.onpuri.R;
 /**
  * Created by HYERIM on 2016-07-18.
  */
+
+//공지사항 프래그먼트
 public class UserSetNoticeFragment extends Fragment {
     private static View view;
     ListView listView;

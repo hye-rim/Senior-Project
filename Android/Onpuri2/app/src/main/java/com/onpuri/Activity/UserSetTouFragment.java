@@ -12,6 +12,8 @@ import com.onpuri.R;
 /**
  * Created by HYERIM on 2016-07-18.
  */
+
+//약관 프래그먼트
 public class UserSetTouFragment extends Fragment {
     private static View view;
 
@@ -36,7 +38,7 @@ public class UserSetTouFragment extends Fragment {
         try {
             view = inflater.inflate(R.layout.fragment_my_set_tou, container, false);
         } catch (InflateException e) {
-    /* map is already there, just return view as it is */
+            /* map is already there, just return view as it is */
         }
         return view;
     }

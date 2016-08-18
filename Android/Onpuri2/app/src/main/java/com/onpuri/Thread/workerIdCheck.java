@@ -10,7 +10,7 @@ import java.io.IOException;
 /**
  * Created by kutemsys on 2016-08-02.
  */
-public class WorkerIdCheck extends Thread {
+public class workerIdCheck extends Thread {
     private boolean isPlay = false;
     private String checkId;
     private char check = '5';
@@ -20,7 +20,7 @@ public class WorkerIdCheck extends Thread {
     byte[] outData = new byte[261];
     byte[] inData = new byte[261];
 
-    public WorkerIdCheck(boolean isPlay, String id) {
+    public workerIdCheck(boolean isPlay, String id) {
         this.isPlay = isPlay;
         checkId = id;
     }

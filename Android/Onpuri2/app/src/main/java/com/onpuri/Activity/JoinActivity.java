@@ -21,8 +21,8 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.onpuri.ActivityList;
 import com.onpuri.R;
-import com.onpuri.Thread.WorkerIdCheck;
-import com.onpuri.Thread.WorkerJoin;
+import com.onpuri.Thread.workerIdCheck;
+import com.onpuri.Thread.workerJoin;
 import com.tsengvn.typekit.TypekitContextWrapper;
 
 import java.io.DataInputStream;
@@ -44,8 +44,8 @@ public class JoinActivity extends Activity {
     byte[] outData = new byte[261];
     byte[] inData = new byte[261];
 
-    private WorkerIdCheck worker_check;
-    private WorkerJoin worker_join;
+    private workerIdCheck worker_check;
+    private workerJoin worker_join;
 
     int i;
     char check = '5';
@@ -90,7 +90,7 @@ public class JoinActivity extends Activity {
         btCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                worker_check = new WorkerIdCheck(true, et_newId.getText ().toString ());
+                worker_check = new workerIdCheck(true, et_newId.getText ().toString ());
                 worker_check.start();
 
                 try {
@@ -192,7 +192,7 @@ public class JoinActivity extends Activity {
                             + "-" + et_newPhone2.getText().toString()
                             + "-" + et_newPhone3.getText().toString() ;
 
-                    worker_join = new WorkerJoin(true, joinData);
+                    worker_join = new workerJoin(true, joinData);
                     worker_join.start();
 
                     try {

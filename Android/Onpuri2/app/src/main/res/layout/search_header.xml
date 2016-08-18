@@ -22,9 +22,6 @@
             android:text="word"
             android:textSize="18dp"
             android:textStyle="bold"
-            android:layout_marginTop="3dp"
-            android:layout_marginBottom="3dp"
-            android:layout_marginLeft="15dp"
             android:layout_marginRight="8dp"
             android:layout_centerInParent="true"
             android:layout_alignParentLeft="true"
@@ -64,6 +61,6 @@
         android:text="문장"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:gravity="center_vertical" />
 </LinearLayout>

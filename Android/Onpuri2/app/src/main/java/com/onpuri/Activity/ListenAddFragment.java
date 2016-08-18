@@ -23,7 +23,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -37,7 +36,6 @@ import com.onpuri.R;
 import com.onpuri.Server.PacketUser;
 import com.onpuri.Server.SocketConnection;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,7 +48,7 @@ import java.util.Map;
 
 public class ListenAddFragment extends Fragment implements View.OnClickListener, MediaRecorder.OnInfoListener {
     private static final String TAG = "ListenAddFragment";
-    private worker_add_listen worker_add_listen;
+    private WorkerListenAdd worker_add_listen;
     private static final int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 1;
 
     DataOutputStream dos;
@@ -60,6 +58,7 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
     byte[] temp = new byte[261];
     byte[] inData = new byte[261];
     byte[] reData = new byte[261];
+
     private static View view;
     private Toast toast;
 
@@ -328,20 +327,19 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
         if(worker_add_listen != null && worker_add_listen.isAlive()){  //이미 동작하고 있을 경우 중지
             worker_add_listen.interrupt();
         }
-        worker_add_listen = new worker_add_listen(true);
+        worker_add_listen = new WorkerListenAdd(true);
         worker_add_listen.start();
         try {
             worker_add_listen.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
     }
+    public class WorkerListenAdd extends Thread {
 
-    class worker_add_listen extends Thread {
         private boolean isPlay = false;
 
-        public worker_add_listen(boolean isPlay) {
+        public WorkerListenAdd(boolean isPlay) {
             this.isPlay = isPlay;
         }
 
@@ -352,13 +350,12 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
         public void run() {
             super.run();
             while (isPlay) {
-                Log.d(TAG, "worker add listen start");
                 try {
                     dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
                     fis = new FileInputStream(new File(mFileName));
                     byte[] buffer = new byte[50000];
 
-                    int fileSize=0;
+                    int fileSize = 0;
                     int n;
                     while((n = fis.read(buffer))!=-1) {
                         fileSize += n;
@@ -411,3 +408,4 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
         }
     }
 }
+//http://installed.tistory.com/entry/Network-%ED%8C%8C%EC%9D%BC%EC%A0%84%EC%86%A1-%E2%85%A3

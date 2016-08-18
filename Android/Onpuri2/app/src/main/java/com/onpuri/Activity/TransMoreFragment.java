@@ -7,24 +7,20 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.onpuri.Adapter.TransListAdapter;
 import com.onpuri.DividerItemDecoration;
-import com.onpuri.Listener.EndlessRecyclerOnScrollListener;
 import com.onpuri.Listener.HomeItemClickListener;
 import com.onpuri.R;
 import com.onpuri.Server.PacketUser;
@@ -40,7 +36,7 @@ import static com.onpuri.R.drawable.divider_dark;
 
 public class TransMoreFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "TransMoreFragment";
-    private worker_sentence_trans worker_sentence_trans;
+    private WorkerTransMore worker_trans_more;
 
     DataOutputStream dos;
     DataInputStream dis;
@@ -50,7 +46,6 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
     byte[] temp = new byte[261];
 
     private static View view;
-    private Toast toast;
 
     ArrayList<String> list_trans;
     ArrayList<String> list_userid;
@@ -97,7 +92,7 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
             item.setText(sentence);
         }
 
-        loadData();
+        translation();
 
         ImageButton add_note = (ImageButton) view.findViewById(R.id.add_note);
         add_note.setOnClickListener(this);
@@ -108,11 +103,7 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
         LayoutManager = new LinearLayoutManager(getActivity());
         RecyclerView.setLayoutManager(LayoutManager);
         Adapter = new TransListAdapter(list_trans, list_day, list_reco, RecyclerView);
-        RecyclerView.setAdapter(Adapter);// Set CustomAdapter as the adapter for RecyclerView.
-        RecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener((LinearLayoutManager) LayoutManager) {
-            @Override
-            public void onLoadMore(int current_page){};
-        });
+        RecyclerView.setAdapter(Adapter);
         RecyclerView.addOnItemTouchListener(
                 new HomeItemClickListener(getActivity().getApplicationContext(), RecyclerView ,new HomeItemClickListener.OnItemClickListener() {
                     @Override
@@ -129,7 +120,7 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
                         args.putString("reco", list_reco.get(position));
                         tdf.setArguments(args);
 
-                        ft.add(R.id.root_home, tdf);
+                        ft.replace(R.id.root_home, tdf);
                         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                         ft.addToBackStack(null);
                         ft.commit();
@@ -138,20 +129,21 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
                     }
                 })
         );
+
         Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_dark);
         RecyclerView.addItemDecoration(new DividerItemDecoration(dividerDrawable));
 
         return view;
     }
 
-    private void loadData() {
-        if (worker_sentence_trans != null && worker_sentence_trans.isAlive()) {  //이미 동작하고 있을 경우 중지
-            worker_sentence_trans.interrupt();
+    private void translation() {
+        if (worker_trans_more != null && worker_trans_more.isAlive()) {  //이미 동작하고 있을 경우 중지
+            worker_trans_more.interrupt();
         }
-        worker_sentence_trans = new worker_sentence_trans(true);
-        worker_sentence_trans.start();
+        worker_trans_more = new WorkerTransMore(true);
+        worker_trans_more.start();
         try {
-            worker_sentence_trans.join();
+            worker_trans_more.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -167,20 +159,19 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
     }
 
     public void onClick(View v) {
+        final FragmentTransaction ft = getFragmentManager().beginTransaction();
         final Bundle args = new Bundle();
         args.putString("sen", sentence);
         args.putString("sen_num", sentence_num);
-        final FragmentTransaction ft = getFragmentManager().beginTransaction();
 
         switch (v.getId()) {
             case R.id.add_note:
                 final CharSequence[] items = {"노트1", "노트2", "노트3"};
                 new AlertDialog.Builder(getActivity())
-                        .setTitle("노트를 선택해 주세요(노트 연동은 구현 예정)")
+                        .setTitle("노트를 선택해 주세요(구현 예정)")
                         .setItems(items, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int index) {
                                 Toast.makeText(getActivity(), items[index] + "선택", Toast.LENGTH_SHORT).show();
@@ -200,11 +191,11 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
                 break;
         }
     }
+    class WorkerTransMore extends Thread {
 
-    class worker_sentence_trans extends Thread {
         private boolean isPlay = false;
 
-        public worker_sentence_trans(boolean isPlay) {
+        public WorkerTransMore(boolean isPlay) {
             this.isPlay = isPlay;
         }
 
@@ -215,8 +206,6 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
         public void run() {
             super.run();
             while (isPlay) {
-                Log.d(TAG, "worker trans start");
-
                 outData[0] = (byte) PacketUser.SOF;
                 outData[1] = (byte) PacketUser.USR_MTRANS;
                 outData[2] = (byte) PacketUser.getSEQ();
@@ -232,16 +221,14 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
                     dos.flush();
                     dis = new DataInputStream(SocketConnection.socket.getInputStream());
 
-                    while(true) {
-                        Log.d(TAG, "while"+i);
+                    while (true) {
                         dis.read(temp, 0, 4);
                         System.out.println("read");
                         for (index = 0; index < 4; index++) {
                             inData[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
                         }
-                        System.out.println("opc : " + inData[1]);
-                        if(inData[1] == PacketUser.ACK_SEN){
-                            Log.d(TAG, "해석있음"+num);
+
+                        if (inData[1] == PacketUser.ACK_SEN) {
                             //해석 읽어오기
                             dis.read(temp, 0, 1 + (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]));
                             for (index = 0; index <= (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]); index++) {
@@ -266,7 +253,6 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
 
                             //아이디-날짜-추천수 읽어오기
                             dis.read(temp, 0, 4);
-                            System.out.println("info read");
                             for (index = 0; index < 4; index++) {
                                 inData2[index] = temp[index];
                             }
@@ -295,10 +281,11 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
                             int plus = transinfo.indexOf('+');
 
                             trans.add(new String(transbyte, 0, i)); //해석
-                            userid.add(transinfo.substring(0,plus)); //아이디
-                            day.add(transinfo.substring(plus+1,plus+11)); //날짜
-                            reco.add(transinfo.substring(plus+12,transinfo.length()-1)); //추천수
+                            userid.add(transinfo.substring(0, plus)); //아이디
+                            day.add(transinfo.substring(plus + 1, plus + 11)); //날짜
+                            reco.add(transinfo.substring(plus + 12, transinfo.length() - 1)); //추천수
                             num++;
+
                         }
                         else if(inData[1] == PacketUser.ACK_NTRANS) {
                             count=num;
@@ -310,7 +297,6 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
                         }
                     }
                     dis.read(temp);
-
 
                 } catch (IOException e) {
                     e.printStackTrace();

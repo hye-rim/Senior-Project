@@ -16,7 +16,7 @@ import android.widget.Toast;
 import com.onpuri.R;
 import com.onpuri.ActivityList;
 
-
+//내정보 프래그먼트
 public class UserMyFragment extends Fragment implements View.OnClickListener {
 
     TextView tv_userID, tv_userName, tv_userJoinDate, tv_userPhone, tv_userNowPass;
@@ -25,7 +25,6 @@ public class UserMyFragment extends Fragment implements View.OnClickListener {
 
     String userId, name, joinDate, phone, nowPass ;
 
-    private ActivityList actManager = ActivityList.getInstance();
     private FragmentManager mFragmentManager;
 
     public static UserMyFragment newInstance() {

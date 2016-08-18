@@ -10,7 +10,7 @@ import java.io.IOException;
 /**
  * Created by kutemsys on 2016-08-02.
  */
-public class WorkerJoin extends Thread {
+public class workerJoin extends Thread {
     private boolean isPlay = false;
     private String joinData;
 
@@ -19,7 +19,7 @@ public class WorkerJoin extends Thread {
     byte[] outData = new byte[261];
     byte[] inData = new byte[261];
 
-    public WorkerJoin(boolean isPlay, String data) {
+    public workerJoin(boolean isPlay, String data) {
         this.isPlay = isPlay;
         joinData = data;
     }
