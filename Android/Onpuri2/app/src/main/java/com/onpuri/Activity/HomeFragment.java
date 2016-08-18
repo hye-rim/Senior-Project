@@ -98,6 +98,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onLoadMore(int current_page) {
                 loadMoreData(current_page);
+                sentenceEnd = mworker_sentence.getSentenceEnd();
                 if(sentenceEnd)
                     Toast.makeText(getActivity(),"불러올 문장이 더이상 없습니다.", Toast.LENGTH_SHORT).show();
             }
@@ -152,6 +153,7 @@ public class HomeFragment extends Fragment {
             e.printStackTrace();
         }
 
+        sentence_num = mworker_sentence.getSentence_num();
         sentenceEnd = mworker_sentence.getSentenceEnd();
         userSentence = mworker_sentence.getUserSentence();
 
@@ -177,6 +179,7 @@ public class HomeFragment extends Fragment {
             e.printStackTrace();
         }
 
+        sentence_num = mworker_sentence.getSentence_num();
         sentenceEnd = mworker_sentence.getSentenceEnd();
         userSentence = mworker_sentence.getUserSentence();
 
@@ -194,6 +197,8 @@ public class HomeFragment extends Fragment {
         }
 
         else{
+            sentence_num = mworker_sentence.getSentence_num();
+            
             if (mworker_sentence != null && mworker_sentence.isAlive()) {  //이미 동작하고 있을 경우 중지
                 mworker_sentence.interrupt();
             }

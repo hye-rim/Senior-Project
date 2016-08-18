@@ -34,6 +34,10 @@ public class workerSentenceList extends Thread {
         this.sentence_num = sentence_num;
     }
 
+    public int getSentence_num() {
+        return sentence_num;
+    }
+
     public PacketUser getUserSentence() {
         return userSentence;
     }
