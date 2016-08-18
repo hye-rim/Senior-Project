@@ -23,24 +23,18 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-
-import com.onpuri.R;
-import com.onpuri.Server.PacketUser;
-import com.onpuri.Server.SocketConnection;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.onpuri.R;
+import com.onpuri.Thread.workerListenAdd;
 
 /**
  * Created by kutemsys on 2016-07-16.
@@ -48,16 +42,8 @@ import java.util.Map;
 
 public class ListenAddFragment extends Fragment implements View.OnClickListener, MediaRecorder.OnInfoListener {
     private static final String TAG = "ListenAddFragment";
-    private WorkerListenAdd worker_add_listen;
+    private workerListenAdd worker_add_listen;
     private static final int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 1;
-
-    DataOutputStream dos;
-    DataInputStream dis;
-    FileInputStream fis;
-    byte[] outData;
-    byte[] temp = new byte[261];
-    byte[] inData = new byte[261];
-    byte[] reData = new byte[261];
 
     private static View view;
     private Toast toast;
@@ -327,7 +313,7 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
         if(worker_add_listen != null && worker_add_listen.isAlive()){  //이미 동작하고 있을 경우 중지
             worker_add_listen.interrupt();
         }
-        worker_add_listen = new WorkerListenAdd(true);
+        worker_add_listen = new workerListenAdd(true, sentence_num, mFileName);
         worker_add_listen.start();
         try {
             worker_add_listen.join();
@@ -335,77 +321,4 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
             e.printStackTrace();
         }
     }
-    public class WorkerListenAdd extends Thread {
-
-        private boolean isPlay = false;
-
-        public WorkerListenAdd(boolean isPlay) {
-            this.isPlay = isPlay;
-        }
-
-        public void stopThread() {
-            isPlay = !isPlay;
-        }
-
-        public void run() {
-            super.run();
-            while (isPlay) {
-                try {
-                    dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
-                    fis = new FileInputStream(new File(mFileName));
-                    byte[] buffer = new byte[50000];
-
-                    int fileSize = 0;
-                    int n;
-                    while((n = fis.read(buffer))!=-1) {
-                        fileSize += n;
-                    }
-                    String filesize = Integer.toString(fileSize);
-                    System.out.println("파일 크기 : " + filesize);
-
-                    outData = new byte[filesize.length()+fileSize+7];
-                    outData[0] = (byte) PacketUser.SOF;
-                    outData[1] = (byte) PacketUser.USR_ALISTEN;
-                    outData[2] = (byte) PacketUser.getSEQ();
-                    outData[3] = (byte) filesize.length(); //파일크기의 길이
-                    outData[4] = (byte) (sentence_num/255 +1) ;
-                    outData[5] = (byte) (sentence_num%255 +1) ;
-                    System.out.println(outData[3]);
-
-                    for(int i=0; i<filesize.length(); i++) {
-                        outData[6+i] = (byte) filesize.charAt(i);
-                        System.out.println(outData[6+i]);
-                    }
-                    System.out.println("음성파일");
-                    for(int j=0; j< fileSize; j++) {
-                        outData[(6+filesize.length())+j]=buffer[j];
-                  //      System.out.println(outData[(6+filesize.length())+j]);
-                    }
-                    outData[(6+filesize.length())+fileSize]= (byte) PacketUser.CRC;
-
-                    dos.write(outData, 0, (7+filesize.length())+fileSize);
-                    for(int z=0; z<10; z++) {
-                        System.out.println(outData[z]);
-                    }
-                    dos.flush();
-                    fis.close();
-
-                    dis = new DataInputStream(SocketConnection.socket.getInputStream());
-                    dis.read(temp, 0, 4);
-                    for (int index = 0; index < 1; index++) {
-                        inData[index] = temp[index];
-                    }
-                    if(inData[1] == PacketUser.ACK_ALISTEN) {
-                        Log.d(TAG, "등록완료");
-                    }
-                    dis.read(temp);
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                isPlay = !isPlay;
-            }
-        }
-    }
 }
-//http://installed.tistory.com/entry/Network-%ED%8C%8C%EC%9D%BC%EC%A0%84%EC%86%A1-%E2%85%A3

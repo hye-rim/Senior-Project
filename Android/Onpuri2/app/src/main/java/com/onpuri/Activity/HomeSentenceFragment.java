@@ -12,7 +12,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,15 +26,9 @@ import com.onpuri.Adapter.SenTransListAdapter;
 import com.onpuri.DividerItemDecoration;
 import com.onpuri.Listener.HomeItemClickListener;
 import com.onpuri.R;
-import com.onpuri.Server.PacketUser;
-import com.onpuri.Server.SocketConnection;
 import com.onpuri.Thread.workerTrans;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import static com.onpuri.R.drawable.divider_dark;
@@ -52,8 +45,6 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
     private static View view;
     private Toast toast;
 
-    int j=0;
-
     ArrayList<String> list_trans;
     ArrayList<String> list_trans_userid;
     ArrayList<String> list_trans_day;
@@ -63,6 +54,8 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
     ArrayList<String> list_listen_userid;
     ArrayList<String> list_listen_day;
     ArrayList<String> list_listen_reco;
+
+    int j=0;
 
     TextView item;
     String sentence = "";
