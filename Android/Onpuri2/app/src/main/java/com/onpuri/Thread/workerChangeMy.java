@@ -8,20 +8,20 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 /**
- * Created by kutemsys on 2016-08-02.
+ * Created by kutemsys on 2016-08-22.
  */
-public class workerJoin extends Thread {
+public class workerChangeMy extends Thread {
     private boolean isPlay = false;
-    private String joinData;
+    private String changeData;
 
     DataOutputStream dos;
     DataInputStream dis;
     byte[] outData = new byte[261];
     byte[] inData = new byte[261];
 
-    public workerJoin(boolean isPlay, String data) {
+    public workerChangeMy(boolean isPlay, String data) {
         this.isPlay = isPlay;
-        joinData = data;
+        changeData = data;
     }
 
     public void stopThread () {
@@ -32,10 +32,10 @@ public class workerJoin extends Thread {
         super.run ();
         while (isPlay) {
 
-            byte[] dataByte = joinData.getBytes();
+            byte[] dataByte = changeData.getBytes();
 
             outData[0] = (byte) PacketUser.SOF;
-            outData[1] = (byte) PacketUser.USR_REG;
+            outData[1] = (byte) PacketUser.USR_CHANGE;
             outData[2] = (byte) PacketUser.getSEQ();
             outData[3] = (byte) dataByte.length;
             for (int i = 4; i < 4 + dataByte.length ; i++) {

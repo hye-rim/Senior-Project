@@ -86,7 +86,7 @@
             android:textSize="20dp"
             android:layout_gravity="center_vertical"/>
         <EditText
-            android:id="@+id/tv_userPhone"
+            android:id="@+id/et_userPhone"
             android:layout_width="150dp"
             android:layout_height="match_parent"
             android:inputType="phone"
