@@ -26,6 +26,7 @@ public class workerSentenceList extends Thread {
 
     PacketUser userSentence;
     int sentence_num;
+    int count, num=0;
     private Boolean sentenceEnd = false;
 
     public workerSentenceList(boolean isPlay,PacketUser userSentence, int sentence_num) {
@@ -44,6 +45,10 @@ public class workerSentenceList extends Thread {
 
     public Boolean getSentenceEnd() {
         return sentenceEnd;
+    }
+
+    public int getCount() {
+        return count;
     }
 
     public void stopThread() {
@@ -77,8 +82,8 @@ public class workerSentenceList extends Thread {
                     for (index = 0; index < 4; index++) {
                         inData[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
                     }
+                    Log.d(TAG, "i : " + i);
                     Log.d(TAG, "opc : " + inData[1]);
-
                     if(inData[1] == PacketUser.ACK_UMS){
                         //문장 데이터
                         dis.read(temp, 0, 1 + (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]));
@@ -122,8 +127,11 @@ public class workerSentenceList extends Thread {
 
                         i++;
                         sentence_num++;
+                        num++;
                     }
                     else if(inData[1] == PacketUser.ACK_NSEN){
+                        count=num;
+                        Log.d(TAG, "count" + String.valueOf(count));
                         sentenceEnd = true;
                         break;
                     }
