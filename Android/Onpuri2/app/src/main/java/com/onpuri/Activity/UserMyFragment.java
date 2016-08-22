@@ -34,7 +34,7 @@ public class UserMyFragment extends Fragment implements View.OnClickListener {
     private static View view;
 
     String userId, name, joinDate, phone;
-    String changePhone, nowPass, newPass, newPassCheck;
+    String changePhone, nowPass, newPass;
     private boolean checkPw, checkNewPw, checkComparePw;
     //현재비밀번호 일치여부, 새로운 비밀번호 일치여부, 현재비밀번호 != 새로운 비밀번호
 
@@ -104,11 +104,8 @@ public class UserMyFragment extends Fragment implements View.OnClickListener {
         et_userNowPass.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (et_userNowPass.getText().toString().equals(nowPass)) {
-                    checkPw = true;
-                } else {
-                    checkPw = false;
-                }
+                checkPw = (et_userNowPass.getText().toString().equals(nowPass)) ? true //현재 비밀번호 일치여부
+                        : false;
             }
 
             @Override
@@ -117,11 +114,9 @@ public class UserMyFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (nowPass.equals(et_userNowPass.getText().toString())) {
-                    checkPw = true;
-                } else {
-                    checkPw = false;
-                }
+                checkPw = (nowPass.equals(et_userNowPass.getText().toString())) ? true //현재 비밀번호 일치여부
+                        : false;
+
             }
         });
 
@@ -134,6 +129,9 @@ public class UserMyFragment extends Fragment implements View.OnClickListener {
                 } else {
                     checkNewPw = false;
                 }
+
+                checkComparePw = (et_userNewPass.getText().toString().equals(nowPass)) ? true //현재 비밀번호 != 새 비밀번호 여부
+                        : false; //false : 현재 비밀번호 != 새 비밀번호
             }
 
             @Override
@@ -148,6 +146,9 @@ public class UserMyFragment extends Fragment implements View.OnClickListener {
                 } else {
                     checkNewPw = false;
                 }
+
+                checkComparePw = (et_userNewPass.getText().toString().equals(nowPass)) ? true //현재 비밀번호 != 새 비밀번호 여부
+                        : false; //false : 현재 비밀번호 != 새 비밀번호
             }
         });
 
@@ -158,7 +159,8 @@ public class UserMyFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_my_ok:
-                if(checkNewPw && checkPw) {
+                if(checkNewPw && checkPw && !checkComparePw) {
+                    changePhone = phone;
                     String changeData = changePhone + "+" + newPass + "+"; //핸드폰 + 패스워드
 
                     worker_change = new workerChangeMy(true, changeData);
@@ -184,6 +186,9 @@ public class UserMyFragment extends Fragment implements View.OnClickListener {
                 }
                 else if(!checkPw){
                     Toast.makeText(getActivity(), "현재 비밀번호를 다시 입력해주세요.", Toast.LENGTH_SHORT).show();
+                }
+                else if(checkComparePw){
+                    Toast.makeText(getActivity(), "현재 비밀번호와 다른 비밀번호로 설정해주세요.", Toast.LENGTH_SHORT).show();
                 }
                 break;
 

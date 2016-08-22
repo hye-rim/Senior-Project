@@ -80,49 +80,52 @@ public class workerSearch extends Thread {
                         inData[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
                     }
 
-                    if(inData[1] == PacketUser.ACK_NSEARCH){
+                    if(inData[1] == PacketUser.ACK_NSTRSER){
                         searchEnd = true;
                         Log.d(TAG, "no more : " + String.valueOf(searchEnd));
                         i = 10;
                         isPlay = false;
                     }
 
-                    int end = (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);
+                    else if(inData[1] == PacketUser.ACK_STRSER) {
 
-                    dis.read(temp, 0, 1 + end);
-                    for (index = 0; index <= end; index++) {
-                        inData[index + 4] = temp[index];    // 패킷의 Data부분을 inData에 추가해준다.
-                    }
+                        int end = (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);
 
-                    if(!searchEnd) {
-                        //문장번호
-                        dis.read(temp, 0, 4);
-                        for (index = 0; index < 4; index++) {
-                            numSentence[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
+                        dis.read(temp, 0, 1 + end);
+                        for (index = 0; index <= end; index++) {
+                            inData[index + 4] = temp[index];    // 패킷의 Data부분을 inData에 추가해준다.
                         }
 
-                        int numEnd = (numSentence[3] <= 0 ? (int) numSentence[3] + 256 : (int) numSentence[3]);
-                        dis.read(temp, 0, 1 + numEnd );
+                        if (!searchEnd) {
+                            //문장번호
+                            dis.read(temp, 0, 4);
+                            for (index = 0; index < 4; index++) {
+                                numSentence[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
+                            }
 
-                        for (index = 0; index <= numEnd; index++) {
-                            numSentence[index + 4] = temp[index];    // 패킷의 Data부분을 inData에 추가해준다.
+                            int numEnd = (numSentence[3] <= 0 ? (int) numSentence[3] + 256 : (int) numSentence[3]);
+                            dis.read(temp, 0, 1 + numEnd);
+
+                            for (index = 0; index <= numEnd; index++) {
+                                numSentence[index + 4] = temp[index];    // 패킷의 Data부분을 inData에 추가해준다.
+                            }
+
+                            PacketUser.sentence_len = end;
+
+                            String str = new String(inData, 4, PacketUser.sentence_len); //문장
+                            String num = Character.toString((char) numSentence[4])
+                                    + Character.toString((char) numSentence[5])
+                                    + Character.toString((char) numSentence[6]); //문장번호
+
+                            userSentence.setSentence(str);
+                            userSentence.setSentenceNum(num);
+
+                            Log.d(TAG, "len : " + PacketUser.sentence_len);
+                            Log.d(TAG, "lenNum : " + num);
+                            Log.d(TAG, "search : " + str);
+
+                            i++;
                         }
-
-                        PacketUser.sentence_len = end;
-
-                        String str = new String (inData, 4, PacketUser.sentence_len); //문장
-                        String num = Character.toString((char) numSentence[4])
-                                + Character.toString((char) numSentence[5])
-                                + Character.toString((char) numSentence[6]); //문장번호
-
-                        userSentence.setSentence(str);
-                        userSentence.setSentenceNum(num);
-
-                        Log.d(TAG, "len : " + PacketUser.sentence_len);
-                        Log.d(TAG, "lenNum : " + num);
-                        Log.d(TAG,"search : " + str);
-
-                        i++;
                     }
                 }
             } catch (IOException e) {

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
@@ -24,7 +25,9 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -33,6 +36,7 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -50,11 +54,10 @@ public class SearchFragment extends Fragment {
     private workerSearch mworker_search;
     ArrayList<String> searchList = new ArrayList<String>();
     ArrayList<String> sentenceNumList = new ArrayList<String>();
-    ArrayAdapter<String> Adapter;
 
-    XmlPullParser xpp;
-    String key="6VCLI3yWvTEYI8GqnDNO"; //Naver 개발자센터 검색 키
-    String data;
+    public ArrayList<String> arrDictionary;
+    BufferedReader reader;
+    String searchWord;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -75,11 +78,12 @@ public class SearchFragment extends Fragment {
         Log.e(TAG, "data : " + searchText);
 
         View header = inflater.inflate(R.layout.search_header, null, false);
+        tv_word_title = (TextView)header.findViewById(R.id.tv_search_word);
+        btn_listen = (ImageButton)header.findViewById(R.id.btn_search_word_listen);
         tv_word = (TextView)header.findViewById(R.id.tv_word_search);
         list = (ListView)view.findViewById(R.id.list_search_sen);
-        btn_listen = (ImageButton)header.findViewById(R.id.btn_search_word_listen);
-        tv_word_title = (TextView)header.findViewById(R.id.tv_search_word);
-        loadData();
+
+        loadSearchData();
 
         tv_word_title.setText(searchText);
 
@@ -134,100 +138,64 @@ public class SearchFragment extends Fragment {
             }
         });
 
-        searchWord();
+        tv_word.setMovementMethod(new ScrollingMovementMethod());
+        searchWord("dictionary.txt");
 
         return view;
     }
 
-    private void searchWord() {
-        new Thread(){
-            public void run(){
 
-                // 클라이언트 아이디 및 시크릿 그리고 요청 URL 선언
-                String clientId = "6VCLI3yWvTEYI8GqnDNO";
-                String clientSecret = "maNEdaKzXu";
-                //encyc : 백과사전, book : 책
-                try{
-                    String text = URLEncoder.encode( searchText ,"UTF-8");
-                    String apiURL = "https://openapi.naver.com/v1/search/encyc.xml?query="+ text +"&display=1&start=1";
-                    URL url = new URL(apiURL);
+    public void searchWord(String fileName) {
 
-                    URLConnection urlConn;
-                    //url 연결
-                    urlConn = url.openConnection();
-                    urlConn.setRequestProperty("X-naver-Client-Id", clientId);
-                    urlConn.setRequestProperty("X-naver-Client-Secret", clientSecret);
+        arrDictionary = new ArrayList<String>();
 
-                    //파싱 - 팩토리 만들고 팩토리로 파서 생성 (풀 파서 사용)
-                    XmlPullParserFactory factory;
+        try {
+            InputStream is = getActivity().getAssets().open(fileName);
+            reader = new BufferedReader(new InputStreamReader(is,"euc-kr"));
+            String line = reader.readLine();
+            while(line != null){
+                line = reader.readLine();
+                arrDictionary.add(line);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
-                    factory = XmlPullParserFactory.newInstance();
-                    XmlPullParser parser = factory.newPullParser();
-                    parser.setInput((new InputStreamReader(urlConn.getInputStream())));
+        ArrayList listSearch = new ArrayList<String>();
+        String matchStr = "(?i)" + searchText +" = .*";
 
-                    int eventType = parser.getEventType();
-                    String b = "";
-                    while (eventType != XmlPullParser.END_DOCUMENT) {
-                        switch (eventType) {
-                            case XmlPullParser.END_DOCUMENT: // 문서의 끝
-                                break;
-                            case XmlPullParser.START_DOCUMENT:
-                                b = b + " ";
-                                Log.d(TAG, b);
-                                break;
-                            case XmlPullParser.START_TAG: {
-                                Log.d(TAG, b);
-                                String tag = parser.getName();
-                                switch (tag) {
-                                    case "description":
-                                        if (b != null)
-                                            b = b + (parser.nextText());
-
-                                        break;
-                                }
-                                break;
-                            }
-
-                            case XmlPullParser.END_TAG: {
-                                String tag = parser.getName();
-                                if (tag.equals("item")) {
-                                    b = b.replace("Naver Search Result", "");
-                                    b = b.replace("." , "\n");
-
-                                    final String finalB = b;
-                                    getActivity().runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            tv_word.setText(finalB);
-                                        }
-                                    });
-                                    b = null;
-                                }
-
-                            }
-
-                        }
-                        eventType = parser.next();
-                    }
-
-                } catch (MalformedURLException e) {
-                    Log.e(TAG, "MalformedURLException");
-                    tv_word.setText("구현 예정입니다");
-                } catch (UnsupportedEncodingException e) {
-                    Log.e(TAG, "UnsupportedEncodingException");
-                    tv_word.setText("구현 예정입니다");
-                } catch (IOException e) {
-                    Log.e(TAG, "IOException");
-                    tv_word.setText("구현 예정입니다");
-                } catch (XmlPullParserException e) {
-                    Log.e(TAG, "XmlPullParserException");
-                    tv_word.setText("구현 예정입니다");
+        for (String string : arrDictionary) {
+            if(string != null) {
+                if (string.matches(matchStr)) {
+                    Log.d(TAG, "string : " + string);
+                    listSearch.add(string);
                 }
             }
-        }.start();
+        }
+
+        matchStr = "(?i)" + searchText +".*";
+        if(listSearch.isEmpty()){
+            for (String string : arrDictionary) {
+                if(string != null) {
+                    if (string.matches(matchStr)) {
+                        Log.d(TAG, "string : " + string);
+                        listSearch.add(string);
+                    }
+                }
+            }
+        }
+
+        searchWord = "";
+        if(listSearch.size() >= 3 )
+            searchWord = (String) listSearch.get(0) + (String) listSearch.get(1) + (String) listSearch.get(2);
+        else
+            searchWord = (String) listSearch.get(0);
+
+        searchWord = searchWord.replaceFirst( searchText+" = ", "");
+        tv_word.setText(searchWord);
     }
 
-    public void loadData(){
+    public void loadSearchData(){
         if (mworker_search != null && mworker_search.isAlive()) {  //이미 동작하고 있을 경우 중지
             mworker_search.interrupt();
         }
