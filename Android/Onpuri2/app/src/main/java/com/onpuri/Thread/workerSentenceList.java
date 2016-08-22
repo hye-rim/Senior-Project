@@ -98,6 +98,7 @@ public class workerSentenceList extends Thread {
                         for (j = 0; j < 4; j++) {
                             senData[j] = info[j];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
                         }
+                        
                         Log.d(TAG, "info : " + info[0]);
                         Log.d(TAG, "info : " + info[1]);
                         Log.d(TAG, "info : " + info[2]);
