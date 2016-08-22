@@ -28,13 +28,11 @@ public class PacketUser extends Application {
     static public char USR_MLISTEN = 20; //more recoder
     static public char USR_ALISTEN = 21; //add recoder
     static public char ACK_ALISTEN = 22; //add recoder ACK
-
     static public char USR_SEARCH = 30; //검색 문장,단어 (search)
     static public char ACK_SEARCH = 31; //검색 문장 응답(search ACK)
     static public char ACK_NSEARCH = 32; //검색 문장 결과 없을 때 (no search ACK)
-
-    //40,41
-
+    static public char USR_ASEN = 40; //add sentence
+    static public char ACK_ASEN = 41; //add sentence ACK
     static public char USR_CHANGE = 50; //내정보 변경
     static public char ACK_CHANGE = 51; //ACK 내정보 변경
     static public char ACK_NSEN = 90; //홈 문장 리스트 없을 경우(no sentence ACK)

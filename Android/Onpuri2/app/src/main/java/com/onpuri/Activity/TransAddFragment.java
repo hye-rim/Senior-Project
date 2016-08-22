@@ -122,9 +122,8 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
     }
     class WorkerTransAdd extends Thread {
 
-
         private boolean isPlay = false;
-
+        String addTrans = trans.getText().toString();
 
         public WorkerTransAdd(boolean isPlay) {
             this.isPlay = isPlay;
@@ -137,14 +136,17 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
         public void run() {
             super.run();
             while (isPlay) {
+                Log.d(TAG, "worker add trans start");
                 byte[] dataByte = addTrans.getBytes();
                 outData[0] = (byte) PacketUser.SOF;
                 outData[1] = (byte) PacketUser.USR_ATRANS;
                 outData[2] = (byte) PacketUser.getSEQ();
                 outData[3] = (byte) dataByte.length;
+
                 for (i = 4; i < 4 + dataByte.length; i++) {
                     outData[i] = (byte) dataByte[i - 4];
                 }
+
                 outData[4 + dataByte.length] = (byte) (sentence_num / 255 + 1);
                 outData[5 + dataByte.length] = (byte) (sentence_num % 255 + 1);
                 outData[6 + dataByte.length] = (byte) PacketUser.CRC;
@@ -160,7 +162,7 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
                         inData[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
                     }
                     if (inData[1] == PacketUser.ACK_ATRANS) {
-
+                        Log.d(TAG, "등록완료");
                     }
                     dis.read(temp);
 

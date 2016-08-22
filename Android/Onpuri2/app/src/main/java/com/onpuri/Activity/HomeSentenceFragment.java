@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,8 +57,10 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
     private static View view;
     private Toast toast;
 
-    int count, num=0;
+    int count=-1;
+    int num=0;
     int index;
+    int j=0;
 
     ArrayList<String> list_trans;
     ArrayList<String> list_trans_userid;
@@ -291,19 +294,14 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        for (int i = 0; i < 3; i++) {
-            if(i < count) {
-                list_trans.add(trans.get(i).toString());
-                list_trans_userid.add(tuserid.get(i).toString());
-                list_trans_day.add(tday.get(i).toString());
-                list_trans_reco.add(treco.get(i).toString());
-            }
-            else {
-                list_trans.add("none");
-                list_trans_userid.add(" ");
-                list_trans_day.add(" ");
-                list_trans_reco.add(" ");
-            }
+
+        for (int i = 0; i < count; i++) {
+            list_trans.add(trans.get(j).toString());
+            list_trans_userid.add(tuserid.get(j).toString());
+            list_trans_day.add(tday.get(j).toString());
+            list_trans_reco.add(treco.get(j).toString());
+            j++;
+
         }
     }
     private void listen() {
@@ -330,19 +328,22 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                     outData[i] = (byte) sentence_num.charAt(i - 4);
                 }
                 outData[4 + sentence_num.length()] = (byte) 85;
+                Log.d(TAG, "opc : " + outData[1]);
 
                 try {
                     dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
-                    dos.write(outData, 0, outData[3] + 5); // packet transmission
+                    dos.write(outData, 0, outData[3]+5); // packet transmission
                     dos.flush();
                     dis = new DataInputStream(SocketConnection.socket.getInputStream());
 
                     int num = 0;
                     while (num < 3) {
                         dis.read(temp, 0, 4);
+                        Log.d(TAG, "read");
                         for (index = 0; index < 4; index++) {
                             inData[index] = temp[index];
                         }
+                        Log.d(TAG, "opc : " + inData[1]);
 
                         if (inData[1] == PacketUser.ACK_SEN) {
                             //해석 읽어오기
@@ -400,14 +401,16 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                             tday.add(transinfo.substring(plus + 1, plus + 11)); //날짜
                             treco.add(transinfo.substring(plus + 12, transinfo.length() - 1)); //추천수
                             num++;
-                            count = num;
-                        } else if (inData[1] == PacketUser.ACK_NTRANS) {
-                            count = num;
+                            count=num;
+                        }
+                        else if (inData[1] == PacketUser.ACK_NTRANS) {
+                            count=num;
                             break;
                         } else {
-                            count = num;
+                            count=num;
                             break;
                         }
+                        Log.d(TAG, "while 끝"+count);
                     }
                     System.out.println("count : " + count);
                     dis.read(temp);

@@ -285,11 +285,13 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
                             day.add(transinfo.substring(plus + 1, plus + 11)); //날짜
                             reco.add(transinfo.substring(plus + 12, transinfo.length() - 1)); //추천수
                             num++;
-                        } else if (inData[1] == PacketUser.ACK_NTRANS) {
-                            count = num;
+                        }
+                        else if(inData[1] == PacketUser.ACK_NTRANS) {
+                            count=num;
                             break;
-                        } else {
-                            count = num;
+                        }
+                        else {
+                            count=num;
                             break;
                         }
                     }
