@@ -36,7 +36,6 @@ public class HomeRootFragment extends Fragment {
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.root_home, homeFragment)
                 .commit();
-
         return view;
     }
 

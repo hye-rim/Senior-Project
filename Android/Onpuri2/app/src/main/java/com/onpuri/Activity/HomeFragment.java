@@ -89,9 +89,9 @@ public class HomeFragment extends Fragment {
         FragmentManager fm = getActivity().getSupportFragmentManager();
         fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
-        if(!sentenceEnd)
+        if(!sentenceEnd) {
             loadData(current_page);
-
+        }
         handler = new Handler();
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_sentence);
         mLayoutManager = new LinearLayoutManager(getActivity());
@@ -108,9 +108,7 @@ public class HomeFragment extends Fragment {
                     Toast.makeText(getActivity(),"불러올 문장이 더이상 없습니다.", Toast.LENGTH_SHORT).show();
             }
         });
-
-        mAdapter.notifyDataSetChanged();
-
+    //    mAdapter.notifyDataSetChanged();
         mRecyclerView.addOnItemTouchListener(
                 new HomeItemClickListener(getActivity().getApplicationContext(), mRecyclerView ,new HomeItemClickListener.OnItemClickListener() {
                     @Override
@@ -211,6 +209,4 @@ public class HomeFragment extends Fragment {
 
         }
     }
-
-
 }

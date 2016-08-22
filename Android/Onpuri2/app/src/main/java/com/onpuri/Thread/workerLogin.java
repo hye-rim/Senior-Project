@@ -88,7 +88,7 @@ public class workerLogin extends Thread{
                 mPacketUser.data_len = (int) inData[3];
                 byte[] nameByte = new byte[221];
                 int byteI = 0;
-                if (inData[4] != '0') { //ID, PW가 틀렸을 경우 실행하지 않도록 한다.
+                if (inData[4] != '0' && inData[1] == mPacketUser.ACK_ULG) { //ID, PW가 틀렸을 경우 실행하지 않도록 한다. && ID
                     int index = 0;
                     while (true) { //아이디
                         if ((char) (inData[4 + index]) == '+') {

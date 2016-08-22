@@ -19,13 +19,9 @@ import com.onpuri.R;
 import com.onpuri.ActivityList;
 import com.onpuri.Server.CloseSystem;
 import com.onpuri.Server.PacketUser;
-import com.onpuri.Server.SocketConnection;
 import com.onpuri.Thread.workerLogin;
 import com.tsengvn.typekit.TypekitContextWrapper;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.util.regex.Pattern;
 
 /**
@@ -282,5 +278,4 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         super.onDestroy();
         actManager.removeActivity(this);
     }
-
 }

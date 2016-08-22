@@ -19,16 +19,23 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.onpuri.R;
+import com.onpuri.Server.PacketUser;
+import com.onpuri.Server.SocketConnection;
+import com.onpuri.Thread.workerSentenceAdd;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,13 +48,20 @@ import java.util.Map;
  */
 //문장등록 tab
 public class NewSenFragment extends Fragment implements View.OnClickListener{
+    private static final String TAG = "NewSenFragment";
+    private workerSentenceAdd worker_add_sen;
+
     private static View view;
     private static final int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 1;
     private static final int REQ_CODE_SELECT_IMAGE = 2;
 
     private Button btn_ok, btn_cancel, btn_gallery, btn_camera;
+    private EditText sen;
 
     ViewPager viewPager;
+
+    String addsen="";
+    int i;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -62,6 +76,9 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
     /* map is already there, just return view as it is */
         }
         viewPager = (ViewPager)getActivity().findViewById(R.id.viewpager);
+
+        sen = (EditText) view.findViewById(R.id.sentence);
+
 
         btn_ok = (Button)view.findViewById(R.id.btn_new_sen);
         btn_cancel = (Button)view.findViewById(R.id.btn_new_sen_back);
@@ -80,11 +97,15 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_new_sen:
-                Toast.makeText(getActivity(), "서버와의 데이터 교환은 차후 구현 예정입니다.", Toast.LENGTH_SHORT).show();
+                addsen = sen.getText().toString();
+                Addsentence();
+                Toast.makeText(getActivity(), "등록되었습니다.", Toast.LENGTH_SHORT).show();
+                sen.setText(null);
                 viewPager.setCurrentItem(1);
                 break;
 
             case R.id.btn_new_sen_back:
+                sen.setText(null);
                 viewPager.setCurrentItem(1);
                 break;
 
@@ -187,6 +208,7 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
             break;
             default:
                 super.onRequestPermissionsResult(requestCode, permissions,grantResults);
+                super.onRequestPermissionsResult(requestCode, permissions,grantResults);
         }
     }
 
@@ -211,5 +233,16 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
             }
         }
     }
-
+    private void Addsentence() {
+        if(worker_add_sen != null && worker_add_sen.isAlive()){  //이미 동작하고 있을 경우 중지
+            worker_add_sen.interrupt();
+        }
+        worker_add_sen = new workerSentenceAdd(true, addsen);
+        worker_add_sen.start();
+        try {
+            worker_add_sen.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }

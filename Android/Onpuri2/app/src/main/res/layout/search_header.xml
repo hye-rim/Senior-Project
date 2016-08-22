@@ -6,7 +6,7 @@
     <TextView
         android:textSize="16dp"
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
+        android:layout_height="30dp"
         android:textStyle="bold"
         android:text="단어/숙어"
         android:layout_gravity="center_vertical"
@@ -17,9 +17,7 @@
         android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        android:layout_marginBottom="3dp"
-        android:layout_marginLeft="15dp">
+        android:layout_gravity="center_vertical">
         <TextView
             android:text="word"
             android:textSize="18dp"
@@ -43,9 +41,7 @@
             android:layout_height="25dp"
             android:background="@drawable/addnote_icon"
             android:id="@+id/btn_search_word_add"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/btn_search_word_listen"
-            android:layout_toEndOf="@+id/btn_search_word_listen" />
+            android:layout_toRightOf="@+id/btn_search_word_listen" />
     </RelativeLayout>
     <TextView
         android:textSize="16dp"
@@ -60,7 +56,7 @@
     <TextView
         android:textSize="16dp"
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
+        android:layout_height="30dp"
         android:textStyle="bold"
         android:text="문장"
         android:layout_gravity="center_vertical"

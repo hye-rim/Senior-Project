@@ -11,12 +11,13 @@
         android:id="@+id/tv_act_name"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:textStyle="bold"
         android:text="text 님"
+        android:textColor="#000000"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="20dp"
         android:gravity="center_vertical" />
     <TabHost
+        android:textSize="20dp"
         android:visibility="visible"
         android:id="@+id/my_act_tab"
         android:layout_width="match_parent"
@@ -28,6 +29,7 @@
             android:orientation="vertical" >
 
             <TabWidget
+                android:textSize="18dp"
                 android:id="@android:id/tabs"
                 android:tabStripEnabled="true"
                 android:layout_width="match_parent"

@@ -77,7 +77,6 @@ public class workerSentenceList extends Thread {
                     for (index = 0; index < 4; index++) {
                         inData[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
                     }
-                    Log.d(TAG, "opc : " + inData[1]);
 
                     if(inData[1] == PacketUser.ACK_UMS){
                         //문장 데이터
@@ -102,24 +101,24 @@ public class workerSentenceList extends Thread {
                         int len = ((int) senData[3] <= 0 ? (int) senData[3] + 256 : (int) senData[3]);
 
                         String sen = new String (inData, 4, PacketUser.sentence_len); //문장
-                        Log.d(TAG, "" + i);
                         Log.d(TAG, "sen : " + sen);
 
                         String seninfo = new String(senData, 4, len);
                         Log.d(TAG, "seninfo : " + seninfo);
 
                         int plus = seninfo.indexOf('+');
-                        String senNum = seninfo.substring(0,plus); //문장번호
-                        seninfo = seninfo.substring(plus+1,seninfo.length());
+                        String senNum = seninfo.substring(0, 3); //문장번호
+                        String transNum = "00"; //해석수
+                        String ListenNum = "00"; //듣기수
+                     /*   seninfo = seninfo.substring(plus + 1, seninfo.length());
                         plus = seninfo.indexOf('+');
                         String transNum = seninfo.substring(0, plus); //해석수
-                        String ListenNum = seninfo.substring(plus+1, seninfo.length()-1); //듣기수
+                        String ListenNum = seninfo.substring(plus + 1, seninfo.length() - 1); //듣기수*/
 
                         userSentence.setSentence(sen);
                         userSentence.setSentenceNum(senNum);
                         userSentence.setSentenceTransNum(transNum);
                         userSentence.setSentenceListenNum(ListenNum);
-
                         i++;
                         sentence_num++;
                     }

@@ -19,7 +19,7 @@
         android:layout_height="200dp"
         android:layout_margin="20dp"
         android:gravity="start"
-        android:hint="\n 문의사항을 입력해주세요. " />
+        android:hint="문의사항을 입력해주세요. " />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
