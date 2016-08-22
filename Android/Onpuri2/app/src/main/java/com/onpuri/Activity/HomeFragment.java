@@ -181,7 +181,6 @@ public class HomeFragment extends Fragment {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
         sentence_num = mworker_sentence.getSentence_num();
         sentenceEnd = mworker_sentence.getSentenceEnd();
         userSentence = mworker_sentence.getUserSentence();
@@ -200,13 +199,22 @@ public class HomeFragment extends Fragment {
         }
 
         else{
+            loadLimit = ival + mworker_sentence.getCount();
+
+            for (int i = ival; i < loadLimit; i++) {
+                listSentence.add(userSentence.arrSentence.get(i));
+                listSentenceNum.add(userSentence.arrSentenceNum.get(i));
+                listTransNum.add(userSentence.arrSentenceTransNum.get(i));
+                listListenNum.add(userSentence.arrSentenceListenNum.get(i));
+                ival++;
+            }
+            mAdapter.notifyDataSetChanged();
+
             sentence_num = mworker_sentence.getSentence_num();
 
             if (mworker_sentence != null && mworker_sentence.isAlive()) {  //이미 동작하고 있을 경우 중지
                 mworker_sentence.interrupt();
             }
-            Toast.makeText(getActivity(), "불러올 문장이 더이상 없습니다.", Toast.LENGTH_SHORT).show();
-
         }
     }
 }

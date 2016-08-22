@@ -32,7 +32,6 @@ import android.widget.Toast;
 import com.onpuri.R;
 import com.onpuri.Server.PacketUser;
 import com.onpuri.Server.SocketConnection;
-import com.onpuri.Thread.workerSentenceAdd;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -49,7 +48,13 @@ import java.util.Map;
 //문장등록 tab
 public class NewSenFragment extends Fragment implements View.OnClickListener{
     private static final String TAG = "NewSenFragment";
-    private workerSentenceAdd worker_add_sen;
+    private worker_add_sen worker_add_sen;
+
+    DataOutputStream dos;
+    DataInputStream dis;
+    byte[] outData = new byte[261];
+    byte[] inData = new byte[261];
+    byte[] temp = new byte[261];
 
     private static View view;
     private static final int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 1;
@@ -60,7 +65,6 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
 
     ViewPager viewPager;
 
-    String addsen="";
     int i;
 
     @Override
@@ -78,8 +82,6 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
         viewPager = (ViewPager)getActivity().findViewById(R.id.viewpager);
 
         sen = (EditText) view.findViewById(R.id.sentence);
-
-
         btn_ok = (Button)view.findViewById(R.id.btn_new_sen);
         btn_cancel = (Button)view.findViewById(R.id.btn_new_sen_back);
         btn_gallery = (Button)view.findViewById(R.id.btn_new_picture);
@@ -97,15 +99,14 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_new_sen:
-                addsen = sen.getText().toString();
                 Addsentence();
                 Toast.makeText(getActivity(), "등록되었습니다.", Toast.LENGTH_SHORT).show();
-                sen.setText(null);
+                sen.setText("");
                 viewPager.setCurrentItem(1);
                 break;
 
             case R.id.btn_new_sen_back:
-                sen.setText(null);
+                sen.setText("");
                 viewPager.setCurrentItem(1);
                 break;
 
@@ -208,7 +209,6 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
             break;
             default:
                 super.onRequestPermissionsResult(requestCode, permissions,grantResults);
-                super.onRequestPermissionsResult(requestCode, permissions,grantResults);
         }
     }
 
@@ -227,9 +227,9 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
                     image.setImageBitmap(image_bitmap);
 
                 }
-                catch (FileNotFoundException e) { 		e.printStackTrace(); 			}
-                catch (IOException e)                 {		e.printStackTrace(); 			}
-                catch (Exception e)		         {             e.printStackTrace();			}
+                catch (FileNotFoundException e) {       e.printStackTrace();          }
+                catch (IOException e)                 {      e.printStackTrace();          }
+                catch (Exception e)               {             e.printStackTrace();         }
             }
         }
     }
@@ -237,12 +237,61 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
         if(worker_add_sen != null && worker_add_sen.isAlive()){  //이미 동작하고 있을 경우 중지
             worker_add_sen.interrupt();
         }
-        worker_add_sen = new workerSentenceAdd(true, addsen);
+        worker_add_sen = new worker_add_sen(true);
         worker_add_sen.start();
         try {
             worker_add_sen.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+    }
+
+    class worker_add_sen extends Thread {
+        private boolean isPlay = false;
+        String AddSen = sen.getText().toString();
+
+        public worker_add_sen(boolean isPlay) {
+            this.isPlay = isPlay;
+        }
+
+        public void stopThread() {
+            isPlay = !isPlay;
+        }
+
+        public void run() {
+            super.run();
+            while (isPlay) {
+                Log.d(TAG, "worker add trans start");
+                byte[] dataByte = AddSen.getBytes();
+                outData[0] = (byte) PacketUser.SOF;
+                outData[1] = (byte) PacketUser.USR_ASEN;
+                outData[2] = (byte) PacketUser.getSEQ();
+                outData[3] = (byte) dataByte.length;
+                for (i = 4; i < 4+dataByte.length; i++) {
+                    outData[i] = (byte) dataByte[i-4];
+                }
+                outData[6 + dataByte.length] = (byte) PacketUser.CRC;
+
+                try {
+                    dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
+                    dos.write(outData, 0, outData[3]+5); // packet transmission
+                    dos.flush();
+
+                    dis = new DataInputStream(SocketConnection.socket.getInputStream());
+                    dis.read(temp, 0, 4);
+                    for (int index = 0; index < 4; index++) {
+                        inData[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
+                    }
+                    if(inData[1] == PacketUser.ACK_ASEN) {
+                        Log.d(TAG, "등록완료");
+                    }
+                    dis.read(temp);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                isPlay = !isPlay;
+            }
         }
     }
 }
