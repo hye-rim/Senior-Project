@@ -19,10 +19,10 @@ public class workerSentenceList extends Thread {
 
     DataOutputStream dos;
     DataInputStream dis;
-    byte[] outData = new byte[261];
-    byte[] inData = new byte[261];
-    byte[] senData = new byte[261];
-    byte[] temp = new byte[261];
+    byte[] outData = new byte[400];
+    byte[] inData = new byte[400];
+    byte[] senData = new byte[400];
+    byte[] temp = new byte[400];
 
     PacketUser userSentence;
     int sentence_num;
@@ -107,7 +107,6 @@ public class workerSentenceList extends Thread {
                         int len = ((int) senData[3] <= 0 ? (int) senData[3] + 256 : (int) senData[3]);
 
                         String sen = new String (inData, 4, PacketUser.sentence_len); //문장
-                        Log.d(TAG, "" + i);
                         Log.d(TAG, "sen : " + sen);
 
                         String seninfo = new String(senData, 4, len);
