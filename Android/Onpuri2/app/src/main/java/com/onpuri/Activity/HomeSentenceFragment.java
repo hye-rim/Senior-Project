@@ -394,6 +394,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                                 }
                             }
                             String transinfo = new String(transinfobyte, 0, j);
+                            Log.d(TAG,transinfo);
                             int plus = transinfo.indexOf('+');
 
                             trans.add(new String(transbyte, 0, i)); //해석
