@@ -38,12 +38,6 @@ public class JoinActivity extends Activity {
     private final long FINISH_INTERVAL_TIME = 3000;
     private long backPressedTime = 0;
 
-    DataOutputStream dos;
-    DataInputStream dis;
-
-    byte[] outData = new byte[261];
-    byte[] inData = new byte[261];
-
     private workerIdCheck worker_check;
     private workerJoin worker_join;
 
@@ -79,7 +73,6 @@ public class JoinActivity extends Activity {
         btCheck = (Button) findViewById(R.id.btnCheck);
         btJoin = (Button) findViewById(R.id.btnJoin);
         btCancel = (Button) findViewById(R.id.btnJoinCancel);
-
 
         et_newId.setFilters(new InputFilter[]{filterAlphaNum});
         et_newId.setPrivateImeOptions("defaultInputmode=english;");

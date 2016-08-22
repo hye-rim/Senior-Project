@@ -35,7 +35,8 @@ public class PacketUser extends Application {
 
     //40,41
 
-    //50
+    static public char USR_CHANGE = 50; //내정보 변경
+    static public char ACK_CHANGE = 51; //ACK 내정보 변경
     static public char ACK_NSEN = 90; //홈 문장 리스트 없을 경우(no sentence ACK)
     static public char USR_LEV = 99; //회원 탈퇴(user leave)
     static public char ACK_LEV = 100; //회원 탈퇴 응답(user leave ACK)

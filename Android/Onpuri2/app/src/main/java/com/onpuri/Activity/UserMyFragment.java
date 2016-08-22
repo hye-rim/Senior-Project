@@ -3,27 +3,40 @@ package com.onpuri.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewPager;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.Spanned;
+import android.text.TextWatcher;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.onpuri.R;
 import com.onpuri.ActivityList;
+import com.onpuri.Thread.workerChangeMy;
+
+import java.util.regex.Pattern;
 
 //내정보 프래그먼트
 public class UserMyFragment extends Fragment implements View.OnClickListener {
+    private static final String TAG = "UserMyFragment";
 
-    TextView tv_userID, tv_userName, tv_userJoinDate, tv_userPhone, tv_userNowPass;
+    private workerChangeMy worker_change;
+
+    TextView tv_userID, tv_userName, tv_userJoinDate;
+    EditText et_userPhone, et_userNowPass, et_userNewPass, et_userNewPassCheck;
     Button btnOk, btnCancel;
     private static View view;
 
-    String userId, name, joinDate, phone, nowPass ;
+    String userId, name, joinDate, phone;
+    String changePhone, nowPass, newPass, newPassCheck;
+    private boolean checkPw, checkNewPw, checkComparePw;
+    //현재비밀번호 일치여부, 새로운 비밀번호 일치여부, 현재비밀번호 != 새로운 비밀번호
 
     private FragmentManager mFragmentManager;
 
@@ -48,38 +61,95 @@ public class UserMyFragment extends Fragment implements View.OnClickListener {
         try {
             view = inflater.inflate(R.layout.fragment_my, container, false);
         } catch (InflateException e) {
-    /* map is already there, just return view as it is */
+            /* map is already there, just return view as it is */
         }
         mFragmentManager = getActivity().getSupportFragmentManager();
 
+        //선언
+        tv_userID = (TextView)view.findViewById(R.id.tv_userID);
+        tv_userName = (TextView)view.findViewById(R.id.tv_userName);
+        tv_userJoinDate = (TextView)view.findViewById(R.id.tv_userDate);
+        et_userPhone = (EditText)view.findViewById(R.id.et_userPhone); //사용자 핸드폰 번호
+        et_userNowPass = (EditText)view.findViewById(R.id.et_now_pass); //현재비밀번호
+        et_userNewPass = (EditText)view.findViewById(R.id.et_new_pass); //새로운비밀번호
+        et_userNewPassCheck = (EditText)view.findViewById(R.id.et_new_pass_check); //새로운비밀번호확인
+        btnOk = (Button)view.findViewById(R.id.btn_my_ok);
+        btnCancel = (Button)view.findViewById(R.id.btn_my_cancel);
+
         userId = new String();
         userId = getArguments().getString("MyId");
-        tv_userID = (TextView)view.findViewById(R.id.tv_userID);
-        tv_userID.setText(userId);
-
         name = new String();
         name = getArguments().getString("MyName");
-        tv_userName = (TextView)view.findViewById(R.id.tv_userName);
-        tv_userName.setText(name);
-
         joinDate = new String();
         joinDate = getArguments().getString("MyJoin");
-        tv_userJoinDate = (TextView)view.findViewById(R.id.tv_userDate);
-        tv_userJoinDate.setText(joinDate);
-
         phone = new String();
         phone = getArguments().getString("MyPhone");
-        tv_userPhone = (TextView)view.findViewById(R.id.tv_userPhone);
-        tv_userPhone.setText(""+phone);
-
         nowPass = new String();
         nowPass = getArguments().getString("MyPass");
 
-        btnOk = (Button)view.findViewById(R.id.btn_my_ok);
-        btnCancel = (Button)view.findViewById(R.id.btn_my_cancel);
+        tv_userID.setText(userId);
+        tv_userName.setText(name);
+        tv_userJoinDate.setText(joinDate);
+        et_userPhone.setText(""+phone);
         btnOk.setOnClickListener(this);
         btnCancel.setOnClickListener(this);
 
+        et_userNowPass.setFilters(new InputFilter[]{filterAlphaNumEng});
+        et_userNowPass.setPrivateImeOptions("defaultInputmode=english;");
+        et_userNewPass.setFilters(new InputFilter[]{filterAlphaNumEng});
+        et_userNewPass.setPrivateImeOptions("defaultInputmode=english;");
+        et_userNewPassCheck.setFilters(new InputFilter[]{filterAlphaNumEng});
+        et_userNewPass.setPrivateImeOptions("defaultInputmode=english;");
+
+        et_userNowPass.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (et_userNowPass.getText().toString().equals(nowPass)) {
+                    checkPw = true;
+                } else {
+                    checkPw = false;
+                }
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (nowPass.equals(et_userNowPass.getText().toString())) {
+                    checkPw = true;
+                } else {
+                    checkPw = false;
+                }
+            }
+        });
+
+        et_userNewPassCheck.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (et_userNewPassCheck.getText().toString().equals(et_userNewPass.getText().toString()) && !et_userNewPass.getText().toString().equals("")) {
+                    checkNewPw = true;
+                    newPass = et_userNowPass.getText().toString();
+                } else {
+                    checkNewPw = false;
+                }
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (et_userNewPass.getText().toString().equals(et_userNewPassCheck.getText().toString()) && !et_userNewPass.getText().toString().equals("")) {
+                    checkNewPw = true;
+                    newPass = et_userNowPass.getText().toString();
+                } else {
+                    checkNewPw = false;
+                }
+            }
+        });
 
         return view;
     }
@@ -88,13 +158,33 @@ public class UserMyFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_my_ok:
-                //sof+opc+seq+길이+휴대폰+새 비밀번호+crc
+                if(checkNewPw && checkPw) {
+                    String changeData = changePhone + "+" + newPass + "+"; //핸드폰 + 패스워드
 
-                Toast.makeText(getActivity(), "정보수정은 구현예정입니다.", Toast.LENGTH_SHORT).show();
+                    worker_change = new workerChangeMy(true, changeData);
+                    worker_change.start();
 
-                mFragmentManager.popBackStack();
-                mFragmentManager.beginTransaction()
-                        .commit();
+                    try {
+                        worker_change.join();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (worker_change != null && worker_change.isAlive()) {  //이미 동작하고 있을 경우 중지
+                        worker_change.interrupt();
+                    }
+
+                    Toast.makeText(getActivity(), "정보수정이 완료되었습니다.", Toast.LENGTH_SHORT).show();
+                    mFragmentManager.popBackStack();
+                    mFragmentManager.beginTransaction()
+                            .commit();
+                }
+                else if(!checkNewPw){
+                    Toast.makeText(getActivity(), "새 비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
+                }
+                else if(!checkPw){
+                    Toast.makeText(getActivity(), "현재 비밀번호를 다시 입력해주세요.", Toast.LENGTH_SHORT).show();
+                }
                 break;
 
             case R.id.btn_my_cancel:
@@ -108,4 +198,18 @@ public class UserMyFragment extends Fragment implements View.OnClickListener {
         }
 
     }
+
+    //edittext 영문+숫자만 입력되도록 하는 함수
+    public InputFilter filterAlphaNumEng = new InputFilter() {
+        @Override
+        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend){
+            Pattern ps = Pattern.compile("^[-_a-zA-Z0-9]+$");
+            if(source.equals("")|| ps.matcher(source).matches()){
+                source.equals(""); //백스페이스를 위해 추가한 부분
+                return source;
+            }
+
+            return "";
+        }
+    };
 }
