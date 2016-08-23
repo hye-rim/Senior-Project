@@ -19,6 +19,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
@@ -41,6 +43,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * Created by kutemsys on 2016-05-03.
@@ -82,6 +85,8 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
         viewPager = (ViewPager)getActivity().findViewById(R.id.viewpager);
 
         sen = (EditText) view.findViewById(R.id.sentence);
+        sen.setFilters(new InputFilter[]{filterAlphaNum});
+        sen.setPrivateImeOptions("defaultInputmode=english;");
         btn_ok = (Button)view.findViewById(R.id.btn_new_sen);
         btn_cancel = (Button)view.findViewById(R.id.btn_new_sen_back);
         btn_gallery = (Button)view.findViewById(R.id.btn_new_picture);
@@ -128,6 +133,19 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
         }
     }
 
+    public InputFilter filterAlphaNum = new InputFilter() {
+        @Override
+        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend){
+            Pattern ps = Pattern.compile("^[-_a-zA-Z0-9]+$");
+            if(source.equals("")|| ps.matcher(source).matches()){
+                source.equals(""); //백스페이스를 위해 추가한 부분
+                return source;
+            }
+
+            return "";
+        }
+    };
+    
     private void openGallery() {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);

@@ -77,8 +77,13 @@ public class workerSentenceList extends Thread {//홈 문장 10개씩 서버에�
 
                 num = 0;
                 while (num < 10) {
-                    byte[] inData = new byte[500];
+                    byte[] inData = new byte[261];
                     byte[] senData = new byte[20];
+
+                    for (i = 0; i < 261; i++)
+                        inData[i] = 0;
+                    for( i = 0; i< 20; i++)
+                        senData[i] = 0;
 
                     //문장
                     dis.read(sen, 0, 4);
@@ -86,17 +91,18 @@ public class workerSentenceList extends Thread {//홈 문장 10개씩 서버에�
                         inData[i] = sen[i];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
                     }
                     Log.d(TAG, "num : " + num);
-                    Log.d(TAG, "opc : " + inData[1]);
-                    Log.d(TAG, "len : " + inData[3]);
 
                     if(inData[1] == PacketUser.ACK_UMS ){
                         //문장 데이터
                         PacketUser.sentence_len = ((int) inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);
+
                         dis.read(sen, 0, (1 + PacketUser.sentence_len));
                         for (j = 0; j <  PacketUser.sentence_len; j++) { //문장내용
                             inData[j + 4] = sen[j];
                         }
-                        Log.d(TAG, "jjjjjjjjjjjjjjjjjjjjjjjjj : " + j);
+
+                        Log.d(TAG, "inData" + "  " +inData[0] + "  " + inData[1] + "  " + PacketUser.sentence_len + "  " + sen[PacketUser.sentence_len]);
+
                         String sen = new String (inData, 4, PacketUser.sentence_len); //문장
                         Log.d(TAG, "sen : " + sen);
 
@@ -106,27 +112,16 @@ public class workerSentenceList extends Thread {//홈 문장 10개씩 서버에�
                             senData[j] = info[j];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
                         }
 
-                        Log.d(TAG, "info0 : " + info[0]);
-                        Log.d(TAG, "info1 : " + info[1]);
-                        Log.d(TAG, "info2 : " + info[2]);
-                        Log.d(TAG, "info3 : " + info[3]);
-                        Log.d(TAG, "infosof : " + senData[0]);
-                        Log.d(TAG, "infoopc : " + senData[1]);
-                        Log.d(TAG, "infoseq : " + senData[2]);
-                        Log.d(TAG, "infolen : " + senData[3]);
+                        Log.d(TAG, "info" +  "  " +info[0] + "  " + info[1] + "  " +info[3]);
 
                         //문장번호+해석수+듣기수 데이터
                         int len = (int) senData[3];
-                        if(len > 20)
-                        {
-                            Log.d("경식오빠사랑","요시 그란도 시즌");
-                        }
-                        /*
-                        dis.read(info);
 
+                        dis.read(info, 0, (1 + len));
                         for (j = 0; j <= len; j++) {
                             senData[j+4] = info[j];
                         }
+                        Log.d(TAG, "senData" + "  " +senData[0] + "  " + senData[1] + "  " +senData[3] + "  " + senData[len+4]);
 
                         String seninfo = new String(senData, 4, len);
                         Log.d(TAG, "seninfo : " + seninfo);
@@ -137,10 +132,7 @@ public class workerSentenceList extends Thread {//홈 문장 10개씩 서버에�
                         plus = seninfo.indexOf('+');
                         String transNum = seninfo.substring(0, plus); //해석수
                         String ListenNum = seninfo.substring(plus+1, seninfo.length()-1); //듣기수
-*/
-                        String senNum = "00";
-                        String transNum = "00";
-                        String ListenNum = "00";
+
 
                         userSentence.setSentence(sen);
                         userSentence.setSentenceNum(senNum);
