@@ -1,8 +1,12 @@
 package com.onpuri.Activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.InflateException;
 import android.view.LayoutInflater;
@@ -72,6 +76,8 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
         item_reco.setOnClickListener(this);
         Button item_edit = (Button) view.findViewById(R.id.item_edit);
         item_edit.setOnClickListener(this);
+        ImageButton deltrans=(ImageButton)view.findViewById(R.id.del_trans);
+        deltrans.setOnClickListener(this);
 
         return view;
     }
@@ -101,7 +107,24 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
                 ft.addToBackStack(null);
                 ft.commit();
                 break;
-
+            case R.id.del_trans:
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("선택한 해석을 삭제하시겠습니까?")
+                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                final FragmentManager fm = getActivity().getSupportFragmentManager();
+                                final FragmentTransaction ft = getFragmentManager().beginTransaction();
+                                fm.popBackStack();
+                                ft.commit();
+                                Toast.makeText(getActivity(), "삭제되었습니다(구현예정)", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dlg, int sumthin) {
+                                Toast.makeText(getActivity(), "취소되었습니다", Toast.LENGTH_SHORT).show();
+                            }
+                        }).show();
+                break;
         }
 
     }
