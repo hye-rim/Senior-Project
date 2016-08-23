@@ -78,6 +78,14 @@ public class NoteFragment extends Fragment {
                 .setIndicator("단어")
                 .setContent(R.id.tab_word));
 
+        setTabColor(); //탭 색상 지정
+        mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() { //탭 색상 변경
+            @Override
+            public void onTabChanged(String tabId) {
+                setTabColor();
+            }
+        });
+
         initData();
         Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_light);
 
@@ -142,6 +150,13 @@ public class NoteFragment extends Fragment {
                     }
                 }));
         return view;
+    }
+
+    private void setTabColor() {
+        for(int i=0;i< mTabHost.getTabWidget().getChildCount();i++) {
+            mTabHost.getTabWidget().getChildAt(i).setBackgroundColor(getResources().getColor(R.color.never_forgotten)); //선택되지 않은 탭
+        }
+        mTabHost.getTabWidget().getChildAt(mTabHost.getCurrentTab()).setBackgroundColor(getResources().getColor(R.color.pale_gold)); //선택된 탭
     }
 
     public void onBackPressed(){
