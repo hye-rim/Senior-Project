@@ -142,7 +142,10 @@ public class workerLogin extends Thread{
                             index++;
                         }
                     }
+
+                    //등록문장 + 녹음문장 + 해석문장 번호만 받고! 탭에서 누를 때 문장내용 받기
                 }
+
                 Log.d(TAG, "id : " + mPacketUser.userId);
                 Log.d(TAG,"name : " + mPacketUser.name);
                 Log.d(TAG,"joinDate : " + mPacketUser.joinDate);
@@ -152,8 +155,11 @@ public class workerLogin extends Thread{
                 check = (char) inData[4];
                 checkLength = (char) inData[3];
 
-                if (check == '0' || checkLength != '1')
+                if (check == '0' || checkLength != '1'){
                     isPlay = !isPlay;
+                    dis.close();
+                }
+
 
             }catch(IOException e){
                 e.printStackTrace();

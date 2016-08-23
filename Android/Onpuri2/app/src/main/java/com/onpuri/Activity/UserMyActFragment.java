@@ -1,6 +1,5 @@
 package com.onpuri.Activity;
 
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -76,7 +75,7 @@ public class UserMyActFragment extends Fragment {
         userId = extra.getString("ActId");
 
         tv_userId = (TextView)view.findViewById(R.id.tv_act_name);
-        tv_userId.setText(userId + " 님");
+        tv_userId.setText("     " + userId + " 님");
 
         mFragmentManager = getFragmentManager();
         mItemFrame = (FrameLayout)view.findViewById(R.id.my_act_item);
@@ -95,12 +94,6 @@ public class UserMyActFragment extends Fragment {
         mTabHost.addTab(mTabHost.newTabSpec("tab_3")
                 .setIndicator("해석문장")
                 .setContent(R.id.tab_act_translate));
-
-        /*
-        for(int i=0;i<mTabHost.getTabWidget().getChildCount();i++){
-            mTabHost.getTabWidget().getChildAt(i)
-                    .setBackgroundColor(Color.parseColor("#FFAA78"));
-        }*/
 
         setTabColor(); //탭 색상 지정
         mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() { //탭 색상 변경
