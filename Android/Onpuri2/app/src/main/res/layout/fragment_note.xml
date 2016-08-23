@@ -20,6 +20,7 @@
 
             <TabWidget
                 android:id="@android:id/tabs"
+                android:background="@color/never_forgotten"
                 android:tabStripEnabled="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

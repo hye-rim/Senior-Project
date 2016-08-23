@@ -307,7 +307,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void logout() {
-        outThreadCheck(); //스레드 중지 후 재시작
+        outThreadCheck(); //스레드 중지 후 재시작 함수
 
         if (setting.getBoolean("autoLogin", false)) {
             editor.clear();

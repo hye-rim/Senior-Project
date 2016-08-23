@@ -49,12 +49,6 @@ public class UserMyActFragment extends Fragment {
     private FrameLayout mItemFrame;
     private FragmentManager mFragmentManager;
 
-    private CustomOnClickListener customLister;
-    public interface CustomOnClickListener {
-        public void onClicked(int id);
-    }
-
-
     public static UserMyActFragment newInstance() {
         UserMyActFragment fragment = new UserMyActFragment();
         return fragment;
@@ -102,10 +96,19 @@ public class UserMyActFragment extends Fragment {
                 .setIndicator("해석문장")
                 .setContent(R.id.tab_act_translate));
 
+        /*
         for(int i=0;i<mTabHost.getTabWidget().getChildCount();i++){
             mTabHost.getTabWidget().getChildAt(i)
                     .setBackgroundColor(Color.parseColor("#FFAA78"));
-        }
+        }*/
+
+        setTabColor(); //탭 색상 지정
+        mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() { //탭 색상 변경
+            @Override
+            public void onTabChanged(String tabId) {
+                setTabColor();
+            }
+        });
 
         initData();
 
@@ -161,6 +164,13 @@ public class UserMyActFragment extends Fragment {
 
 
         return view;
+    }
+
+    public void setTabColor() {
+        for(int i=0;i< mTabHost.getTabWidget().getChildCount();i++) {
+            mTabHost.getTabWidget().getChildAt(i).setBackgroundColor(getResources().getColor(R.color.never_forgotten)); //선택되지 않은 탭
+        }
+        mTabHost.getTabWidget().getChildAt(mTabHost.getCurrentTab()).setBackgroundColor(getResources().getColor(R.color.pale_gold)); //선택된 탭
     }
 
     private void initData() {

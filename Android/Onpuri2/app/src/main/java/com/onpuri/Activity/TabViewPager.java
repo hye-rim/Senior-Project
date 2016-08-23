@@ -30,9 +30,7 @@ public class TabViewPager extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        /**
-         *Inflate tab_layout and setup Views.
-         */
+        //Inflate tab_layout and setup Views.
         View x = inflater.inflate(R.layout.tab_layout, null);
         tabLayout = (TabLayout) x.findViewById(R.id.tabs);
         viewPager = (ViewPager) x.findViewById(R.id.viewpager);
@@ -40,9 +38,7 @@ public class TabViewPager extends Fragment {
         userId = null;
         userId = getArguments().getString("UserId");
 
-        /**
-         *Set an Apater for the View Pager
-         */
+        // Set an Apater for the View Pager
         viewPager.setAdapter(new MyAdapter(getChildFragmentManager()));
 
         /**

@@ -12,28 +12,27 @@ import java.io.IOException;
 /**
  * Created by kutemsys on 2016-08-18.
  */
-public class workerSentenceList extends Thread {
+public class workerSentenceList extends Thread {//홈 문장 10개씩 서버에서 불러오는 쓰레드
     private static final String TAG = "workerSentenceList";
-    private boolean isPlay = false;
+    private boolean isPlay = false; //플래그
+
     int i, j;
 
     DataOutputStream dos;
     DataInputStream dis;
-    byte[] outData = new byte[261];
-    byte[] inData = new byte[261];
-    byte[] senData = new byte[20];
+    byte[] outData = new byte[261]; //나가는 데이터
     byte[] sen = new byte[261];
     byte[] info = new byte[20];
 
     PacketUser userSentence;
     int sentence_num;
-    int count, num=0;
-    private Boolean sentenceEnd = false;
+    int count, num; //서버로부터 받은 문장의 수
+    private Boolean sentenceEnd = false; //문장의 끝인지 여부
 
-    public workerSentenceList(boolean isPlay,PacketUser userSentence, int sentence_num) {
-        this.isPlay = isPlay;
-        this.userSentence = userSentence;
-        this.sentence_num = sentence_num;
+    public workerSentenceList(boolean isPlay, PacketUser userSentence, int sentence_num) { //생성자 함수
+        this.isPlay = isPlay; //true여야 시작한다.
+        this.userSentence = userSentence; //문장 정보
+        this.sentence_num = sentence_num; //받은 문장 수
     }
 
     public int getSentence_num() {
@@ -67,7 +66,7 @@ public class workerSentenceList extends Thread {
             outData[2] = (byte) PacketUser.getSEQ();
             outData[3] = (byte) PacketUser.USR_MSL_LEN;
             outData[4] = (byte) sNum; //255이하일 때 1
-            outData[5] = (byte) sNumN; //255이하일 때 몫 + 1\
+            outData[5] = (byte) sNumN; //255이하일 때 몫 + 1
             outData[6] = (byte) PacketUser.CRC;
 
             try {
@@ -78,32 +77,39 @@ public class workerSentenceList extends Thread {
 
                 num = 0;
                 while (num < 10) {
+                    byte[] inData = new byte[500];
+                    byte[] senData = new byte[20];
+
                     //문장
                     dis.read(sen, 0, 4);
                     for (i = 0; i < 4; i++) {
                         inData[i] = sen[i];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
                     }
-
                     Log.d(TAG, "num : " + num);
+                    Log.d(TAG, "opc : " + inData[1]);
                     Log.d(TAG, "len : " + inData[3]);
 
-                    if(inData[1] == PacketUser.ACK_UMS){
+                    if(inData[1] == PacketUser.ACK_UMS ){
                         //문장 데이터
                         PacketUser.sentence_len = ((int) inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);
                         dis.read(sen, 0, (1 + PacketUser.sentence_len));
-                        for (j = 0; j <  PacketUser.sentence_len; j++) {
+                        for (j = 0; j <  PacketUser.sentence_len; j++) { //문장내용
                             inData[j + 4] = sen[j];
                         }
+                        Log.d(TAG, "jjjjjjjjjjjjjjjjjjjjjjjjj : " + j);
+                        String sen = new String (inData, 4, PacketUser.sentence_len); //문장
+                        Log.d(TAG, "sen : " + sen);
+
                         //문장번호+해석수+듣기수
                         dis.read(info, 0, 4);
                         for (j = 0; j < 4; j++) {
                             senData[j] = info[j];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
                         }
-                        
-                        Log.d(TAG, "info : " + info[0]);
-                        Log.d(TAG, "info : " + info[1]);
-                        Log.d(TAG, "info : " + info[2]);
-                        Log.d(TAG, "info : " + info[3]);
+
+                        Log.d(TAG, "info0 : " + info[0]);
+                        Log.d(TAG, "info1 : " + info[1]);
+                        Log.d(TAG, "info2 : " + info[2]);
+                        Log.d(TAG, "info3 : " + info[3]);
                         Log.d(TAG, "infosof : " + senData[0]);
                         Log.d(TAG, "infoopc : " + senData[1]);
                         Log.d(TAG, "infoseq : " + senData[2]);
@@ -111,25 +117,30 @@ public class workerSentenceList extends Thread {
 
                         //문장번호+해석수+듣기수 데이터
                         int len = (int) senData[3];
-                        dis.read(info, 0, (1 + len));
+                        if(len > 20)
+                        {
+                            Log.d("경식오빠사랑","요시 그란도 시즌");
+                        }
+                        /*
+                        dis.read(info);
+
                         for (j = 0; j <= len; j++) {
                             senData[j+4] = info[j];
                         }
-
-                        String sen = new String (inData, 4, PacketUser.sentence_len); //문장
-                        Log.d(TAG, "sen : " + sen);
 
                         String seninfo = new String(senData, 4, len);
                         Log.d(TAG, "seninfo : " + seninfo);
 
                         int plus = seninfo.indexOf('+');
-                        String senNum = seninfo.substring(0, 3); //문장번호
-                        String transNum = "00"; //해석수
-                        String ListenNum = "00"; //듣기수
-                     /*   seninfo = seninfo.substring(plus + 1, seninfo.length());
+                        String senNum = seninfo.substring(0,plus); //문장번호
+                        seninfo = seninfo.substring(plus+1,seninfo.length());
                         plus = seninfo.indexOf('+');
                         String transNum = seninfo.substring(0, plus); //해석수
-                        String ListenNum = seninfo.substring(plus + 1, seninfo.length() - 1); //듣기수*/
+                        String ListenNum = seninfo.substring(plus+1, seninfo.length()-1); //듣기수
+*/
+                        String senNum = "00";
+                        String transNum = "00";
+                        String ListenNum = "00";
 
                         userSentence.setSentence(sen);
                         userSentence.setSentenceNum(senNum);
@@ -139,9 +150,9 @@ public class workerSentenceList extends Thread {
                         sentence_num++;
                         num++;
                     }
-                    else if(inData[1] == PacketUser.ACK_NSEN){
-                        count=num;
-                        sentenceEnd = true;
+                    else if(inData[1] == PacketUser.ACK_NSEN){ //더이상 문장이 없을 경우
+                        count = num; //현재까지 서버에서 받은 문장 수를 count에 저장
+                        sentenceEnd = true;  //문장의 끝임을 표시
                         break;
                     }
                 }
