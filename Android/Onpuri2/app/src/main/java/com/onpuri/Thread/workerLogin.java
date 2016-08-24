@@ -100,7 +100,6 @@ public class workerLogin extends Thread{
                         }
                     }
 
-
                     while (true) { //이름
                         if ((char) (inData[4 + index]) == '+') {
                             index++;
@@ -157,15 +156,10 @@ public class workerLogin extends Thread{
 
                 if (check == '0' || checkLength != '1'){
                     isPlay = !isPlay;
-                    dis.close();
                 }
-
-
             }catch(IOException e){
                 e.printStackTrace();
             }
-
-
         }
     }
 }
