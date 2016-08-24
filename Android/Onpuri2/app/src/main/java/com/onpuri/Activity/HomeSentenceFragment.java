@@ -143,8 +143,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 new HomeItemClickListener(getActivity().getApplicationContext(), TransRecyclerView ,new HomeItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        System.out.println("num : " + num);
-                        if(position < num) {
+                        if(position < count) {
                             final TransDetailFragment tdf = new TransDetailFragment();
                             FragmentManager fm = getActivity().getSupportFragmentManager();
 
@@ -179,8 +178,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 new HomeItemClickListener(getActivity().getApplicationContext(), ListenRecyclerView ,new HomeItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        toast = Toast.makeText(getActivity(), position + "번째 클릭", Toast.LENGTH_SHORT);
-                        toast.show();
+                        Toast.makeText(getActivity(), position + "번째 클릭", Toast.LENGTH_SHORT).show();
                     }
                     public void onLongItemClick(View view, int position) {
                     }
@@ -219,12 +217,12 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 fm.popBackStack();
                                 ft.commit();
-                                toast = Toast.makeText(getActivity(), "삭제되었습니다(구현예정)", Toast.LENGTH_SHORT);
+                                Toast.makeText(getActivity(), "삭제되었습니다(구현예정)", Toast.LENGTH_SHORT).show();
                             }
                         })
                         .setNegativeButton("취소", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dlg, int sumthin) {
-                                toast = Toast.makeText(getActivity(), "취소되었습니다", Toast.LENGTH_SHORT);
+                                Toast.makeText(getActivity(), "취소되었습니다", Toast.LENGTH_SHORT).show();
                             }
 
                         }).show();
@@ -305,10 +303,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
         }
     }
     private void listen() {
-        for (int i = 0; i < 3; i++) {
-            list_listen.add("구현중");
-        }
-
+        list_listen.add("구현중");
     }
 
     class WorkerTrans extends Thread {

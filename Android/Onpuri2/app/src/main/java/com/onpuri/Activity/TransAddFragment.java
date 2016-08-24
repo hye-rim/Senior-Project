@@ -1,6 +1,8 @@
 package com.onpuri.Activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -91,20 +93,39 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
     }
     @Override
     public void onClick(View v) {
-        FragmentManager fm = getActivity().getSupportFragmentManager();
-        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+        final FragmentManager fm = getActivity().getSupportFragmentManager();
+        final FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
 
         switch (v.getId()) {
             case R.id.btn_new_trans:
-                Addtranslation();
-                toast = Toast.makeText(getActivity(), "등록되었습니다", Toast.LENGTH_SHORT);
-                toast.show();
-                fm.popBackStack();
-                ft.commit();
-                break;
+            new AlertDialog.Builder(getActivity())
+                    .setTitle("해석을 등록하시겠습니까?\n등록후에는 수정이 불가능합니다.")
+                    .setPositiveButton("네", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            Addtranslation();
+                            Toast.makeText(getActivity(), "등록되었습니다.", Toast.LENGTH_SHORT).show();
+                            fm.popBackStack();
+                            ft.commit();
+                        }
+                    })
+                    .setNegativeButton("아니오", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dlg, int sumthin) {
+                        }
+                    }).show();
+            break;
             case R.id.btn_new_trans_back:
-                fm.popBackStack();
-                ft.commit();
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("해석 등록을 취소하시겠습니까?\n작성중인 내용이 전부 사라집니다.")
+                        .setPositiveButton("네", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                fm.popBackStack();
+                                ft.commit();
+                            }
+                        })
+                        .setNegativeButton("아니오", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dlg, int sumthin) {
+                            }
+                        }).show();
                 break;
         }
     }

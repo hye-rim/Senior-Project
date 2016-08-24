@@ -109,8 +109,8 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
 
     @Override
     public void onClick(View v) {
-        FragmentManager fm = getActivity().getSupportFragmentManager();
-        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+        final FragmentManager fm = getActivity().getSupportFragmentManager();
+        final FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
 
         switch (v.getId()) {
             case R.id.listen:
@@ -138,7 +138,7 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
 
             case R.id.play:
                 if(!Isstart) {
-                    toast = Toast.makeText(getActivity(), "진행된 녹음이 없습니다", Toast.LENGTH_SHORT);
+                    toast = Toast.makeText(getActivity(), "저장된 녹음이 없습니다", Toast.LENGTH_SHORT);
                     toast.show();
                     break;
                 }
@@ -158,15 +158,36 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
                 break;
 
             case R.id.btn_new_listen:
-                AddListen();
-                fm.popBackStack();
-                ft.commit();
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("녹음을 등록하시겠습니까?")
+                        .setPositiveButton("네", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                AddListen();
+                                Toast.makeText(getActivity(), "등록되었습니다.", Toast.LENGTH_SHORT).show();
+                                fm.popBackStack();
+                                ft.commit();
+                            }
+                        })
+                        .setNegativeButton("아니오", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dlg, int sumthin) {
+                            }
+                        }).show();
                 break;
 
             case R.id.btn_new_listen_back:
-                fm.popBackStack();
-                ft.commit();
-                break;
+            new AlertDialog.Builder(getActivity())
+                    .setTitle("녹음 등록을 취소하시겠습니까?")
+                    .setPositiveButton("네", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            fm.popBackStack();
+                            ft.commit();
+                        }
+                    })
+                    .setNegativeButton("아니오", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dlg, int sumthin) {
+                        }
+                    }).show();
+            break;
         }
     }
 
@@ -377,7 +398,6 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
                         outData[6+i] = (byte) filesize.charAt(i);
                         System.out.println(outData[6+i]);
                     }
-                    System.out.println("음성파일");
                     for(int j=0; j< fileSize; j++) {
                         outData[(6+filesize.length())+j]=buffer[j];
                         //      System.out.println(outData[(6+filesize.length())+j]);

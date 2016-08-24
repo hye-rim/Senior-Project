@@ -37,7 +37,7 @@ import static com.onpuri.R.drawable.divider_dark;
 public class ListenMoreFragment extends Fragment implements View.OnClickListener, TextToSpeech.OnInitListener {
     private static final String TAG = "ListenMoreFragment";
     private static View view;
-    private Toast toast;
+
     ArrayList<String> list_listen;
 
     TextView item;
@@ -107,14 +107,12 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
                                         final FragmentTransaction ft = getFragmentManager().beginTransaction();
                                         fm.popBackStack();
                                         ft.commit();
-                                        toast = Toast.makeText(getActivity(), "삭제되었습니다(구현예정)", Toast.LENGTH_SHORT);
-                                        toast.show();
+                                        Toast.makeText(getActivity(), "삭제되었습니다(구현예정)", Toast.LENGTH_SHORT).show();
                                     }
                                 })
                                 .setNegativeButton("취소", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dlg, int sumthin) {
-                                        toast = Toast.makeText(getActivity(), "취소되었습니다", Toast.LENGTH_SHORT);
-                                        toast.show();
+                                        Toast.makeText(getActivity(), "취소되었습니다", Toast.LENGTH_SHORT).show();
                                     }
 
                                 }).show();

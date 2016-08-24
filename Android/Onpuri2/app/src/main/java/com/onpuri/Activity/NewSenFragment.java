@@ -17,6 +17,8 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.text.InputFilter;
@@ -104,15 +106,35 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_new_sen:
-                Addsentence();
-                Toast.makeText(getActivity(), "등록되었습니다.", Toast.LENGTH_SHORT).show();
-                sen.setText("");
-                viewPager.setCurrentItem(1);
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("문장을 등록하시겠습니까?\n등록후에는 수정이 불가능합니다.")
+                        .setPositiveButton("네", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                Addsentence();
+                                Toast.makeText(getActivity(), "등록되었습니다.", Toast.LENGTH_SHORT).show();
+                                sen.setText("");
+                                viewPager.setCurrentItem(1);
+                            }
+                        })
+                        .setNegativeButton("아니오", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dlg, int sumthin) {
+                            }
+                        }).show();
                 break;
 
             case R.id.btn_new_sen_back:
-                sen.setText("");
-                viewPager.setCurrentItem(1);
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("문장 등록을 취소하시겠습니까?\n작성중인 내용이 전부 사라집니다.")
+                        .setPositiveButton("네", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                sen.setText("");
+                                viewPager.setCurrentItem(1);
+                            }
+                        })
+                        .setNegativeButton("아니오", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dlg, int sumthin) {
+                            }
+                        }).show();
                 break;
 
             case R.id.btn_new_picture:
