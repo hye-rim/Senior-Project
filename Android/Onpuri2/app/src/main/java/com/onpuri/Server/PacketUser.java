@@ -16,25 +16,35 @@ public class PacketUser extends Application {
     static public char ACK_UCK = 8, ACK_UCK_LEN = 1;
     public static char USR_REG = 9 , USR_REG_LEN;
     static public char ACK_URG = 10, ACK_URG_LEN = 1;
+
     static public char USR_MSL = 11, USR_MSL_LEN = 2; //홈 문장리스트 (user main sentence list) , 크기
     static public char ACK_UMS = 12, ACK_UMS_LEN = 1; //홈 문자리스트 응답 (ack user main sentence)
-    static public char USR_SEN = 13; //요청 문장(request sentence)
-    static public char ACK_SEN = 14; //request sentence ACK
+
+    static public char USR_SENTRNAS = 13; //3 translation
+    static public char ACK_SENTRNAS = 14; //translation ACK
     static public char ACK_NTRANS = 15; // no translation
     static public char USR_MTRANS = 16; //more translation
     static public char USR_ATRANS = 17; //add translation
     static public char ACK_ATRANS = 18; //add translation ACK
-    static public char ACK_NLISTEN = 19; // no recoder
-    static public char USR_MLISTEN = 20; //more recoder
-    static public char USR_ALISTEN = 21; //add recoder
-    static public char ACK_ALISTEN = 22; //add recoder ACK
+
+    static public char USR_SENLISTEN = 20; //3 recoder
+    static public char ACK_SENLISTEN = 21; //3 recoder ACK
+    static public char ACK_NLISTEN = 22; // no recoder
+    static public char USR_MLISTEN = 23; //more recoder
+    static public char USR_ALISTEN = 24; //add recoder
+    static public char ACK_ALISTEN = 25; //add recoder ACK
+
+
     static public char USR_SEARCH = 30; //검색 문장,단어 (search)
     static public char ACK_SEARCH = 31; //검색 문장 응답(search ACK)
     static public char ACK_NSEARCH = 32; //검색 문장 결과 없을 때 (no search ACK)
+
     static public char USR_ASEN = 40; //add sentence
     static public char ACK_ASEN = 41; //add sentence ACK
+
     static public char USR_CHANGE = 50; //내정보 변경
     static public char ACK_CHANGE = 51; //ACK 내정보 변경
+
     static public char ACK_NSEN = 90; //홈 문장 리스트 없을 경우(no sentence ACK)
     static public char USR_LEV = 99; //회원 탈퇴(user leave)
     static public char ACK_LEV = 100; //회원 탈퇴 응답(user leave ACK)

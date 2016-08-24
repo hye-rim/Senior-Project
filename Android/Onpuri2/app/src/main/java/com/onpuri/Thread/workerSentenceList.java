@@ -89,6 +89,7 @@ public class workerSentenceList extends Thread {//홈 문장 10개씩 서버에�
                     dis.read(sen, 0, 4);
                     for (i = 0; i < 4; i++) {
                         inData[i] = sen[i];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
+                        System.out.println(sen[i] + "/");
                     }
                     Log.d(TAG, "num : " + num);
 

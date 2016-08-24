@@ -207,7 +207,7 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
         try {
             mRecorder.prepare();
         } catch(IOException e) {
-            Log.d("tag", "Record Prepare error");
+            Log.d(TAG, "Record Prepare error");
         }
         mRecorder.start();
     }
