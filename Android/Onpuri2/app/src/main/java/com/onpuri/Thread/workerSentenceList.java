@@ -141,6 +141,8 @@ public class workerSentenceList extends Thread {//홈 문장 10개씩 서버에�
                     else if(inData[1] == PacketUser.ACK_NSEN){ //더이상 문장이 없을 경우
                         count = num; //현재까지 서버에서 받은 문장 수를 count에 저장
                         sentenceEnd = true;  //문장의 끝임을 표시
+                        dis.read(sen, 0, 1 + inData[3]);
+
                         break;
                     }
                 }

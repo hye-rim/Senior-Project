@@ -47,17 +47,13 @@ public class SearchFragment extends Fragment {
     private static View view;
     private TextToSpeech tts;
     private ImageButton btn_listen;
-    private TextView tv_sen, tv_word, tv_word_title;
+    private TextView tv_word, tv_word_title;
     private ListView list;
 
-    String searchText;
+    String searchText, wordMean;
     private workerSearch mworker_search;
     ArrayList<String> searchList = new ArrayList<String>();
     ArrayList<String> sentenceNumList = new ArrayList<String>();
-
-    public ArrayList<String> arrDictionary;
-    BufferedReader reader;
-    String searchWord;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -138,62 +134,9 @@ public class SearchFragment extends Fragment {
             }
         });
 
-        tv_word.setMovementMethod(new ScrollingMovementMethod());
-        searchWord("dictionary.txt");
-
         return view;
     }
 
-
-    public void searchWord(String fileName) {
-
-        arrDictionary = new ArrayList<String>();
-
-        try {
-            InputStream is = getActivity().getAssets().open(fileName);
-            reader = new BufferedReader(new InputStreamReader(is,"euc-kr"));
-            String line = reader.readLine();
-            while(line != null){
-                line = reader.readLine();
-                arrDictionary.add(line);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        ArrayList listSearch = new ArrayList<String>();
-        String matchStr = "(?i)" + searchText +" = .*";
-
-        for (String string : arrDictionary) {
-            if(string != null) {
-                if (string.matches(matchStr)) {
-                    Log.d(TAG, "string : " + string);
-                    listSearch.add(string);
-                }
-            }
-        }
-
-        matchStr = "(?i)" + searchText +".*";
-        if(listSearch.isEmpty()){
-            for (String string : arrDictionary) {
-                if(string != null) {
-                    if (string.matches(matchStr)) {
-                        Log.d(TAG, "string : " + string);
-                        listSearch.add(string);
-                    }
-                }
-            }
-        }
-
-        searchWord = "";
-        if(listSearch.size() >= 3 )
-            searchWord = (String) listSearch.get(0) + (String) listSearch.get(1) + (String) listSearch.get(2);
-        else
-            searchWord = (String) listSearch.get(0);
-
-        searchWord = searchWord.replaceFirst( searchText+" = ", "");
-        tv_word.setText(searchWord);
-    }
 
     public void loadSearchData(){
         if (mworker_search != null && mworker_search.isAlive()) {  //이미 동작하고 있을 경우 중지
@@ -207,13 +150,27 @@ public class SearchFragment extends Fragment {
             e.printStackTrace();
         }
 
-        int i = 0;
-        while( i < mworker_search.getUserSentence().arrSentence.size()) {
-            searchList.add(mworker_search.getUserSentence().arrSentence.get(i));
-            sentenceNumList.add(mworker_search.getUserSentence().arrSentenceNum.get(i));
-            Log.d(TAG, mworker_search.getUserSentence().arrSentence.get(i));
-            i++;
+        //단어
+        if( mworker_search.getUserWord().isEmpty() == false ){
+            wordMean = mworker_search.getUserWord();
+            wordMean = wordMean.replaceAll("[?]", "\n"); //?일 때 줄바꿈
+            tv_word.setText(wordMean);
+
+        }else{
+            tv_word.setText("  검색 결과가 없습니다..");
         }
+
+        //문장
+        int i = 0;
+        if( mworker_search.getUserSentence().arrSentence != null) {
+            while (i < mworker_search.getUserSentence().arrSentence.size()) {
+                searchList.add(mworker_search.getUserSentence().arrSentence.get(i));
+                sentenceNumList.add(mworker_search.getUserSentence().arrSentenceNum.get(i));
+                Log.d(TAG, mworker_search.getUserSentence().arrSentence.get(i));
+                i++;
+            }
+        }
+
     }
 
     public void onPause(){

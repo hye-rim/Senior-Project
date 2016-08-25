@@ -38,8 +38,8 @@ public class PacketUser extends Application {
     static final public char USR_SEARCH = 30; //검색 문장,단어 (search)
     static final public char ACK_WORSER = 31; //검색 단어 응답
     static final public char ACK_NWORSER = 32; //검색 단어 결과 없을 때
-    static final public char ACK_STRSER = 33; //검색 문장 응답
-    static final public char ACK_NSTRSER = 34; //검색 문장 결과 없을 때
+    static final public char ACK_SENSER = 33; //검색 문장 응답
+    static final public char ACK_NSENSER = 34; //검색 문장 결과 없을 때
 
     static final public char USR_ASEN = 40; //add sentence
     static final public char ACK_ASEN = 41; //add sentence ACK
