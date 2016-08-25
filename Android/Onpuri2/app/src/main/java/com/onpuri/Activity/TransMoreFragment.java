@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -127,23 +128,35 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
                         ft.commit();
                     }
                     public void onLongItemClick(View view, int position) {
-                        new AlertDialog.Builder(getActivity())
-                                .setTitle("선택한 해석을 삭제하시겠습니까?")
-                                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int whichButton) {
-                                        final FragmentManager fm = getActivity().getSupportFragmentManager();
-                                        final FragmentTransaction ft = getFragmentManager().beginTransaction();
-                                        fm.popBackStack();
-                                        ft.commit();
-                                        Toast.makeText(getActivity(), "삭제되었습니다(구현예정)", Toast.LENGTH_SHORT).show();
-                                    }
-                                })
-                                .setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dlg, int sumthin) {
-                                        Toast.makeText(getActivity(), "취소되었습니다", Toast.LENGTH_SHORT).show();
-                                    }
+                        Log.d(TAG,list_userid.get(position));
+                        if (list_userid.get(position) == "Admin") {
+                            Log.d(TAG, "true");
+                            new AlertDialog.Builder(getActivity())
+                                    .setTitle("본인이 등록한 문장만 삭제가능합니다.")
+                                    .setNeutralButton("확인", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int whichButton) {}
+                                    }).show();
+                        }
+                        else {
+                            Log.d(TAG, "false");
+                            new AlertDialog.Builder(getActivity())
+                                    .setTitle("선택한 해석을 삭제하시겠습니까?")
+                                    .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int whichButton) {
+                                            final FragmentManager fm = getActivity().getSupportFragmentManager();
+                                            final FragmentTransaction ft = getFragmentManager().beginTransaction();
+                                            fm.popBackStack();
+                                            ft.commit();
+                                            Toast.makeText(getActivity(), "삭제되었습니다(구현예정)", Toast.LENGTH_SHORT).show();
+                                        }
+                                    })
+                                    .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dlg, int sumthin) {
+                                            Toast.makeText(getActivity(), "취소되었습니다", Toast.LENGTH_SHORT).show();
+                                        }
 
-                                }).show();
+                                    }).show();
+                        }
                     }
                 })
         );
@@ -246,7 +259,7 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
                             inData[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
                         }
 
-                        if (inData[1] == PacketUser.ACK_SEN) {
+                        if (inData[1] == PacketUser.ACK_SENTRNAS) {
                             //해석 읽어오기
                             dis.read(temp, 0, 1 + (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]));
                             for (index = 0; index <= (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]); index++) {

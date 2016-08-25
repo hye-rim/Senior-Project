@@ -20,6 +20,7 @@ public class workerSentenceList extends Thread {//홈 문장 10개씩 서버에�
 
     DataOutputStream dos;
     DataInputStream dis;
+    byte[] outData = new byte[261]; //나가는 데이터
     byte[] sen = new byte[261];
     byte[] info = new byte[20];
 
@@ -57,7 +58,6 @@ public class workerSentenceList extends Thread {//홈 문장 10개씩 서버에�
     public void run() {
         super.run();
         while (isPlay) {
-            byte[] outData = new byte[261]; //나가는 데이터
             int sNum = sentence_num/255 + 1;
             int sNumN = sentence_num%255 + 1;
 
@@ -82,36 +82,34 @@ public class workerSentenceList extends Thread {//홈 문장 10개씩 서버에�
 
                     for (i = 0; i < 261; i++)
                         inData[i] = 0;
-                    for( i = 0; i < 20; i++)
+                    for( i = 0; i< 20; i++)
                         senData[i] = 0;
 
                     //문장
                     dis.read(sen, 0, 4);
                     for (i = 0; i < 4; i++) {
                         inData[i] = sen[i];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
+                        System.out.println(sen[i] + "/");
                     }
                     Log.d(TAG, "num : " + num);
 
-                    //문장 데이터
-                    PacketUser.sentence_len = ((int) inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);
+                    if(inData[1] == PacketUser.ACK_UMS){
+                        //문장 데이터
+                        PacketUser.sentence_len = ((int) inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);
 
-                    dis.read(sen, 0, (1 + PacketUser.sentence_len));
-                    for (j = 0; j <  PacketUser.sentence_len; j++) { //문장내용
-                        inData[j + 4] = sen[j];
-                    }
+                        dis.read(sen, 0, (1 + PacketUser.sentence_len));
+                        for (j = 0; j <  PacketUser.sentence_len; j++) { //문장내용
+                            inData[j + 4] = sen[j];
+                        }
+                        Log.d(TAG, "inData" + "  " +inData[0] + "  " + inData[1] + "  " + PacketUser.sentence_len + "  " + sen[PacketUser.sentence_len]);
+                        String sen = new String (inData, 4, PacketUser.sentence_len); //문장
+                        Log.d(TAG, "sen : " + sen);
 
-                    Log.d(TAG, "inData" + "  " +inData[0] + "  " + inData[1] + "  " + PacketUser.sentence_len + "  " + sen[PacketUser.sentence_len]);
-
-                    String sen = new String (inData, 4, PacketUser.sentence_len); //문장
-                    Log.d(TAG, "sen : " + sen);
-
-                    if(inData[1] == PacketUser.ACK_UMS ){
                         //문장번호+해석수+듣기수
                         dis.read(info, 0, 4);
                         for (j = 0; j < 4; j++) {
                             senData[j] = info[j];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
                         }
-
                         Log.d(TAG, "info" +  "  " +info[0] + "  " + info[1] + "  " +info[3]);
 
                         //문장번호+해석수+듣기수 데이터
@@ -122,7 +120,6 @@ public class workerSentenceList extends Thread {//홈 문장 10개씩 서버에�
                             senData[j+4] = info[j];
                         }
                         Log.d(TAG, "senData" + "  " +senData[0] + "  " + senData[1] + "  " +senData[3] + "  " + senData[len+4]);
-
                         String seninfo = new String(senData, 4, len);
                         Log.d(TAG, "seninfo : " + seninfo);
 
@@ -132,7 +129,6 @@ public class workerSentenceList extends Thread {//홈 문장 10개씩 서버에�
                         plus = seninfo.indexOf('+');
                         String transNum = seninfo.substring(0, plus); //해석수
                         String ListenNum = seninfo.substring(plus+1, seninfo.length()-1); //듣기수
-
 
                         userSentence.setSentence(sen);
                         userSentence.setSentenceNum(senNum);
