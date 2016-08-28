@@ -72,6 +72,7 @@ public class TabViewPager extends Fragment {
             switch (position) {
                 case 0:
                     NoteRootFragment tab1 = new NoteRootFragment();
+
                     return tab1;
 
                 case 1:

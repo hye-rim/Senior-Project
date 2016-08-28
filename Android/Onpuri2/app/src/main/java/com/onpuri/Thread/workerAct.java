@@ -59,19 +59,6 @@ public class workerAct extends Thread {
         return actTransSentence;
     }
 
-    public Boolean getActEnd() {
-        return actEnd;
-    }
-    public Boolean getEnrlEnd() {
-        return enrlEnd;
-    }
-    public Boolean getRecEnd() {
-        return recEnd;
-    }
-    public Boolean getTransEnd() {
-        return transEnd;
-    }
-
     public void run() {
         super.run();
         while (isPlay) {

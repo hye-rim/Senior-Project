@@ -206,12 +206,13 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
 
                 break;
             case R.id.add_note:
-                final CharSequence[] items = {"노트1", "노트2", "노트3"};
+                final CharSequence[] items = {"노트1", "노트2", "노트3"}; //받아오기
                 new AlertDialog.Builder(getActivity())
                         .setTitle("노트를 선택해 주세요(구현 예정)")
                         .setItems(items, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int index) {
                                 Toast.makeText(getActivity(), items[index] + "선택", Toast.LENGTH_SHORT).show();
+                                //서버로 패킷 전송 ->
                             }
                         })
                         .setNegativeButton("취소", new DialogInterface.OnClickListener() {
