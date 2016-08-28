@@ -65,8 +65,11 @@ public class PacketUser extends Application {
     static final public char USR_NOTE_DEL = 67; //내노트 이름 삭제
     static final public char ACK_NOTE_DEL = 68; //ACK 내노트 이름 삭제 - 실패 0, 성공 1
 
+    static final public char USR_NOTE_ITEM_ADD = 69; //내노트에 문장,단어 추가
+    static final public char ACK_NOTE_ITEM_ADD = 70; //ACK 내노트에 문장,단어 추가
 
-
+    static final public char USR_NOTE_LOAD = 71; //해당 노트 문장or단어 리스트 받아오기
+    static final public char ACK_NOTE_LOAD = 72; //ACK 해당 노트 문장or단어 리스트 받아오기
 
     static final public char ACK_NSEN = 90; //홈 문장 리스트 없을 경우(no sentence ACK)
     static final public char USR_LEV = 99; //회원 탈퇴(user leave)

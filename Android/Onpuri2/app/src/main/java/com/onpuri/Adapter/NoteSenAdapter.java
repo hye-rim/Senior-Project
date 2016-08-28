@@ -69,6 +69,26 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             super(v);
             mSenItem = (TextView) v.findViewById(R.id.note_sen_item);
             mSenMore = (ImageButton) v.findViewById(R.id.btn_sen_more);
+            mSenItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    originalName = noteSenList.get(getPosition()).getName();
+/*
+                    NoteSenFragment noteSenItem = new NoteSenFragment();
+                    FragmentManager fm = context.getSupportFragmentManager();
+
+                    Bundle args = new Bundle();
+                    args.putString("senItemName", originalName );
+                    noteSenItem.setArguments(args);
+                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                    ft.replace(R.id.root_note, noteSenItem)
+                            .addToBackStack(null)
+                            .commit();
+                    fm.executePendingTransactions();
+*/
+                }
+            });
+
             mSenMore.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
