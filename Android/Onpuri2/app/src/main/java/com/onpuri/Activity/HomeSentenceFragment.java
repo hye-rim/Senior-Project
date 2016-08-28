@@ -2,9 +2,13 @@ package com.onpuri.Activity;
 
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.os.Environment;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -30,8 +34,12 @@ import com.onpuri.R;
 import com.onpuri.Thread.workerTrans;
 import com.onpuri.Thread.workerListen;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
+
 
 import static com.onpuri.R.drawable.divider_dark;
 
@@ -39,11 +47,12 @@ import static com.onpuri.R.drawable.divider_dark;
 /**
  * Created by kutemsys on 2016-05-11.
  */
-public class HomeSentenceFragment extends Fragment implements View.OnClickListener, TextToSpeech.OnInitListener {
+public class HomeSentenceFragment extends Fragment implements View.OnClickListener, TextToSpeech.OnInitListener, MediaRecorder.OnInfoListener {
 
     private static final String TAG = "HomeSentenceFragment";
     private workerTrans worker_sentence_trans;
     private workerListen worker_sentence_listen;
+    private static final int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 1;
 
     private static View view;
 
@@ -51,16 +60,23 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
     ArrayList<String> list_trans_userid;
     ArrayList<String> list_trans_day;
     ArrayList<String> list_trans_reco;
+    ArrayList<String> list_trans_num;
 
     ArrayList<String> list_listen;
+    ArrayList<String> list_listen_file;
     ArrayList<String> list_listen_userid;
     ArrayList<String> list_listen_day;
     ArrayList<String> list_listen_reco;
+    ArrayList<String> list_listen_num;
+    ArrayList<String> list_filename;;
 
     TextView item;
     String sentence = "";
     String sentence_num = "";
     TextToSpeech tts;
+
+    MediaPlayer mPlayer = null;
+    MediaRecorder mRecorder = null;
 
     private RecyclerView TransRecyclerView;
     private SenTransListAdapter TransAdapter;
@@ -83,7 +99,14 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
         list_trans_userid = new ArrayList<String>();
         list_trans_day = new ArrayList<String>();
         list_trans_reco = new ArrayList<String>();
+        list_trans_num = new ArrayList<String>();
+
         list_listen = new ArrayList<String>();
+        list_listen_file = new ArrayList<String>();
+        list_listen_userid = new ArrayList<String>();
+        list_listen_day = new ArrayList<String>();
+        list_listen_reco = new ArrayList<String>();
+        list_listen_num = new ArrayList<String>();
 
         item = (TextView) view.findViewById(R.id.tv_sentence);
         if (getArguments() != null) { //클릭한 문장 출력
@@ -130,6 +153,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                             args.putString("userid", list_trans_userid.get(position));
                             args.putString("day", list_trans_day.get(position));
                             args.putString("reco", list_trans_reco.get(position));
+                            args.putString("num", list_trans_num.get(position));
                             tdf.setArguments(args);
 
                             fm.beginTransaction()
@@ -138,8 +162,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                                     .commit();
                         }
                     }
-                    public void onLongItemClick(View view, int position) {
-                    }
+                    public void onLongItemClick(View view, int position) {}
                 })
         );
 
@@ -155,10 +178,9 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 new HomeItemClickListener(getActivity().getApplicationContext(), ListenRecyclerView ,new HomeItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        Toast.makeText(getActivity(), position + "번째 클릭", Toast.LENGTH_SHORT).show();
+                        //PlayFile(list_filename.get(position));
                     }
-                    public void onLongItemClick(View view, int position) {
-                    }
+                    public void onLongItemClick(View view, int position) {}
                 })
         );
         ListenRecyclerView.addItemDecoration(new DividerItemDecoration(dividerDrawable));
@@ -274,22 +296,24 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
         list_trans_userid.clear();
         list_trans_day.clear();
         list_trans_reco.clear();
+        list_trans_num.clear();
 
         for (int i = 0; i < worker_sentence_trans.getCount(); i++) {
             list_trans.add(worker_sentence_trans.getTrans().get(i).toString());
             list_trans_userid.add(worker_sentence_trans.getUserid().get(i).toString());
             list_trans_day.add(worker_sentence_trans.getDay().get(i).toString());
             list_trans_reco.add(worker_sentence_trans.getReco().get(i).toString());
+            list_trans_num.add(worker_sentence_trans.getTransnum().get(i).toString());
         }
     }
 
     private void listen() {
-        list_listen.add("구현중");
-        /*if(worker_sentence_listen != null && worker_sentence_listen.isAlive()){
+        if(worker_sentence_listen != null && worker_sentence_listen.isAlive()){
             worker_sentence_listen.interrupt();
         }
         worker_sentence_listen = new workerListen(true, sentence_num);
         worker_sentence_listen.start();
+
         try {
             worker_sentence_listen.join();
         } catch (InterruptedException e) {
@@ -300,12 +324,72 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
         list_listen_userid.clear();
         list_listen_day.clear();
         list_listen_reco.clear();
+        list_listen_num.clear();
 
         for (int i = 0; i < worker_sentence_listen.getCount(); i++) {
-            list_listen.add(worker_sentence_listen.getListen().get(i).toString());
+            list_listen.add("Listen "+ worker_sentence_listen.getListennum().get(i).toString());
+            list_listen_file.add(worker_sentence_listen.getListen().get(i).toString());
             list_listen_userid.add(worker_sentence_listen.getUserid().get(i).toString());
             list_listen_day.add(worker_sentence_listen.getDay().get(i).toString());
             list_listen_reco.add(worker_sentence_listen.getReco().get(i).toString());
-        }*/
+            list_listen_num.add(worker_sentence_listen.getListennum().get(i).toString());
+        }
+    }
+
+    //파일 경로
+  /*  public static synchronized String GetFilePath(String filename) {
+        Log.d(TAG, "GetFilePath");
+        String sdcard = Environment.getExternalStorageState();
+        File file = null;
+
+        if ( !sdcard.equals(Environment.MEDIA_MOUNTED)) { file = Environment.getRootDirectory(); }
+        else { file = Environment.getExternalStorageDirectory(); }
+
+        String dir = file.getAbsolutePath() + String.format("/Daily E");
+        String path = file.getAbsolutePath() + String.format("/Daily E/record %s.mp3", filename);
+
+        file = new File(dir);
+        if ( !file.exists() ) {
+            file.mkdirs();
+        }
+        Log.d(TAG, "GetFilePath : " + path);
+
+        return path;
+    }*/
+ /*   public void PlayFile(String filename) {
+        Log.d(TAG, "PlayFile");
+        String path = GetFilePath(filename);
+
+        if( mPlayer != null ) {
+            mPlayer.stop();
+            mPlayer.release();
+            mPlayer = null;
+        }
+        mPlayer = new MediaPlayer();
+
+        try {
+            mPlayer.setDataSource(path);
+            mPlayer.prepare();
+        } catch(IOException e) {
+            Log.d(TAG, "Audio Play error");
+            return;
+        }
+        mPlayer.start();
+    }*/
+
+    private void StopFile() {
+        mRecorder.stop();
+        mRecorder.reset();
+        mRecorder.release();
+    }
+
+    @Override
+    public void onInfo(MediaRecorder mr, int what, int extra) {
+        switch( what ) {
+            case MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED :
+            case MediaRecorder.MEDIA_RECORDER_INFO_MAX_FILESIZE_REACHED :
+                StopFile();
+                break;
+        }
     }
 }

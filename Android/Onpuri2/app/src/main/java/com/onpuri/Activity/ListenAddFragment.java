@@ -57,7 +57,6 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
     byte[] outData;
     byte[] temp = new byte[261];
     byte[] inData = new byte[261];
-    byte[] reData = new byte[261];
 
     private static View view;
     private Toast toast;
@@ -256,6 +255,7 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
         else {
             file = Environment.getExternalStorageDirectory();
         }
+
         SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat( "MMdd_HHmmss", Locale.KOREA );
         Date currentTime = new Date ( );
         String mTime = mSimpleDateFormat.format ( currentTime );
@@ -396,18 +396,16 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
 
                     for(int i=0; i<filesize.length(); i++) {
                         outData[6+i] = (byte) filesize.charAt(i);
-                        System.out.println(outData[6+i]);
                     }
+
                     for(int j=0; j< fileSize; j++) {
                         outData[(6+filesize.length())+j]=buffer[j];
-                  //      System.out.println(outData[(6+filesize.length())+j]);
                     }
+
                     outData[(6+filesize.length())+fileSize]= (byte) PacketUser.CRC;
 
                     dos.write(outData, 0, (7+filesize.length())+fileSize);
-                    for(int z=0; z<10; z++) {
-                        System.out.println(outData[z]);
-                    }
+
                     dos.flush();
                     fis.close();
 
@@ -429,4 +427,3 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
         }
     }
 }
-//http://installed.tistory.com/entry/Network-%ED%8C%8C%EC%9D%BC%EC%A0%84%EC%86%A1-%E2%85%A3

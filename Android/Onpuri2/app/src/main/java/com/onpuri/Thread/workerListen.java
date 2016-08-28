@@ -1,5 +1,6 @@
 package com.onpuri.Thread;
 
+import android.os.Environment;
 import android.util.Log;
 
 import com.onpuri.Server.PacketUser;
@@ -7,6 +8,8 @@ import com.onpuri.Server.SocketConnection;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,17 +25,17 @@ public class workerListen extends Thread {
 
     DataOutputStream dos;
     DataInputStream dis;
-    byte[] outData = new byte[261];
-    byte[] inData = new byte[261];
-    byte[] info = new byte[261];
-    byte[] temp = new byte[261];
+    byte[] outData = new byte[20];
+    byte[] recordbyte;
 
     String sentence_num;
     int count;
+
     List listen = new ArrayList();
     List userid = new ArrayList();
     List day = new ArrayList();
     List reco = new ArrayList();
+    List listennum = new ArrayList();
 
     public int getCount() { return count;}
     public List getListen() { return listen;}
@@ -45,6 +48,10 @@ public class workerListen extends Thread {
     public List getReco() {
         return reco;
     }
+    public List getListennum() {
+        return listennum;
+    }
+
 
     public workerListen(boolean isPlay, String sentence_num) {
         this.isPlay = isPlay;
@@ -62,7 +69,6 @@ public class workerListen extends Thread {
                 outData[i] = (byte) sentence_num.charAt(i - 4);
             }
             outData[4 + sentence_num.length()] = (byte) 85;
-            Log.d(TAG, "opc : " + outData[1]);
 
             try {
                 dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
@@ -72,69 +78,79 @@ public class workerListen extends Thread {
 
                 int num = 0;
                 while (num < 3) {
-                    dis.read(temp, 0, 4);
-                    for (index = 0; index < 4; index++) {
-                        inData[index] = temp[index];
-                    }
-                    int listen_len = (int) inData[3];
-                    Log.d(TAG, "opc : " + inData[1]);
+                    //패킷1
+                    byte[] inData = new byte[10];
+                    dis.read(inData, 0, 4);
+                    int listen_lennum = (int) inData[3];
 
                     if (inData[1] == PacketUser.ACK_SENLISTEN) {
-                        //음성 읽어오기
-                        dis.read(temp, 0, 1+(listen_len));
-                        for (index = 0; index <= 1+(listen_len); index++) {
-                            inData[index + 4] = temp[index];
+                        //음성파일 크기 읽어오기
+                        dis.read(inData, 0, listen_lennum);
+                        String listenLen = new String(inData, 0, listen_lennum);
+                        int listen_len = Integer.parseInt(listenLen);
+                        Log.d(TAG, "len : " + listen_len);
+
+                        //음성파일 읽어오기
+                        recordbyte = new byte[listen_len];
+                        inData = new byte[(listen_len)+1];
+
+                        int readPacket = 0;
+                        while(readPacket < (listen_len+1)) {
+                            int readVal = dis.read(inData, readPacket, ((listen_len + 1) - readPacket));
+                            readPacket += readVal;
                         }
 
-                        index = 0;
-                        int i = 0;
-                        byte[] listenbyte = new byte[261];
-
-                        while (true) {
-                            if (index == listen_len)
-                                break;
-                            else {
-                                listenbyte[i] += inData[4 + index];
-                                index++;
-                                i++;
-                            }
+                        for (index = 0; index < listen_len; index++) {
+                            recordbyte[index] = inData[index];
                         }
-                        listen.add(new String(listenbyte, 0, i)); //해석
+                        listen.add(new String(recordbyte)); //듣기
 
-                        //아이디-날짜-추천수 읽어오기
-                        dis.read(temp, 0, 4);
-                        for (index = 0; index < 4; index++) {
-                            info[index] = temp[index];
-                        }
-                        int len = (int) info[3];
-                        dis.read(temp, 0, (1 + len));
-                        for (index = 0; index <= len; index++) {
-                            info[index + 4] = temp[index];
+                        //패킷2
+                        byte[] infoData = new byte[10];
+                        dis.read(infoData, 0, 4);
+                        int len = (int) infoData[3];
+
+                        // 아이디-날짜-추천수-듣기번호 읽어오기
+                        byte[] listeninfobyte = new byte[len];
+                        infoData = new byte[len];
+
+                        dis.read(infoData, 0, len);
+                        for (index = 0; index < len; index++) {
+                            listeninfobyte[index] = infoData[index];
                         }
 
-                        index = 0;
-                        int j = 0;
-                        byte[] listeninfobyte = new byte[261];
-
-                        while (true) {
-                            if (index == len)
-                                break;
-                            else {
-                                listeninfobyte[j] += info[4 + index];
-                                index++;
-                                j++;
-                            }
-                        }
-                        String listeninfo = new String(listeninfobyte, 0, j);
-                        Log.d(TAG,listeninfo);
+                        String listeninfo = new String(listeninfobyte, 0, len);
                         int plus = listeninfo.indexOf('+');
                         userid.add(listeninfo.substring(0, plus)); //아이디
                         day.add(listeninfo.substring(plus + 1, plus + 11)); //날짜
-                        reco.add(listeninfo.substring(plus + 12, listeninfo.length() - 1)); //추천수
+                        listeninfo = listeninfo.substring(plus+12);
+                        plus = listeninfo.indexOf('+');
+                        reco.add(listeninfo.substring(0, plus)); //추천수
+                        plus = listeninfo.indexOf('+');
+                        listennum.add(listeninfo.substring(plus+1, (listeninfo.length()-1))); //해석번호
+
+                        FileOutputStream fos;
+                        String path = Environment.getExternalStorageDirectory().getAbsolutePath()+"/Daily E";
+                        File file = new File(path);
+
+                        if(!file.exists())
+                            file.mkdirs();
+
+                        String filename = listennum.get(num)+"listen.mp3";
+                        file = new File(path +"/"+ filename);
+
+                        try {
+                            fos = new FileOutputStream(file);
+                            fos.write(recordbyte);
+                            fos.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
                         num++;
                         count=num;
                     }
-                    else if (inData[1] == PacketUser.ACK_NTRANS) {
+                    else if (inData[1] == PacketUser.ACK_NLISTEN) {
                         count=num;
                         break;
                     } else {
@@ -142,7 +158,7 @@ public class workerListen extends Thread {
                         break;
                     }
                 }
-                dis.read(temp);
+
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -97,11 +97,16 @@ public class workerSentenceList extends Thread {//홈 문장 10개씩 서버에�
                         //문장 데이터
                         PacketUser.sentence_len = ((int) inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);
 
-                        dis.read(sen, 0, (1 + PacketUser.sentence_len));
+                        int readPacket = 0;
+                        while(readPacket < (PacketUser.sentence_len+1)) {
+                            int readVal = dis.read(sen, readPacket, ((PacketUser.sentence_len + 1) - readPacket));
+                            readPacket += readVal;
+                        }
+
                         for (j = 0; j <  PacketUser.sentence_len; j++) { //문장내용
                             inData[j + 4] = sen[j];
                         }
-                        Log.d(TAG, "inData" + "  " +inData[0] + "  " + inData[1] + "  " + PacketUser.sentence_len + "  " + sen[PacketUser.sentence_len]);
+
                         String sen = new String (inData, 4, PacketUser.sentence_len); //문장
                         Log.d(TAG, "sen : " + sen);
 
@@ -110,7 +115,6 @@ public class workerSentenceList extends Thread {//홈 문장 10개씩 서버에�
                         for (j = 0; j < 4; j++) {
                             senData[j] = info[j];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
                         }
-                        Log.d(TAG, "info" +  "  " +info[0] + "  " + info[1] + "  " +info[3]);
 
                         //문장번호+해석수+듣기수 데이터
                         int len = (int) senData[3];
@@ -141,6 +145,7 @@ public class workerSentenceList extends Thread {//홈 문장 10개씩 서버에�
                     else if(inData[1] == PacketUser.ACK_NSEN){ //더이상 문장이 없을 경우
                         count = num; //현재까지 서버에서 받은 문장 수를 count에 저장
                         sentenceEnd = true;  //문장의 끝임을 표시
+                        dis.read(sen, 0, 1 + inData[3]);
                         break;
                     }
                 }

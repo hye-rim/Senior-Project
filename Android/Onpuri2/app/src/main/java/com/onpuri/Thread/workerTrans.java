@@ -71,7 +71,7 @@ public class workerTrans extends Thread {
                 outData[i] = (byte) sentence_num.charAt(i - 4);
             }
             outData[4 + sentence_num.length()] = (byte) 85;
-            Log.d(TAG, "opc : " + outData[1]);
+
 
             try {
                 dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
@@ -85,6 +85,8 @@ public class workerTrans extends Thread {
                     for (index = 0; index < 4; index++) {
                         transData[index] = temp[index];
                     }
+
+                    Log.d(TAG, "opc : " + transData[1]);
                     int trans_len = ((int) transData[3] <= 0 ? (int) transData[3] + 256 : (int) transData[3]);
 
                     if (transData[1] == PacketUser.ACK_SENTRNAS) {
@@ -107,7 +109,6 @@ public class workerTrans extends Thread {
                                 i++;
                             }
                         }
-
                         trans.add(new String(transbyte, 0, i)); //해석
 
                         //아이디-날짜-추천수-해석번호 읽어오기
@@ -134,7 +135,6 @@ public class workerTrans extends Thread {
                                 j++;
                             }
                         }
-
                         String transinfo = new String(transinfobyte, 0, j);
                         int plus = transinfo.indexOf('+');
                         userid.add(transinfo.substring(0, plus)); //아이디

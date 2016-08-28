@@ -21,13 +21,13 @@ public class PacketUser extends Application {
     static public char ACK_UMS = 12, ACK_UMS_LEN = 1; //홈 문자리스트 응답 (ack user main sentence)
 
     static public char USR_SENTRNAS = 13; //3 translation
-    static public char ACK_SENTRNAS = 14; //translation ACK
+    static public char ACK_SENTRNAS = 14; //USR_SENLISTENtranslatiUSR_SENLISTENon ACK
     static public char ACK_NTRANS = 15; // no translation
     static public char USR_MTRANS = 16; //more translation
     static public char USR_ATRANS = 17; //add translation
     static public char ACK_ATRANS = 18; //add translation ACK
 
-    static public char USR_SENLISTEN = 20; //3 recoder
+    static public char USR_SENLISTEN = 20, USR_SENLISTEN_LEN = 2; //3 recoder
     static public char ACK_SENLISTEN = 21; //3 recoder ACK
     static public char ACK_NLISTEN = 22; // no recoder
     static public char USR_MLISTEN = 23; //more recoder

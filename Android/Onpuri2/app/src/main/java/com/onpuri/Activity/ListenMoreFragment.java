@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,10 +26,16 @@ import com.onpuri.Listener.EndlessRecyclerOnScrollListener;
 import com.onpuri.Listener.HomeItemClickListener;
 import com.onpuri.Adapter.ListenListAdapter;
 import com.onpuri.R;
+import com.onpuri.Server.PacketUser;
+import com.onpuri.Server.SocketConnection;
 
 import org.w3c.dom.Text;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import static com.onpuri.R.drawable.divider_dark;
@@ -39,6 +46,10 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
     private static View view;
 
     ArrayList<String> list_listen;
+    ArrayList<String> list_userid;
+    ArrayList<String> list_day;
+    ArrayList<String> list_reco;
+    ArrayList<String> list_num;
 
     TextView item;
     String sentence = "";
@@ -62,8 +73,10 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
         }
 
         list_listen = new ArrayList<String>();
-        list_listen.add(0,"none");
-        list_listen.add(1,"none");
+        list_userid = new ArrayList<String>();
+        list_day = new ArrayList<String>();
+        list_reco = new ArrayList<String>();
+        list_num = new ArrayList<String>();
 
         item = (TextView) view.findViewById(R.id.tv_sentence);
         if (getArguments() != null) { //클릭한 문장 출력
@@ -71,6 +84,7 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
             sentence_num=getArguments().getString("sen_num");
             item.setText(sentence);
         }
+        listen();
 
         ImageButton tts_sen = (ImageButton) view.findViewById(R.id.tts);
         tts_sen.setOnClickListener(this);
@@ -86,11 +100,6 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
         RecyclerView.setLayoutManager(LayoutManager);
         Adapter = new ListenListAdapter(list_listen, RecyclerView);
         RecyclerView.setAdapter(Adapter);// Set CustomAdapter as the adapter for RecyclerView.
-        RecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener((LinearLayoutManager) LayoutManager) {
-            @Override
-            public void onLoadMore(int current_page){};
-        });
-
         RecyclerView.addOnItemTouchListener(
                 new HomeItemClickListener(getActivity().getApplicationContext(), RecyclerView ,new HomeItemClickListener.OnItemClickListener() {
                     @Override
@@ -119,11 +128,14 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
                     }
                 })
         );
+
         Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_dark);
         RecyclerView.addItemDecoration(new DividerItemDecoration(dividerDrawable));
 
         return view;
     }
+
+    private void listen(){}
 
     @Override
     public void onDestroy() {
