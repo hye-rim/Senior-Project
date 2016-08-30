@@ -38,7 +38,6 @@ public class workerListen extends Thread {
     List listennum = new ArrayList();
 
     public int getCount() { return count;}
-    public List getListen() { return listen;}
     public List getUserid() {
         return userid;
     }
@@ -83,6 +82,7 @@ public class workerListen extends Thread {
                     dis.read(inData, 0, 4);
                     int listen_lennum = (int) inData[3];
 
+                    Log.d(TAG, "opc1 : " + inData[1]);
                     if (inData[1] == PacketUser.ACK_SENLISTEN) {
                         //음성파일 크기 읽어오기
                         dis.read(inData, 0, listen_lennum);
@@ -112,9 +112,9 @@ public class workerListen extends Thread {
 
                         // 아이디-날짜-추천수-듣기번호 읽어오기
                         byte[] listeninfobyte = new byte[len];
-                        infoData = new byte[len];
+                        infoData = new byte[len+1];
 
-                        dis.read(infoData, 0, len);
+                        dis.read(infoData, 0, (len+1));
                         for (index = 0; index < len; index++) {
                             listeninfobyte[index] = infoData[index];
                         }
@@ -138,7 +138,6 @@ public class workerListen extends Thread {
 
                         String filename = listennum.get(num)+"listen.mp3";
                         file = new File(path +"/"+ filename);
-                        Log.d("HomeSentenceFragment", "thread : " + path +"/"+ filename);
 
                         try {
                             fos = new FileOutputStream(file);
@@ -152,6 +151,7 @@ public class workerListen extends Thread {
                         count=num;
                     }
                     else if (inData[1] == PacketUser.ACK_NLISTEN) {
+                        dis.read(inData, 0, 2);
                         count=num;
                         break;
                     } else {
@@ -159,7 +159,6 @@ public class workerListen extends Thread {
                         break;
                     }
                 }
-
             } catch (IOException e) {
                 e.printStackTrace();
             }

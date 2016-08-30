@@ -84,7 +84,8 @@ public class workerNote extends Thread {
                         inData[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
                     }
 
-                    int end = (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);
+                    int end = (inData[3] <= 0 ? (int)
+                            inData[3] + 256 : (int) inData[3]);
 
                     dis.read(temp, 0, 1 + end);
                     for (index = 0; index <= end; index++) {

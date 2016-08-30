@@ -143,6 +143,7 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
                 if(!Isstart) {
                     break;
                 }
+
                 if (!Isplay) {
                     Isplay = true;
                     btn_play.setText("정지");

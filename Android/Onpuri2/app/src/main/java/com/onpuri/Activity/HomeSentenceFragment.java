@@ -126,7 +126,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
 
         translation();
         listen();
-        noteLoad();
+        //noteLoad();
 
         ImageButton tts_sen = (ImageButton) view.findViewById(R.id.tts);
         tts_sen.setOnClickListener(this);
