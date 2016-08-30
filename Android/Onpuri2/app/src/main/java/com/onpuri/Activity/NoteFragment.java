@@ -144,6 +144,9 @@ public class NoteFragment extends Fragment {
             e.printStackTrace();
         }
 
+        listSentence.clear();
+        listWord.clear();
+
         //문장 모음 리스트
         int i = 0;
         if(mworker_note.getNoteSen() != null){

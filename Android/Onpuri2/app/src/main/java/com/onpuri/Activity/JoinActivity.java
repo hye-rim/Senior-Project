@@ -83,30 +83,36 @@ public class JoinActivity extends Activity {
         btCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                worker_check = new workerIdCheck(true, et_newId.getText ().toString ());
-                worker_check.start();
+                boolean isNull =  et_newId.getText ().toString ().equals(null);
 
-                try {
-                    worker_check.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                if(!isNull) {
+                    worker_check = new workerIdCheck(true, et_newId.getText().toString());
+                    worker_check.start();
 
-                check = worker_check.getCheck();
+                    try {
+                        worker_check.join();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
 
-                //중복확인
-                if (check == '0') {
-                    Log.d(TAG, "check : " + check);
-                    checkID = 2;
+                    check = worker_check.getCheck();
+
+                    //중복확인
+                    if (check == '0') {
+                        Log.d(TAG, "check : " + check);
+                        checkID = 2;
+                        tv_compareId.setText("사용 불가능한 아이디입니다");
+                        et_newId.setText(null);
+                    } else if (check == '1') {
+                        checkID = 1;
+                        tv_compareId.setText("사용 가능한 아이디입니다");
+                    }
+
+                    if (worker_check != null && worker_check.isAlive()) {  //이미 동작하고 있을 경우 중지
+                        worker_check.interrupt();
+                    }
+                }else{
                     tv_compareId.setText("사용 불가능한 아이디입니다");
-                    et_newId.setText(null);
-                } else if (check == '1') {
-                    checkID = 1;
-                    tv_compareId.setText("사용 가능한 아이디입니다");
-                }
-
-                if(worker_check != null && worker_check.isAlive()){  //이미 동작하고 있을 경우 중지
-                    worker_check.interrupt();
                 }
             }
         });

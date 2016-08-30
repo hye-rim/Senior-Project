@@ -89,15 +89,19 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
         sen = (EditText) view.findViewById(R.id.sentence);
         sen.setFilters(new InputFilter[]{filterAlphaNum});
         sen.setPrivateImeOptions("defaultInputmode=english;");
+
         btn_ok = (Button)view.findViewById(R.id.btn_new_sen);
         btn_cancel = (Button)view.findViewById(R.id.btn_new_sen_back);
-        btn_gallery = (Button)view.findViewById(R.id.btn_new_picture);
-        btn_camera = (Button)view.findViewById(R.id.btn_new_camera);
-
         btn_ok.setOnClickListener(this);
         btn_cancel.setOnClickListener(this);
+
+        /*
+        btn_gallery = (Button)view.findViewById(R.id.btn_new_picture);
+        btn_camera = (Button)view.findViewById(R.id.btn_new_camera);
         btn_gallery.setOnClickListener(this);
         btn_camera.setOnClickListener(this);
+        */
+
 
         return view;
     }
@@ -137,6 +141,7 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
                         }).show();
                 break;
 
+            /*
             case R.id.btn_new_picture:
                 openGallery();
                 Toast.makeText(getActivity(), "텍스트 변환은 차후 추가 예정입니다.", Toast.LENGTH_SHORT).show();
@@ -150,6 +155,7 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
                 }
                 break;
 
+            */
             default:
                 break;
         }
@@ -167,7 +173,8 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
             return "";
         }
     };
-    
+
+    /*
     private void openGallery() {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
@@ -273,6 +280,8 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
             }
         }
     }
+    */
+
     private void Addsentence() {
         if(worker_add_sen != null && worker_add_sen.isAlive()){  //이미 동작하고 있을 경우 중지
             worker_add_sen.interrupt();

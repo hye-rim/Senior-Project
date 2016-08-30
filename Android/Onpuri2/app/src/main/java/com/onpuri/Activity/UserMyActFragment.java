@@ -184,6 +184,14 @@ public class UserMyActFragment extends Fragment {
             e.printStackTrace();
         }
 
+
+        listNew.clear();
+        listNewNum.clear();
+        listRecord.clear();
+        listRecordNum.clear();
+        listTrans.clear();
+        listTransNum.clear();
+
         int i = 0;
 
         if(mworker_act.getActNewSentence().arrSentence != null) {

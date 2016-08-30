@@ -94,11 +94,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
             id = et_loginId.getText().toString();
             password = et_loginPw.getText().toString();
 
-            if( check == '5' ){
-                validation = false;
-            }else{
-                validation = loginCorrect();
-            }
+            validation = loginCorrect();
 
             if(validation) {
                 Toast.makeText(getApplicationContext(), "Login Success", Toast.LENGTH_LONG).show();
@@ -165,15 +161,19 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         Log.d(TAG,"M phone : " + mPacketUser.phone);
         Log.d(TAG,"M nowPass : " + mPacketUser.nowPass);
 
-        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-        intent.putExtra("UserId", mPacketUser.userId);
-        intent.putExtra("Name", mPacketUser.name);
-        intent.putExtra("JoinDate", mPacketUser.joinDate);
-        intent.putExtra("Phone",mPacketUser.phone);
-        intent.putExtra("NowPass", mPacketUser.nowPass);
+        Intent loginToMain = new Intent(LoginActivity.this, MainActivity.class);
+        loginToMain.putExtra("UserId", mPacketUser.userId);
+        loginToMain.putExtra("Name", mPacketUser.name);
+        loginToMain.putExtra("JoinDate", mPacketUser.joinDate);
+        loginToMain.putExtra("Phone",mPacketUser.phone);
+        loginToMain.putExtra("NowPass", mPacketUser.nowPass);
 
-        startActivity(intent);
+        Log.d(TAG, "here");
+
+        startActivity(loginToMain);
         finish();
+
+        Log.d(TAG,"here");
     }
     @Override
     public void onClick(View v) {
@@ -186,6 +186,8 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                 startActivity(intent);
                 break;
             case R.id.btnLogin:
+                isLoginBtn = true;
+
                 if(loginChecked){
                     Log.d(TAG, "로그인");
                     String id = et_loginId.getText().toString();
@@ -205,10 +207,10 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                 pass = et_loginPw.getText().toString();
                 Boolean validation = loginCorrect();
 
-                isLoginBtn = true;
-
+                Log.d(TAG, validation + "in");
                 if(validation)
                     mainGo();
+                Log.d(TAG, validation + "out");
 
                 break;
         }
@@ -232,10 +234,10 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         check = mworker_login.getCheck();
         checkLength = mworker_login.getCheckLength();
 
-        if ( (check != '0' && check != '5') && checkLength != '1') {
+        if ( !mworker_login.isFail() ) {
             return true;
         }
-        else if( check == '5' || et_loginId.getText().equals(null)) {
+        else if( check == '5' || et_loginId.getText().equals("")) {
             Toast.makeText(getApplicationContext(), "ID와 비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -243,10 +245,9 @@ public class LoginActivity extends Activity implements View.OnClickListener {
             Toast.makeText(getApplicationContext(), "가입을 먼저 해주세요.", Toast.LENGTH_SHORT).show();
             return false;
         }
-        else if( check != '5' && isLoginBtn){
+        else if( mworker_login.isFail() && isLoginBtn){
             Toast.makeText(getApplicationContext(), "ID 또는 비밀번호가 틀렸습니다", Toast.LENGTH_SHORT).show();
             return false;
-
         }else{
             return false;
         }

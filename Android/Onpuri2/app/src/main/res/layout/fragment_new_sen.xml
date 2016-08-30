@@ -3,6 +3,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#faf5b3">
+    <!--
     <LinearLayout
         android:layout_marginTop="20dp"
         android:layout_marginLeft="20dp"
@@ -24,8 +25,8 @@
             android:layout_height="38dp"
             android:text="카메라"
             android:background="#FFAA78" />
-
     </LinearLayout>
+    -->
     <EditText
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
