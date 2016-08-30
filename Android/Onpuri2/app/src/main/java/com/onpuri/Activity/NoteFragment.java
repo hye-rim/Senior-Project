@@ -99,7 +99,7 @@ public class NoteFragment extends Fragment {
         //Set Sentence Adapter for Sentence RecyclerView (NoteTab)
         mRecyclerSen = (RecyclerView) view.findViewById(R.id.recycle_note_sen);
         mLayoutManager = new LinearLayoutManager(getActivity());
-        mSenAdapter = new NoteSenAdapter(listSentence, getContext(), getActivity().getSupportFragmentManager(), isNullSen);
+        mSenAdapter = new NoteSenAdapter(listSentence, getContext(), getActivity().getSupportFragmentManager(), isNullSen, mRecyclerSen);
         mRecyclerSen.setAdapter(mSenAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerSen.addItemDecoration(new DividerItemDecoration(dividerDrawable));
 
@@ -142,6 +142,9 @@ public class NoteFragment extends Fragment {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+        listSentence.clear();
+        listWord.clear();
 
         //문장 모음 리스트
         int i = 0;

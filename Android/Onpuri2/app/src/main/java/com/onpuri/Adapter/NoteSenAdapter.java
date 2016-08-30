@@ -60,7 +60,7 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     Boolean isNullSen;
 
-    public NoteSenAdapter(ArrayList<NoteData> listSentence, Context context, FragmentManager fragmentManager, Boolean isNullSen) {
+    public NoteSenAdapter(ArrayList<NoteData> listSentence, Context context, FragmentManager fragmentManager, Boolean isNullSen, RecyclerView mRecyclerSen) {
         noteSenList = new ArrayList<>();
         noteSenList.addAll(listSentence);
         isBtnClicked = false;
@@ -89,7 +89,7 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         noteSenItem.setArguments(args);
                         fm.beginTransaction()
                                 .replace(R.id.root_note, noteSenItem)
-                                .addToBackStack("fragBack")
+                                .addToBackStack(null)
                                 .commit();
                         fm.executePendingTransactions();
                     }
