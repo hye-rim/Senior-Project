@@ -76,14 +76,14 @@ public class workerTransMore extends Thread {
 
             try {
                 dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
-                dos.write(outData, 0, outData[3] + 5); // packet transmission
+                dos.write(outData, 0, outData[3]+5); // packet transmission
                 dos.flush();
                 dis = new DataInputStream(SocketConnection.socket.getInputStream());
 
                 int num=0;
                 while (true) {
+                    //패킷1
                     dis.read(temp, 0, 4);
-                    System.out.println("read");
                     for (index = 0; index < 4; index++) {
                         transData[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
                     }

@@ -162,6 +162,11 @@ public class HomeFragment extends Fragment {
         sentenceEnd = mworker_sentence.getSentenceEnd();
         userSentence = mworker_sentence.getUserSentence();
 
+        listSentence.clear();
+        listSentenceNum.clear();
+        listTransNum.clear();
+        listListenNum.clear();
+
         for (int i = 0; i < loadLimit; i++) {
             listSentence.add(userSentence.arrSentence.get(i));
             listSentenceNum.add(userSentence.arrSentenceNum.get(i));

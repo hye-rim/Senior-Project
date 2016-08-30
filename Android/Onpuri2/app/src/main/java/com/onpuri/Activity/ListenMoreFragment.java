@@ -1,6 +1,7 @@
 package com.onpuri.Activity;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
@@ -19,10 +20,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.onpuri.Adapter.TransListAdapter;
 import com.onpuri.DividerItemDecoration;
 import com.onpuri.Listener.EndlessRecyclerOnScrollListener;
 import com.onpuri.Listener.HomeItemClickListener;
@@ -63,7 +66,8 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
     String sentence_num = "";
     TextToSpeech tts;
 
-    MediaPlayer mPlayer = null;
+    private Context con;
+    private FragmentManager fm;
 
     private RecyclerView RecyclerView;
     private ListenListAdapter Adapter;
@@ -108,37 +112,8 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
         RecyclerView = (RecyclerView) view.findViewById(R.id.recycler_listen);
         LayoutManager = new LinearLayoutManager(getActivity());
         RecyclerView.setLayoutManager(LayoutManager);
-        Adapter = new ListenListAdapter(list_listen, list_userid, list_day, list_reco, RecyclerView);
+        Adapter = new ListenListAdapter(list_listen, list_userid, list_day, list_reco, list_num, con, fm, RecyclerView);
         RecyclerView.setAdapter(Adapter);// Set CustomAdapter as the adapter for RecyclerView.
-        RecyclerView.addOnItemTouchListener(
-                new HomeItemClickListener(getActivity().getApplicationContext(), RecyclerView ,new HomeItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        PlayFile(list_num.get(position));
-                    }
-
-                    @Override
-                    public void onLongItemClick(View view, int position) {
-                        new AlertDialog.Builder(getActivity())
-                                .setTitle("선택한 듣기를 삭제하시겠습니까?")
-                                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int whichButton) {
-                                        final FragmentManager fm = getActivity().getSupportFragmentManager();
-                                        final FragmentTransaction ft = getFragmentManager().beginTransaction();
-                                        fm.popBackStack();
-                                        ft.commit();
-                                        Toast.makeText(getActivity(), "삭제되었습니다(구현예정)", Toast.LENGTH_SHORT).show();
-                                    }
-                                })
-                                .setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dlg, int sumthin) {
-                                        Toast.makeText(getActivity(), "취소되었습니다", Toast.LENGTH_SHORT).show();
-                                    }
-
-                                }).show();
-                    }
-                })
-        );
 
         Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_dark);
         RecyclerView.addItemDecoration(new DividerItemDecoration(dividerDrawable));
@@ -147,6 +122,7 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
     }
 
     private void listen(){
+        Log.d(TAG,"listen");
         if (worker_listen_more != null && worker_listen_more.isAlive()) {  //이미 동작하고 있을 경우 중지
             worker_listen_more.interrupt();
         }
@@ -171,41 +147,6 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
             list_reco.add(worker_listen_more.getReco().get(i).toString());
             list_num.add(worker_listen_more.getListennum().get(i).toString());
         }
-    }
-
-    //파일 경로
-    public static synchronized String GetFilePath(String filenum) {
-        String sdcard = Environment.getExternalStorageState();
-        File file;
-
-        if ( !sdcard.equals(Environment.MEDIA_MOUNTED)) { file = Environment.getRootDirectory(); }
-        else { file = Environment.getExternalStorageDirectory(); }
-
-        String dir = file.getAbsolutePath();
-        String path = dir + "/Daily E/"+filenum+"listen.mp3";
-        Log.d(TAG, "GetFilePath : " + path);
-
-        return path;
-    }
-
-    public void PlayFile(String filenum) {
-        String path = GetFilePath(filenum);
-
-        if( mPlayer != null ) {
-            mPlayer.stop();
-            mPlayer.release();
-            mPlayer = null;
-        }
-        mPlayer = new MediaPlayer();
-
-        try {
-            mPlayer.setDataSource(path);
-            mPlayer.prepare();
-        } catch(IOException e) {
-            Log.d(TAG, "Audio Play error");
-            return;
-        }
-        mPlayer.start();
     }
 
     @Override
@@ -249,11 +190,6 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
             case R.id.tts:
                 tts.speak(sentence, TextToSpeech.QUEUE_FLUSH, null);
                 break;
-            case R.id.tv_reco_item:
-                mPlayer.pause();
-                Toast.makeText(getActivity(), "추천", Toast.LENGTH_SHORT).show();
-
-
         }
     }
 

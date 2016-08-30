@@ -38,7 +38,6 @@ public class workerListenMore extends Thread {
     List listennum = new ArrayList();
 
     public int getCount() { return count;}
-    public List getListen() { return listen;}
     public List getUserid() {
         return userid;
     }
@@ -58,11 +57,15 @@ public class workerListenMore extends Thread {
         this.sentence_num = sentence_num;
     }
 
+    public void stopThread() {
+        isPlay = !isPlay;
+    }
+
     public void run() {
         super.run();
         while (isPlay) {
             outData[0] = (byte) PacketUser.SOF;
-            outData[1] = (byte) PacketUser.USR_SENLISTEN;
+            outData[1] = (byte) PacketUser.USR_MLISTEN;
             outData[2] = (byte) PacketUser.getSEQ();
             outData[3] = (byte) sentence_num.length();
             for (int i = 4; i < 4 + sentence_num.length(); i++) {
@@ -76,13 +79,14 @@ public class workerListenMore extends Thread {
                 dos.flush();
                 dis = new DataInputStream(SocketConnection.socket.getInputStream());
 
-                int num = 0;
-                while (num < 3) {
+                int num=0;
+                while (true) {
                     //패킷1
                     byte[] inData = new byte[10];
                     dis.read(inData, 0, 4);
                     int listen_lennum = (int) inData[3];
 
+                    Log.d(TAG, "opc1 : " + inData[1]);
                     if (inData[1] == PacketUser.ACK_SENLISTEN) {
                         //음성파일 크기 읽어오기
                         dis.read(inData, 0, listen_lennum);
@@ -94,6 +98,7 @@ public class workerListenMore extends Thread {
                         recordbyte = new byte[listen_len];
                         inData = new byte[(listen_len)+1];
 
+                        Log.d(TAG, "read");
                         int readPacket = 0;
                         while(readPacket < (listen_len+1)) {
                             int readVal = dis.read(inData, readPacket, ((listen_len + 1) - readPacket));
@@ -109,12 +114,13 @@ public class workerListenMore extends Thread {
                         byte[] infoData = new byte[10];
                         dis.read(infoData, 0, 4);
                         int len = (int) infoData[3];
+                        Log.d(TAG, "opc2 : " + infoData[1]);
 
                         // 아이디-날짜-추천수-듣기번호 읽어오기
                         byte[] listeninfobyte = new byte[len];
-                        infoData = new byte[len];
+                        infoData = new byte[len+1];
 
-                        dis.read(infoData, 0, len);
+                        dis.read(infoData, 0, (len+1));
                         for (index = 0; index < len; index++) {
                             listeninfobyte[index] = infoData[index];
                         }
@@ -151,6 +157,7 @@ public class workerListenMore extends Thread {
                         count=num;
                     }
                     else if (inData[1] == PacketUser.ACK_NLISTEN) {
+                        dis.read(inData, 0, 2);
                         count=num;
                         break;
                     } else {
