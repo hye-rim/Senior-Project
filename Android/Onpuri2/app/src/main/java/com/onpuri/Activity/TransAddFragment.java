@@ -48,7 +48,6 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
     byte[] temp = new byte[261];
 
     private static View view;
-    private Toast toast;
 
     TextView item;
     String sentence="";
@@ -72,8 +71,8 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
 
         trans = (EditText) view.findViewById(R.id.new_trans);
         addTrans = trans.getText().toString();
-
         item = (TextView) view.findViewById(R.id.tv_sentence);
+
         if (getArguments() != null) { //클릭한 문장 출력
             sentence = getArguments().getString("sen");
             sentence_num=Integer.parseInt(getArguments().getString("sen_num"));

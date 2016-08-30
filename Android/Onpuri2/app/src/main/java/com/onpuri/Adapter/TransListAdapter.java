@@ -18,7 +18,7 @@ public class TransListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private ArrayList<String> dayList;
     private ArrayList<String> recoList;
 
-    public TransListAdapter(ArrayList<String> list_trans, ArrayList<String> list_day, ArrayList<String> list_reco,RecyclerView TransrecyclerView) {
+    public TransListAdapter(ArrayList<String> list_trans, ArrayList<String> list_day, ArrayList<String> list_reco, RecyclerView TransrecyclerView) {
         this.transList=list_trans;
         this.dayList=list_day;
         this.recoList=list_reco;

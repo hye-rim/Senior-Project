@@ -31,6 +31,7 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
     String userid="";
     String day="";
     String reco="";
+    String num="";
 
     TextView item_sen;
     TextView item_trans;
@@ -63,6 +64,7 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
             userid = getArguments().getString("userid");
             day = getArguments().getString("day");
             reco = getArguments().getString("reco");
+            num = getArguments().getString("num");
 
             item_sen.setText(sentence);
             item_trans.setText(trans);

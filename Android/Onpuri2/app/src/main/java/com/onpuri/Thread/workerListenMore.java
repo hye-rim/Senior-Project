@@ -15,10 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by kutemsys on 2016-08-24.
+ * Created by kutemsys on 2016-08-30.
  */
-public class workerListen extends Thread {
-    private static final String TAG = "workerListen";
+public class workerListenMore extends Thread {
+    private static final String TAG = "workerListenMore";
     private boolean isPlay = false;
 
     int index;
@@ -53,7 +53,7 @@ public class workerListen extends Thread {
     }
 
 
-    public workerListen(boolean isPlay, String sentence_num) {
+    public workerListenMore(boolean isPlay, String sentence_num) {
         this.isPlay = isPlay;
         this.sentence_num = sentence_num;
     }
@@ -138,7 +138,6 @@ public class workerListen extends Thread {
 
                         String filename = listennum.get(num)+"listen.mp3";
                         file = new File(path +"/"+ filename);
-                        Log.d("HomeSentenceFragment", "thread : " + path +"/"+ filename);
 
                         try {
                             fos = new FileOutputStream(file);

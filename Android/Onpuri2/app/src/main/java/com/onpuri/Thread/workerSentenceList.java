@@ -97,11 +97,16 @@ public class workerSentenceList extends Thread {//홈 문장 10개씩 서버에�
                         //문장 데이터
                         userSentence.sentence_len = ((int) inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);
 
-                        dis.read(sen, 0, (1 + userSentence.sentence_len));
+                        int readPacket = 0;
+                        while(readPacket < (userSentence.sentence_len+1)) {
+                            int readVal = dis.read(sen, readPacket, ((userSentence.sentence_len + 1) - readPacket));
+                            readPacket += readVal;
+                        }
+
                         for (j = 0; j <  userSentence.sentence_len; j++) { //문장내용
                             inData[j + 4] = sen[j];
                         }
-                        Log.d(TAG, "inData" + "  " +inData[0] + "  " + inData[1] + "  " + userSentence.sentence_len + "  " + sen[userSentence.sentence_len]);
+
                         String sen = new String (inData, 4, userSentence.sentence_len); //문장
                         Log.d(TAG, "sen : " + sen);
 
@@ -110,7 +115,6 @@ public class workerSentenceList extends Thread {//홈 문장 10개씩 서버에�
                         for (j = 0; j < 4; j++) {
                             senData[j] = info[j];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
                         }
-                        Log.d(TAG, "info" +  "  " +info[0] + "  " + info[1] + "  " +info[3]);
 
                         //문장번호+해석수+듣기수 데이터
                         int len = (int) senData[3];
