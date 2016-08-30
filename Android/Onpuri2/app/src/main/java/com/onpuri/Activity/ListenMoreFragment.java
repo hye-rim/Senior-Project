@@ -249,6 +249,11 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
             case R.id.tts:
                 tts.speak(sentence, TextToSpeech.QUEUE_FLUSH, null);
                 break;
+            case R.id.tv_reco_item:
+                mPlayer.pause();
+                Toast.makeText(getActivity(), "추천", Toast.LENGTH_SHORT).show();
+
+
         }
     }
 
