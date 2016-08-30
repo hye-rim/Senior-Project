@@ -18,10 +18,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.InflateException;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -89,6 +91,8 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
     private ArrayList<String> listNote;
     private workerNote mworker_note;
     private workerNoteItemAdd mworker_item_add;
+
+    private int num;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -216,8 +220,18 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
 
         switch (v.getId()) {
             case R.id.del_sen:
-                new AlertDialog.Builder(getActivity())
-                        .setTitle("문장을 삭제하시겠습니까?")
+                AlertDialog.Builder sentenceDel = new AlertDialog.Builder(getActivity());
+                sentenceDel.setTitle("문장을 삭제하시겠습니까?")
+                        .setOnKeyListener(new DialogInterface.OnKeyListener() {
+                            @Override
+                            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                                if(keyCode == KeyEvent.KEYCODE_BACK){
+                                    dialog.dismiss();
+                                    return true;
+                                }
+                                return false;
+                            }
+                        })
                         .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 fm.popBackStack();
@@ -235,18 +249,37 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 break;
             case R.id.add_note:
                 final String[] items = listNote.toArray(new String[listNote.size()]);
-                new AlertDialog.Builder(getActivity())
-                        .setTitle("노트를 선택해 주세요(구현 예정)")
-                        .setItems(items, new DialogInterface.OnClickListener() {
+                AlertDialog.Builder noteSelectDialog = new AlertDialog.Builder(getActivity());
+
+                noteSelectDialog.setTitle("노트를 선택해 주세요")
+                        .setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int index) {
-                                Toast.makeText(getActivity(), items[index] + "선택", Toast.LENGTH_SHORT).show();
-                                selectNote(items[index]);
+                                num = index;
+
+                                if( index == listNote.size() -1  ){
+                                    addNote();
+                                }else {
+                                    selectNote(items[index]);
+                                }
+                                dialog.cancel();
                             }
                         })
-                        .setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dlg, int sumthin) {
+                        .setOnKeyListener(new DialogInterface.OnKeyListener() {
+                    @Override
+                    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                            if(keyCode == KeyEvent.KEYCODE_BACK){
+                                dialog.dismiss();
+                                return true;
                             }
-                        }).show();
+                        return false;
+                    }
+                });
+
+                AlertDialog alert_dialog = noteSelectDialog.create();
+                alert_dialog.show();
+
+                // set defult select value
+                alert_dialog.getListView().setItemChecked(num, true);
                 break;
             case R.id.add_trans:
                 final TransAddFragment atf = new TransAddFragment();
@@ -419,9 +452,13 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 i++;
             }
         }
-        if(listNote.isEmpty()){
-            listNote.add("새로운 문장 모음 등록하기");
-        }
+
+        listNote.add("새로운 문장 모음 등록하기");
+
+    }
+
+    private void addNote() {
+        Toast.makeText(getActivity(), "기능 구현 예정입니다.", Toast.LENGTH_SHORT).show();
     }
 
     private void selectNote(String item) {

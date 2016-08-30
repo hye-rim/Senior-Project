@@ -26,7 +26,8 @@ public class NoteRootFragment extends Fragment {
 		 * When this container fragment is created, we fill it with our first
 		 * "real" fragment
 		 */
-        transaction.replace(R.id.root_note, new NoteFragment());
+        transaction.addToBackStack("fragBack")
+                .replace(R.id.root_note, new NoteFragment());
 
         transaction.commit();
 

@@ -211,22 +211,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) { //입력 완료 후 구현 부분
-                Toast.makeText(getApplicationContext(), "검색하는 데에 시간이 소요됩니다.", Toast.LENGTH_SHORT).show();
-                SearchFragment searchFragment = new SearchFragment();
-                FragmentManager fragmentManager = getSupportFragmentManager();
+                if(query.length() < 3) {
+                    Toast.makeText(getApplicationContext(), "입력하세요", Toast.LENGTH_SHORT).show();
+                } else {
+                    SearchFragment searchFragment = new SearchFragment();
+                    FragmentManager fragmentManager = getSupportFragmentManager();
 
-                Bundle args = new Bundle();
-                args.putString("searchText", query);
-                searchFragment.setArguments(args);
+                    Bundle args = new Bundle();
+                    args.putString("searchText", query);
+                    searchFragment.setArguments(args);
 
-                searchView.clearFocus();
+                    searchView.clearFocus();
 
-                fragmentManager.beginTransaction()
-                        .replace(R.id.root_home, searchFragment)
-                        .addToBackStack(null)
-                        .commit();
-                fragmentManager.executePendingTransactions();
-
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.root_home, searchFragment)
+                            .addToBackStack(null)
+                            .commit();
+                    fragmentManager.executePendingTransactions();
+                }
                 return true;
             }
 

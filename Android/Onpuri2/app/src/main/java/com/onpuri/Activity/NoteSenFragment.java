@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.onpuri.Adapter.NoteSenItemAdapter;
 import com.onpuri.DividerItemDecoration;
+import com.onpuri.Listener.RecyclerItemClickListener;
 import com.onpuri.R;
 import com.onpuri.Thread.workerNoteLoad;
 
@@ -52,6 +53,8 @@ public class NoteSenFragment extends Fragment implements View.OnClickListener {
     private Boolean isEdit = false;
     private workerNoteLoad mworker_note;
 
+    private Boolean isNullSen;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (view != null) {
@@ -64,6 +67,8 @@ public class NoteSenFragment extends Fragment implements View.OnClickListener {
         } catch (InflateException e) {
             //map is already there, just return view as it is
         }
+        isNullSen = false;
+
         mFragmentManager = getFragmentManager();
 
         tvItemName = (TextView)view.findViewById(R.id.note_sen_name);
@@ -80,6 +85,30 @@ public class NoteSenFragment extends Fragment implements View.OnClickListener {
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerSenItem.setAdapter(new NoteSenItemAdapter(itemSentence, isEdit));// Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerSenItem.addItemDecoration(new DividerItemDecoration(dividerDrawable));
+        mRecyclerSenItem.addOnItemTouchListener(
+                new RecyclerItemClickListener(getActivity().getApplicationContext(), mRecyclerSenItem, new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        if(isNullSen)
+                            Toast.makeText(getActivity().getApplicationContext(), itemName + "에 문장을 추가해보세요.", Toast.LENGTH_SHORT).show();
+                        else{
+                            HomeSentenceFragment homeSentenceFragment = new HomeSentenceFragment();
+                            FragmentManager fm = getActivity().getSupportFragmentManager();
+
+                            Bundle args = new Bundle();
+                            args.putString("sen", itemSentence.get(position));
+                            args.putString("sen_num", itemSentenceNum.get(position));
+                            homeSentenceFragment.setArguments(args);
+
+                            fm.beginTransaction()
+                                    .replace(R.id.root_home, homeSentenceFragment)
+                                    .addToBackStack(null)
+                                    .commit();
+                            fm.executePendingTransactions();
+                        }
+                    }
+
+                }));
 
         btn_listen = (Button)view.findViewById(R.id.note_sen_listen);
         btn_test = (Button)view.findViewById(R.id.note_sen_test);
@@ -111,6 +140,7 @@ public class NoteSenFragment extends Fragment implements View.OnClickListener {
         int i = 0;
 
         if(mworker_note.getNoteSentence().arrSentence != null) {
+            isNullSen = false;
             while (i < mworker_note.getNoteSentence().arrSentence.size()) {
                 itemSentence.add(mworker_note.getNoteSentence().arrSentence.get(i));
                 itemSentenceNum.add(mworker_note.getNoteSentence().arrSentenceNum.get(i));
@@ -119,6 +149,7 @@ public class NoteSenFragment extends Fragment implements View.OnClickListener {
             }
         }
         if(itemSentence.isEmpty()){
+            isNullSen = true;
             itemSentence.add("추가된 문장이 없습니다.");
         }
 
@@ -143,11 +174,14 @@ public class NoteSenFragment extends Fragment implements View.OnClickListener {
                 break;
 
             case R.id.note_sen_edit:
+                Toast.makeText(getActivity(),"기능 추가 예정입니다.",Toast.LENGTH_SHORT).show();
+                /*
                 isEdit = !isEdit;
                 mRecyclerSenItem.setAdapter(new NoteSenItemAdapter(itemSentence, isEdit));
 
                 if(isEdit)
                     Toast.makeText(getActivity(),"편집 모드 : " + String.valueOf(isEdit),Toast.LENGTH_SHORT).show();
+                    */
                 break;
 
             default:

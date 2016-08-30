@@ -16,6 +16,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.InflateException;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -161,6 +162,16 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
             case R.id.btn_new_listen:
                 new AlertDialog.Builder(getActivity())
                         .setTitle("녹음을 등록하시겠습니까?\n등록후에는 수정이 불가능합니다.")
+                        .setOnKeyListener(new DialogInterface.OnKeyListener() {
+                            @Override
+                            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                                if(keyCode == KeyEvent.KEYCODE_BACK){
+                                    dialog.dismiss();
+                                    return true;
+                                }
+                                return false;
+                            }
+                        })
                         .setPositiveButton("네", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 AddListen();
@@ -178,6 +189,16 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
             case R.id.btn_new_listen_back:
             new AlertDialog.Builder(getActivity())
                     .setTitle("녹음 등록을 취소하시겠습니까?\n녹음중인 내용이 전부 사라집니다.")
+                    .setOnKeyListener(new DialogInterface.OnKeyListener() {
+                        @Override
+                        public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                            if(keyCode == KeyEvent.KEYCODE_BACK){
+                                dialog.dismiss();
+                                return true;
+                            }
+                            return false;
+                        }
+                    })
                     .setPositiveButton("네", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
                             fm.popBackStack();

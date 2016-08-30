@@ -24,6 +24,8 @@ public class workerLogin extends Thread{
     private PacketUser mPacketUser;
     private String toServerDataUser;
 
+    private boolean isFail = false;
+
 
     private char check, checkLength;
 
@@ -32,6 +34,10 @@ public class workerLogin extends Thread{
         this.toServerDataUser = toServerData;
         this.check = check;
         this.checkLength = checkLength;
+    }
+
+    public boolean isFail() {
+        return isFail;
     }
 
     public PacketUser getmPacketUser() {
@@ -85,11 +91,17 @@ public class workerLogin extends Thread{
                 System.out.println((char) inData[4]);
                 System.out.println(inData[5]);
 
+                check = (char) inData[4];
+                checkLength = (char) inData[3];
+
+                isFail = ( check == '0' ) ? true : false;
+
                 mPacketUser.data_len = (int) inData[3];
                 byte[] nameByte = new byte[221];
                 int byteI = 0;
+                int index = 0;
                 if (inData[4] != '0' && inData[1] == mPacketUser.ACK_ULG) { //ID, PW가 틀렸을 경우 실행하지 않도록 한다. && ID
-                    int index = 0;
+
                     while (true) { //아이디
                         if ((char) (inData[4 + index]) == '+') {
                             index++;
@@ -151,15 +163,15 @@ public class workerLogin extends Thread{
                 Log.d(TAG,"phone : " + mPacketUser.phone);
                 Log.d(TAG,"nowPass : " + mPacketUser.nowPass);
 
-                check = (char) inData[4];
-                checkLength = (char) inData[3];
 
-                if (check == '0' || checkLength != '1'){
-                    isPlay = !isPlay;
+                if( isFail || inData[4 + index] == PacketUser.CRC){
+                    isPlay = false;
                 }
+
             }catch(IOException e){
                 e.printStackTrace();
             }
+            isPlay = false;
         }
     }
 }

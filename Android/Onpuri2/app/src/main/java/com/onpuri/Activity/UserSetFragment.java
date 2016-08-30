@@ -171,6 +171,7 @@ public class UserSetFragment extends Fragment implements View.OnClickListener {
 
         Intent loginIntent = new Intent(getActivity(), SplashActivity.class);
         startActivity(loginIntent);
+        getActivity().finish();
 
     }
 }

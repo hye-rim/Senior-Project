@@ -99,6 +99,16 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
             case R.id.btn_new_trans:
             new AlertDialog.Builder(getActivity())
                     .setTitle("해석을 등록하시겠습니까?\n등록후에는 수정이 불가능합니다.")
+                    .setOnKeyListener(new DialogInterface.OnKeyListener() {
+                        @Override
+                        public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                            if(keyCode == KeyEvent.KEYCODE_BACK){
+                                dialog.dismiss();
+                                return true;
+                            }
+                            return false;
+                        }
+                    })
                     .setPositiveButton("네", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
                             Addtranslation();
@@ -115,6 +125,16 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
             case R.id.btn_new_trans_back:
                 new AlertDialog.Builder(getActivity())
                         .setTitle("해석 등록을 취소하시겠습니까?\n작성중인 내용이 전부 사라집니다.")
+                        .setOnKeyListener(new DialogInterface.OnKeyListener() {
+                            @Override
+                            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                                if(keyCode == KeyEvent.KEYCODE_BACK){
+                                    dialog.dismiss();
+                                    return true;
+                                }
+                                return false;
+                            }
+                        })
                         .setPositiveButton("네", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 fm.popBackStack();

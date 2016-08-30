@@ -25,8 +25,6 @@ public class HomeRootFragment extends Fragment {
         userId = null;
         userId = getArguments().getString("UserId"); //UserId라는 키에 해당되는 String 값 받아옴
 
-        Toast.makeText(getActivity(), "userId : " + userId, Toast.LENGTH_SHORT).show(); //잘 출력되면 지우룜
-
         //이동할 프래그먼트에 데이터 담아서 전송
         HomeFragment homeFragment = new HomeFragment();
         Bundle bundle = new Bundle();

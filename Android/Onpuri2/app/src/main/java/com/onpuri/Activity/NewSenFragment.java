@@ -25,6 +25,7 @@ import android.text.InputFilter;
 import android.text.Spanned;
 import android.util.Log;
 import android.view.InflateException;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,15 +90,19 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
         sen = (EditText) view.findViewById(R.id.sentence);
         sen.setFilters(new InputFilter[]{filterAlphaNum});
         sen.setPrivateImeOptions("defaultInputmode=english;");
+
         btn_ok = (Button)view.findViewById(R.id.btn_new_sen);
         btn_cancel = (Button)view.findViewById(R.id.btn_new_sen_back);
-        btn_gallery = (Button)view.findViewById(R.id.btn_new_picture);
-        btn_camera = (Button)view.findViewById(R.id.btn_new_camera);
-
         btn_ok.setOnClickListener(this);
         btn_cancel.setOnClickListener(this);
+
+        /*
+        btn_gallery = (Button)view.findViewById(R.id.btn_new_picture);
+        btn_camera = (Button)view.findViewById(R.id.btn_new_camera);
         btn_gallery.setOnClickListener(this);
         btn_camera.setOnClickListener(this);
+        */
+
 
         return view;
     }
@@ -108,6 +113,16 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
             case R.id.btn_new_sen:
                 new AlertDialog.Builder(getActivity())
                         .setTitle("문장을 등록하시겠습니까?\n등록후에는 수정이 불가능합니다.")
+                        .setOnKeyListener(new DialogInterface.OnKeyListener() {
+                            @Override
+                            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                                if(keyCode == KeyEvent.KEYCODE_BACK){
+                                    dialog.dismiss();
+                                    return true;
+                                }
+                                return false;
+                            }
+                        })
                         .setPositiveButton("네", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 Addsentence();
@@ -125,6 +140,16 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
             case R.id.btn_new_sen_back:
                 new AlertDialog.Builder(getActivity())
                         .setTitle("문장 등록을 취소하시겠습니까?\n작성중인 내용이 전부 사라집니다.")
+                        .setOnKeyListener(new DialogInterface.OnKeyListener() {
+                            @Override
+                            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                                if(keyCode == KeyEvent.KEYCODE_BACK){
+                                    dialog.dismiss();
+                                    return true;
+                                }
+                                return false;
+                            }
+                        })
                         .setPositiveButton("네", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 sen.setText("");
@@ -137,6 +162,7 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
                         }).show();
                 break;
 
+            /*
             case R.id.btn_new_picture:
                 openGallery();
                 Toast.makeText(getActivity(), "텍스트 변환은 차후 추가 예정입니다.", Toast.LENGTH_SHORT).show();
@@ -150,6 +176,7 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
                 }
                 break;
 
+            */
             default:
                 break;
         }
@@ -167,7 +194,8 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
             return "";
         }
     };
-    
+
+    /*
     private void openGallery() {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
@@ -273,6 +301,8 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
             }
         }
     }
+    */
+
     private void Addsentence() {
         if(worker_add_sen != null && worker_add_sen.isAlive()){  //이미 동작하고 있을 경우 중지
             worker_add_sen.interrupt();

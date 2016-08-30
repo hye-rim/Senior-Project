@@ -52,11 +52,14 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     String originalName;
     FragmentManager fm;
 
-    public NoteWordAdapter(ArrayList<NoteWordData> listWord, Context context, FragmentManager fragmentManager) {
+    Boolean isNullWord;
+
+    public NoteWordAdapter(ArrayList<NoteWordData> listWord, Context context, FragmentManager fragmentManager, Boolean isNullWord) {
         noteWordList = new ArrayList<>();
         noteWordList.addAll(listWord);
         this.context = context;
         this.fm = fragmentManager;
+        this.isNullWord = isNullWord;
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
@@ -68,18 +71,22 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             mWordItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    originalName = noteWordList.get(getPosition()).getName();
+                    if(isNullWord){
+                        Toast.makeText(context, "새로운 단어모음을 추가해주세요.", Toast.LENGTH_LONG).show();
+                    }else {
+                        originalName = noteWordList.get(getPosition()).getName();
 
-                    NoteWordFragment noteWordItem = new NoteWordFragment();
+                        NoteWordFragment noteWordItem = new NoteWordFragment();
 
-                    Bundle args = new Bundle();
-                    args.putString("wordItemName", originalName );
-                    noteWordItem.setArguments(args);
-                    fm.beginTransaction()
-                            .replace(R.id.root_note, noteWordItem)
-                            .addToBackStack(null)
-                            .commit();
-                    fm.executePendingTransactions();
+                        Bundle args = new Bundle();
+                        args.putString("wordItemName", originalName);
+                        noteWordItem.setArguments(args);
+                        fm.beginTransaction()
+                                .replace(R.id.root_note, noteWordItem)
+                                .addToBackStack(null)
+                                .commit();
+                        fm.executePendingTransactions();
+                    }
                 }
             });
             mWordMore.setOnClickListener(new View.OnClickListener() {
@@ -93,6 +100,18 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                                 mChangeItem.setText(originalName);
                                                 alertBuilder.setTitle("");
                                                 alertBuilder.setView(mChangeItem);
+
+                                                //back key 셋팅
+                                                alertBuilder.setOnKeyListener(new DialogInterface.OnKeyListener() {
+                                                    @Override
+                                                    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                                                        if(keyCode == KeyEvent.KEYCODE_BACK){
+                                                            dialog.dismiss();
+                                                            return true;
+                                                        }
+                                                        return false;
+                                                    }
+                                                });
 
                                                 alertBuilder.setCancelable(false
                                                 ).setPositiveButton("이름 수정",new DialogInterface.OnClickListener(){
@@ -131,6 +150,18 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 public void onClick(View v) {
                     AlertDialog.Builder alertBuilder = new AlertDialog.Builder((v.getContext()));
                     alertBuilder.setTitle("단어 모음 추가하기");
+
+                    //back key 셋팅
+                    alertBuilder.setOnKeyListener(new DialogInterface.OnKeyListener() {
+                        @Override
+                        public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                            if(keyCode == KeyEvent.KEYCODE_BACK){
+                                dialog.dismiss();
+                                return true;
+                            }
+                            return false;
+                        }
+                    });
 
                     //back key 셋팅
                     alertBuilder.setOnKeyListener(new DialogInterface.OnKeyListener() {

@@ -46,8 +46,7 @@ public class UserMyFragment extends Fragment implements View.OnClickListener {
     }
 
     public UserMyFragment() {
-
-// Required empty public constructor
+        // Required empty public constructor
     }
 
     @Override
@@ -73,6 +72,7 @@ public class UserMyFragment extends Fragment implements View.OnClickListener {
         et_userNowPass = (EditText)view.findViewById(R.id.et_now_pass); //현재비밀번호
         et_userNewPass = (EditText)view.findViewById(R.id.et_new_pass); //새로운비밀번호
         et_userNewPassCheck = (EditText)view.findViewById(R.id.et_new_pass_check); //새로운비밀번호확인
+
         btnOk = (Button)view.findViewById(R.id.btn_my_ok);
         btnCancel = (Button)view.findViewById(R.id.btn_my_cancel);
 
@@ -94,11 +94,11 @@ public class UserMyFragment extends Fragment implements View.OnClickListener {
         btnOk.setOnClickListener(this);
         btnCancel.setOnClickListener(this);
 
-        et_userNowPass.setFilters(new InputFilter[]{filterAlphaNumEng});
+        et_userNowPass.setFilters(new InputFilter[]{filterAlphaNumEng, new InputFilter.LengthFilter(15)});
         et_userNowPass.setPrivateImeOptions("defaultInputmode=english;");
-        et_userNewPass.setFilters(new InputFilter[]{filterAlphaNumEng});
+        et_userNewPass.setFilters(new InputFilter[]{filterAlphaNumEng, new InputFilter.LengthFilter(15)});
         et_userNewPass.setPrivateImeOptions("defaultInputmode=english;");
-        et_userNewPassCheck.setFilters(new InputFilter[]{filterAlphaNumEng});
+        et_userNewPassCheck.setFilters(new InputFilter[]{filterAlphaNumEng, new InputFilter.LengthFilter(15)});
         et_userNewPass.setPrivateImeOptions("defaultInputmode=english;");
 
         et_userNowPass.addTextChangedListener(new TextWatcher() {
@@ -116,7 +116,6 @@ public class UserMyFragment extends Fragment implements View.OnClickListener {
             public void afterTextChanged(Editable editable) {
                 checkPw = (nowPass.equals(et_userNowPass.getText().toString())) ? true //현재 비밀번호 일치여부
                         : false;
-
             }
         });
 

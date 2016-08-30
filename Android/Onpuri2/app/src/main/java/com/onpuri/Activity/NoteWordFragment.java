@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.onpuri.Adapter.NoteWordItemAdapter;
 import com.onpuri.Data.WordData;
 import com.onpuri.DividerItemDecoration;
+import com.onpuri.Listener.RecyclerItemClickListener;
 import com.onpuri.R;
 import com.onpuri.Thread.workerNoteLoad;
 
@@ -52,6 +53,7 @@ public class NoteWordFragment  extends Fragment implements View.OnClickListener 
     private FragmentManager mFragmentManager;
     private Boolean isEdit = false;
     private workerNoteLoad mworker_note;
+    private boolean isNullWord;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -65,6 +67,7 @@ public class NoteWordFragment  extends Fragment implements View.OnClickListener 
         } catch (InflateException e) {
             //map is already there, just return view as it is
         }
+        isNullWord = false;
         mFragmentManager = getFragmentManager();
 
         tvItemName = (TextView)view.findViewById(R.id.note_word_name);
@@ -83,6 +86,18 @@ public class NoteWordFragment  extends Fragment implements View.OnClickListener 
         mWordAdapter = new NoteWordItemAdapter(itemWord, isEdit, context);
         mRecyclerWordItem.setAdapter(mWordAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerWordItem.addItemDecoration(new DividerItemDecoration(dividerDrawable));
+        mRecyclerWordItem.addOnItemTouchListener(
+                new RecyclerItemClickListener(getActivity().getApplicationContext(), mRecyclerWordItem, new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        if(isNullWord)
+                            Toast.makeText(getActivity().getApplicationContext(), itemName + "에 단어를 추가해보세요.", Toast.LENGTH_SHORT).show();
+                        else{
+                            Toast.makeText(getActivity().getApplicationContext(), "구현예정입니다.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                }));
 
         btn_listen = (Button)view.findViewById(R.id.note_word_listen);
         btn_test = (Button)view.findViewById(R.id.note_word_test);
@@ -113,6 +128,7 @@ public class NoteWordFragment  extends Fragment implements View.OnClickListener 
         int i = 0;
 
         if(mworker_note.getNoteWord() != null) {
+            isNullWord = false;
             while (i < mworker_note.getNoteWord().size()) {
                 itemWord.add( new WordData( mworker_note.getNoteWord().get(i).getWord().toString(), mworker_note.getNoteWord().get(i).getMean().toString()));
                 Log.d(TAG,mworker_note.getNoteWord().get(i).getWord().toString() + " / " + mworker_note.getNoteWord().get(i).getMean().toString());
@@ -120,6 +136,7 @@ public class NoteWordFragment  extends Fragment implements View.OnClickListener 
             }
         }
         if(itemWord.isEmpty()){
+            isNullWord = true;
             itemWord.add(new WordData("추가된 단어가 없습니다.", ""));
         }
     }
@@ -141,12 +158,15 @@ public class NoteWordFragment  extends Fragment implements View.OnClickListener 
                         .commit();
                 break;
             case R.id.note_word_edit:
+                Toast.makeText(getActivity(),"기능 추가 예정입니다.",Toast.LENGTH_SHORT).show();
+                /*
                 isEdit = !isEdit;
                  mWordAdapter = new NoteWordItemAdapter(itemWord, isEdit, context);
                  mRecyclerWordItem.setAdapter(mWordAdapter);// Set CustomAdapter as the adapter for RecyclerView.
 
                 if(isEdit)
                     Toast.makeText(getActivity(),"아직 데이터 반영이 되지않습니다. " + String.valueOf(isEdit),Toast.LENGTH_SHORT).show();
+                    */
                 break;
             default:
                 break;
