@@ -163,18 +163,6 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         }
                     });
 
-                    //back key 셋팅
-                    alertBuilder.setOnKeyListener(new DialogInterface.OnKeyListener() {
-                        @Override
-                        public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-                            if(keyCode == KeyEvent.KEYCODE_BACK){
-                                dialog.dismiss();
-                                return true;
-                            }
-                            return false;
-                        }
-                    });
-
                     mAddItem = new EditText((v.getContext()));
                     alertBuilder.setView(mAddItem);
 
@@ -261,7 +249,7 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         if(mworker_add.getSuccess()) {
             noteWordList.add(new NoteWordData(itemName));
-            notifyItemInserted(position);
+            notifyDataSetChanged();
         }else{
             Toast.makeText(context, "추가에 실패하였습니다.", Toast.LENGTH_LONG).show();
         }
@@ -275,7 +263,7 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         if(mworker_add.getSuccess()) {
             noteWordList.get(position).setName(changeName);
-            notifyItemChanged(position);
+            notifyDataSetChanged();
         }else{
             Toast.makeText(context, "수정에 실패하였습니다.", Toast.LENGTH_LONG).show();
         }
@@ -288,7 +276,7 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         if(mworker_add.getSuccess()) {
             noteWordList.remove(position);
-            notifyItemRemoved(position);
+            notifyDataSetChanged();
         }else{
             Toast.makeText(context, "삭제에 실패하였습니다.", Toast.LENGTH_LONG).show();
         }

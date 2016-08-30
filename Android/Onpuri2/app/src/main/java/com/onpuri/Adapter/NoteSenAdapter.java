@@ -60,7 +60,7 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     Boolean isNullSen;
 
-    public NoteSenAdapter(ArrayList<NoteData> listSentence, Context context, FragmentManager fragmentManager, Boolean isNullSen, RecyclerView mRecyclerSen) {
+    public NoteSenAdapter(ArrayList<NoteData> listSentence, Context context, FragmentManager fragmentManager, Boolean isNullSen) {
         noteSenList = new ArrayList<>();
         noteSenList.addAll(listSentence);
         isBtnClicked = false;
@@ -74,6 +74,8 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             super(v);
             mSenItem = (TextView) v.findViewById(R.id.note_sen_item);
             mSenMore = (ImageButton) v.findViewById(R.id.btn_sen_more);
+
+            mSenItem.setMaxLines(2);
             mSenItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -251,6 +253,7 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
+
     private void addItem(int position, String itemName) {
         String nameData = new String ("1+" + itemName);
 
@@ -258,7 +261,7 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         if(mworker_add.getSuccess()) {
             noteSenList.add(new NoteData(itemName));
-            notifyItemInserted(position);
+            notifyDataSetChanged();
         }else{
             Toast.makeText(context, "추가에 실패하였습니다.", Toast.LENGTH_LONG).show();
         }
@@ -272,7 +275,7 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         if(mworker_add.getSuccess()) {
             noteSenList.get(position).setName(changeName);
-            notifyItemChanged(position);
+            notifyDataSetChanged();
         }else{
             Toast.makeText(context, "수정에 실패하였습니다.", Toast.LENGTH_LONG).show();
         }
@@ -285,7 +288,7 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         if(mworker_add.getSuccess()) {
             noteSenList.remove(position);
-            notifyItemRemoved(position);
+            notifyDataSetChanged();
         }else{
             Toast.makeText(context, "삭제에 실패하였습니다.", Toast.LENGTH_LONG).show();
         }

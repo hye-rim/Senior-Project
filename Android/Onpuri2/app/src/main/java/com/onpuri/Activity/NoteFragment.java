@@ -100,7 +100,8 @@ public class NoteFragment extends Fragment {
         mRecyclerSen = (RecyclerView) view.findViewById(R.id.recycle_note_sen);
         mLayoutManager = new LinearLayoutManager(getActivity());
 
-        mSenAdapter = new NoteSenAdapter(listSentence, getContext(), getActivity().getSupportFragmentManager(), isNullSen, mRecyclerSen);
+        mRecyclerSen.setLayoutManager(mLayoutManager);
+        mSenAdapter = new NoteSenAdapter(listSentence, getContext(), getActivity().getSupportFragmentManager(), isNullSen);
 
         mRecyclerSen.setAdapter(mSenAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerSen.addItemDecoration(new DividerItemDecoration(dividerDrawable));
@@ -108,6 +109,7 @@ public class NoteFragment extends Fragment {
         //Set Word Adapter for Word RecyclerView (NoteTab)
         mRecyclerWord = (RecyclerView) view.findViewById(R.id.recycle_note_word);
         mLayoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerWord.setLayoutManager(mLayoutManager);
         mWordAdapter = new NoteWordAdapter(listWord, getContext(), getActivity().getSupportFragmentManager(), isNullWord);
         mRecyclerWord.setAdapter(mWordAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerWord.addItemDecoration(new DividerItemDecoration(dividerDrawable));
