@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.InflateException;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,6 +65,7 @@ public class SearchFragment extends Fragment {
     ArrayList<String> sentenceNumList = new ArrayList<String>();
     private ArrayList<String> listNote;
 
+    private int pos;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (view != null) {
@@ -118,18 +120,37 @@ public class SearchFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 final String[] items = listNote.toArray(new String[listNote.size()]);
-                new AlertDialog.Builder(getActivity())
-                        .setTitle("노트를 선택해 주세요(구현 예정)")
-                        .setItems(items, new DialogInterface.OnClickListener() {
+                AlertDialog.Builder noteSelectDialog = new AlertDialog.Builder(getActivity());
+
+                noteSelectDialog.setTitle("노트를 선택해 주세요")
+                        .setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int index) {
-                                Toast.makeText(getActivity(), items[index] + "선택", Toast.LENGTH_SHORT).show();
-                                selectNote(items[index]);
+                                pos = index;
+
+                                if( index == listNote.size() -1  ){
+                                    Toast.makeText(getActivity(), "기능 추가 예정입니다.", Toast.LENGTH_SHORT).show();
+                                }else {
+                                    selectNote(items[index]);
+                                }
+                                dialog.cancel();
                             }
                         })
-                        .setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dlg, int sumthin) {
+                        .setOnKeyListener(new DialogInterface.OnKeyListener() {
+                            @Override
+                            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                                if(keyCode == KeyEvent.KEYCODE_BACK){
+                                    dialog.dismiss();
+                                    return true;
+                                }
+                                return false;
                             }
-                        }).show();
+                        });
+
+                AlertDialog alert_dialog = noteSelectDialog.create();
+                alert_dialog.show();
+
+                // set defult select value
+                alert_dialog.getListView().setItemChecked(pos, true);
             }
         });
 
@@ -223,9 +244,9 @@ public class SearchFragment extends Fragment {
                 i++;
             }
         }
-        if(listNote.isEmpty()){
-            listNote.add("새로운 문장 모음 등록하기");
-        }
+
+        listNote.add("새로운 단어 모음 등록하기");
+
     }
 
     private void selectNote(String item) {

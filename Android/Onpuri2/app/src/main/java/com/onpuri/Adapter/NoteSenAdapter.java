@@ -58,12 +58,15 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     String originalName;
     FragmentManager fm;
 
-    public NoteSenAdapter(ArrayList<NoteData> listSentence, Context context, FragmentManager fragmentManager) {
+    Boolean isNullSen;
+
+    public NoteSenAdapter(ArrayList<NoteData> listSentence, Context context, FragmentManager fragmentManager, Boolean isNullSen) {
         noteSenList = new ArrayList<>();
         noteSenList.addAll(listSentence);
         isBtnClicked = false;
         this.context = context;
         this.fm = fragmentManager;
+        this.isNullSen = isNullSen;
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
@@ -74,18 +77,22 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             mSenItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    originalName = noteSenList.get(getPosition()).getName();
+                    if(isNullSen){
+                        Toast.makeText(context, "새로운 문장모음을 추가해주세요.", Toast.LENGTH_LONG).show();
+                    }else{
+                        originalName = noteSenList.get(getPosition()).getName();
 
-                    NoteSenFragment noteSenItem = new NoteSenFragment();
+                        NoteSenFragment noteSenItem = new NoteSenFragment();
 
-                    Bundle args = new Bundle();
-                    args.putString("senItemName", originalName );
-                    noteSenItem.setArguments(args);
-                    fm.beginTransaction()
-                            .replace(R.id.root_note, noteSenItem)
-                            .addToBackStack(null)
-                            .commit();
-                    fm.executePendingTransactions();
+                        Bundle args = new Bundle();
+                        args.putString("senItemName", originalName );
+                        noteSenItem.setArguments(args);
+                        fm.beginTransaction()
+                                .replace(R.id.root_note, noteSenItem)
+                                .addToBackStack("fragBack")
+                                .commit();
+                        fm.executePendingTransactions();
+                    }
                 }
             });
 
@@ -100,6 +107,18 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     mChangeItem.setText(originalName);
                     alertBuilder.setTitle("");
                     alertBuilder.setView(mChangeItem);
+
+                    //back key 셋팅
+                    alertBuilder.setOnKeyListener(new DialogInterface.OnKeyListener() {
+                        @Override
+                        public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                            if(keyCode == KeyEvent.KEYCODE_BACK){
+                                dialog.dismiss();
+                                return true;
+                            }
+                            return false;
+                        }
+                    });
 
                     alertBuilder.setCancelable(false
                     ).setPositiveButton("이름 수정",new DialogInterface.OnClickListener(){

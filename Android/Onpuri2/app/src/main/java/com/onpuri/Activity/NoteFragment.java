@@ -54,6 +54,7 @@ public class NoteFragment extends Fragment {
 
     private workerNote mworker_note;
 
+    private Boolean isNullSen, isNullWord;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -67,6 +68,8 @@ public class NoteFragment extends Fragment {
         } catch (InflateException e) {
             //map is already there, just return view as it is
         }
+        isNullSen = false;
+        isNullWord = false;
 
         mFragmentManager = getFragmentManager();
         mItemFrame = (FrameLayout)view.findViewById(R.id.note_item);
@@ -96,14 +99,14 @@ public class NoteFragment extends Fragment {
         //Set Sentence Adapter for Sentence RecyclerView (NoteTab)
         mRecyclerSen = (RecyclerView) view.findViewById(R.id.recycle_note_sen);
         mLayoutManager = new LinearLayoutManager(getActivity());
-        mSenAdapter = new NoteSenAdapter(listSentence, getContext(), getActivity().getSupportFragmentManager());
+        mSenAdapter = new NoteSenAdapter(listSentence, getContext(), getActivity().getSupportFragmentManager(), isNullSen);
         mRecyclerSen.setAdapter(mSenAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerSen.addItemDecoration(new DividerItemDecoration(dividerDrawable));
 
         //Set Word Adapter for Word RecyclerView (NoteTab)
         mRecyclerWord = (RecyclerView) view.findViewById(R.id.recycle_note_word);
         mLayoutManager = new LinearLayoutManager(getActivity());
-        mWordAdapter = new NoteWordAdapter(listWord, getContext(), getActivity().getSupportFragmentManager());
+        mWordAdapter = new NoteWordAdapter(listWord, getContext(), getActivity().getSupportFragmentManager(), isNullWord);
         mRecyclerWord.setAdapter(mWordAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerWord.addItemDecoration(new DividerItemDecoration(dividerDrawable));
 
@@ -118,10 +121,6 @@ public class NoteFragment extends Fragment {
             mTabHost.getTabWidget().getChildAt(i).setBackgroundColor(getResources().getColor(R.color.china_ivory)); //선택되지 않은 탭
         }
         mTabHost.getTabWidget().getChildAt(mTabHost.getCurrentTab()).setBackgroundColor(getResources().getColor(R.color.pale_gold)); //선택된 탭
-    }
-
-    public void onBackPressed(){
-
     }
 
     @Override
@@ -144,12 +143,10 @@ public class NoteFragment extends Fragment {
             e.printStackTrace();
         }
 
-        listSentence.clear();
-        listWord.clear();
-
         //문장 모음 리스트
         int i = 0;
         if(mworker_note.getNoteSen() != null){
+            isNullSen = false;
             while( i < mworker_note.getNoteSen().size()){
                 listSentence.add(new NoteData( mworker_note.getNoteSen().get(i).toString() ));
                 Log.d(TAG, mworker_note.getNoteSen().get(i).toString());
@@ -157,12 +154,14 @@ public class NoteFragment extends Fragment {
             }
         }
         if(listSentence.isEmpty()){
+            isNullSen = true;
             listSentence.add(new NoteData("새로운 문장 모음을 등록해보세요."));
         }
 
         //단어 모음 리스트
         i = 0;
         if(mworker_note.getNoteWord() != null){
+            isNullWord = false;
             while( i < mworker_note.getNoteWord().size()){
                 listWord.add(new NoteWordData( mworker_note.getNoteWord().get(i).toString() ));
                 Log.d(TAG, mworker_note.getNoteWord().get(i).toString());
@@ -170,6 +169,7 @@ public class NoteFragment extends Fragment {
             }
         }
         if(listWord.isEmpty()){
+            isNullWord = true;
             listWord.add(new NoteWordData("새로운 단어 모음을 등록해보세요."));
         }
     }

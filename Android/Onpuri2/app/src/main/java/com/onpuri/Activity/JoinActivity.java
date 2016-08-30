@@ -74,10 +74,10 @@ public class JoinActivity extends Activity {
         btJoin = (Button) findViewById(R.id.btnJoin);
         btCancel = (Button) findViewById(R.id.btnJoinCancel);
 
-        et_newId.setFilters(new InputFilter[]{filterAlphaNum});
+        et_newName.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
+        et_newId.setFilters(new InputFilter[]{filterAlphaNum, new InputFilter.LengthFilter(10)});
         et_newId.setPrivateImeOptions("defaultInputmode=english;");
-
-        et_newPw.setFilters(new InputFilter[]{filterAlphaNum});
+        et_newPw.setFilters(new InputFilter[]{filterAlphaNum, new InputFilter.LengthFilter(15)});
         et_newPw.setPrivateImeOptions("defaultInputmode=english;");
 
         btCheck.setOnClickListener(new View.OnClickListener() {

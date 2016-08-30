@@ -51,7 +51,6 @@
                android:layout_gravity="center_vertical"
                android:inputType="none"
                android:singleLine="true"
-               android:autoText="false"
                 android:backgroundTintMode="src_in" />
         <Button
             android:layout_width="90dp"

@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.BoringLayout;
 import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
@@ -51,6 +52,7 @@ public class UserMyActFragment extends Fragment {
     private FrameLayout mItemFrame;
     private FragmentManager mFragmentManager;
 
+    private Boolean isNullNew, isNullRecord, isNullTrans;
 
     private workerAct mworker_act;
 
@@ -76,6 +78,10 @@ public class UserMyActFragment extends Fragment {
         } catch (InflateException e) {
             //map is already there, just return view as it is
         }
+        isNullNew = false;
+        isNullRecord = false;
+        isNullTrans = false;
+
         Bundle extra = getArguments();
         String userId = null;
         userId = extra.getString("ActId");
@@ -124,7 +130,23 @@ public class UserMyActFragment extends Fragment {
                 new RecyclerItemClickListener(getActivity().getApplicationContext(), mRecyclerNew, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        Toast.makeText(getActivity().getApplicationContext(), "선택한 문장으로의 이동은 구현예정입니다.", Toast.LENGTH_SHORT).show();
+                        if(isNullNew)
+                            Toast.makeText(getActivity().getApplicationContext(), "문장을 등록해보세요.", Toast.LENGTH_SHORT).show();
+                        else{
+                            HomeSentenceFragment homeSentenceFragment = new HomeSentenceFragment();
+                            FragmentManager fm = getActivity().getSupportFragmentManager();
+
+                            Bundle args = new Bundle();
+                            args.putString("sen", listNew.get(position));
+                            args.putString("sen_num", listNewNum.get(position));
+                            homeSentenceFragment.setArguments(args);
+
+                            fm.beginTransaction()
+                                    .replace(R.id.root_home, homeSentenceFragment)
+                                    .addToBackStack(null)
+                                    .commit();
+                            fm.executePendingTransactions();
+                        }
                     }
 
                 }));
@@ -137,10 +159,26 @@ public class UserMyActFragment extends Fragment {
         mRecyclerRecord.addItemDecoration(new DividerItemDecoration(dividerDrawable));
 
         mRecyclerRecord.addOnItemTouchListener(
-                new RecyclerItemClickListener(getActivity().getApplicationContext(), mRecyclerNew, new RecyclerItemClickListener.OnItemClickListener() {
+                new RecyclerItemClickListener(getActivity().getApplicationContext(), mRecyclerRecord, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        Toast.makeText(getActivity().getApplicationContext(), "선택한 문장으로의 이동은 구현예정입니다.", Toast.LENGTH_SHORT).show();
+                        if(isNullRecord)
+                            Toast.makeText(getActivity().getApplicationContext(), "문장 녹음을 등록해보세요.", Toast.LENGTH_SHORT).show();
+                        else{
+                            HomeSentenceFragment homeSentenceFragment = new HomeSentenceFragment();
+                            FragmentManager fm = getActivity().getSupportFragmentManager();
+
+                            Bundle args = new Bundle();
+                            args.putString("sen", listRecord.get(position));
+                            args.putString("sen_num", listRecordNum.get(position));
+                            homeSentenceFragment.setArguments(args);
+
+                            fm.beginTransaction()
+                                    .replace(R.id.root_home, homeSentenceFragment)
+                                    .addToBackStack(null)
+                                    .commit();
+                            fm.executePendingTransactions();
+                        }
                     }
 
                 }));
@@ -153,10 +191,26 @@ public class UserMyActFragment extends Fragment {
         mRecyclerTrans.addItemDecoration(new DividerItemDecoration(dividerDrawable));
 
         mRecyclerTrans.addOnItemTouchListener(
-                new RecyclerItemClickListener(getActivity().getApplicationContext(), mRecyclerNew, new RecyclerItemClickListener.OnItemClickListener() {
+                new RecyclerItemClickListener(getActivity().getApplicationContext(), mRecyclerTrans, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        Toast.makeText(getActivity().getApplicationContext(), "선택한 문장으로의 이동은 구현예정입니다.", Toast.LENGTH_SHORT).show();
+                        if(isNullTrans)
+                            Toast.makeText(getActivity().getApplicationContext(), "문장 번역을 등록해보세요.", Toast.LENGTH_SHORT).show();
+                        else{
+                            HomeSentenceFragment homeSentenceFragment = new HomeSentenceFragment();
+                            FragmentManager fm = getActivity().getSupportFragmentManager();
+
+                            Bundle args = new Bundle();
+                            args.putString("sen", listTrans.get(position));
+                            args.putString("sen_num", listTransNum.get(position));
+                            homeSentenceFragment.setArguments(args);
+
+                            fm.beginTransaction()
+                                    .replace(R.id.root_home, homeSentenceFragment)
+                                    .addToBackStack(null)
+                                    .commit();
+                            fm.executePendingTransactions();
+                        }
                     }
 
                 }));
@@ -184,17 +238,10 @@ public class UserMyActFragment extends Fragment {
             e.printStackTrace();
         }
 
-
-        listNew.clear();
-        listNewNum.clear();
-        listRecord.clear();
-        listRecordNum.clear();
-        listTrans.clear();
-        listTransNum.clear();
-
         int i = 0;
 
         if(mworker_act.getActNewSentence().arrSentence != null) {
+            isNullNew = false;
             while (i < mworker_act.getActNewSentence().arrSentence.size()) {
                 listNew.add(mworker_act.getActNewSentence().arrSentence.get(i));
                 listNewNum.add(mworker_act.getActNewSentence().arrSentenceNum.get(i));
@@ -204,10 +251,12 @@ public class UserMyActFragment extends Fragment {
         }
         if(listNew.isEmpty()){
             listNew.add("문장을 등록해보세요.");
+            isNullNew = true;
         }
 
         i = 0;
         if(mworker_act.getActRecSentence().arrSentence != null) {
+            isNullRecord = false;
             while (i < mworker_act.getActRecSentence().arrSentence.size()) {
                 listRecord.add(mworker_act.getActRecSentence().arrSentence.get(i));
                 listRecordNum.add(mworker_act.getActRecSentence().arrSentenceNum.get(i));
@@ -216,11 +265,13 @@ public class UserMyActFragment extends Fragment {
             }
         }
         if(listRecord.isEmpty()){
+            isNullRecord = true;
             listRecord.add("문장 녹음을 해보세요.");
         }
 
         i = 0;
         if(mworker_act.getActTransSentence().arrSentence != null) {
+            isNullTrans = false;
             while (i < mworker_act.getActTransSentence().arrSentence.size()) {
                 listTrans.add(mworker_act.getActTransSentence().arrSentence.get(i));
                 listTransNum.add(mworker_act.getActTransSentence().arrSentenceNum.get(i));
@@ -229,6 +280,7 @@ public class UserMyActFragment extends Fragment {
             }
         }
         if(listTrans.isEmpty()){
+            isNullTrans = true;
             listTrans.add("문장 번역을 해보세요.");
         }
     }

@@ -25,6 +25,7 @@ import android.text.InputFilter;
 import android.text.Spanned;
 import android.util.Log;
 import android.view.InflateException;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -112,6 +113,16 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
             case R.id.btn_new_sen:
                 new AlertDialog.Builder(getActivity())
                         .setTitle("문장을 등록하시겠습니까?\n등록후에는 수정이 불가능합니다.")
+                        .setOnKeyListener(new DialogInterface.OnKeyListener() {
+                            @Override
+                            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                                if(keyCode == KeyEvent.KEYCODE_BACK){
+                                    dialog.dismiss();
+                                    return true;
+                                }
+                                return false;
+                            }
+                        })
                         .setPositiveButton("네", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 Addsentence();
@@ -129,6 +140,16 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
             case R.id.btn_new_sen_back:
                 new AlertDialog.Builder(getActivity())
                         .setTitle("문장 등록을 취소하시겠습니까?\n작성중인 내용이 전부 사라집니다.")
+                        .setOnKeyListener(new DialogInterface.OnKeyListener() {
+                            @Override
+                            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                                if(keyCode == KeyEvent.KEYCODE_BACK){
+                                    dialog.dismiss();
+                                    return true;
+                                }
+                                return false;
+                            }
+                        })
                         .setPositiveButton("네", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 sen.setText("");

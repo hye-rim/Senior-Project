@@ -43,6 +43,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
     PacketUser mPacketUser;
 
     int i;
+    int first = 0;
     char check;
     char checkLength;
     boolean isLoginBtn;
@@ -64,12 +65,12 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         checkAuto = (CheckBox)findViewById(R.id.check_auto);
 
         et_loginId = (EditText) findViewById(R.id.et_loginId);
-        et_loginId.setFilters(new InputFilter[]{filterAlphaNum}); //영문+숫자만 되도록 제한
+        et_loginId.setFilters(new InputFilter[]{filterAlphaNum, new InputFilter.LengthFilter(10)}); //영문+숫자만 되도록 제한
         et_loginId.setPrivateImeOptions("defaultInputmode=english;"); //default 영문키패드로 설정
         et_loginId.setText("");
 
         et_loginPw = (EditText) findViewById(R.id.et_loginPw);
-        et_loginPw.setFilters(new InputFilter[]{filterAlphaNum});
+        et_loginPw.setFilters(new InputFilter[]{filterAlphaNum, new InputFilter.LengthFilter(15)});
         et_loginPw.setPrivateImeOptions("defaultInputmode=english;");
         et_loginPw.setText("");
 
@@ -94,7 +95,11 @@ public class LoginActivity extends Activity implements View.OnClickListener {
             id = et_loginId.getText().toString();
             password = et_loginPw.getText().toString();
 
-            validation = loginCorrect();
+            if( first > 0 ){
+                validation = loginCorrect();
+            }else{
+                validation = false;
+            }
 
             if(validation) {
                 Toast.makeText(getApplicationContext(), "Login Success", Toast.LENGTH_LONG).show();
@@ -187,6 +192,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                 break;
             case R.id.btnLogin:
                 isLoginBtn = true;
+                first++;
 
                 if(loginChecked){
                     Log.d(TAG, "로그인");
