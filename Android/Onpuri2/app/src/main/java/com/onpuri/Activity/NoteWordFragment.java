@@ -130,7 +130,9 @@ public class NoteWordFragment  extends Fragment implements View.OnClickListener 
         if(mworker_note.getNoteWord() != null) {
             isNullWord = false;
             while (i < mworker_note.getNoteWord().size()) {
-                itemWord.add( new WordData( mworker_note.getNoteWord().get(i).getWord().toString(), mworker_note.getNoteWord().get(i).getMean().toString()));
+                String mean = mworker_note.getNoteWord().get(i).getMean().toString().replaceAll("[?]", ", ");
+                mean = mean.replaceAll("n.", "");
+                itemWord.add( new WordData( mworker_note.getNoteWord().get(i).getWord().toString(), mean));
                 Log.d(TAG,mworker_note.getNoteWord().get(i).getWord().toString() + " / " + mworker_note.getNoteWord().get(i).getMean().toString());
                 i++;
             }

@@ -113,26 +113,14 @@ public class workerNoteLoad extends Thread {
                     else if(inData[1] == PacketUser.ACK_NOTE_LOAD ) {
                         if (!loadEnd) {
                             if(outKinds == 1) {
-                                noteSentence.sentence_len = end;
-                                String str = new String(inData, 4, PacketUser.sentence_len); //문장
+                                noteSentence.sentence_len = end-2;
+                                String str = new String(inData, 6, PacketUser.sentence_len); //문장
                                 Log.d(TAG, "sentence len : " + PacketUser.sentence_len);
                                 Log.d(TAG, "new search : " + str);
 
-                                //문장번호 정보
-                                dis.read(temp, 0, 4);
-                                for (index = 0; index < 4; index++) {
-                                    numSentence[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
-                                }
-
-                                int numEnd = (numSentence[3] <= 0 ? (int) numSentence[3] + 256 : (int) numSentence[3]);
-                                dis.read(temp, 0, 1 + numEnd);
-
-                                for (index = 0; index <= numEnd; index++) {
-                                    numSentence[index + 4] = temp[index];    // 패킷의 Data부분을 inData에 추가해준다.
-                                }
-                                String num = Character.toString((char) numSentence[4])
-                                        + Character.toString((char) numSentence[5])
-                                        + Character.toString((char) numSentence[6]); //문장번호
+                                int plus = str.indexOf("+");
+                                String num = str.substring(plus+1);
+                                str = str.substring(0, plus);
 
                                 noteSentence.setSentence(str);
                                 noteSentence.setSentenceNum(num);
@@ -141,14 +129,14 @@ public class workerNoteLoad extends Thread {
                             }
                             else if(outKinds == 2){
                                 wordLen = end;
-                                String data = new String(inData, 4, wordLen); //단어
+                                String data = new String(inData, 6, wordLen); //단어
                                 Log.d(TAG, "new data : " + data);
 
                                 int plus = data.indexOf("+");
                                 Log.d(TAG, "plus ? " + plus);
 
                                 String word = data.substring(0, plus-1);
-                                String wordMean = data.substring(plus + 2);
+                                String wordMean = data.substring(plus + 1, data.length()-1);
 
                                 Log.d(TAG, "word data len : " + wordLen);
                                 Log.d(TAG, "new word : " + word);

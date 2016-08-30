@@ -126,7 +126,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
 
         translation();
         listen();
-        //noteLoad();
+        noteLoad();
 
         ImageButton tts_sen = (ImageButton) view.findViewById(R.id.tts);
         tts_sen.setOnClickListener(this);
@@ -255,7 +255,6 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                         .setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int index) {
                                 num = index;
-
                                 if( index == listNote.size() -1  ){
                                     addNote();
                                 }else {
@@ -265,15 +264,15 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                             }
                         })
                         .setOnKeyListener(new DialogInterface.OnKeyListener() {
-                    @Override
-                    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-                            if(keyCode == KeyEvent.KEYCODE_BACK){
-                                dialog.dismiss();
-                                return true;
+                            @Override
+                            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                                if(keyCode == KeyEvent.KEYCODE_BACK){
+                                    dialog.dismiss();
+                                    return true;
+                                }
+                                return false;
                             }
-                        return false;
-                    }
-                });
+                        });
 
                 AlertDialog alert_dialog = noteSelectDialog.create();
                 alert_dialog.show();
