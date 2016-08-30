@@ -24,6 +24,7 @@ import com.onpuri.Data.NoteWordData;
 import com.onpuri.DividerItemDecoration;
 import com.onpuri.Listener.RecycleItemClickListener;
 import com.onpuri.R;
+import com.onpuri.Thread.workerNote;
 
 import java.util.ArrayList;
 
@@ -51,6 +52,8 @@ public class NoteFragment extends Fragment {
     private FrameLayout mItemFrame;
     private FragmentManager mFragmentManager;
 
+    private workerNote mworker_note;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -64,6 +67,7 @@ public class NoteFragment extends Fragment {
         } catch (InflateException e) {
             //map is already there, just return view as it is
         }
+
         mFragmentManager = getFragmentManager();
         mItemFrame = (FrameLayout)view.findViewById(R.id.note_item);
         mTabHost = (TabHost) view.findViewById(R.id.note_tab);
@@ -86,75 +90,32 @@ public class NoteFragment extends Fragment {
             }
         });
 
-        initData();
+        initData(); //노트 데이터 서버로부터 받기
         Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_light);
 
         //Set Sentence Adapter for Sentence RecyclerView (NoteTab)
         mRecyclerSen = (RecyclerView) view.findViewById(R.id.recycle_note_sen);
         mLayoutManager = new LinearLayoutManager(getActivity());
-        mSenAdapter = new NoteSenAdapter(listSentence);
+        mSenAdapter = new NoteSenAdapter(listSentence, getContext(), getActivity().getSupportFragmentManager());
         mRecyclerSen.setAdapter(mSenAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerSen.addItemDecoration(new DividerItemDecoration(dividerDrawable));
 
         //Set Word Adapter for Word RecyclerView (NoteTab)
         mRecyclerWord = (RecyclerView) view.findViewById(R.id.recycle_note_word);
         mLayoutManager = new LinearLayoutManager(getActivity());
-        mWordAdapter = new NoteWordAdapter(listWord);
+        mWordAdapter = new NoteWordAdapter(listWord, getContext(), getActivity().getSupportFragmentManager());
         mRecyclerWord.setAdapter(mWordAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerWord.addItemDecoration(new DividerItemDecoration(dividerDrawable));
 
         mSenAdapter.notifyDataSetChanged();
         mWordAdapter.notifyDataSetChanged();
 
-        mRecyclerSen.addOnItemTouchListener(
-                new RecycleItemClickListener(getActivity().getApplicationContext(), mRecyclerSen, new RecycleItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onLongItemClick(View view, int position) {
-                        Log.v(TAG,"sententce item : " + position);
-                        if( view.getId() != R.id.ll_sen_more&& view.getId() != R.id.btn_sen_more && mRecyclerWord.getAdapter().getItemViewType(position) == VIEW_TYPE_CELL  ) {
-                            NoteSenFragment noteSenItem = new NoteSenFragment();
-                            FragmentManager fm = getActivity().getSupportFragmentManager();
-
-                            Bundle args = new Bundle();
-                            args.putString("senItemName", "문장 모음" );
-                            noteSenItem.setArguments(args);
-                            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                            ft.replace(R.id.root_note, noteSenItem)
-                                    .addToBackStack(null)
-                                    .commit();
-                            fm.executePendingTransactions();
-                        }
-
-                    }
-                }));
-
-        mRecyclerWord.addOnItemTouchListener(
-                new RecycleItemClickListener(getActivity().getApplicationContext(), mRecyclerWord, new RecycleItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onLongItemClick(View view, int position) {
-                        Log.v(TAG, "word item : " + position);
-                        if( view.getId() != R.id.ll_word_more&& view.getId() != R.id.btn_word_more &&mRecyclerWord.getAdapter().getItemViewType(position) == VIEW_TYPE_CELL  ) {
-                            NoteWordFragment noteWordItem = new NoteWordFragment();
-                            FragmentManager fm = getActivity().getSupportFragmentManager();
-
-                            Bundle args = new Bundle();
-                            args.putString("wordItemName", "단어 모음" );
-                            noteWordItem.setArguments(args);
-
-                            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                            ft.replace(R.id.root_note, noteWordItem)
-                                    .addToBackStack(null)
-                                    .commit();
-                            fm.executePendingTransactions();
-                        }
-                    }
-                }));
         return view;
     }
 
     private void setTabColor() {
         for(int i=0;i< mTabHost.getTabWidget().getChildCount();i++) {
-            mTabHost.getTabWidget().getChildAt(i).setBackgroundColor(getResources().getColor(R.color.never_forgotten)); //선택되지 않은 탭
+            mTabHost.getTabWidget().getChildAt(i).setBackgroundColor(getResources().getColor(R.color.china_ivory)); //선택되지 않은 탭
         }
         mTabHost.getTabWidget().getChildAt(mTabHost.getCurrentTab()).setBackgroundColor(getResources().getColor(R.color.pale_gold)); //선택된 탭
     }
@@ -172,16 +133,41 @@ public class NoteFragment extends Fragment {
         listSentence = new ArrayList<NoteData>();
         listWord = new ArrayList<NoteWordData>();
 
-        for(int i = 0; i < 3; i++) {
-            listSentence.add(new NoteData("문장모음 " + i));
-            listWord.add(new NoteWordData("단어모음 " + i));
-/*
-            for(int j = 0; j < 20; i++) {
-                listWord.get(i).getData().add(new WordData("word" + j, "뜻" + j));
-                Log.d( TAG, String.valueOf(listWord.get(i).getData().get(j)) );
-            }*/
+        if (mworker_note != null && mworker_note.isAlive()) {  //이미 동작하고 있을 경우 중지
+            mworker_note.interrupt();
+        }
+        mworker_note = new workerNote(true);
+        mworker_note.start();
+        try {
+            mworker_note.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
-    }
+        //문장 모음 리스트
+        int i = 0;
+        if(mworker_note.getNoteSen() != null){
+            while( i < mworker_note.getNoteSen().size()){
+                listSentence.add(new NoteData( mworker_note.getNoteSen().get(i).toString() ));
+                Log.d(TAG, mworker_note.getNoteSen().get(i).toString());
+                i++;
+            }
+        }
+        if(listSentence.isEmpty()){
+            listSentence.add(new NoteData("새로운 문장 모음을 등록해보세요."));
+        }
 
+        //단어 모음 리스트
+        i = 0;
+        if(mworker_note.getNoteWord() != null){
+            while( i < mworker_note.getNoteWord().size()){
+                listWord.add(new NoteWordData( mworker_note.getNoteWord().get(i).toString() ));
+                Log.d(TAG, mworker_note.getNoteWord().get(i).toString());
+                i++;
+            }
+        }
+        if(listWord.isEmpty()){
+            listWord.add(new NoteWordData("새로운 단어 모음을 등록해보세요."));
+        }
+    }
 }

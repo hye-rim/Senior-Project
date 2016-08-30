@@ -1,6 +1,5 @@
 package com.onpuri.Activity;
 
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +23,7 @@ import com.onpuri.Adapter.MyActTranslateAdapter;
 import com.onpuri.DividerItemDecoration;
 import com.onpuri.Listener.RecyclerItemClickListener;
 import com.onpuri.R;
+import com.onpuri.Thread.workerAct;
 
 import java.util.ArrayList;
 
@@ -38,6 +39,7 @@ public class UserMyActFragment extends Fragment {
     private TabHost mTabHost;
 
     ArrayList<String> listNew, listRecord, listTrans;
+    ArrayList<String> listNewNum, listRecordNum, listTransNum;
 
     private RecyclerView mRecyclerNew, mRecyclerRecord, mRecyclerTrans;
     private RecyclerView.Adapter mNewAdapter, mRecordAdapter, mTransAdapter;
@@ -49,6 +51,9 @@ public class UserMyActFragment extends Fragment {
     private FrameLayout mItemFrame;
     private FragmentManager mFragmentManager;
 
+
+    private workerAct mworker_act;
+
     public static UserMyActFragment newInstance() {
         UserMyActFragment fragment = new UserMyActFragment();
         return fragment;
@@ -56,7 +61,7 @@ public class UserMyActFragment extends Fragment {
 
     public UserMyActFragment() {
 
-// Required empty public constructor
+        // Required empty public constructor
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -76,7 +81,7 @@ public class UserMyActFragment extends Fragment {
         userId = extra.getString("ActId");
 
         tv_userId = (TextView)view.findViewById(R.id.tv_act_name);
-        tv_userId.setText(userId + " 님");
+        tv_userId.setText("     " + userId + " 님");
 
         mFragmentManager = getFragmentManager();
         mItemFrame = (FrameLayout)view.findViewById(R.id.my_act_item);
@@ -96,12 +101,6 @@ public class UserMyActFragment extends Fragment {
                 .setIndicator("해석문장")
                 .setContent(R.id.tab_act_translate));
 
-        /*
-        for(int i=0;i<mTabHost.getTabWidget().getChildCount();i++){
-            mTabHost.getTabWidget().getChildAt(i)
-                    .setBackgroundColor(Color.parseColor("#FFAA78"));
-        }*/
-
         setTabColor(); //탭 색상 지정
         mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() { //탭 색상 변경
             @Override
@@ -110,7 +109,7 @@ public class UserMyActFragment extends Fragment {
             }
         });
 
-        initData();
+        loadActData();
 
         Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_dark);
 
@@ -166,22 +165,70 @@ public class UserMyActFragment extends Fragment {
         return view;
     }
 
-    public void setTabColor() {
-        for(int i=0;i< mTabHost.getTabWidget().getChildCount();i++) {
-            mTabHost.getTabWidget().getChildAt(i).setBackgroundColor(getResources().getColor(R.color.never_forgotten)); //선택되지 않은 탭
+    public void loadActData(){
+        listNew = new ArrayList<String>();
+        listNewNum = new ArrayList<String>();
+        listRecord = new ArrayList<String>();
+        listRecordNum = new ArrayList<String>();
+        listTrans = new ArrayList<String>();
+        listTransNum = new ArrayList<String>();
+
+        if (mworker_act != null && mworker_act.isAlive()) {  //이미 동작하고 있을 경우 중지
+            mworker_act.interrupt();
         }
-        mTabHost.getTabWidget().getChildAt(mTabHost.getCurrentTab()).setBackgroundColor(getResources().getColor(R.color.pale_gold)); //선택된 탭
+        mworker_act = new workerAct(true);
+        mworker_act.start();
+        try {
+            mworker_act.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        int i = 0;
+
+        if(mworker_act.getActNewSentence().arrSentence != null) {
+            while (i < mworker_act.getActNewSentence().arrSentence.size()) {
+                listNew.add(mworker_act.getActNewSentence().arrSentence.get(i));
+                listNewNum.add(mworker_act.getActNewSentence().arrSentenceNum.get(i));
+                Log.d(TAG, mworker_act.getActNewSentence().arrSentence.get(i));
+                i++;
+            }
+        }
+        if(listNew.isEmpty()){
+            listNew.add("문장을 등록해보세요.");
+        }
+
+        i = 0;
+        if(mworker_act.getActRecSentence().arrSentence != null) {
+            while (i < mworker_act.getActRecSentence().arrSentence.size()) {
+                listRecord.add(mworker_act.getActRecSentence().arrSentence.get(i));
+                listRecordNum.add(mworker_act.getActRecSentence().arrSentenceNum.get(i));
+                Log.d(TAG, mworker_act.getActRecSentence().arrSentence.get(i));
+                i++;
+            }
+        }
+        if(listRecord.isEmpty()){
+            listRecord.add("문장 녹음을 해보세요.");
+        }
+
+        i = 0;
+        if(mworker_act.getActTransSentence().arrSentence != null) {
+            while (i < mworker_act.getActTransSentence().arrSentence.size()) {
+                listTrans.add(mworker_act.getActTransSentence().arrSentence.get(i));
+                listTransNum.add(mworker_act.getActTransSentence().arrSentenceNum.get(i));
+                Log.d(TAG, mworker_act.getActTransSentence().arrSentence.get(i));
+                i++;
+            }
+        }
+        if(listTrans.isEmpty()){
+            listTrans.add("문장 번역을 해보세요.");
+        }
     }
 
-    private void initData() {
-        listNew = new ArrayList<String>();
-        listRecord  = new ArrayList<String>();
-        listTrans = new ArrayList<String>();
-
-        for(int i = 0; i < 3; i++) {
-            listNew.add("등록문장 " + i);
-            listRecord.add("녹음문장 " + i);
-            listTrans.add("해석문장 " + i);
+    public void setTabColor() {
+        for(int i=0;i< mTabHost.getTabWidget().getChildCount();i++) {
+            mTabHost.getTabWidget().getChildAt(i).setBackgroundColor(getResources().getColor(R.color.china_ivory)); //선택되지 않은 탭
         }
+        mTabHost.getTabWidget().getChildAt(mTabHost.getCurrentTab()).setBackgroundColor(getResources().getColor(R.color.pale_gold)); //선택된 탭
     }
 }

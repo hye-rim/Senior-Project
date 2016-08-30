@@ -88,7 +88,7 @@ public class workerLogin extends Thread{
                 mPacketUser.data_len = (int) inData[3];
                 byte[] nameByte = new byte[221];
                 int byteI = 0;
-                if (inData[4] != '0') { //ID, PW가 틀렸을 경우 실행하지 않도록 한다.
+                if (inData[4] != '0' && inData[1] == mPacketUser.ACK_ULG) { //ID, PW가 틀렸을 경우 실행하지 않도록 한다. && ID
                     int index = 0;
                     while (true) { //아이디
                         if ((char) (inData[4 + index]) == '+') {
@@ -99,7 +99,6 @@ public class workerLogin extends Thread{
                             index++;
                         }
                     }
-
 
                     while (true) { //이름
                         if ((char) (inData[4 + index]) == '+') {
@@ -142,7 +141,10 @@ public class workerLogin extends Thread{
                             index++;
                         }
                     }
+
+                    //등록문장 + 녹음문장 + 해석문장 번호만 받고! 탭에서 누를 때 문장내용 받기
                 }
+
                 Log.d(TAG, "id : " + mPacketUser.userId);
                 Log.d(TAG,"name : " + mPacketUser.name);
                 Log.d(TAG,"joinDate : " + mPacketUser.joinDate);
@@ -152,14 +154,12 @@ public class workerLogin extends Thread{
                 check = (char) inData[4];
                 checkLength = (char) inData[3];
 
-                if (check == '0' || checkLength != '1')
+                if (check == '0' || checkLength != '1'){
                     isPlay = !isPlay;
-
+                }
             }catch(IOException e){
                 e.printStackTrace();
             }
-
-
         }
     }
 }

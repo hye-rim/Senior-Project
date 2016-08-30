@@ -14,13 +14,15 @@
         android:layout_height="match_parent" >
 
         <LinearLayout
+            android:background="@color/pale_gold"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical" >
 
             <TabWidget
                 android:id="@android:id/tabs"
-                android:tabStripEnabled="true"
+                android:background="@color/never_forgotten"
+                android:tabStripEnabled="false"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0" />

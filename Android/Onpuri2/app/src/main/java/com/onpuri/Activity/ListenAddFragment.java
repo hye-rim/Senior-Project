@@ -150,7 +150,7 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
                     btn_listen.setTextColor(Color.parseColor("#FEE098"));
                     onBtnPlay();
                 }
-                 else {
+                else {
                     Isplay = false;
                     btn_play.setText("재생");
                     btn_listen.setEnabled(true);

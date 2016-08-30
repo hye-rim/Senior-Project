@@ -267,9 +267,9 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
                     image.setImageBitmap(image_bitmap);
 
                 }
-                catch (FileNotFoundException e) { 		e.printStackTrace(); 			}
-                catch (IOException e)                 {		e.printStackTrace(); 			}
-                catch (Exception e)		         {             e.printStackTrace();			}
+                catch (FileNotFoundException e) {       e.printStackTrace();          }
+                catch (IOException e)                 {      e.printStackTrace();          }
+                catch (Exception e)               {             e.printStackTrace();         }
             }
         }
     }

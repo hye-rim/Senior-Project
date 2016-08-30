@@ -28,9 +28,12 @@ import android.widget.Toast;
 
 import com.onpuri.Adapter.SenListenListAdapter;
 import com.onpuri.Adapter.SenTransListAdapter;
+import com.onpuri.Data.NoteData;
 import com.onpuri.DividerItemDecoration;
 import com.onpuri.Listener.HomeItemClickListener;
 import com.onpuri.R;
+import com.onpuri.Thread.workerNote;
+import com.onpuri.Thread.workerNoteItemAdd;
 import com.onpuri.Thread.workerTrans;
 import com.onpuri.Thread.workerListen;
 
@@ -38,6 +41,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 
@@ -81,6 +85,11 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
     private RecyclerView ListenRecyclerView;
     private SenListenListAdapter ListenAdapter;
     protected RecyclerView.LayoutManager ListenLayoutManager;
+
+    private ArrayList<String> listNote;
+    private workerNote mworker_note;
+    private workerNoteItemAdd mworker_item_add;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (view != null) {
@@ -113,6 +122,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
 
         translation();
         listen();
+        noteLoad();
 
         ImageButton tts_sen = (ImageButton) view.findViewById(R.id.tts);
         tts_sen.setOnClickListener(this);
@@ -212,7 +222,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 fm.popBackStack();
                                 ft.commit();
-                               Toast.makeText(getActivity(), "삭제되었습니다(구현예정)", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), "삭제되었습니다(구현예정)", Toast.LENGTH_SHORT).show();
                             }
                         })
                         .setNegativeButton("취소", new DialogInterface.OnClickListener() {
@@ -224,12 +234,13 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
 
                 break;
             case R.id.add_note:
-                final CharSequence[] items = {"노트1", "노트2", "노트3"};
+                final String[] items = listNote.toArray(new String[listNote.size()]);
                 new AlertDialog.Builder(getActivity())
                         .setTitle("노트를 선택해 주세요(구현 예정)")
                         .setItems(items, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int index) {
                                 Toast.makeText(getActivity(), items[index] + "선택", Toast.LENGTH_SHORT).show();
+                                selectNote(items[index]);
                             }
                         })
                         .setNegativeButton("취소", new DialogInterface.OnClickListener() {
@@ -266,10 +277,11 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 ft.commit();
                 break;
             case R.id.tts :
-            tts.speak(sentence, TextToSpeech.QUEUE_FLUSH, null);
+                tts.speak(sentence, TextToSpeech.QUEUE_FLUSH, null);
                 break;
         }
     }
+
 
     @Override
     public void onInit(int status) {
@@ -383,4 +395,55 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 break;
         }
     }
+
+    private void noteLoad(){
+        listNote = new ArrayList<String>();
+
+        if (mworker_note != null && mworker_note.isAlive()) {  //이미 동작하고 있을 경우 중지
+            mworker_note.interrupt();
+        }
+        mworker_note = new workerNote(true);
+        mworker_note.start();
+        try {
+            mworker_note.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        //문장 모음 리스트
+        int i = 0;
+        if(mworker_note.getNoteSen() != null){
+            while( i < mworker_note.getNoteSen().size()){
+                listNote.add( mworker_note.getNoteSen().get(i).toString() );
+                Log.d(TAG, mworker_note.getNoteSen().get(i).toString());
+                i++;
+            }
+        }
+        if(listNote.isEmpty()){
+            listNote.add("새로운 문장 모음 등록하기");
+        }
+    }
+
+    private void selectNote(String item) {
+        String nameData = new String ("1+" + item + "+" );
+        if (mworker_item_add != null && mworker_item_add.isAlive()) {  //이미 동작하고 있을 경우 중지
+            mworker_item_add.interrupt();
+        }
+        mworker_item_add = new workerNoteItemAdd(true, nameData, Integer.parseInt(sentence_num));
+        mworker_item_add.start();
+        try {
+            mworker_item_add.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        if(mworker_item_add.getResult() == 1) {
+            Toast.makeText(getActivity(), item + "에 추가되었습니다.", Toast.LENGTH_LONG).show();
+        }else if( mworker_item_add.getResult() == 2){
+            Toast.makeText(getActivity(), item + "에 이미 있습니다.", Toast.LENGTH_LONG).show();
+        }else{
+            Toast.makeText(getActivity(), "추가에 실패하였습니다.", Toast.LENGTH_LONG).show();
+        }
+    }
+
 }

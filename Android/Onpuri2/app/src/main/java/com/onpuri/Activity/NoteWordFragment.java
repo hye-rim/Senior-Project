@@ -23,6 +23,7 @@ import com.onpuri.Adapter.NoteWordItemAdapter;
 import com.onpuri.Data.WordData;
 import com.onpuri.DividerItemDecoration;
 import com.onpuri.R;
+import com.onpuri.Thread.workerNoteLoad;
 
 import java.util.ArrayList;
 
@@ -50,6 +51,7 @@ public class NoteWordFragment  extends Fragment implements View.OnClickListener 
     private FrameLayout mItemFrame;
     private FragmentManager mFragmentManager;
     private Boolean isEdit = false;
+    private workerNoteLoad mworker_note;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -94,11 +96,31 @@ public class NoteWordFragment  extends Fragment implements View.OnClickListener 
     }
 
     private void initData() {
-        itemWord = new ArrayList<>();
+        String nameData = new String ("2+" + itemName);
+        itemWord = new ArrayList<WordData>();
 
-        for(int i = 0; i < 20; i++) {
-            itemWord.add(new WordData("word" + i, "뜻" + i));
-            Log.d("TAG", String.valueOf(itemWord.get(i)));
+        if (mworker_note != null && mworker_note.isAlive()) {  //이미 동작하고 있을 경우 중지
+            mworker_note.interrupt();
+        }
+        mworker_note = new workerNoteLoad(true, nameData, 2);
+        mworker_note.start();
+        try {
+            mworker_note.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        int i = 0;
+
+        if(mworker_note.getNoteWord() != null) {
+            while (i < mworker_note.getNoteWord().size()) {
+                itemWord.add( new WordData( mworker_note.getNoteWord().get(i).getWord().toString(), mworker_note.getNoteWord().get(i).getMean().toString()));
+                Log.d(TAG,mworker_note.getNoteWord().get(i).getWord().toString() + " / " + mworker_note.getNoteWord().get(i).getMean().toString());
+                i++;
+            }
+        }
+        if(itemWord.isEmpty()){
+            itemWord.add(new WordData("추가된 단어가 없습니다.", ""));
         }
     }
 

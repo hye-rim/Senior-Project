@@ -1,11 +1,14 @@
 package com.onpuri.Activity;
 
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
@@ -13,19 +16,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.onpuri.R;
+import com.onpuri.Thread.workerNote;
+import com.onpuri.Thread.workerNoteItemAdd;
 import com.onpuri.Thread.workerSearch;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -34,6 +41,7 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -43,19 +51,18 @@ public class SearchFragment extends Fragment {
     private static final String TAG = "SearchFragment" ;
     private static View view;
     private TextToSpeech tts;
-    private ImageButton btn_listen;
-    private TextView tv_sen, tv_word, tv_word_title;
+    private ImageButton btn_listen, btn_note_add;
+    private TextView tv_word, tv_word_title;
     private ListView list;
 
-    String searchText;
+    String searchText, wordMean;
     private workerSearch mworker_search;
+    private workerNote mworker_note;
+    private workerNoteItemAdd mworker_item_add;
+
     ArrayList<String> searchList = new ArrayList<String>();
     ArrayList<String> sentenceNumList = new ArrayList<String>();
-    ArrayAdapter<String> Adapter;
-
-    XmlPullParser xpp;
-    String key="6VCLI3yWvTEYI8GqnDNO"; //Naver 개발자센터 검색 키
-    String data;
+    private ArrayList<String> listNote;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -76,11 +83,14 @@ public class SearchFragment extends Fragment {
         Log.e(TAG, "data : " + searchText);
 
         View header = inflater.inflate(R.layout.search_header, null, false);
+        tv_word_title = (TextView)header.findViewById(R.id.tv_search_word);
+        btn_listen = (ImageButton)header.findViewById(R.id.btn_search_word_listen);
+        btn_note_add = (ImageButton)header.findViewById(R.id.btn_search_word_add);
         tv_word = (TextView)header.findViewById(R.id.tv_word_search);
         list = (ListView)view.findViewById(R.id.list_search_sen);
-        btn_listen = (ImageButton)header.findViewById(R.id.btn_search_word_listen);
-        tv_word_title = (TextView)header.findViewById(R.id.tv_search_word);
-        loadData();
+
+        loadSearchData();
+        noteLoad();
 
         tv_word_title.setText(searchText);
 
@@ -102,6 +112,24 @@ public class SearchFragment extends Fragment {
                 } else {
                     ttsUnder20(text);
                 }
+            }
+        });
+        btn_note_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String[] items = listNote.toArray(new String[listNote.size()]);
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("노트를 선택해 주세요(구현 예정)")
+                        .setItems(items, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int index) {
+                                Toast.makeText(getActivity(), items[index] + "선택", Toast.LENGTH_SHORT).show();
+                                selectNote(items[index]);
+                            }
+                        })
+                        .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dlg, int sumthin) {
+                            }
+                        }).show();
             }
         });
 
@@ -135,100 +163,10 @@ public class SearchFragment extends Fragment {
             }
         });
 
-        searchWord();
-
         return view;
     }
 
-    private void searchWord() {
-        new Thread(){
-            public void run(){
-
-                // 클라이언트 아이디 및 시크릿 그리고 요청 URL 선언
-                String clientId = "6VCLI3yWvTEYI8GqnDNO";
-                String clientSecret = "maNEdaKzXu";
-                //encyc : 백과사전, book : 책
-                try{
-                    String text = URLEncoder.encode( searchText ,"UTF-8");
-                    String apiURL = "https://openapi.naver.com/v1/search/encyc.xml?query="+ text +"&display=1&start=1";
-                    URL url = new URL(apiURL);
-
-                    URLConnection urlConn;
-                    //url 연결
-                    urlConn = url.openConnection();
-                    urlConn.setRequestProperty("X-naver-Client-Id", clientId);
-                    urlConn.setRequestProperty("X-naver-Client-Secret", clientSecret);
-
-                    //파싱 - 팩토리 만들고 팩토리로 파서 생성 (풀 파서 사용)
-                    XmlPullParserFactory factory;
-
-                    factory = XmlPullParserFactory.newInstance();
-                    XmlPullParser parser = factory.newPullParser();
-                    parser.setInput((new InputStreamReader(urlConn.getInputStream())));
-
-                    int eventType = parser.getEventType();
-                    String b = "";
-                    while (eventType != XmlPullParser.END_DOCUMENT) {
-                        switch (eventType) {
-                            case XmlPullParser.END_DOCUMENT: // 문서의 끝
-                                break;
-                            case XmlPullParser.START_DOCUMENT:
-                                b = b + " ";
-                                Log.d(TAG, b);
-                                break;
-                            case XmlPullParser.START_TAG: {
-                                Log.d(TAG, b);
-                                String tag = parser.getName();
-                                switch (tag) {
-                                    case "description":
-                                        if (b != null)
-                                            b = b + (parser.nextText());
-
-                                        break;
-                                }
-                                break;
-                            }
-
-                            case XmlPullParser.END_TAG: {
-                                String tag = parser.getName();
-                                if (tag.equals("item")) {
-                                    b = b.replace("Naver Search Result", "");
-                                    b = b.replace("." , "\n");
-
-                                    final String finalB = b;
-                                    getActivity().runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            tv_word.setText(finalB);
-                                        }
-                                    });
-                                    b = null;
-                                }
-
-                            }
-
-                        }
-                        eventType = parser.next();
-                    }
-
-                } catch (MalformedURLException e) {
-                    Log.e(TAG, "MalformedURLException");
-                    tv_word.setText("구현 예정입니다");
-                } catch (UnsupportedEncodingException e) {
-                    Log.e(TAG, "UnsupportedEncodingException");
-                    tv_word.setText("구현 예정입니다");
-                } catch (IOException e) {
-                    Log.e(TAG, "IOException");
-                    tv_word.setText("구현 예정입니다");
-                } catch (XmlPullParserException e) {
-                    Log.e(TAG, "XmlPullParserException");
-                    tv_word.setText("구현 예정입니다");
-                }
-            }
-        }.start();
-    }
-
-    public void loadData(){
+    public void loadSearchData(){
         if (mworker_search != null && mworker_search.isAlive()) {  //이미 동작하고 있을 경우 중지
             mworker_search.interrupt();
         }
@@ -240,12 +178,75 @@ public class SearchFragment extends Fragment {
             e.printStackTrace();
         }
 
+        //단어
+        if( mworker_search.getUserWord().isEmpty() == false ){
+            wordMean = mworker_search.getUserWord();
+            wordMean = wordMean.replaceAll("[?]", "\n"); //?일 때 줄바꿈
+            tv_word.setText(wordMean);
+
+        }else{
+            tv_word.setText("  검색 결과가 없습니다..");
+        }
+
+        //문장
         int i = 0;
-        while( i < mworker_search.getUserSentence().arrSentence.size()) {
-            searchList.add(mworker_search.getUserSentence().arrSentence.get(i));
-            sentenceNumList.add(mworker_search.getUserSentence().arrSentenceNum.get(i));
-            Log.d(TAG, mworker_search.getUserSentence().arrSentence.get(i));
-            i++;
+        if( mworker_search.getUserSentence().arrSentence != null) {
+            while (i < mworker_search.getUserSentence().arrSentence.size()) {
+                searchList.add(mworker_search.getUserSentence().arrSentence.get(i));
+                sentenceNumList.add(mworker_search.getUserSentence().arrSentenceNum.get(i));
+                Log.d(TAG, mworker_search.getUserSentence().arrSentence.get(i));
+                i++;
+            }
+        }
+    }
+
+    private void noteLoad() {
+        listNote = new ArrayList<String>();
+
+        if (mworker_note != null && mworker_note.isAlive()) {  //이미 동작하고 있을 경우 중지
+            mworker_note.interrupt();
+        }
+        mworker_note = new workerNote(true);
+        mworker_note.start();
+        try {
+            mworker_note.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        //문장 모음 리스트
+        int i = 0;
+        if(mworker_note.getNoteWord() != null){
+            while( i < mworker_note.getNoteWord().size()){
+                listNote.add( mworker_note.getNoteWord().get(i).toString() );
+                Log.d(TAG, mworker_note.getNoteWord().get(i).toString());
+                i++;
+            }
+        }
+        if(listNote.isEmpty()){
+            listNote.add("새로운 문장 모음 등록하기");
+        }
+    }
+
+    private void selectNote(String item) {
+        String nameData = new String ("2+" + item + "+" + searchText);
+        Log.d(TAG, "search : " + searchText);
+        if (mworker_item_add != null && mworker_item_add.isAlive()) {  //이미 동작하고 있을 경우 중지
+            mworker_item_add.interrupt();
+        }
+        mworker_item_add = new workerNoteItemAdd(true, nameData, -2);
+        mworker_item_add.start();
+        try {
+            mworker_item_add.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if(mworker_item_add.getResult() == 1) {
+            Toast.makeText(getActivity(), item + "에 추가되었습니다.", Toast.LENGTH_LONG).show();
+        }else if( mworker_item_add.getResult() == 2){
+            Toast.makeText(getActivity(), item + "에 이미 있습니다.", Toast.LENGTH_LONG).show();
+        }else{
+            Toast.makeText(getActivity(), "추가에 실패하였습니다.", Toast.LENGTH_LONG).show();
         }
     }
 

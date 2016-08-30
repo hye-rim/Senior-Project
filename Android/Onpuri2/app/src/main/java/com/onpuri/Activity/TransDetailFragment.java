@@ -128,7 +128,5 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
                         }).show();
                 break;
         }
-
     }
-
 }

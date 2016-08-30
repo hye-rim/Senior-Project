@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) { //입력 완료 후 구현 부분
-                Toast.makeText(getApplicationContext(), "검색 기능은 구현 예정입니다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "검색하는 데에 시간이 소요됩니다.", Toast.LENGTH_SHORT).show();
                 SearchFragment searchFragment = new SearchFragment();
                 FragmentManager fragmentManager = getSupportFragmentManager();
 
@@ -326,7 +326,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void logout() {
-        outThreadCheck(); //스레드 중지 후 재시작
+        outThreadCheck(); //스레드 중지 후 재시작 함수
 
         if (setting.getBoolean("autoLogin", false)) {
             editor.clear();
