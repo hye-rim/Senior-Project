@@ -14,17 +14,30 @@ import java.util.ArrayList;
 
 public class ListenListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
     private final String TAG = "ListenListAdapter";
-    private ArrayList<String> senList;
+    private ArrayList<String> listenList;
+    private ArrayList<String> useridList;
+    private ArrayList<String> dayList;
+    private ArrayList<String> recoList;
 
-    public ListenListAdapter(ArrayList<String> list_listen, RecyclerView recyclerView) {
-        this.senList=list_listen;
+    public ListenListAdapter(ArrayList<String> list_listen, ArrayList<String> list_userid, ArrayList<String> list_day, ArrayList<String> list_reco, RecyclerView recyclerView) {
+        this.listenList=list_listen;
+        this.useridList=list_userid;
+        this.dayList=list_day;
+        this.recoList=list_reco;
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
-        public TextView mSenItem;
+        public TextView listen;
+        public TextView userid;
+        public TextView day;
+        public TextView reco;
         public ItemViewHolder(View v) {
             super(v);
-            mSenItem = (TextView) v.findViewById(R.id.tv_listen_item);
+            listen = (TextView) v.findViewById(R.id.tv_listen_item);
+            userid = (TextView) v.findViewById(R.id.userid);
+            day = (TextView) v.findViewById(R.id.day);
+            reco = (TextView) v.findViewById(R.id.reco);
+
         }
     }
     @Override
@@ -36,15 +49,16 @@ public class ListenListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        Log.d(TAG, "listen list " + position + " set.");
         ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
-        itemViewHolder.mSenItem.setText(senList.get(position));
-
+        itemViewHolder.listen.setText(listenList.get(position));
+        itemViewHolder.userid.setText(useridList.get(position));
+        itemViewHolder.day.setText(dayList.get(position));
+        itemViewHolder.reco.setText(recoList.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return senList.size();
+        return listenList.size();
     }
 
 }

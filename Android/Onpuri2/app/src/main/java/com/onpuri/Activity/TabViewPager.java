@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import com.tsengvn.typekit.TypekitContextWrapper;
 
 //Fragment Tab 설정
 public class TabViewPager extends Fragment {
+    private static final String TAG = "TabViewPager";
 
     public static TabLayout tabLayout;
     public static ViewPager viewPager;
@@ -83,7 +85,6 @@ public class TabViewPager extends Fragment {
                     bundle = new Bundle();
                     bundle.putString("UserId", userId); //아이디 전송
                     tab2.setArguments(bundle);
-
                     return tab2;
 
                 case 2:

@@ -3,7 +3,9 @@ package com.onpuri.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Environment;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -28,11 +30,14 @@ import com.onpuri.Adapter.ListenListAdapter;
 import com.onpuri.R;
 import com.onpuri.Server.PacketUser;
 import com.onpuri.Server.SocketConnection;
+import com.onpuri.Thread.workerListenMore;
+import com.onpuri.Thread.workerTransMore;
 
 import org.w3c.dom.Text;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +48,8 @@ import static com.onpuri.R.drawable.divider_dark;
 
 public class ListenMoreFragment extends Fragment implements View.OnClickListener, TextToSpeech.OnInitListener {
     private static final String TAG = "ListenMoreFragment";
+    private workerListenMore worker_listen_more;
+
     private static View view;
 
     ArrayList<String> list_listen;
@@ -56,7 +63,9 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
     String sentence_num = "";
     TextToSpeech tts;
 
-    private android.support.v7.widget.RecyclerView RecyclerView;
+    MediaPlayer mPlayer = null;
+
+    private RecyclerView RecyclerView;
     private ListenListAdapter Adapter;
     protected RecyclerView.LayoutManager LayoutManager;
 
@@ -84,6 +93,7 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
             sentence_num=getArguments().getString("sen_num");
             item.setText(sentence);
         }
+
         listen();
 
         ImageButton tts_sen = (ImageButton) view.findViewById(R.id.tts);
@@ -98,12 +108,13 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
         RecyclerView = (RecyclerView) view.findViewById(R.id.recycler_listen);
         LayoutManager = new LinearLayoutManager(getActivity());
         RecyclerView.setLayoutManager(LayoutManager);
-        Adapter = new ListenListAdapter(list_listen, RecyclerView);
+        Adapter = new ListenListAdapter(list_listen, list_userid, list_day, list_reco, RecyclerView);
         RecyclerView.setAdapter(Adapter);// Set CustomAdapter as the adapter for RecyclerView.
         RecyclerView.addOnItemTouchListener(
                 new HomeItemClickListener(getActivity().getApplicationContext(), RecyclerView ,new HomeItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
+                        PlayFile(list_num.get(position));
                     }
 
                     @Override
@@ -135,7 +146,67 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
         return view;
     }
 
-    private void listen(){}
+    private void listen(){
+        if (worker_listen_more != null && worker_listen_more.isAlive()) {  //이미 동작하고 있을 경우 중지
+            worker_listen_more.interrupt();
+        }
+        worker_listen_more = new workerListenMore(true, sentence_num);
+        worker_listen_more.start();
+        try {
+            worker_listen_more.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        list_listen.clear();
+        list_userid.clear();
+        list_day.clear();
+        list_reco.clear();
+        list_num.clear();
+
+        for (int i = 0; i < worker_listen_more.getCount(); i++) {
+            list_listen.add("Listen "+ worker_listen_more.getListennum().get(i).toString());
+            list_userid.add(worker_listen_more.getUserid().get(i).toString());
+            list_day.add(worker_listen_more.getDay().get(i).toString());
+            list_reco.add(worker_listen_more.getReco().get(i).toString());
+            list_num.add(worker_listen_more.getListennum().get(i).toString());
+        }
+    }
+
+    //파일 경로
+    public static synchronized String GetFilePath(String filenum) {
+        String sdcard = Environment.getExternalStorageState();
+        File file;
+
+        if ( !sdcard.equals(Environment.MEDIA_MOUNTED)) { file = Environment.getRootDirectory(); }
+        else { file = Environment.getExternalStorageDirectory(); }
+
+        String dir = file.getAbsolutePath();
+        String path = dir + "/Daily E/"+filenum+"listen.mp3";
+        Log.d(TAG, "GetFilePath : " + path);
+
+        return path;
+    }
+
+    public void PlayFile(String filenum) {
+        String path = GetFilePath(filenum);
+
+        if( mPlayer != null ) {
+            mPlayer.stop();
+            mPlayer.release();
+            mPlayer = null;
+        }
+        mPlayer = new MediaPlayer();
+
+        try {
+            mPlayer.setDataSource(path);
+            mPlayer.prepare();
+        } catch(IOException e) {
+            Log.d(TAG, "Audio Play error");
+            return;
+        }
+        mPlayer.start();
+    }
 
     @Override
     public void onDestroy() {

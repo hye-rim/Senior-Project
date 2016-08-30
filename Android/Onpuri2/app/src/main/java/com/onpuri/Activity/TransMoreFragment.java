@@ -46,8 +46,6 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
     TextView item;
     String sentence = "";
     String sentence_num = "";
-    int i=0;
-    int j=0;
 
     private RecyclerView RecyclerView;
     private TransListAdapter Adapter;
@@ -162,13 +160,18 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
             e.printStackTrace();
         }
 
-        for (int i = j; i < worker_trans_more.getCount(); i++) {
+        list_trans.clear();
+        list_userid.clear();
+        list_day.clear();
+        list_reco.clear();
+        list_num.clear();
+
+        for (int i = 0; i < worker_trans_more.getCount(); i++) {
             list_trans.add(worker_trans_more.getTrans().get(i).toString());
             list_userid.add(worker_trans_more.getUserid().get(i).toString());
             list_day.add(worker_trans_more.getDay().get(i).toString());
             list_reco.add(worker_trans_more.getReco().get(i).toString());
             list_num.add(worker_trans_more.getTransnum().get(i).toString());
-            j++;
         }
     }
 

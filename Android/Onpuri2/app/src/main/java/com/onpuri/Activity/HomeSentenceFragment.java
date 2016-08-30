@@ -52,7 +52,6 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
     private static final String TAG = "HomeSentenceFragment";
     private workerTrans worker_sentence_trans;
     private workerListen worker_sentence_listen;
-    private static final int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 1;
 
     private static View view;
 
@@ -63,12 +62,10 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
     ArrayList<String> list_trans_num;
 
     ArrayList<String> list_listen;
-    ArrayList<String> list_listen_file;
     ArrayList<String> list_listen_userid;
     ArrayList<String> list_listen_day;
     ArrayList<String> list_listen_reco;
     ArrayList<String> list_listen_num;
-    ArrayList<String> list_filename;;
 
     TextView item;
     String sentence = "";
@@ -102,7 +99,6 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
         list_trans_num = new ArrayList<String>();
 
         list_listen = new ArrayList<String>();
-        list_listen_file = new ArrayList<String>();
         list_listen_userid = new ArrayList<String>();
         list_listen_day = new ArrayList<String>();
         list_listen_reco = new ArrayList<String>();
@@ -178,7 +174,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 new HomeItemClickListener(getActivity().getApplicationContext(), ListenRecyclerView ,new HomeItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        //PlayFile(list_filename.get(position));
+                        PlayFile(list_listen_num.get(position));
                     }
                     public void onLongItemClick(View view, int position) {}
                 })
@@ -328,7 +324,6 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
 
         for (int i = 0; i < worker_sentence_listen.getCount(); i++) {
             list_listen.add("Listen "+ worker_sentence_listen.getListennum().get(i).toString());
-            list_listen_file.add(worker_sentence_listen.getListen().get(i).toString());
             list_listen_userid.add(worker_sentence_listen.getUserid().get(i).toString());
             list_listen_day.add(worker_sentence_listen.getDay().get(i).toString());
             list_listen_reco.add(worker_sentence_listen.getReco().get(i).toString());
@@ -337,28 +332,24 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
     }
 
     //파일 경로
-  /*  public static synchronized String GetFilePath(String filename) {
+    public static synchronized String GetFilePath(String filenum) {
         Log.d(TAG, "GetFilePath");
         String sdcard = Environment.getExternalStorageState();
-        File file = null;
+        File file;
 
         if ( !sdcard.equals(Environment.MEDIA_MOUNTED)) { file = Environment.getRootDirectory(); }
         else { file = Environment.getExternalStorageDirectory(); }
 
-        String dir = file.getAbsolutePath() + String.format("/Daily E");
-        String path = file.getAbsolutePath() + String.format("/Daily E/record %s.mp3", filename);
-
-        file = new File(dir);
-        if ( !file.exists() ) {
-            file.mkdirs();
-        }
+        String dir = file.getAbsolutePath();
+        String path = dir + "/Daily E/"+filenum+"listen.mp3";
         Log.d(TAG, "GetFilePath : " + path);
 
         return path;
-    }*/
- /*   public void PlayFile(String filename) {
+    }
+
+    public void PlayFile(String filenum) {
         Log.d(TAG, "PlayFile");
-        String path = GetFilePath(filename);
+        String path = GetFilePath(filenum);
 
         if( mPlayer != null ) {
             mPlayer.stop();
@@ -375,7 +366,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
             return;
         }
         mPlayer.start();
-    }*/
+    }
 
     private void StopFile() {
         mRecorder.stop();

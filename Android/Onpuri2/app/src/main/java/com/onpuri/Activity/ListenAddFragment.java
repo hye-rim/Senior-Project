@@ -55,11 +55,10 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
     DataInputStream dis;
     FileInputStream fis;
     byte[] outData;
-    byte[] temp = new byte[261];
     byte[] inData = new byte[261];
+    byte[] temp = new byte[261];
 
     private static View view;
-    private Toast toast;
 
     TextView item;
     String sentence = "";
@@ -87,15 +86,19 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
         } catch (InflateException e) {}
 
         item = (TextView) view.findViewById(R.id.tv_sentence);
+
         if (getArguments() != null) {
             sentence = getArguments().getString("sen");
             sentence_num=Integer.parseInt(getArguments().getString("sen_num"));
             item.setText(sentence);
         }
+
         btn_listen = (Button) view.findViewById(R.id.listen);
         btn_listen.setOnClickListener(this);
         btn_play = (Button) view.findViewById(R.id.play);
         btn_play.setOnClickListener(this);
+        btn_play.setEnabled(false);
+        btn_play.setTextColor(Color.parseColor("#FEE098"));
 
         Button btn_new_listen = (Button) view.findViewById(R.id.btn_new_listen);
         btn_new_listen.setOnClickListener(this);
@@ -137,8 +140,6 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
 
             case R.id.play:
                 if(!Isstart) {
-                    toast = Toast.makeText(getActivity(), "저장된 녹음이 없습니다", Toast.LENGTH_SHORT);
-                    toast.show();
                     break;
                 }
                 if (!Isplay) {
@@ -158,7 +159,7 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
 
             case R.id.btn_new_listen:
                 new AlertDialog.Builder(getActivity())
-                        .setTitle("녹음을 등록하시겠습니까?")
+                        .setTitle("녹음을 등록하시겠습니까?\n등록후에는 수정이 불가능합니다.")
                         .setPositiveButton("네", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 AddListen();
@@ -175,7 +176,7 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
 
             case R.id.btn_new_listen_back:
             new AlertDialog.Builder(getActivity())
-                    .setTitle("녹음 등록을 취소하시겠습니까?")
+                    .setTitle("녹음 등록을 취소하시겠습니까?\n녹음중인 내용이 전부 사라집니다.")
                     .setPositiveButton("네", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
                             fm.popBackStack();
@@ -371,6 +372,7 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
         public void run() {
             super.run();
             while (isPlay) {
+                Log.d(TAG, "worker add listen start");
                 try {
                     dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
                     fis = new FileInputStream(new File(mFileName));
@@ -411,7 +413,7 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
 
                     dis = new DataInputStream(SocketConnection.socket.getInputStream());
                     dis.read(temp, 0, 4);
-                    for (int index = 0; index < 1; index++) {
+                    for (int index = 0; index < 4; index++) {
                         inData[index] = temp[index];
                     }
                     if(inData[1] == PacketUser.ACK_ALISTEN) {

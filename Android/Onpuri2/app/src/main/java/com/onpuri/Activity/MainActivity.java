@@ -31,6 +31,8 @@ import com.onpuri.R;
 import com.onpuri.Thread.workerLogout;
 import com.tsengvn.typekit.TypekitContextWrapper;
 
+import java.io.File;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "MainActivity" ;
     private ActivityList actManager = ActivityList.getInstance();
@@ -147,6 +149,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Log.d(TAG, "close");
                 //시간안에 2번 눌렀을 때
                 if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime) {
+                    DeleteDir("/storage/emulated/0/Daily E");
+
                     if (setting.getBoolean("autoLogin", false) == false) {
                         editor.clear();
                         editor.commit();
@@ -165,6 +169,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Toast.makeText(getApplicationContext(), "\'뒤로\' 버튼을 한번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT).show();
                 }
             }
+        }
+    }
+    public void DeleteDir(String path) {
+        File file = new File(path);
+
+        if(file.exists()) {
+            File[] childFileList = file.listFiles();
+            for (File childFile : childFileList) {
+                if (childFile.isDirectory()) {
+                    DeleteDir(childFile.getAbsolutePath());    //하위 디렉토리 루프
+                } else {
+                    childFile.delete();    //하위 파일삭제
+                }
+            }
+            file.delete();
         }
     }
 
