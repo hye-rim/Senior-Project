@@ -23,14 +23,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.onpuri.Adapter.SenListenListAdapter;
 import com.onpuri.Adapter.SenTransListAdapter;
-import com.onpuri.Data.NoteData;
 import com.onpuri.DividerItemDecoration;
 import com.onpuri.Listener.HomeItemClickListener;
 import com.onpuri.R;

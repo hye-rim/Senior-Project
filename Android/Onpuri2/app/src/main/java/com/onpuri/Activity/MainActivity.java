@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -42,6 +43,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     NavigationView mNavigationView;
     FragmentManager mFragmentManager;
     private GoogleApiClient client;
+
+    MediaPlayer mPlayer;
 
     //Back Preesed
     private final long FINISH_INTERVAL_TIME = 3000;
