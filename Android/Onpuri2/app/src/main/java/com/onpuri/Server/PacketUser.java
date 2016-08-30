@@ -34,7 +34,7 @@ public class PacketUser extends Application {
     static final public char USR_MLISTEN = 23; //more recoder
     static final public char USR_ALISTEN = 24; //add recoder
     static final public char ACK_ALISTEN = 25; //add recoder ACK
-    
+
     static final public char USR_SEARCH = 30; //검색 문장,단어 (search)
     static final public char ACK_WORSER = 31; //검색 단어 응답
     static final public char ACK_NWORSER = 32; //검색 단어 결과 없을 때

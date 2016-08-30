@@ -94,8 +94,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
             id = et_loginId.getText().toString();
             password = et_loginPw.getText().toString();
 
-            if( check == '5' || et_loginId.getText().equals(null)){
-                Toast.makeText(getApplicationContext(), "ID와 비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show();
+            if( check == '5' ){
                 validation = false;
             }else{
                 validation = loginCorrect();
@@ -152,6 +151,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
     }
+
     private void mainGo(){
         mPacketUser = mworker_login.getmPacketUser();
 
@@ -211,7 +211,6 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                     mainGo();
 
                 break;
-
         }
     }
 
@@ -235,6 +234,10 @@ public class LoginActivity extends Activity implements View.OnClickListener {
 
         if ( (check != '0' && check != '5') && checkLength != '1') {
             return true;
+        }
+        else if( check == '5' || et_loginId.getText().equals(null)) {
+            Toast.makeText(getApplicationContext(), "ID와 비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show();
+            return false;
         }
         else if (setting.getString("id","").equals(null)) {
             Toast.makeText(getApplicationContext(), "가입을 먼저 해주세요.", Toast.LENGTH_SHORT).show();
@@ -273,9 +276,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         int i = 0;
     }
     @Override
-    protected void onDestroy()
-    {
+    protected void onDestroy() {
         super.onDestroy();
-        actManager.removeActivity(this);
     }
 }

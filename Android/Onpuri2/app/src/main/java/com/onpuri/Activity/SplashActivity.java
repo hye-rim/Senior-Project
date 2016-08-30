@@ -236,6 +236,7 @@ public class SplashActivity extends Activity {
 
         public void run() {
             super.run();
+            int i = 0;
             while (isPlay) {
                 try{
                     synchronized(this){
@@ -255,7 +256,9 @@ public class SplashActivity extends Activity {
                     Log.e(TAG, "서버 접속 실패!");
                 }
 
-                if(!isFail) {
+                if(!isFail && i < 1) {
+                    i++;
+                    Log.e(TAG, "로그인가자");
                     Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
                     intent.setClass(SplashActivity.this, LoginActivity.class);
                     startActivity(intent);
