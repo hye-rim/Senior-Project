@@ -126,9 +126,9 @@ public class workerSearch extends Thread {
                     else if(inData[1] == PacketUser.ACK_WORSER ||
                             inData[1] == PacketUser.ACK_SENSER ) {
                         if (!searchEnd) {
-                            PacketUser.sentence_len = end;
-                            String str = new String(inData, 4, PacketUser.sentence_len); //문장
-                            Log.d(TAG, "len : " + PacketUser.sentence_len);
+                            userSentence.sentence_len = end;
+                            String str = new String(inData, 4, userSentence.sentence_len); //문장
+                            Log.d(TAG, "len : " + userSentence.sentence_len);
                             Log.d(TAG, "new search : " + str);
 
                             switch (inData[1]){

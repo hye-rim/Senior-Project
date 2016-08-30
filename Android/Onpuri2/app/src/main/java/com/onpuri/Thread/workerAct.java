@@ -2,7 +2,6 @@ package com.onpuri.Thread;
 
 import android.util.Log;
 
-import com.onpuri.BuildConfig;
 import com.onpuri.Server.PacketInfo;
 import com.onpuri.Server.PacketUser;
 import com.onpuri.Server.SocketConnection;
@@ -104,16 +103,13 @@ public class workerAct extends Thread {
 
                         switch (inData[1]){
                             case PacketUser.ACK_NACTENRL:
-                                enrlEnd = true;
-                                break;
+                                enrlEnd = true; break;
 
                             case PacketUser.ACK_NACTREC:
-                                recEnd = true;
-                                break;
+                                recEnd = true; break;
 
                             case PacketUser.ACK_NACTTRANS:
-                                transEnd = true;
-                                break;
+                                transEnd = true; break;
 
                             default:  break;
                         }
@@ -147,36 +143,18 @@ public class workerAct extends Thread {
                                 numSentence[index + 4] = temp[index];    // 패킷의 Data부분을 inData에 추가해준다.
                             }
 
-                            PacketUser.sentence_len = end;
-
-                            String str = new String(inData, 4, PacketUser.sentence_len); //문장
-                            String num = Character.toString((char) numSentence[4])
-                                    + Character.toString((char) numSentence[5])
-                                    + Character.toString((char) numSentence[6]); //문장번호
-
                             switch (inData[1]){
                                 case PacketUser.ACK_ACTENRL:
-                                    actEnrlSentence.setSentence(str);
-                                    actEnrlSentence.setSentenceNum(num);
-                                    break;
+                                    saveSen(actEnrlSentence, end); break;
 
                                 case PacketUser.ACK_ACTREC:
-                                    actRecSentence.setSentence(str);
-                                    actRecSentence.setSentenceNum(num);
-                                    break;
+                                    saveSen(actRecSentence, end); break;
 
                                 case PacketUser.ACK_ACTTRANS:
-                                    actTransSentence.setSentence(str);
-                                    actTransSentence.setSentenceNum(num);
-                                    break;
+                                    saveSen(actTransSentence, end); break;
 
-                                default:
-                                    break;
+                                default: break;
                             }
-
-                            Log.d(TAG, "len : " + PacketUser.sentence_len);
-                            Log.d(TAG, "lenNum : " + num);
-                            Log.d(TAG, "new act : " + str);
                         }
                     }
                 }
@@ -186,5 +164,21 @@ public class workerAct extends Thread {
             }
             isPlay = false;
         }
+    }
+
+    private void saveSen(PacketUser kinds, int end) {
+        kinds.sentence_len = end;
+
+        String str = new String(inData, 4, kinds.sentence_len); //문장
+        String num = Character.toString((char) numSentence[4])
+                + Character.toString((char) numSentence[5])
+                + Character.toString((char) numSentence[6]); //문장번호
+
+        kinds.setSentence(str);
+        kinds.setSentenceNum(num);
+
+        Log.d(TAG, "len : " + kinds.sentence_len);
+        Log.d(TAG, "lenNum : " + num);
+        Log.d(TAG, "new act : " + str);
     }
 }

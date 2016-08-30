@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
+import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -17,6 +19,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.onpuri.Activity.NoteWordFragment;
 import com.onpuri.Data.*;
 import com.onpuri.R;
 import com.onpuri.Thread.workerNoteChanges;
@@ -47,12 +50,13 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     workerNoteChanges mworker_add;
     String originalName;
+    FragmentManager fm;
 
-
-    public NoteWordAdapter(ArrayList<NoteWordData> listWord, Context context) {
+    public NoteWordAdapter(ArrayList<NoteWordData> listWord, Context context, FragmentManager fragmentManager) {
         noteWordList = new ArrayList<>();
         noteWordList.addAll(listWord);
         this.context = context;
+        this.fm = fragmentManager;
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
@@ -61,6 +65,23 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             mWordItem = (TextView) v.findViewById(R.id.note_word_item);
             mWordMore = (ImageButton) v.findViewById(R.id.btn_word_more);
 
+            mWordItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    originalName = noteWordList.get(getPosition()).getName();
+
+                    NoteWordFragment noteWordItem = new NoteWordFragment();
+
+                    Bundle args = new Bundle();
+                    args.putString("wordItemName", originalName );
+                    noteWordItem.setArguments(args);
+                    fm.beginTransaction()
+                            .replace(R.id.root_note, noteWordItem)
+                            .addToBackStack(null)
+                            .commit();
+                    fm.executePendingTransactions();
+                }
+            });
             mWordMore.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {

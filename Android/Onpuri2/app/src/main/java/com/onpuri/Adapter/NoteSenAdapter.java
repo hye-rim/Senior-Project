@@ -56,12 +56,14 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     workerNoteChanges mworker_add;
     String originalName;
+    FragmentManager fm;
 
-    public NoteSenAdapter(ArrayList<NoteData> listSentence, Context context) {
+    public NoteSenAdapter(ArrayList<NoteData> listSentence, Context context, FragmentManager fragmentManager) {
         noteSenList = new ArrayList<>();
         noteSenList.addAll(listSentence);
         isBtnClicked = false;
         this.context = context;
+        this.fm = fragmentManager;
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
@@ -73,19 +75,17 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 @Override
                 public void onClick(View v) {
                     originalName = noteSenList.get(getPosition()).getName();
-/*
+
                     NoteSenFragment noteSenItem = new NoteSenFragment();
-                    FragmentManager fm = context.getSupportFragmentManager();
 
                     Bundle args = new Bundle();
                     args.putString("senItemName", originalName );
                     noteSenItem.setArguments(args);
-                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                    ft.replace(R.id.root_note, noteSenItem)
+                    fm.beginTransaction()
+                            .replace(R.id.root_note, noteSenItem)
                             .addToBackStack(null)
                             .commit();
                     fm.executePendingTransactions();
-*/
                 }
             });
 
@@ -124,7 +124,6 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
         public ImageButton getImageButton(){ return mSenMore; }
         public TextView getTextView() {  return mSenItem;  }
-        public LinearLayout getLinearLayout() { return mSenMoreLayout; }
 
         public void setData(String name) {
             mSenItem.setText(name);

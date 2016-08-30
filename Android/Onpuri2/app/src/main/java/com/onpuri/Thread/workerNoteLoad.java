@@ -2,18 +2,24 @@ package com.onpuri.Thread;
 
 import android.util.Log;
 
+import com.onpuri.Data.NoteData;
+import com.onpuri.Data.WordData;
 import com.onpuri.Server.PacketUser;
 import com.onpuri.Server.SocketConnection;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by kutemsys on 2016-08-28.
  */
 public class workerNoteLoad extends Thread {
-    private static final String TAG = "workerNoteItemAdd";
+    private static final String TAG = "workerNoteLoad";
+    private static final char SEN = '1';
+    private static final char WORD = '2';
 
     private boolean isPlay = false;
 
@@ -25,12 +31,27 @@ public class workerNoteLoad extends Thread {
     byte[] temp = new byte[261];
     byte[] numSentence = new byte[261];
 
+    private String flag; //문장, 단어 구분
     private Boolean loadEnd = false;
+    private int outKinds;
     private String toServerData;
 
-    public workerNoteLoad(boolean isPlay, String nameStr) {
+    private PacketUser noteSentence;
+
+    private ArrayList<WordData> noteWord;
+    private int wordLen;
+
+    public workerNoteLoad(boolean isPlay, String nameStr, int outKinds) {
         this.isPlay = isPlay;
         toServerData = nameStr;
+        this.outKinds = outKinds;
+    }
+
+    public PacketUser getNoteSentence() {
+        return noteSentence;
+    }
+    public ArrayList<WordData> getNoteWord() {
+        return noteWord;
     }
 
     public void stopThread() {
@@ -39,10 +60,12 @@ public class workerNoteLoad extends Thread {
 
     public void run() {
         super.run();
-        //미완성
-        /*
         while (isPlay) {
             int i, index;
+            if(outKinds == 1)
+                noteSentence = new PacketUser();
+            else
+                noteWord = new ArrayList<WordData>();
 
             byte[] dataByte = toServerData.getBytes();
 
@@ -81,67 +104,57 @@ public class workerNoteLoad extends Thread {
                     }
 
                     Log.d(TAG, "opc : " + inData[1]);
-                    if(inData[1] == PacketUser.ACK_NWORSER ||
-                            inData[1] == PacketUser.ACK_NSENSER ){
-                        switch (inData[1]){
-                            case PacketUser.ACK_NWORSER:
-                                wordSerEnd = true;
-                                break;
-
-                            case PacketUser.ACK_NSENSER:
-                                sentenceSerEnd = true;
-                                break;
-
-                            default:  break;
-                        }
-
-                        if(wordSerEnd && sentenceSerEnd){
-                            searchEnd = true;
-                            isPlay = false;
-                        }
-
-                        Log.d(TAG, "no more search : " + String.valueOf(searchEnd));
-                        Log.d(TAG, "no word : " + String.valueOf(wordSerEnd));
-                        Log.d(TAG, "no sentence : " + String.valueOf(sentenceSerEnd));
+                    if(inData[1] == PacketUser.ACK_NNOTE_LOAD ){
+                        loadEnd = true;
+                        isPlay = false;
+                        Log.d(TAG, flag + "load end : " + String.valueOf(loadEnd));
                     }
 
-                    else if(inData[1] == PacketUser.ACK_WORSER ||
-                            inData[1] == PacketUser.ACK_SENSER ) {
+                    else if(inData[1] == PacketUser.ACK_NOTE_LOAD ) {
                         if (!loadEnd) {
-                            PacketUser.sentence_len = end;
-                            String str = new String(inData, 4, PacketUser.sentence_len); //문장
-                            Log.d(TAG, "len : " + PacketUser.sentence_len);
-                            Log.d(TAG, "new search : " + str);
+                            if(outKinds == 1) {
+                                noteSentence.sentence_len = end;
+                                String str = new String(inData, 4, PacketUser.sentence_len); //문장
+                                Log.d(TAG, "sentence len : " + PacketUser.sentence_len);
+                                Log.d(TAG, "new search : " + str);
 
-                            switch (inData[1]){
-                                case PacketUser.ACK_WORSER:
-                                    userWord = str;
-                                    break;
+                                //문장번호 정보
+                                dis.read(temp, 0, 4);
+                                for (index = 0; index < 4; index++) {
+                                    numSentence[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
+                                }
 
-                                case PacketUser.ACK_SENSER:
-                                    //문장번호 정보
-                                    dis.read(temp, 0, 4);
-                                    for (index = 0; index < 4; index++) {
-                                        numSentence[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
-                                    }
+                                int numEnd = (numSentence[3] <= 0 ? (int) numSentence[3] + 256 : (int) numSentence[3]);
+                                dis.read(temp, 0, 1 + numEnd);
 
-                                    int numEnd = (numSentence[3] <= 0 ? (int) numSentence[3] + 256 : (int) numSentence[3]);
-                                    dis.read(temp, 0, 1 + numEnd);
+                                for (index = 0; index <= numEnd; index++) {
+                                    numSentence[index + 4] = temp[index];    // 패킷의 Data부분을 inData에 추가해준다.
+                                }
+                                String num = Character.toString((char) numSentence[4])
+                                        + Character.toString((char) numSentence[5])
+                                        + Character.toString((char) numSentence[6]); //문장번호
 
-                                    for (index = 0; index <= numEnd; index++) {
-                                        numSentence[index + 4] = temp[index];    // 패킷의 Data부분을 inData에 추가해준다.
-                                    }
-                                    String num = Character.toString((char) numSentence[4])
-                                            + Character.toString((char) numSentence[5])
-                                            + Character.toString((char) numSentence[6]); //문장번호
+                                noteSentence.setSentence(str);
+                                noteSentence.setSentenceNum(num);
 
-                                    userSentence.setSentence(str);
-                                    userSentence.setSentenceNum(num);
+                                Log.d(TAG, "lenNum : " + num);
+                            }
+                            else if(outKinds == 2){
+                                wordLen = end;
+                                String data = new String(inData, 4, wordLen); //단어
+                                Log.d(TAG, "new data : " + data);
 
-                                    Log.d(TAG, "lenNum : " + num);
-                                    break;
-                                default:
-                                    break;
+                                int plus = data.indexOf("+");
+                                Log.d(TAG, "plus ? " + plus);
+
+                                String word = data.substring(0, plus-1);
+                                String wordMean = data.substring(plus + 2);
+
+                                Log.d(TAG, "word data len : " + wordLen);
+                                Log.d(TAG, "new word : " + word);
+                                Log.d(TAG, "new word mean : " + wordMean);
+
+                                noteWord.add(new WordData(word, wordMean));
                             }
                         }
                     }
@@ -151,7 +164,6 @@ public class workerNoteLoad extends Thread {
             }
             isPlay = false;
         }
-        */
     }
 
 }

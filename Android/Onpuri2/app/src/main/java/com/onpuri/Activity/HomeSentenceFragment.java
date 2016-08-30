@@ -350,20 +350,22 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
     }
 
     private void selectNote(String item) {
-        String nameData = new String ("1+" + item + "+" +sentence_num);
-
+        String nameData = new String ("1+" + item + "+" );
         if (mworker_item_add != null && mworker_item_add.isAlive()) {  //이미 동작하고 있을 경우 중지
             mworker_item_add.interrupt();
         }
-        mworker_item_add = new workerNoteItemAdd(true, nameData);
+        mworker_item_add = new workerNoteItemAdd(true, nameData, Integer.parseInt(sentence_num));
         mworker_item_add.start();
         try {
             mworker_item_add.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        if(mworker_item_add.getSuccess()) {
+
+        if(mworker_item_add.getResult() == 1) {
             Toast.makeText(getActivity(), item + "에 추가되었습니다.", Toast.LENGTH_LONG).show();
+        }else if( mworker_item_add.getResult() == 2){
+            Toast.makeText(getActivity(), item + "에 이미 있습니다.", Toast.LENGTH_LONG).show();
         }else{
             Toast.makeText(getActivity(), "추가에 실패하였습니다.", Toast.LENGTH_LONG).show();
         }

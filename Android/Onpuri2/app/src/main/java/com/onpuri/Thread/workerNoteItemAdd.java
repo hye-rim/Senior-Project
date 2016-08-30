@@ -23,18 +23,19 @@ public class workerNoteItemAdd  extends Thread {
     byte[] outData = new byte[261];
     byte[] inData = new byte[20];
 
-    private Boolean isSuccess;
+    private int result;
     private String toServerData;
+    private int sentenceNum;
 
-    public workerNoteItemAdd(boolean isPlay, String nameStr) {
+    public workerNoteItemAdd(boolean isPlay, String nameStr, int sentenceNum) {
         this.isPlay = isPlay;
         toServerData = nameStr;
-
-        isSuccess = false;
+        this.sentenceNum = sentenceNum;
+        result = 0;
     }
 
-    public Boolean getSuccess() {
-        return isSuccess;
+    public int getResult() {
+        return result;
     }
 
     public void stopThread() {
@@ -51,11 +52,24 @@ public class workerNoteItemAdd  extends Thread {
             outData[0] = (byte) PacketUser.SOF;
             outData[1] = (byte) PacketUser.USR_NOTE_ITEM_ADD;
             outData[2] = (byte) PacketUser.getSEQ();
-            outData[3] = (byte) dataByte.length;
-            for (i = 4; i < 4 + dataByte.length ; i++) {
-                outData[i] = (byte) dataByte[i-4];
+
+            if(sentenceNum != -2) {
+                outData[3] = (byte) ((byte) dataByte.length + 2);
+                for (i = 4; i < 4 + dataByte.length; i++) {
+                    outData[i] = (byte) dataByte[i - 4];
+                }
+                outData[4 + dataByte.length] = (byte) (sentenceNum / 255 + 1 + 48);
+                outData[4 + dataByte.length + 1] = (byte) (sentenceNum % 255 + 1 + 48);
+                outData[4 + dataByte.length + 2] = (byte) PacketUser.CRC;
+                Log.d(TAG, "senNum : " + (sentenceNum / 255 + 1) + "+" + (sentenceNum % 255 + 1));
             }
-            outData[4 + dataByte.length] = (byte)PacketUser.CRC;
+            else if(sentenceNum == -2){
+                outData[3] = (byte) ((byte) dataByte.length);
+                for (i = 4; i < 4 + dataByte.length; i++) {
+                    outData[i] = (byte) dataByte[i - 4];
+                }
+                outData[4 + dataByte.length] = (byte) PacketUser.CRC;
+            }
             Log.d(TAG,"out : " + new String(outData));
 
             try {
@@ -67,10 +81,14 @@ public class workerNoteItemAdd  extends Thread {
                 dis = new DataInputStream(SocketConnection.socket.getInputStream());
                 dis.read(inData);
                 Log.d(TAG, "opc : " + inData[1]);
-                Log.d(TAG, "succes : " + inData[4]);
+                Log.d(TAG, "succes : " + (char)inData[4]);
 
                 if(inData[1] == PacketUser.ACK_NOTE_ITEM_ADD) {
-                    isSuccess = inData[4] == '1' ? true : false;
+                    switch (inData[4]){
+                        case '1': result = 1; break;
+                        case '2': result = 2; break;
+                        default: result = 0; break;
+                    }
                     isPlay = true;
                 }
 

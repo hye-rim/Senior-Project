@@ -95,14 +95,14 @@ public class workerSentenceList extends Thread {//홈 문장 10개씩 서버에�
 
                     if(inData[1] == PacketUser.ACK_UMS){
                         //문장 데이터
-                        PacketUser.sentence_len = ((int) inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);
+                        userSentence.sentence_len = ((int) inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);
 
-                        dis.read(sen, 0, (1 + PacketUser.sentence_len));
-                        for (j = 0; j <  PacketUser.sentence_len; j++) { //문장내용
+                        dis.read(sen, 0, (1 + userSentence.sentence_len));
+                        for (j = 0; j <  userSentence.sentence_len; j++) { //문장내용
                             inData[j + 4] = sen[j];
                         }
-                        Log.d(TAG, "inData" + "  " +inData[0] + "  " + inData[1] + "  " + PacketUser.sentence_len + "  " + sen[PacketUser.sentence_len]);
-                        String sen = new String (inData, 4, PacketUser.sentence_len); //문장
+                        Log.d(TAG, "inData" + "  " +inData[0] + "  " + inData[1] + "  " + userSentence.sentence_len + "  " + sen[userSentence.sentence_len]);
+                        String sen = new String (inData, 4, userSentence.sentence_len); //문장
                         Log.d(TAG, "sen : " + sen);
 
                         //문장번호+해석수+듣기수

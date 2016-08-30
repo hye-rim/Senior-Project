@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 import com.onpuri.Adapter.NoteSenItemAdapter;
 import com.onpuri.DividerItemDecoration;
 import com.onpuri.R;
+import com.onpuri.Thread.workerNoteLoad;
 
 import java.util.ArrayList;
 
@@ -34,6 +36,7 @@ public class NoteSenFragment extends Fragment implements View.OnClickListener {
     private static View view;
 
     ArrayList<String> itemSentence;
+    ArrayList<String> itemSentenceNum;
 
     private RecyclerView mRecyclerSenItem;
     private TextView tvItemName;
@@ -47,6 +50,8 @@ public class NoteSenFragment extends Fragment implements View.OnClickListener {
     private FrameLayout mItemFrame;
     private FragmentManager mFragmentManager;
     private Boolean isEdit = false;
+    private workerNoteLoad mworker_note;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (view != null) {
@@ -88,11 +93,35 @@ public class NoteSenFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initData() {
+        String nameData = new String ("1+" + itemName);
         itemSentence = new ArrayList<String>();
+        itemSentenceNum = new ArrayList<String>();
 
-        for(int i = 0; i < 10; i++) {
-            itemSentence.add("문장 " + i);
+        if (mworker_note != null && mworker_note.isAlive()) {  //이미 동작하고 있을 경우 중지
+            mworker_note.interrupt();
         }
+        mworker_note = new workerNoteLoad(true, nameData, 1);
+        mworker_note.start();
+        try {
+            mworker_note.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        int i = 0;
+
+        if(mworker_note.getNoteSentence().arrSentence != null) {
+            while (i < mworker_note.getNoteSentence().arrSentence.size()) {
+                itemSentence.add(mworker_note.getNoteSentence().arrSentence.get(i));
+                itemSentenceNum.add(mworker_note.getNoteSentence().arrSentenceNum.get(i));
+                Log.d(TAG, mworker_note.getNoteSentence().arrSentence.get(i));
+                i++;
+            }
+        }
+        if(itemSentence.isEmpty()){
+            itemSentence.add("추가된 문장이 없습니다.");
+        }
+
     }
 
     @Override
@@ -101,6 +130,7 @@ public class NoteSenFragment extends Fragment implements View.OnClickListener {
             case R.id.note_sen_listen:
                 Toast.makeText(getActivity(),"기능 추가 예정입니다.",Toast.LENGTH_SHORT).show();
                 break;
+
             case R.id.note_sen_test:
                 NoteSenTestFragment noteSenTest = new NoteSenTestFragment();
                 Bundle args = new Bundle();
@@ -111,6 +141,7 @@ public class NoteSenFragment extends Fragment implements View.OnClickListener {
                 fragmentTransaction.replace(R.id.note_item, noteSenTest)
                         .commit();
                 break;
+
             case R.id.note_sen_edit:
                 isEdit = !isEdit;
                 mRecyclerSenItem.setAdapter(new NoteSenItemAdapter(itemSentence, isEdit));
@@ -118,6 +149,7 @@ public class NoteSenFragment extends Fragment implements View.OnClickListener {
                 if(isEdit)
                     Toast.makeText(getActivity(),"편집 모드 : " + String.valueOf(isEdit),Toast.LENGTH_SHORT).show();
                 break;
+
             default:
                 break;
         }

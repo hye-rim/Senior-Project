@@ -1,6 +1,8 @@
 package com.onpuri.Activity;
 
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
@@ -17,8 +19,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.onpuri.R;
+import com.onpuri.Thread.workerNote;
+import com.onpuri.Thread.workerNoteItemAdd;
 import com.onpuri.Thread.workerSearch;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -46,14 +51,18 @@ public class SearchFragment extends Fragment {
     private static final String TAG = "SearchFragment" ;
     private static View view;
     private TextToSpeech tts;
-    private ImageButton btn_listen;
+    private ImageButton btn_listen, btn_note_add;
     private TextView tv_word, tv_word_title;
     private ListView list;
 
     String searchText, wordMean;
     private workerSearch mworker_search;
+    private workerNote mworker_note;
+    private workerNoteItemAdd mworker_item_add;
+
     ArrayList<String> searchList = new ArrayList<String>();
     ArrayList<String> sentenceNumList = new ArrayList<String>();
+    private ArrayList<String> listNote;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -76,10 +85,12 @@ public class SearchFragment extends Fragment {
         View header = inflater.inflate(R.layout.search_header, null, false);
         tv_word_title = (TextView)header.findViewById(R.id.tv_search_word);
         btn_listen = (ImageButton)header.findViewById(R.id.btn_search_word_listen);
+        btn_note_add = (ImageButton)header.findViewById(R.id.btn_search_word_add);
         tv_word = (TextView)header.findViewById(R.id.tv_word_search);
         list = (ListView)view.findViewById(R.id.list_search_sen);
 
         loadSearchData();
+        noteLoad();
 
         tv_word_title.setText(searchText);
 
@@ -101,6 +112,24 @@ public class SearchFragment extends Fragment {
                 } else {
                     ttsUnder20(text);
                 }
+            }
+        });
+        btn_note_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String[] items = listNote.toArray(new String[listNote.size()]);
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("노트를 선택해 주세요(구현 예정)")
+                        .setItems(items, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int index) {
+                                Toast.makeText(getActivity(), items[index] + "선택", Toast.LENGTH_SHORT).show();
+                                selectNote(items[index]);
+                            }
+                        })
+                        .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dlg, int sumthin) {
+                            }
+                        }).show();
             }
         });
 
@@ -137,7 +166,6 @@ public class SearchFragment extends Fragment {
         return view;
     }
 
-
     public void loadSearchData(){
         if (mworker_search != null && mworker_search.isAlive()) {  //이미 동작하고 있을 경우 중지
             mworker_search.interrupt();
@@ -170,7 +198,56 @@ public class SearchFragment extends Fragment {
                 i++;
             }
         }
+    }
 
+    private void noteLoad() {
+        listNote = new ArrayList<String>();
+
+        if (mworker_note != null && mworker_note.isAlive()) {  //이미 동작하고 있을 경우 중지
+            mworker_note.interrupt();
+        }
+        mworker_note = new workerNote(true);
+        mworker_note.start();
+        try {
+            mworker_note.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        //문장 모음 리스트
+        int i = 0;
+        if(mworker_note.getNoteWord() != null){
+            while( i < mworker_note.getNoteWord().size()){
+                listNote.add( mworker_note.getNoteWord().get(i).toString() );
+                Log.d(TAG, mworker_note.getNoteWord().get(i).toString());
+                i++;
+            }
+        }
+        if(listNote.isEmpty()){
+            listNote.add("새로운 문장 모음 등록하기");
+        }
+    }
+
+    private void selectNote(String item) {
+        String nameData = new String ("2+" + item + "+" + searchText);
+        Log.d(TAG, "search : " + searchText);
+        if (mworker_item_add != null && mworker_item_add.isAlive()) {  //이미 동작하고 있을 경우 중지
+            mworker_item_add.interrupt();
+        }
+        mworker_item_add = new workerNoteItemAdd(true, nameData, -2);
+        mworker_item_add.start();
+        try {
+            mworker_item_add.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if(mworker_item_add.getResult() == 1) {
+            Toast.makeText(getActivity(), item + "에 추가되었습니다.", Toast.LENGTH_LONG).show();
+        }else if( mworker_item_add.getResult() == 2){
+            Toast.makeText(getActivity(), item + "에 이미 있습니다.", Toast.LENGTH_LONG).show();
+        }else{
+            Toast.makeText(getActivity(), "추가에 실패하였습니다.", Toast.LENGTH_LONG).show();
+        }
     }
 
     public void onPause(){

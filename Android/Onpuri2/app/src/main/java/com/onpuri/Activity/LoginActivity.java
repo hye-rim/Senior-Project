@@ -84,18 +84,22 @@ public class LoginActivity extends Activity implements View.OnClickListener {
             et_loginId.setText(setting.getString("ID", ""));
             et_loginPw.setText(setting.getString("PW", ""));
             checkAuto.setChecked(true);
+
             // goto mainActivity
-
-            id = et_loginId.getText().toString();
-            password = et_loginPw.getText().toString();
-            validation = loginCorrect(id, password);
-
+            validation = loginCorrect();
             mainGo();
+
         } else {
             // if autoLogin unChecked
             id = et_loginId.getText().toString();
             password = et_loginPw.getText().toString();
-            validation = loginCorrect(id, password);
+
+            if( check == '5' || et_loginId.getText().equals(null)){
+                Toast.makeText(getApplicationContext(), "ID와 비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show();
+                validation = false;
+            }else{
+                validation = loginCorrect();
+            }
 
             if(validation) {
                 Toast.makeText(getApplicationContext(), "Login Success", Toast.LENGTH_LONG).show();
@@ -199,7 +203,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
 
                 id = et_loginId.getText().toString();
                 pass = et_loginPw.getText().toString();
-                Boolean validation = loginCorrect(id,pass);
+                Boolean validation = loginCorrect();
 
                 isLoginBtn = true;
 
@@ -211,7 +215,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         }
     }
 
-    private Boolean loginCorrect(String id, String password) {
+    private Boolean loginCorrect() {
         if(mworker_login != null && mworker_login.isAlive()){  //이미 동작하고 있을 경우 중지
             mworker_login.interrupt();
         }
@@ -231,10 +235,6 @@ public class LoginActivity extends Activity implements View.OnClickListener {
 
         if ( (check != '0' && check != '5') && checkLength != '1') {
             return true;
-        }
-        else if( check == '5' || et_loginId.getText().equals(null)){
-            Toast.makeText(getApplicationContext(), "ID와 비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show();
-            return false;
         }
         else if (setting.getString("id","").equals(null)) {
             Toast.makeText(getApplicationContext(), "가입을 먼저 해주세요.", Toast.LENGTH_SHORT).show();
