@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical|center">
+    <Button
+        android:id = "@+id/btn_test_solving"
+        android:text="퀴즈 풀기"
+        android:layout_width="250dp"
+        android:layout_height="70dp" />
+    <Button
+        android:id = "@+id/btn_test_creating"
+        android:layout_marginTop="20dp"
+        android:text="퀴즈 만들기"
+        android:layout_width="250dp"
+        android:layout_height="70dp" />
+
+</LinearLayout>

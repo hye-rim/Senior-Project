@@ -27,7 +27,7 @@ public class TabViewPager extends Fragment {
 
     public static TabLayout tabLayout;
     public static ViewPager viewPager;
-    public static int int_items = 3;
+    public static int int_items = 4;
     private String userId;
     private Bundle bundle;
 
@@ -82,20 +82,23 @@ public class TabViewPager extends Fragment {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    NoteRootFragment tab1 = new NoteRootFragment();
-
+                    HomeRootFragment tab1 = new HomeRootFragment();
+                    bundle = new Bundle();
+                    bundle.putString("UserId", userId); //아이디 전송
+                    tab1.setArguments(bundle);
                     return tab1;
 
                 case 1:
-                    HomeRootFragment tab2 = new HomeRootFragment();
-                    bundle = new Bundle();
-                    bundle.putString("UserId", userId); //아이디 전송
-                    tab2.setArguments(bundle);
+                    NoteRootFragment tab2 = new NoteRootFragment();
                     return tab2;
 
                 case 2:
-                    NewSenFragment tab3 = new NewSenFragment();;
+                    TestFragment tab3 = new TestFragment();
                     return tab3;
+
+                case 3:
+                    NewSenFragment tab4 = new NewSenFragment();
+                    return tab4;
             }
             return null;
         }
@@ -112,10 +115,12 @@ public class TabViewPager extends Fragment {
 
             switch (position) {
                 case 0:
-                    return "내노트";
-                case 1:
                     return "홈";
+                case 1:
+                    return "내노트";
                 case 2:
+                    return "시험";
+                case 3:
                     return "문장등록";
             }
             return null;

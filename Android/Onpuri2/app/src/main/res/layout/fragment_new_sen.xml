@@ -3,6 +3,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#faf5b3">
+
     <!--
     <LinearLayout
         android:layout_marginTop="20dp"
@@ -27,9 +28,8 @@
             android:background="#FFAA78" />
     </LinearLayout>
     -->
+
     <EditText
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
         android:layout_width="match_parent"
         android:layout_height="180dp"
         android:hint="영어문장을 입력해주세요"
@@ -38,8 +38,9 @@
         android:layout_gravity="center"
         android:textColor="#060606"
         android:textSize="15dp"
-        android:layout_marginTop="10dp"
-        android:id="@+id/sentence" />
+        android:id="@+id/sentence"
+        android:padding="15dp"
+        android:layout_margin="20dp" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="100dp"
@@ -64,6 +65,8 @@
                  android:background="#FEE098" />
 
     </LinearLayout>
+
+    <!--
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -75,11 +78,12 @@
         android:layout_marginLeft="25dp"
         android:layout_marginRight="25dp"
         android:textStyle="bold" />
+        -->
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:text="▶ 등록 후에는 수정이 되지 않으니 문장에 오류가 있는지\n    다시 한번 확인해주세요."
-        android:layout_marginLeft="25dp"
-        android:layout_marginRight="25dp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_margin="25dp" />
 </LinearLayout>
