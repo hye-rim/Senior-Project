@@ -57,7 +57,7 @@ public class TabViewPager extends Fragment {
             }
         });
 
-        viewPager.setCurrentItem(1);
+        viewPager.setCurrentItem(0);
         return x;
     }
 

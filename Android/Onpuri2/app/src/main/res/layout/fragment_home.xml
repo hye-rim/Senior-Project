@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#faf5b3">
+    android:background="@color/pale_gold">
         <android.support.v7.widget.RecyclerView
             android:scrollbars="vertical"
             app:layoutManager="LinearLayoutManager"
