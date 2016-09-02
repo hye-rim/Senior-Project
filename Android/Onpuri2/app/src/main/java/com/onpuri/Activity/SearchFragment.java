@@ -3,12 +3,16 @@ package com.onpuri.Activity;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.method.ScrollingMovementMethod;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.InflateException;
 import android.view.KeyEvent;
@@ -160,6 +164,10 @@ public class SearchFragment extends Fragment {
             public View getView(int position, View convertView, ViewGroup parent) {
                 View viewList = super.getView(position, convertView, parent);
                 TextView textView = ((TextView) viewList.findViewById(android.R.id.text1));
+                Spannable str = new SpannableString(textView.getText());
+                int i = str.toString().indexOf(searchText);
+                str.setSpan(new ForegroundColorSpan(Color.parseColor("#E36153")), i, i+searchText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                textView.setText(str, TextView.BufferType.SPANNABLE);
                 textView.setHeight(140); // Height
                 textView.setMaxLines(2);
                 return viewList;
