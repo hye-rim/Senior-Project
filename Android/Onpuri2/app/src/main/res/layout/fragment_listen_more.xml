@@ -94,12 +94,18 @@
             app:layoutManager="LinearLayoutManager"
             android:id="@+id/recycler_listen"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="wrap_content"
             tools:listitem="@layout/listen_list"
             android:layout_marginTop="2dp"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp">
         </android.support.v7.widget.RecyclerView>
+        <FrameLayout
+            android:background="@color/dark_gray"
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"/>
     </LinearLayout>
 
 </ScrollView>
