@@ -135,8 +135,8 @@ public class HomeFragment extends Fragment {
                 })
         );
 
-        Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_dark);
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(dividerDrawable));
+       // Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_dark);
+        //mRecyclerView.addItemDecoration(new DividerItemDecoration(dividerDrawable));
 
         return view;
     }

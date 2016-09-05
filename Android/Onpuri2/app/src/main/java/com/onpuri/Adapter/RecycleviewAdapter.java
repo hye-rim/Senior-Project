@@ -60,7 +60,8 @@ public class RecycleviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         itemViewHolder.mTransItem.setText(transList.get(position));
         itemViewHolder.mListenItem.setText(listenList.get(position));
 
-        itemViewHolder.itemView.setBackgroundColor(Color.parseColor("#FDF5D2"));
+        //itemViewHolder.itemView.setBackgroundColor(Color.parseColor("#FDF5D2"));
+        itemViewHolder.itemView.setBackgroundColor(Color.WHITE);
     }
 
     @Override

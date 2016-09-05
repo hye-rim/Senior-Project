@@ -107,7 +107,7 @@ public class workerNoteLoad extends Thread {
                     if(inData[1] == PacketUser.ACK_NNOTE_LOAD ){
                         loadEnd = true;
                         isPlay = false;
-                        Log.d(TAG, flag + "load end : " + String.valueOf(loadEnd));
+                        Log.d(TAG, flag + " / load end : " + String.valueOf(loadEnd));
                     }
 
                     else if(inData[1] == PacketUser.ACK_NOTE_LOAD ) {
@@ -136,7 +136,7 @@ public class workerNoteLoad extends Thread {
                                 Log.d(TAG, "plus ? " + plus);
 
                                 String word = data.substring(0, plus-1);
-                                String wordMean = data.substring(plus + 1, data.length()-1);
+                                String wordMean = data.substring(plus + 1, data.length()-2);
 
                                 Log.d(TAG, "word data len : " + wordLen);
                                 Log.d(TAG, "new word : " + word);
