@@ -60,6 +60,8 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     Boolean isNullSen;
 
+    private int pos;
+
     public NoteSenAdapter(ArrayList<NoteData> listSentence, Context context, FragmentManager fragmentManager, Boolean isNullSen) {
         noteSenList = new ArrayList<>();
         noteSenList.addAll(listSentence);
@@ -99,47 +101,109 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             });
 
             mSenMore.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    originalName = noteSenList.get(getPosition()).getName();
 
-                    AlertDialog.Builder alertBuilder = new AlertDialog.Builder((v.getContext()));
+                                            @Override
+                                            public void onClick(final View v) {
+                                                originalName = noteSenList.get(getPosition()).getName();
+                                                final String[] items = {"이름수정" , "삭제"};
+                                                AlertDialog.Builder noteSelectDialog = new AlertDialog.Builder(v.getContext());
 
-                    mChangeItem = new EditText((v.getContext()));
-                    mChangeItem.setText(originalName);
-                    alertBuilder.setTitle("");
-                    alertBuilder.setView(mChangeItem);
+                                                noteSelectDialog.setTitle("메뉴 선택")
+                                                        .setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
+                                                            public void onClick(DialogInterface dialog, int index) {
+                                                                pos = index;
+                                                                dialog.dismiss();
 
-                    //back key 셋팅
-                    alertBuilder.setOnKeyListener(new DialogInterface.OnKeyListener() {
-                        @Override
-                        public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-                            if(keyCode == KeyEvent.KEYCODE_BACK){
-                                dialog.dismiss();
-                                return true;
-                            }
-                            return false;
-                        }
-                    });
+                                                                switch(index){
+                                                                    case 0:
+                                                                        mChangeItem = new EditText((v.getContext()));
+                                                                        mChangeItem.setText(originalName);
 
-                    alertBuilder.setCancelable(false
-                    ).setPositiveButton("이름 수정",new DialogInterface.OnClickListener(){
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Log.d(TAG,"change : " +  mChangeItem.getText().toString());
-                            changeItem(getPosition(),  mChangeItem.getText().toString());
-                        }
-                    }).setNegativeButton("삭제", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            removeItem(getPosition() , mChangeItem.getText().toString());
-                            dialog.cancel();
-                        }
-                    });
-                    AlertDialog alertDialog = alertBuilder.create();
-                    alertDialog.show();  //<-- See This!
-                }
-            }
+                                                                        new AlertDialog.Builder(v.getContext())
+                                                                                .setTitle("노트 이름 수정")
+                                                                                .setView(mChangeItem)
+                                                                                .setOnKeyListener(new DialogInterface.OnKeyListener() {
+                                                                                    @Override
+                                                                                    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+
+                                                                                        if(keyCode == KeyEvent.KEYCODE_BACK){
+                                                                                            dialog.dismiss();
+                                                                                            return true;
+                                                                                        }
+                                                                                        return false;
+                                                                                    }
+                                                                                })
+                                                                                .setCancelable(false)
+                                                                                .setPositiveButton("수정",new DialogInterface.OnClickListener(){
+                                                                                    @Override
+                                                                                    public void onClick(DialogInterface dialog, int which) {
+                                                                                        Log.d(TAG,"change : " +  mChangeItem.getText().toString());
+                                                                                        changeItem(getPosition(),  mChangeItem.getText().toString());
+                                                                                        dialog.cancel();
+                                                                                    }})
+                                                                                .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                                                                                    @Override
+                                                                                    public void onClick(DialogInterface dialog, int which) {
+                                                                                        dialog.cancel();
+                                                                                    }
+                                                                                })
+                                                                                .show();
+                                                                        break;
+
+                                                                    case 1:
+                                                                        new AlertDialog.Builder(v.getContext())
+                                                                                .setTitle("노트 삭제")
+                                                                                .setMessage(originalName)
+                                                                                .setOnKeyListener(new DialogInterface.OnKeyListener() {
+                                                                                    @Override
+                                                                                    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                                                                                        if(keyCode == KeyEvent.KEYCODE_BACK){
+                                                                                            dialog.dismiss();
+                                                                                            return true;
+                                                                                        }
+                                                                                        return false;
+                                                                                    }
+                                                                                })
+                                                                                .setCancelable(false)
+                                                                                .setPositiveButton("삭제",new DialogInterface.OnClickListener(){
+                                                                                    @Override
+                                                                                    public void onClick(DialogInterface dialog, int which) {
+                                                                                        removeItem(getPosition() ,originalName);
+                                                                                        dialog.cancel();
+                                                                                    }})
+                                                                                .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                                                                                    @Override
+                                                                                    public void onClick(DialogInterface dialog, int which) {
+                                                                                        dialog.cancel();
+                                                                                    }
+                                                                                })
+                                                                                .show();
+                                                                        break;
+
+                                                                    default:
+                                                                        break;
+                                                                }
+
+                                                            }
+                                                        })
+                                                        .setOnKeyListener(new DialogInterface.OnKeyListener() {
+                                                            @Override
+                                                            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                                                                if(keyCode == KeyEvent.KEYCODE_BACK){
+                                                                    dialog.dismiss();
+                                                                    return true;
+                                                                }
+                                                                return false;
+                                                            }
+                                                        });
+
+                                                AlertDialog alert_dialog = noteSelectDialog.create();
+                                                alert_dialog.show();
+
+                                                // set defult select value
+                                                alert_dialog.getListView().setItemChecked(pos, true);
+                                            }
+                                        }
             );
 
         }
