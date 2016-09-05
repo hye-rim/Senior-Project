@@ -101,6 +101,7 @@
             android:layout_marginRight="5dp">
         </android.support.v7.widget.RecyclerView>
     </LinearLayout>
+
 </ScrollView>
 
 
