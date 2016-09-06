@@ -4,12 +4,11 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/pale_gold">
+    android:background="@color/background_material_light">
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#faf5b3">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -84,7 +83,7 @@
                 android:gravity="center_vertical"
                 android:layout_marginLeft="3dp"
                 android:layout_marginRight="3dp"
-                android:background="@color/never_forgotten"
+                android:background="@color/fuzzy_peach"
                 android:layout_marginBottom="2dp">
                 <TextView
                     android:layout_width="280dp"
@@ -107,7 +106,7 @@
                     android:visibility="visible"
                     android:gravity="center|right"
                     android:layout_marginRight="20dp"
-                    android:background="@color/never_forgotten" />
+                    android:background="@color/fuzzy_peach" />
 
             </LinearLayout>
             <android.support.v7.widget.RecyclerView
@@ -127,7 +126,7 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:id="@+id/add_trans"
-                android:layout_marginRight="30dp"
+                android:layout_marginRight="40dp"
                 android:background="@drawable/add_icon"
                 android:layout_gravity="right" />
 
@@ -147,7 +146,7 @@
                 android:layout_gravity="center_vertical"
                 android:weightSum="1"
                 android:gravity="center_vertical"
-                android:background="@color/never_forgotten"
+                android:background="@color/fuzzy_peach"
                 android:layout_marginLeft="3dp"
                 android:layout_marginRight="3dp"
                 android:layout_marginBottom="2dp">
@@ -173,7 +172,7 @@
                     android:visibility="visible"
                     android:gravity="center|right"
                     android:layout_marginRight="20dp"
-                    android:background="@color/never_forgotten" />
+                    android:background="@color/fuzzy_peach" />
 
             </LinearLayout>
             <android.support.v7.widget.RecyclerView
@@ -193,7 +192,7 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:id="@+id/add_listen"
-                android:layout_marginRight="30dp"
+                android:layout_marginRight="40dp"
                 android:background="@drawable/add_icon"
                 android:layout_gravity="right" />
 
