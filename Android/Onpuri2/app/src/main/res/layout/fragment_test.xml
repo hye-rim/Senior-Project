@@ -6,14 +6,14 @@
     android:gravity="center_vertical|center">
     <Button
         android:id = "@+id/btn_test_solving"
-        android:background="@color/fuzzy_peach"
+        android:background="@drawable/btn_border"
         android:text="퀴즈 풀기"
         android:layout_width="250dp"
         android:layout_height="70dp" />
     <Button
         android:id = "@+id/btn_test_creating"
         android:layout_marginTop="20dp"
-        android:background="@color/fuzzy_peach"
+        android:background="@drawable/btn_border"
         android:textColor="@color/black"
         android:text="퀴즈 만들기"
         android:layout_width="250dp"

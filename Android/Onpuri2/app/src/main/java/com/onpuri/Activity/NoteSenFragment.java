@@ -41,7 +41,7 @@ public class NoteSenFragment extends Fragment implements View.OnClickListener {
 
     private RecyclerView mRecyclerSenItem;
     private TextView tvItemName;
-    private Button btn_listen, btn_test, btn_edit;
+    private Button btn_listen, btn_edit;
 
     protected RecyclerView.LayoutManager mLayoutManager;
     private Context context;
@@ -111,11 +111,9 @@ public class NoteSenFragment extends Fragment implements View.OnClickListener {
                 }));
 
         btn_listen = (Button)view.findViewById(R.id.note_sen_listen);
-        btn_test = (Button)view.findViewById(R.id.note_sen_test);
         btn_edit = (Button)view.findViewById(R.id.note_sen_edit);
 
         btn_listen.setOnClickListener(this);
-        btn_test.setOnClickListener(this);
         btn_edit.setOnClickListener(this);
 
         return view;
@@ -160,17 +158,6 @@ public class NoteSenFragment extends Fragment implements View.OnClickListener {
         switch (v.getId()){
             case R.id.note_sen_listen:
                 Toast.makeText(getActivity(),"기능 추가 예정입니다.",Toast.LENGTH_SHORT).show();
-                break;
-
-            case R.id.note_sen_test:
-                NoteSenTestFragment noteSenTest = new NoteSenTestFragment();
-                Bundle args = new Bundle();
-                args.putInt("senCount", itemSentence.size() );
-                noteSenTest.setArguments(args);
-
-                FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.note_item, noteSenTest)
-                        .commit();
                 break;
 
             case R.id.note_sen_edit:

@@ -29,6 +29,7 @@ import com.onpuri.Thread.workerNote;
 
 import java.util.ArrayList;
 
+import static com.onpuri.R.drawable.divider_dark;
 import static com.onpuri.R.drawable.divider_light;
 
 /**
@@ -87,7 +88,7 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
         btnWord.setOnClickListener(this);
 
         initData(); //노트 데이터 서버로부터 받기
-        Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_light);
+        Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_dark);
 
         //문장탭이 기본으로 오도록 한다.
         tabSen.setVisibility(LinearLayout.VISIBLE);

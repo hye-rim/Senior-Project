@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/pale_gold">
     <TextView
-        android:background="@color/never_forgotten"
+        android:background="@color/background_material_light"
         android:textSize="20dp"
         android:id="@+id/tv_act_name"
         android:layout_width="match_parent"

@@ -41,7 +41,7 @@ public class NoteWordFragment  extends Fragment implements View.OnClickListener 
 
     private RecyclerView mRecyclerWordItem;
     private TextView tvItemName;
-    private Button btn_listen, btn_test, btn_edit;
+    private Button btn_listen,btn_edit;
 
     protected RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.Adapter mWordAdapter;
@@ -100,11 +100,9 @@ public class NoteWordFragment  extends Fragment implements View.OnClickListener 
                 }));
 
         btn_listen = (Button)view.findViewById(R.id.note_word_listen);
-        btn_test = (Button)view.findViewById(R.id.note_word_test);
         btn_edit = (Button)view.findViewById(R.id.note_word_edit);
 
         btn_listen.setOnClickListener(this);
-        btn_test.setOnClickListener(this);
         btn_edit.setOnClickListener(this);
 
         return view;
@@ -149,16 +147,7 @@ public class NoteWordFragment  extends Fragment implements View.OnClickListener 
             case R.id.note_word_listen:
                 Toast.makeText(getActivity(),"기능 추가 예정입니다.",Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.note_word_test:
-                NoteWordTestFragment noteWordTest = new NoteWordTestFragment();
-                Bundle args = new Bundle();
-                args.putInt("wordCount", itemWord.size() );
-                noteWordTest.setArguments(args);
 
-                FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.note_item, noteWordTest)
-                        .commit();
-                break;
             case R.id.note_word_edit:
                 Toast.makeText(getActivity(),"기능 추가 예정입니다.",Toast.LENGTH_SHORT).show();
                 /*

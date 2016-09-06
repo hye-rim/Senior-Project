@@ -7,8 +7,6 @@
     android:layout_width="match_parent"
     app:cardBackgroundColor="@color/fuzzy_peach"
     android:layout_height="60dp">
-<!--android:background="@color/more_light_gray"-->
-
 
     <LinearLayout
         android:orientation="horizontal"
