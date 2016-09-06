@@ -218,7 +218,8 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
 
         switch (v.getId()) {
             case R.id.del_sen:
-                AlertDialog.Builder sentenceDel = new AlertDialog.Builder(getActivity());
+                Toast.makeText(getActivity(),"구현 예정입니다.", Toast.LENGTH_SHORT).show();
+/*                AlertDialog.Builder sentenceDel = new AlertDialog.Builder(getActivity());
                 sentenceDel.setTitle("문장을 삭제하시겠습니까?")
                         .setOnKeyListener(new DialogInterface.OnKeyListener() {
                             @Override
@@ -242,7 +243,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                                 Toast.makeText(getActivity(), "취소되었습니다", Toast.LENGTH_SHORT).show();
                             }
 
-                        }).show();
+                        }).show();*/
 
                 break;
             case R.id.add_note:

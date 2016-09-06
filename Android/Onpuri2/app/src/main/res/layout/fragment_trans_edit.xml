@@ -25,7 +25,7 @@
         android:layout_height="180dp"
         android:id="@+id/edittrans"
         android:hint="해석을 입력하세요"
-        android:background="@drawable/btn_border"
+        android:background="@color/material_grey_100"
         android:gravity="top"
         android:layout_gravity="center"
         android:layout_marginLeft="15dp"
