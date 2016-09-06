@@ -5,65 +5,75 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#faf5b3"
+    android:background="@color/background_material_light"
     android:baselineAligned="false">
-    <TabHost
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/ll_note"
         android:visibility="visible"
-        android:id="@+id/note_tab"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-
+        android:layout_height="match_parent">
         <LinearLayout
-            android:background="@color/pale_gold"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical" >
-
-            <TabWidget
-                android:id="@android:id/tabs"
-                android:background="@color/never_forgotten"
-                android:tabStripEnabled="false"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0" />
-            <FrameLayout
-                android:id="@android:id/tabcontent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <LinearLayout
-                    android:id="@+id/tab_sen"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    >
-                    <android.support.v7.widget.RecyclerView
-                        android:scrollbars="vertical"
-                        app:layoutManager="LinearLayoutManager"
-                        android:id="@+id/recycle_note_sen"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        tools:listitem="@layout/note_sen_list" />
-                </LinearLayout>
-                <LinearLayout
-                    android:id="@+id/tab_word"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    >
-                    <android.support.v7.widget.RecyclerView
-                        android:scrollbars="vertical"
-                        app:layoutManager="LinearLayoutManager"
-                        android:id="@+id/recycle_note_word"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        tools:listitem="@layout/note_word_list" />
-                </LinearLayout>
-            </FrameLayout>
+            android:padding="10dp"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+            <Button
+                android:id="@+id/btn_note_sen"
+                android:text="문장"
+                android:textSize="18dp"
+                android:textColor="@color/white"
+                android:background="@color/fuzzy_peach"
+                android:layout_width="150dp"
+                android:layout_height="50dp" />
+            <Button
+                android:id="@+id/btn_note_word"
+                android:text="단어"
+                android:textSize="18dp"
+                android:textColor="@color/dark_gray"
+                android:background="@drawable/btn_border"
+                android:layout_width="150dp"
+                android:layout_height="50dp" />
         </LinearLayout>
-    </TabHost>
+        <FrameLayout
+            android:id="@android:id/tabcontent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:id="@+id/tab_sen"
+                android:visibility="visible"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                >
+                <android.support.v7.widget.RecyclerView
+                    android:scrollbars="vertical"
+                    app:layoutManager="LinearLayoutManager"
+                    android:id="@+id/recycle_note_sen"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:listitem="@layout/note_sen_list" />
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/tab_word"
+                android:visibility="invisible"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                >
+                <android.support.v7.widget.RecyclerView
+                    android:scrollbars="vertical"
+                    app:layoutManager="LinearLayoutManager"
+                    android:id="@+id/recycle_note_word"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:listitem="@layout/note_word_list" />
+            </LinearLayout>
+        </FrameLayout>
+    </LinearLayout>
     <FrameLayout
         android:visibility="invisible"
         android:id="@+id/note_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
     </FrameLayout>
 </LinearLayout>

@@ -2,38 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#faf5b3">
-
-    <!--
-    <LinearLayout
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:orientation="horizontal"
-        android:gravity="center">
-
-        <Button
-            android:id="@+id/btn_new_picture"
-            android:layout_width="100dp"
-            android:layout_height="38dp"
-            android:text="갤러리"
-            android:background="#FFAA78" />
-        <Button
-            android:id="@+id/btn_new_camera"
-            android:layout_width="100dp"
-            android:layout_height="38dp"
-            android:text="카메라"
-            android:background="#FFAA78" />
-    </LinearLayout>
-    -->
-
+    android:background="@color/background_material_light"
+    >
     <EditText
         android:layout_width="match_parent"
         android:layout_height="180dp"
         android:hint="영어문장을 입력해주세요"
-        android:background="#ffffff"
+        android:background="@color/never_forgotten"
         android:gravity="top"
         android:layout_gravity="center"
         android:textColor="#060606"
@@ -47,38 +22,24 @@
         android:orientation="horizontal"
         android:gravity="center">
 
-            <Button
-                android:id="@+id/btn_new_sen"
-                android:layout_width="100dp"
-                android:layout_height="40dp"
-                android:text="등록"
-                android:textColor="@color/black"
-                android:layout_marginRight="10dp"
-                android:background="#FEE098" />
-             <Button
-                 android:id="@+id/btn_new_sen_back"
-                android:layout_width="100dp"
-                android:layout_height="40dp"
-                android:text="취소"
-                 android:textColor="@color/black"
-                 android:layout_marginLeft="10dp"
-                 android:background="#FEE098" />
+        <Button
+            android:id="@+id/btn_new_sen"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="10dp"
+            android:text="등록"
+            android:textColor="@color/primary_text_default_material_light"
+            android:background="@drawable/btn_border" />
+        <Button
+            android:id="@+id/btn_new_sen_back"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:text="취소"
+            android:textColor="@color/primary_text_default_material_light"
+            android:background="@drawable/btn_border"  />
 
     </LinearLayout>
-
-    <!--
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id = "@+id/imageView1"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="▶ 사진과 배경과 글씨가 뚜렷하게 구분되지 않으면\n    정확하게 인식하지 못할 수 있습니다."
-        android:layout_marginLeft="25dp"
-        android:layout_marginRight="25dp"
-        android:textStyle="bold" />
-        -->
 
     <TextView
         android:layout_width="match_parent"
