@@ -1,11 +1,12 @@
 package com.onpuri.Activity;
 
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,15 +15,15 @@ import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.TabHost;
+import android.widget.LinearLayout;
 
 import com.onpuri.Adapter.NoteSenAdapter;
 import com.onpuri.Adapter.NoteWordAdapter;
 import com.onpuri.Data.NoteData;
 import com.onpuri.Data.NoteWordData;
 import com.onpuri.DividerItemDecoration;
-import com.onpuri.Listener.RecycleItemClickListener;
 import com.onpuri.R;
 import com.onpuri.Thread.workerNote;
 
@@ -34,12 +35,15 @@ import static com.onpuri.R.drawable.divider_light;
  * Created by kutemsys on 2016-04-26.
  */
 //내노트
-public class NoteFragment extends Fragment {
+public class NoteFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "NoteFragment";
-    private static final int VIEW_TYPE_CELL = 0; //sentence item
-    private static final int VIEW_TYPE_FOOTER = 1; //sentence add button
+    private static final int VIEW_NOTE_SEN = 0; //sentence item
+    private static final int VIEW_NOTE_WORD = 1; //sentence add button
     private static View view;
-    private TabHost mTabHost;
+
+    private Button btnSen, btnWord;
+    private LinearLayout tabSen, tabWord;
+
 
     ArrayList<NoteData> listSentence;
     ArrayList<NoteWordData> listWord;
@@ -55,6 +59,7 @@ public class NoteFragment extends Fragment {
     private workerNote mworker_note;
 
     private Boolean isNullSen, isNullWord;
+    private int noteKinds = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -73,28 +78,20 @@ public class NoteFragment extends Fragment {
 
         mFragmentManager = getFragmentManager();
         mItemFrame = (FrameLayout)view.findViewById(R.id.note_item);
-        mTabHost = (TabHost) view.findViewById(R.id.note_tab);
+        btnSen = (Button)view.findViewById(R.id.btn_note_sen);
+        btnWord = (Button)view.findViewById(R.id.btn_note_word);
+        tabSen = (LinearLayout)view.findViewById(R.id.tab_sen);
+        tabWord = (LinearLayout)view.findViewById(R.id.tab_word);
 
-        mTabHost.setup();
-
-        mTabHost.addTab(mTabHost.newTabSpec("tab_1")
-                .setIndicator("문장")
-                .setContent(R.id.tab_sen));
-
-        mTabHost.addTab(mTabHost.newTabSpec("tab_2")
-                .setIndicator("단어")
-                .setContent(R.id.tab_word));
-
-        setTabColor(); //탭 색상 지정
-        mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() { //탭 색상 변경
-            @Override
-            public void onTabChanged(String tabId) {
-                setTabColor();
-            }
-        });
+        btnSen.setOnClickListener(this);
+        btnWord.setOnClickListener(this);
 
         initData(); //노트 데이터 서버로부터 받기
         Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_light);
+
+        //문장탭이 기본으로 오도록 한다.
+        tabSen.setVisibility(LinearLayout.VISIBLE);
+        tabWord.setVisibility(LinearLayout.INVISIBLE);
 
         //Set Sentence Adapter for Sentence RecyclerView (NoteTab)
         mRecyclerSen = (RecyclerView) view.findViewById(R.id.recycle_note_sen);
@@ -120,18 +117,48 @@ public class NoteFragment extends Fragment {
         return view;
     }
 
-    private void setTabColor() {
-        for(int i=0;i< mTabHost.getTabWidget().getChildCount();i++) {
-            mTabHost.getTabWidget().getChildAt(i).setBackgroundColor(getResources().getColor(R.color.china_ivory)); //선택되지 않은 탭
-        }
-        mTabHost.getTabWidget().getChildAt(mTabHost.getCurrentTab()).setBackgroundColor(getResources().getColor(R.color.pale_gold)); //선택된 탭
-    }
-
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.btn_note_sen:
+                noteKinds = VIEW_NOTE_SEN;
+                tabSen.setVisibility(LinearLayout.VISIBLE);
+                tabWord.setVisibility(LinearLayout.INVISIBLE);
+                btnSen.setTextColor(Color.WHITE);
+                btnWord.setTextColor(getResources().getColor(R.color.dark_gray));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    btnSen.setBackground(getResources().getDrawable(R.color.fuzzy_peach));
+                    btnWord.setBackground(getResources().getDrawable(R.drawable.btn_border));
+                }else{
+                    btnSen.setBackgroundDrawable(getResources().getDrawable(R.color.fuzzy_peach));
+                    btnWord.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_border));
+                }
+                break;
+
+            case R.id.btn_note_word:
+                noteKinds = VIEW_NOTE_WORD;
+                tabSen.setVisibility(LinearLayout.INVISIBLE);
+                tabWord.setVisibility(LinearLayout.VISIBLE);
+                btnSen.setTextColor(getResources().getColor(R.color.dark_gray));
+                btnWord.setTextColor(Color.WHITE);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    btnSen.setBackground(getResources().getDrawable(R.drawable.btn_border));
+                    btnWord.setBackground(getResources().getDrawable(R.color.fuzzy_peach));
+                }else{
+                    btnSen.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_border));
+                    btnWord.setBackgroundDrawable(getResources().getDrawable(R.color.fuzzy_peach));
+                }
+                break;
+            default:
+                break;
+        }
+
+    }
     private void initData() {
         listSentence = new ArrayList<NoteData>();
         listWord = new ArrayList<NoteWordData>();
@@ -180,4 +207,5 @@ public class NoteFragment extends Fragment {
             listWord.add(new NoteWordData("새로운 단어 모음을 등록해보세요."));
         }
     }
+
 }
