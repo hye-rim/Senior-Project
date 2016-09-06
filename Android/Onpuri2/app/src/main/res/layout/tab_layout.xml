@@ -9,13 +9,14 @@
         android:id="@+id/tabs"
         app:tabGravity="fill"
         app:tabMode="fixed"
-        android:background="@color/never_forgotten"
-        app:tabIndicatorColor="@color/fuzzy_peach"
-        app:tabSelectedTextColor="@color/black"
+        app:tabIndicatorColor="@color/cultural"
+        app:tabIndicatorHeight="4dp"
+        app:tabSelectedTextColor="@color/cultural"
         app:tabTextColor="@color/black"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
     </android.support.design.widget.TabLayout>
+    <!--android:background="@color/never_forgotten"-->
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpager"
