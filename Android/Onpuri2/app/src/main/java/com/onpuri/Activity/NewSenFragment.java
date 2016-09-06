@@ -185,7 +185,7 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
     public InputFilter filterAlphaNum = new InputFilter() {
         @Override
         public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend){
-            Pattern ps = Pattern.compile("^[-_a-zA-Z0-9]+"); //영문, 숫자, 띄어쓰기 허용
+            Pattern ps = Pattern.compile("^[.,-_a-zA-Z0-9 ]+"); //영문, 숫자, 띄어쓰기 허용
             if(source.equals("")|| ps.matcher(source).matches()){
                 source.equals(""); //백스페이스를 위해 추가한 부분
                 return source;

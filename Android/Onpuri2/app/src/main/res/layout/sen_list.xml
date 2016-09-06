@@ -1,18 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="35dp"
     android:gravity="center">
     <TextView
         android:textSize="16dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:textColor="@color/black"
         android:lineSpacingExtra="3dp"
         android:ellipsize="end"
         android:maxLines="1"
         android:id="@+id/item"
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content" />
+
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:id="@+id/imageView"
+        android:layout_gravity="center_vertical"
+        android:background="@drawable/rechand_icon" />
+
+    <TextView
+        android:textSize="16dp"
+        android:layout_marginRight="8dp"
+        android:textColor="@color/black"
+        android:lineSpacingExtra="3dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:id="@+id/reco"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="00"
+        android:gravity="right" />
 
 </LinearLayout>

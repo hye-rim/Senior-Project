@@ -83,22 +83,23 @@
                 android:layout_gravity="center" />
         </LinearLayout>
 
-        <android.support.v7.widget.RecyclerView
-            android:scrollbars="vertical"
-            app:layoutManager="LinearLayoutManager"
-            android:id="@+id/recycler_trans"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:listitem="@layout/trans_list"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp">
-        </android.support.v7.widget.RecyclerView>
-        <FrameLayout
-            android:background="@color/dark_gray"
-            android:layout_height="1dp"
-            android:layout_width="match_parent"
-            android:layout_marginRight="5dp"
-            android:layout_marginLeft="5dp"/>
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:scrollbars="vertical"
+                app:layoutManager="LinearLayoutManager"
+                android:id="@+id/recycler_trans"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                tools:listitem="@layout/trans_list"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp">
+            </android.support.v7.widget.RecyclerView>
+        </LinearLayout>
+
     </LinearLayout>
 </ScrollView>
 
