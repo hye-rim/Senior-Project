@@ -145,7 +145,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
         TransRecyclerView = (RecyclerView) view.findViewById(R.id.trans_list);
         TransLayoutManager = new LinearLayoutManager(getActivity());
         TransRecyclerView.setLayoutManager(TransLayoutManager);
-        TransAdapter = new SenTransListAdapter(list_trans, TransRecyclerView);
+        TransAdapter = new SenTransListAdapter(list_trans, list_trans_reco, TransRecyclerView);
         TransRecyclerView.setAdapter(TransAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         TransRecyclerView.addOnItemTouchListener(
                 new HomeItemClickListener(getActivity().getApplicationContext(), TransRecyclerView ,new HomeItemClickListener.OnItemClickListener() {
@@ -180,7 +180,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
         ListenRecyclerView = (RecyclerView) view.findViewById(R.id.listen_list);
         ListenLayoutManager = new LinearLayoutManager(getActivity());
         ListenRecyclerView.setLayoutManager(ListenLayoutManager);
-        ListenAdapter = new SenListenListAdapter(list_listen, ListenRecyclerView);
+        ListenAdapter = new SenListenListAdapter(list_listen, list_listen_reco, ListenRecyclerView);
         ListenRecyclerView.setAdapter(ListenAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         ListenRecyclerView.addOnItemTouchListener(
                 new HomeItemClickListener(getActivity().getApplicationContext(), ListenRecyclerView ,new HomeItemClickListener.OnItemClickListener() {
@@ -218,7 +218,8 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
 
         switch (v.getId()) {
             case R.id.del_sen:
-                AlertDialog.Builder sentenceDel = new AlertDialog.Builder(getActivity());
+                Toast.makeText(getActivity(),"구현 예정입니다.", Toast.LENGTH_SHORT).show();
+/*                AlertDialog.Builder sentenceDel = new AlertDialog.Builder(getActivity());
                 sentenceDel.setTitle("문장을 삭제하시겠습니까?")
                         .setOnKeyListener(new DialogInterface.OnKeyListener() {
                             @Override
@@ -242,7 +243,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                                 Toast.makeText(getActivity(), "취소되었습니다", Toast.LENGTH_SHORT).show();
                             }
 
-                        }).show();
+                        }).show();*/
 
                 break;
             case R.id.add_note:

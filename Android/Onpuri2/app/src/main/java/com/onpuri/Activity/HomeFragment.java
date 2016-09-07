@@ -194,7 +194,6 @@ public class HomeFragment extends Fragment {
 
         if(!sentenceEnd) {
             loadLimit = ival + 10;
-
             for (int i = ival; i < loadLimit; i++) {
                 listSentence.add(userSentence.arrSentence.get(i));
                 listSentenceNum.add(userSentence.arrSentenceNum.get(i));
@@ -224,4 +223,5 @@ public class HomeFragment extends Fragment {
             }
         }
     }
+
 }

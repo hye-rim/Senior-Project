@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#faf5b3">
+    android:background="@color/background_material_light">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="120dp"
@@ -25,7 +25,7 @@
         android:layout_height="180dp"
         android:id="@+id/edittrans"
         android:hint="해석을 입력하세요"
-        android:background="#ffffff"
+        android:background="@color/material_grey_100"
         android:gravity="top"
         android:layout_gravity="center"
         android:layout_marginLeft="15dp"
@@ -44,7 +44,7 @@
             android:layout_height="40dp"
             android:text="편집"
             android:layout_marginRight="10dp"
-            android:background="#FEE098"
+            android:background="@drawable/btn_border"
             android:textColor="@android:color/black"/>
         <Button
             android:id="@+id/btn_new_trans_back"
@@ -52,7 +52,7 @@
             android:layout_height="40dp"
             android:text="취소"
             android:layout_marginLeft="10dp"
-            android:background="#FEE098"
+            android:background="@drawable/btn_border"
             android:textColor="@android:color/black"/>
 
     </LinearLayout>

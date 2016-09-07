@@ -4,12 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#faf5b3">
+    android:background="@color/background_material_light">
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="600dp"
-        android:background="#faf5b3">
+        android:layout_height="600dp">
         <LinearLayout
             android:paddingRight="5px"
             android:layout_width="match_parent"
@@ -133,7 +132,7 @@
                 android:id="@+id/item_reco"
                 android:layout_marginLeft="8dp"
                 android:gravity="center_vertical|center_horizontal"
-                android:background="@color/never_forgotten"
+                android:background="@drawable/btn_border"
                 android:textColor="@color/black"
                 android:layout_gravity="center"
                 android:layout_marginRight="20dp" />
@@ -146,7 +145,7 @@
                 android:id="@+id/item_edit"
                 android:layout_marginRight="8dp"
                 android:gravity="center_vertical|center_horizontal"
-                android:background="@color/never_forgotten"
+                android:background="@drawable/btn_border"
                 android:textColor="@color/black"
                 android:layout_gravity="center"
                 android:layout_marginLeft="20dp" />
