@@ -22,7 +22,7 @@
             <Button
                 android:id="@+id/btn_note_sen"
                 android:text="문장"
-                android:textSize="18dp"
+                android:textSize="14dp"
                 android:textColor="@color/white"
                 android:background="@color/fuzzy_peach"
                 android:layout_width="150dp"
@@ -30,7 +30,7 @@
             <Button
                 android:id="@+id/btn_note_word"
                 android:text="단어"
-                android:textSize="18dp"
+                android:textSize="14dp"
                 android:textColor="@color/dark_gray"
                 android:background="@drawable/btn_border"
                 android:layout_width="150dp"
@@ -45,6 +45,8 @@
                 android:visibility="visible"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
                 >
                 <android.support.v7.widget.RecyclerView
                     android:scrollbars="vertical"
@@ -59,6 +61,8 @@
                 android:visibility="invisible"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
                 >
                 <android.support.v7.widget.RecyclerView
                     android:scrollbars="vertical"

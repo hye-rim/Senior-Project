@@ -45,7 +45,7 @@ public class UserMyActFragment extends Fragment {
     private RecyclerView mRecyclerNew, mRecyclerRecord, mRecyclerTrans;
     private RecyclerView.Adapter mNewAdapter, mRecordAdapter, mTransAdapter;
 
-    private TextView tv_userId;
+    private TextView tv_userId, tv_userInfo;
 
     protected RecyclerView.LayoutManager mLayoutManager;
 
@@ -55,6 +55,8 @@ public class UserMyActFragment extends Fragment {
     private Boolean isNullNew, isNullRecord, isNullTrans;
 
     private workerAct mworker_act;
+
+    private int cntNew, cntRecord, cntTrans;
 
     public static UserMyActFragment newInstance() {
         UserMyActFragment fragment = new UserMyActFragment();
@@ -87,6 +89,8 @@ public class UserMyActFragment extends Fragment {
         userId = extra.getString("ActId");
 
         tv_userId = (TextView)view.findViewById(R.id.tv_act_name);
+        tv_userInfo = (TextView)view.findViewById(R.id.tv_act_info);
+
         tv_userId.setText("     " + userId + " 님");
 
         mFragmentManager = getFragmentManager();
@@ -116,6 +120,8 @@ public class UserMyActFragment extends Fragment {
         });
 
         loadActData();
+
+        tv_userInfo.setText("등록 : " + cntNew + "\n녹음 : " + cntRecord + "\n해석 : " + cntTrans );
 
         Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_dark);
 
@@ -283,6 +289,10 @@ public class UserMyActFragment extends Fragment {
             isNullTrans = true;
             listTrans.add("문장 번역을 해보세요.");
         }
+
+        cntNew = ( isNullNew ? 0 : listNew.size() );
+        cntRecord = ( isNullRecord ? 0 : listRecord.size() );
+        cntTrans = ( isNullTrans ? 0 : listTrans.size() ) ;
     }
 
     public void setTabColor() {

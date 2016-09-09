@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -78,6 +79,7 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             mSenMore = (ImageButton) v.findViewById(R.id.btn_sen_more);
 
             mSenItem.setMaxLines(2);
+            mSenItem.setEllipsize(TextUtils.TruncateAt.END);
             mSenItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

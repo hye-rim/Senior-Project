@@ -61,7 +61,6 @@ public class TestFragment  extends Fragment implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_test_solving:
-
                 break;
 
             case R.id.btn_test_creating:
