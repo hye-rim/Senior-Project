@@ -1,5 +1,6 @@
 package com.onpuri.Adapter;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -7,6 +8,7 @@ import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -19,7 +21,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.onpuri.Activity.MainActivity;
 import com.onpuri.Activity.NoteSenFragment;
+import com.onpuri.MediaPlayerManager;
 import com.onpuri.R;
 
 import java.io.File;
@@ -35,12 +39,11 @@ public class ListenListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private ArrayList<String> recoList;
     private ArrayList<String> numList;
 
+    MediaPlayerManager mPlayer;
     Context con;
     FragmentManager fm;
 
-    MediaPlayer mPlayer = null;
-
-    public ListenListAdapter(ArrayList<String> list_listen, ArrayList<String> list_userid, ArrayList<String> list_day, ArrayList<String> list_reco, ArrayList<String> list_num, Context con, FragmentManager fm, RecyclerView recyclerView) {
+    public ListenListAdapter(MediaPlayerManager mPlayer, ArrayList<String> list_listen, ArrayList<String> list_userid, ArrayList<String> list_day, ArrayList<String> list_reco, ArrayList<String> list_num, Context con, FragmentManager fm, RecyclerView recyclerView) {
         this.listenList=list_listen;
         this.useridList=list_userid;
         this.dayList=list_day;
@@ -48,6 +51,7 @@ public class ListenListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         this.numList=list_num;
         this.con = con;
         this.fm = fm;
+        this.mPlayer = mPlayer;
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
@@ -68,8 +72,7 @@ public class ListenListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             listen.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(TAG,"듣기");
-                    PlayFile(numList.get(getPosition()));
+                    mPlayer.PlayFile(numList.get(getPosition()));
                 }
             });
 
@@ -100,39 +103,5 @@ public class ListenListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public int getItemCount() {
         return listenList.size();
-    }
-
-    //파일 경로
-    public static synchronized String GetFilePath(String filenum) {
-        String sdcard = Environment.getExternalStorageState();
-        File file;
-
-        if ( !sdcard.equals(Environment.MEDIA_MOUNTED)) { file = Environment.getRootDirectory(); }
-        else { file = Environment.getExternalStorageDirectory(); }
-
-        String dir = file.getAbsolutePath();
-        String path = dir + "/Daily E/"+filenum+"listen.mp3";
-
-        return path;
-    }
-
-    public void PlayFile(String filenum) {
-        String path = GetFilePath(filenum);
-
-        if( mPlayer != null ) {
-            mPlayer.stop();
-            mPlayer.release();
-            mPlayer = null;
-        }
-        mPlayer = new MediaPlayer();
-
-        try {
-            mPlayer.setDataSource(path);
-            mPlayer.prepare();
-        } catch(IOException e) {
-            Log.d(TAG, "Audio Play error");
-            return;
-        }
-        mPlayer.start();
     }
 }

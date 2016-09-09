@@ -53,6 +53,12 @@
                     android:id="@+id/add_note"
                     android:background="@drawable/addnote_icon"
                     android:layout_marginRight="10dp" />
+                <ImageButton
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:id="@+id/reco_sen"
+                    android:background="@drawable/reco_icon"
+                    android:layout_marginRight="10dp" />
             </LinearLayout>
         </LinearLayout>
         <LinearLayout
@@ -84,6 +90,7 @@
                 android:layout_marginRight="30dp"
                 android:background="@drawable/add_icon"
                 android:layout_gravity="center" />
+
         </LinearLayout>
 
         <android.support.v7.widget.RecyclerView

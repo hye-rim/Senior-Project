@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -30,6 +31,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.onpuri.ActivityList;
 import com.onpuri.R;
 import com.onpuri.Thread.workerLogout;
+import com.onpuri.MediaPlayerManager;
 import com.tsengvn.typekit.TypekitContextWrapper;
 
 import java.io.File;
@@ -37,14 +39,13 @@ import java.io.File;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "MainActivity" ;
     private ActivityList actManager = ActivityList.getInstance();
+    public MediaPlayerManager mPlayer;
 
     ActionBarDrawerToggle mDrawerToggle;
     DrawerLayout mDrawerLayout;
     NavigationView mNavigationView;
     FragmentManager mFragmentManager;
     private GoogleApiClient client;
-
-    MediaPlayer mPlayer;
 
     //Back Preesed
     private final long FINISH_INTERVAL_TIME = 3000;
@@ -67,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         actManager.addActivity(this);
         setContentView(R.layout.activity_main);
-
+        mPlayer = new MediaPlayerManager();
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
         setting = getSharedPreferences("setting", 0);
@@ -143,13 +144,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         else {
             //Fragment가 스택에 남아있을 경우
             if(mFragmentManager.getBackStackEntryCount() > 0) {
-                Log.d(TAG,"pop");
+                if(mPlayer.mpfile != null) { mPlayer.mpfile.pause();}
+
                 mFragmentManager.popBackStack();
                 mFragmentManager.beginTransaction().commit();
             }
 
             else {
-                Log.d(TAG, "close");
                 //시간안에 2번 눌렀을 때
                 if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime) {
                     DeleteDir("/storage/emulated/0/Daily E");

@@ -19,7 +19,7 @@
         android:layout_height="20dp"
         android:id="@+id/imageView"
         android:layout_gravity="center_vertical"
-        android:background="@drawable/rechand_icon" />
+        android:background="@drawable/reco_icon" />
 
     <TextView
         android:textSize="16dp"

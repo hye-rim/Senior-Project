@@ -6,7 +6,7 @@
     android:layout_marginBottom="3dp"
     android:layout_width="match_parent"
     app:cardBackgroundColor="@color/fuzzy_peach"
-    android:layout_height="60dp">
+    android:layout_height="70dp">
     <!--android:background="@color/more_light_gray"-->
 
 
@@ -28,32 +28,79 @@
             android:layout_height="wrap_content"
             android:text="영어 문장" />
 
-        <TextView
-            android:textSize="17dp"
-            android:textColor="@color/black"
-            android:id="@+id/transcount"
-            android:layout_width="25dp"
-            android:layout_height="wrap_content"
-            android:text="00"
-            android:gravity="right" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="3dp">
 
-        <TextView
-            android:textSize="17dp"
-            android:textColor="@color/black"
-            android:ellipsize="end"
-            android:layout_width="10dp"
-            android:layout_height="wrap_content"
-            android:text="/" />
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="20dp">
 
-        <TextView
-            android:textSize="17dp"
-            android:layout_marginRight="8dp"
-            android:textColor="@color/black"
-            android:id="@+id/listencount"
-            android:layout_width="25dp"
-            android:layout_height="wrap_content"
-            android:text="00"
-            android:gravity="left" />
+                <ImageView
+                    android:layout_width="23dp"
+                    android:layout_height="20dp"
+                    android:id="@+id/imageView2"
+                    android:background="@drawable/translation_icon" />
+
+                <TextView
+                    android:textSize="17dp"
+                    android:textColor="@color/black"
+                    android:id="@+id/transcount"
+                    android:layout_width="25dp"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:gravity="right" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="20dp">
+
+                <ImageView
+                    android:layout_width="23dp"
+                    android:layout_height="20dp"
+                    android:id="@+id/imageView3"
+                    android:background="@drawable/listen_icon" />
+
+                <TextView
+                    android:textSize="17dp"
+                    android:textColor="@color/black"
+                    android:id="@+id/listencount"
+                    android:layout_width="25dp"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:gravity="right" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="20dp">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:id="@+id/imageView4"
+                    android:background="@drawable/reco_icon" />
+
+                <TextView
+                    android:textSize="17dp"
+                    android:textColor="@color/black"
+                    android:id="@+id/textView"
+                    android:layout_width="25dp"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:gravity="right"
+                    android:layout_marginLeft="3dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </android.support.v7.widget.CardView>

@@ -121,7 +121,7 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
         RecyclerView = (RecyclerView) view.findViewById(R.id.recycler_listen);
         LayoutManager = new LinearLayoutManager(getActivity());
         RecyclerView.setLayoutManager(LayoutManager);
-        Adapter = new ListenListAdapter(list_listen, list_userid, list_day, list_reco, list_num, con, fm, RecyclerView);
+        Adapter = new ListenListAdapter(((MainActivity)getActivity()).mPlayer, list_listen, list_userid, list_day, list_reco, list_num, con, fm, RecyclerView);
         RecyclerView.setAdapter(Adapter);// Set CustomAdapter as the adapter for RecyclerView.
 
         Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_dark);
@@ -149,7 +149,7 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
         list_num.clear();
 
         for (int i = 0; i < worker_listen_more.getCount(); i++) {
-            list_listen.add("Listen "+ worker_listen_more.getListennum().get(i).toString());
+            list_listen.add(worker_listen_more.getUserid().get(i).toString()+"님   "+worker_listen_more.getDay().get(i).toString());
             list_userid.add(worker_listen_more.getUserid().get(i).toString());
             list_day.add(worker_listen_more.getDay().get(i).toString());
             list_reco.add(worker_listen_more.getReco().get(i).toString());
@@ -216,6 +216,9 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
                 ft.commit();
                 break;
             case R.id.tts:
+                if(((MainActivity)getActivity()).mPlayer.mpfile != null) {
+                    ((MainActivity)getActivity()).mPlayer.mpfile.pause();
+                }
                 tts.speak(sentence, TextToSpeech.QUEUE_FLUSH, null);
                 break;
         }

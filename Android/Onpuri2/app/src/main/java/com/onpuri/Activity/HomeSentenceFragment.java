@@ -31,6 +31,7 @@ import com.onpuri.Adapter.SenListenListAdapter;
 import com.onpuri.Adapter.SenTransListAdapter;
 import com.onpuri.DividerItemDecoration;
 import com.onpuri.Listener.HomeItemClickListener;
+import com.onpuri.MediaPlayerManager;
 import com.onpuri.R;
 import com.onpuri.Thread.workerNote;
 import com.onpuri.Thread.workerNoteItemAdd;
@@ -76,7 +77,6 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
     String sentence_num = "";
     TextToSpeech tts;
 
-    MediaPlayer mPlayer = null;
     MediaRecorder mRecorder = null;
 
     private RecyclerView TransRecyclerView;
@@ -186,7 +186,10 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 new HomeItemClickListener(getActivity().getApplicationContext(), ListenRecyclerView ,new HomeItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        PlayFile(list_listen_num.get(position));
+                        if(tts != null) {
+                            tts.stop();
+                        }
+                        ((MainActivity)getActivity()).mPlayer.PlayFile(list_listen_num.get(position));
                     }
                     public void onLongItemClick(View view, int position) {}
                 })
@@ -308,6 +311,9 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 ft.commit();
                 break;
             case R.id.tts :
+                if(((MainActivity)getActivity()).mPlayer.mpfile != null) {
+                    ((MainActivity)getActivity()).mPlayer.mpfile.pause();
+                }
                 tts.speak(sentence, TextToSpeech.QUEUE_FLUSH, null);
                 break;
         }
@@ -366,49 +372,12 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
         list_listen_num.clear();
 
         for (int i = 0; i < worker_sentence_listen.getCount(); i++) {
-            list_listen.add("Listen "+ worker_sentence_listen.getListennum().get(i).toString());
+            list_listen.add(worker_sentence_listen.getUserid().get(i).toString()+"님   "+worker_sentence_listen.getDay().get(i).toString());
             list_listen_userid.add(worker_sentence_listen.getUserid().get(i).toString());
             list_listen_day.add(worker_sentence_listen.getDay().get(i).toString());
             list_listen_reco.add(worker_sentence_listen.getReco().get(i).toString());
             list_listen_num.add(worker_sentence_listen.getListennum().get(i).toString());
         }
-    }
-
-    //파일 경로
-    public static synchronized String GetFilePath(String filenum) {
-        Log.d(TAG, "GetFilePath");
-        String sdcard = Environment.getExternalStorageState();
-        File file;
-
-        if ( !sdcard.equals(Environment.MEDIA_MOUNTED)) { file = Environment.getRootDirectory(); }
-        else { file = Environment.getExternalStorageDirectory(); }
-
-        String dir = file.getAbsolutePath();
-        String path = dir + "/Daily E/"+filenum+"listen.mp3";
-        Log.d(TAG, "GetFilePath : " + path);
-
-        return path;
-    }
-
-    public void PlayFile(String filenum) {
-        Log.d(TAG, "PlayFile");
-        String path = GetFilePath(filenum);
-
-        if( mPlayer != null ) {
-            mPlayer.stop();
-            mPlayer.release();
-            mPlayer = null;
-        }
-        mPlayer = new MediaPlayer();
-
-        try {
-            mPlayer.setDataSource(path);
-            mPlayer.prepare();
-        } catch(IOException e) {
-            Log.d(TAG, "Audio Play error");
-            return;
-        }
-        mPlayer.start();
     }
 
     private void StopFile() {
