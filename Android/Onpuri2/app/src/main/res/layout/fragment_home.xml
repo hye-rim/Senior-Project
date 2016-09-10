@@ -6,13 +6,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/more_light_gray">
+
         <android.support.v7.widget.RecyclerView
             android:scrollbars="vertical"
             app:layoutManager="LinearLayoutManager"
             android:id="@+id/recycler_sentence"
-            android:layout_marginTop="8dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:listitem="@layout/home_list" >
+            tools:listitem="@layout/home_list"
+            android:background="@color/white"
+            android:layout_marginTop="8dp">
         </android.support.v7.widget.RecyclerView>
 </LinearLayout>
