@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:font="custom1"
-            style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"/>
+            style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title" />
     </android.support.v7.widget.Toolbar>
 
     <android.support.v4.widget.DrawerLayout
@@ -26,7 +26,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:id="@+id/drawerLayout"        >
+        android:id="@+id/drawerLayout">
 
         <FrameLayout
             android:orientation="vertical"
@@ -44,11 +44,12 @@
             android:layout_height="match_parent"
             android:layout_gravity="start"
             android:id="@+id/nav_view"
+            android:background="@color/white"
             app:itemTextColor="@color/black"
             app:menu="@menu/drawer_menu"
-            app:headerLayout="@layout/nav_header_main_sub"
-            android:layout_marginTop="-24dp"
+
             />
+        <!--android:layout_marginTop="-24dp"-->
 
     </android.support.v4.widget.DrawerLayout>
 

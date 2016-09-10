@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private String userId = "";
     private String name, joinDate, phone, nowPassword;
 
-    private TextView mNavId, mToolbarTitle;
+    private TextView mToolbarTitle;
     private Bundle bundle;
 
     @Override
@@ -81,7 +81,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mNavigationView = (NavigationView) findViewById(R.id.nav_view) ;
 
         View header = mNavigationView.getHeaderView(0);
-        mNavId = (TextView)header.findViewById(R.id.tv_nav_id);
 
         Intent intent = getIntent();
         userId = intent.getStringExtra("UserId");
@@ -90,8 +89,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         joinDate = intent.getStringExtra("JoinDate");
         phone = intent.getStringExtra("Phone");
         nowPassword = intent.getStringExtra("NowPass");
-
-        mNavId.setText(userId + " 님");
 
         //TabViewpager 선언 및 데이터 전송
         TabViewPager tabViewPager = new TabViewPager();
@@ -228,10 +225,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     searchView.clearFocus();
 
                     fragmentManager.beginTransaction()
-                            .replace(R.id.root_home, searchFragment)
-                            .addToBackStack(null)
+                            .add(R.id.root_home, searchFragment)
+                            .addToBackStack("fragBack")
                             .commit();
-                    fragmentManager.executePendingTransactions();
                 }
                 return true;
             }

@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.onpuri.R;
@@ -28,7 +29,7 @@ public class TestFragment  extends Fragment implements View.OnClickListener{
 
     private static View view;
 
-    private Button btn_solving, btn_creating;
+    private ImageButton btn_solving, btn_creating;
 
     ViewPager viewPager;
 
@@ -48,8 +49,8 @@ public class TestFragment  extends Fragment implements View.OnClickListener{
         }
         viewPager = (ViewPager)getActivity().findViewById(R.id.viewpager);
 
-        btn_solving = (Button)view.findViewById(R.id.btn_test_solving);
-        btn_creating = (Button)view.findViewById(R.id.btn_test_creating);
+        btn_solving = (ImageButton)view.findViewById(R.id.btn_test_solving);
+        btn_creating = (ImageButton)view.findViewById(R.id.btn_test_creating);
         btn_solving.setOnClickListener(this);
         btn_creating.setOnClickListener(this);
 
