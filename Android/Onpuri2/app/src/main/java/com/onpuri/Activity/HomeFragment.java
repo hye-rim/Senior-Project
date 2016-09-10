@@ -98,7 +98,7 @@ public class HomeFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new RecycleviewAdapter(listSentence, listTransNum, listListenNum, mRecyclerView);
-
+        mAdapter.notifyDataSetChanged();
         mRecyclerView.setAdapter(mAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener((LinearLayoutManager) mLayoutManager) {
             @Override
@@ -128,7 +128,6 @@ public class HomeFragment extends Fragment {
                                 .replace(R.id.root_home, hsf)
                                 .addToBackStack(null)
                                 .commit();
-                        //     fm.executePendingTransactions();
                     }
                     @Override
                     public void onLongItemClick(View view, int position) {
@@ -143,6 +142,7 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
     }
+
     // By default, we add 10 objects for first time.
     private void loadData(int current_page) {
         if (mworker_sentence != null && mworker_sentence.isAlive()) {  //이미 동작하고 있을 경우 중지
