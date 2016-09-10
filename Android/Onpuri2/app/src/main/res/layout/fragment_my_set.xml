@@ -15,9 +15,10 @@
         android:id="@+id/btn_set_notice"
         android:textColor="@color/black"
         android:gravity="left|center_vertical"
-        android:background="#FAF5B3"
-        android:textSize="20dp"
-        android:text="     공지사항"
+        android:background="@color/background_material_light"
+        android:paddingLeft="10dp"
+        android:textSize="16dp"
+        android:text="공지사항"
         android:layout_width="match_parent"
         android:layout_height="50dp"/>
 
@@ -32,9 +33,10 @@
         android:id="@+id/btn_set_question"
         android:textColor="@color/black"
         android:gravity="left|center_vertical"
-        android:background="#FAF5B3"
-        android:textSize="20dp"
-        android:text="     문의"
+        android:paddingLeft="10dp"
+        android:background="@color/background_material_light"
+        android:textSize="16dp"
+        android:text="문의"
         android:layout_width="match_parent"
         android:layout_height="50dp" />
 
@@ -49,9 +51,10 @@
         android:id="@+id/btn_set_version"
         android:textColor="@color/black"
         android:gravity="left|center_vertical"
-        android:background="#FAF5B3"
-        android:textSize="20dp"
-        android:text="     버전정보"
+        android:background="@color/background_material_light"
+        android:paddingLeft="10dp"
+        android:textSize="16dp"
+        android:text="버전정보"
         android:layout_width="match_parent"
         android:layout_height="50dp" />
 
@@ -66,9 +69,10 @@
         android:id="@+id/btn_set_tou"
         android:textColor="@color/black"
         android:gravity="left|center_vertical"
-        android:background="#FAF5B3"
-        android:textSize="20dp"
-        android:text="     이용약관"
+        android:background="@color/background_material_light"
+        android:paddingLeft="10dp"
+        android:textSize="16dp"
+        android:text="이용약관"
         android:layout_width="match_parent"
         android:layout_height="50dp" />
 
@@ -83,9 +87,10 @@
         android:id="@+id/btn_set_out"
         android:textColor="@color/black"
         android:gravity="left|center_vertical"
-        android:background="#FAF5B3"
-        android:textSize="20dp"
-        android:text="     회원탈퇴"
+        android:background="@color/background_material_light"
+        android:paddingLeft="10dp"
+        android:textSize="16dp"
+        android:text="회원탈퇴"
         android:layout_width="match_parent"
         android:layout_height="50dp" />
 

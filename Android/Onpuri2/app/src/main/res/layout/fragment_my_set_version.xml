@@ -7,15 +7,16 @@
         android:background="@color/fuzzy_peach"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:text= "     버전정보"
+        android:paddingLeft="10dp"
+        android:text= "버전정보"
         android:textColor="@color/black"
-        android:textSize="20dp"
+        android:textSize="16dp"
         android:gravity="center_vertical" />
 
     <TextView
         android:layout_marginTop="15dp"
         android:layout_marginLeft="40dp"
-        android:textSize="18dp"
+        android:textSize="16dp"
         android:textStyle="bold"
         android:layout_marginRight="20dp"
         android:layout_width="match_parent"

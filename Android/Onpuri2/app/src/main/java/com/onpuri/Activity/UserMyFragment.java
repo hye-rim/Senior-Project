@@ -141,7 +141,7 @@ public class UserMyFragment extends Fragment implements View.OnClickListener {
             public void afterTextChanged(Editable editable) {
                 if (et_userNewPass.getText().toString().equals(et_userNewPassCheck.getText().toString()) && !et_userNewPass.getText().toString().equals("")) {
                     checkNewPw = true;
-                    newPass = et_userNowPass.getText().toString();
+                    newPass = et_userNewPass.getText().toString();
                 } else {
                     checkNewPw = false;
                 }

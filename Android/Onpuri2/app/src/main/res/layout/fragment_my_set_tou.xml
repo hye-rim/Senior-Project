@@ -7,9 +7,10 @@
         android:background="@color/fuzzy_peach"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:text= "     이용약관"
+        android:paddingLeft="10dp"
+        android:text= "이용약관"
         android:textColor="@color/black"
-        android:textSize="20dp"
+        android:textSize="16dp"
         android:gravity="center_vertical" />
     <TextView
         android:layout_marginLeft="20dp"
@@ -18,6 +19,6 @@
         android:layout_height="match_parent"
         android:text= "차후 추가 예정입니다."
         android:textColor="@color/black"
-        android:textSize="15dp"
+        android:textSize="16dp"
         android:layout_marginTop="3dp" />
 </LinearLayout>
