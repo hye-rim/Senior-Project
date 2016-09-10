@@ -61,7 +61,6 @@ public class HomeFragment extends Fragment {
     private int loadLimit = 10;
     private int sentence_num;
     private Boolean sentenceEnd = false;
-    private String userId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -75,9 +74,6 @@ public class HomeFragment extends Fragment {
         } catch (InflateException e) {
             /* map is already there, just return view as it is */
         }
-        //HomeRootFragment로부터 데이터 받아오기
-        userId = null;
-        userId = getArguments().getString("UserId"); //UserId라는 키에 해당되는 String 값 받아옴
 
         sentence_num = 0;
         userSentence = new PacketUser();
@@ -122,6 +118,7 @@ public class HomeFragment extends Fragment {
                         Bundle args = new Bundle();
                         args.putString("sen", listSentence.get(position));
                         args.putString("sen_num", listSentenceNum.get(position));
+                        args.putString("id", listSentenceNum.get(position));
                         hsf.setArguments(args);
 
                         fm.beginTransaction()

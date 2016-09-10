@@ -119,6 +119,7 @@ public class PacketUser extends Application {
         arrSentenceListenNum.add(num);
     }
 
+    public String getuserId() {return userId;}
     public ArrayList<String> copyList() {
         return arrSentence;
     }

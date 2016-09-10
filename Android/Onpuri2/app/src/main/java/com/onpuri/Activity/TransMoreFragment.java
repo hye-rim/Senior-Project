@@ -118,17 +118,11 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
                         ft.commit();
                     }
                     public void onLongItemClick(View view, int position) {
+                        String userid = ((MainActivity)getActivity()).user.getuserId();
                         Log.d(TAG,list_userid.get(position));
-                        if (list_userid.get(position) == "Admin") {
+                        Log.d(TAG, userid);
+                        if (list_userid.get(position).equals(userid)) {
                             Log.d(TAG, "true");
-                            new AlertDialog.Builder(getActivity())
-                                    .setTitle("본인이 등록한 문장만 삭제가능합니다.")
-                                    .setNeutralButton("확인", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int whichButton) {}
-                                    }).show();
-                        }
-                        else {
-                            Log.d(TAG, "false");
                             new AlertDialog.Builder(getActivity())
                                     .setTitle("선택한 해석을 삭제하시겠습니까?")
                                     .setPositiveButton("확인", new DialogInterface.OnClickListener() {
@@ -146,6 +140,10 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
                                         }
 
                                     }).show();
+                        }
+                        else {
+                            Log.d(TAG, "false");
+                            Toast.makeText(getContext(), "본인이 등록한 해석만 삭제가능합니다.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 })
