@@ -132,12 +132,13 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
                 tabWord.setVisibility(LinearLayout.INVISIBLE);
                 btnSen.setTextColor(Color.WHITE);
                 btnWord.setTextColor(getResources().getColor(R.color.dark_gray));
+
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     btnSen.setBackground(getResources().getDrawable(R.color.fuzzy_peach));
                     btnWord.setBackground(getResources().getDrawable(R.drawable.btn_border));
                 }else{
-                    btnSen.setBackgroundDrawable(getResources().getDrawable(R.color.fuzzy_peach));
-                    btnWord.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_border));
+                    btnSen.setBackgroundResource((R.color.fuzzy_peach));
+                    btnWord.setBackgroundResource((R.drawable.btn_border));
                 }
                 break;
 
@@ -151,8 +152,8 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
                     btnSen.setBackground(getResources().getDrawable(R.drawable.btn_border));
                     btnWord.setBackground(getResources().getDrawable(R.color.fuzzy_peach));
                 }else{
-                    btnSen.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_border));
-                    btnWord.setBackgroundDrawable(getResources().getDrawable(R.color.fuzzy_peach));
+                    btnSen.setBackgroundResource((R.drawable.btn_border));
+                    btnWord.setBackgroundColor(getResources().getColor(R.color.fuzzy_peach));
                 }
                 break;
             default:
@@ -160,6 +161,7 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
         }
 
     }
+
     private void initData() {
         listSentence = new ArrayList<NoteData>();
         listWord = new ArrayList<NoteWordData>();

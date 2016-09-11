@@ -180,11 +180,6 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
             list_reco.add(worker_trans_more.getReco().get(i).toString());
             list_num.add(worker_trans_more.getTransnum().get(i).toString());
         }
-        list_trans.add("");
-        list_userid.add("");
-        list_day.add("");
-        list_reco.add("");
-        list_num.add("");
     }
 
     @Override

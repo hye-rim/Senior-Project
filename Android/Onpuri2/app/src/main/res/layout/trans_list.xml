@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="75dp"
-    android:gravity="center">
+    android:gravity="center"
+    android:background="@color/background_material_light">
     <TextView
         android:textSize="16dp"
         android:layout_marginLeft="8dp"
@@ -32,7 +33,7 @@
             android:ellipsize="end"
             android:layout_width="50dp"
             android:layout_height="match_parent"
-            android:id="@+id/reconame" />
+            android:text="추천수 : " />
 
         <TextView
             android:textSize="14dp"

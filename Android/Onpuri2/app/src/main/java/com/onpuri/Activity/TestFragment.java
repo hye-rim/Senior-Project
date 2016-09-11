@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.text.InputFilter;
 import android.view.InflateException;
@@ -13,12 +15,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.onpuri.R;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.util.ArrayList;
 
 /**
  * Created by kutemsys on 2016-09-02.
@@ -28,7 +32,7 @@ public class TestFragment  extends Fragment implements View.OnClickListener{
 
     private static View view;
 
-    private Button btn_solving, btn_creating;
+    private ImageButton btn_solving, btn_creating;
 
     ViewPager viewPager;
 
@@ -46,10 +50,11 @@ public class TestFragment  extends Fragment implements View.OnClickListener{
         } catch (InflateException e) {
     /* map is already there, just return view as it is */
         }
+
         viewPager = (ViewPager)getActivity().findViewById(R.id.viewpager);
 
-        btn_solving = (Button)view.findViewById(R.id.btn_test_solving);
-        btn_creating = (Button)view.findViewById(R.id.btn_test_creating);
+        btn_solving = (ImageButton)view.findViewById(R.id.btn_test_solving);
+        btn_creating = (ImageButton)view.findViewById(R.id.btn_test_creating);
         btn_solving.setOnClickListener(this);
         btn_creating.setOnClickListener(this);
 
@@ -59,8 +64,15 @@ public class TestFragment  extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
+        final FragmentManager fm = getActivity().getSupportFragmentManager();
+
         switch (v.getId()){
             case R.id.btn_test_solving:
+                final TestSolveFragment tsf = new TestSolveFragment();
+                fm.beginTransaction()
+                        .replace(R.id.root_test, tsf)
+                        .addToBackStack(null)
+                        .commit();
                 break;
 
             case R.id.btn_test_creating:

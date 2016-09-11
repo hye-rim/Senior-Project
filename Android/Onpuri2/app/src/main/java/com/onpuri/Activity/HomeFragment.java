@@ -125,7 +125,6 @@ public class HomeFragment extends Fragment {
                                 .replace(R.id.root_home, hsf)
                                 .addToBackStack(null)
                                 .commit();
-                        //     fm.executePendingTransactions();
                     }
                     @Override
                     public void onLongItemClick(View view, int position) {

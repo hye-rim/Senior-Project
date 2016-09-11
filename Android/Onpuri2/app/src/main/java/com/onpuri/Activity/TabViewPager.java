@@ -28,8 +28,6 @@ public class TabViewPager extends Fragment {
     public static TabLayout tabLayout;
     public static ViewPager viewPager;
     public static int int_items = 4;
-    private String userId;
-    private Bundle bundle;
 
     @Nullable
     @Override
@@ -80,9 +78,6 @@ public class TabViewPager extends Fragment {
             switch (position) {
                 case 0:
                     HomeRootFragment tab1 = new HomeRootFragment();
-                    bundle = new Bundle();
-                    bundle.putString("UserId", userId); //아이디 전송
-                    tab1.setArguments(bundle);
                     return tab1;
 
                 case 1:
@@ -90,7 +85,7 @@ public class TabViewPager extends Fragment {
                     return tab2;
 
                 case 2:
-                    TestFragment tab3 = new TestFragment();
+                    TestRootFragment tab3 = new TestRootFragment();
                     return tab3;
 
                 case 3:

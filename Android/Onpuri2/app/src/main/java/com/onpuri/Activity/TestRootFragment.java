@@ -12,18 +12,18 @@ import android.widget.Toast;
 import com.onpuri.R;
 
 
-public class HomeRootFragment extends Fragment {
+public class TestRootFragment extends Fragment {
 
-    private static final String TAG = "HomeRootFragment";
+    private static final String TAG = "TestRootFragment";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home_root, container, false);
+        View view = inflater.inflate(R.layout.fragment_test_root, container, false);
 
-        HomeFragment homeFragment = new HomeFragment();
+        TestFragment testFragment = new TestFragment();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.root_home, homeFragment)
+        transaction.replace(R.id.root_test, testFragment)
                 .commit();
         return view;
     }
