@@ -28,13 +28,11 @@ public class TransListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         public TextView trans;
         public TextView day;
         public TextView reco;
-        public TextView reconame;
         public ItemViewHolder(View v) {
             super(v);
             trans = (TextView) v.findViewById(R.id.tv_trans_item);
             day = (TextView) v.findViewById(R.id.day);
             reco = (TextView) v.findViewById(R.id.reco);
-            reconame = (TextView) v.findViewById(R.id.reconame);
         }
     }
     @Override
@@ -50,7 +48,6 @@ public class TransListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         itemViewHolder.trans.setText(transList.get(position));
         itemViewHolder.day.setText(dayList.get(position));
         itemViewHolder.reco.setText(recoList.get(position));
-        itemViewHolder.reconame.setText("추천수 : ");
     }
 
     @Override

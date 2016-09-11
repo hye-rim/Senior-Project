@@ -30,6 +30,7 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.onpuri.ActivityList;
 import com.onpuri.R;
+import com.onpuri.Server.PacketUser;
 import com.onpuri.Thread.workerLogout;
 import com.onpuri.MediaPlayerManager;
 import com.tsengvn.typekit.TypekitContextWrapper;
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final String TAG = "MainActivity" ;
     private ActivityList actManager = ActivityList.getInstance();
     public MediaPlayerManager mPlayer;
+    public PacketUser user;
 
     ActionBarDrawerToggle mDrawerToggle;
     DrawerLayout mDrawerLayout;
@@ -69,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         actManager.addActivity(this);
         setContentView(R.layout.activity_main);
         mPlayer = new MediaPlayerManager();
+        user = new PacketUser();
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
         setting = getSharedPreferences("setting", 0);
@@ -84,17 +87,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Intent intent = getIntent();
         userId = intent.getStringExtra("UserId");
-        Log.d(TAG, "id : " + userId);
         name = intent.getStringExtra("Name");
         joinDate = intent.getStringExtra("JoinDate");
         phone = intent.getStringExtra("Phone");
         nowPassword = intent.getStringExtra("NowPass");
 
-        //TabViewpager 선언 및 데이터 전송
+        user.setuserId(userId);
+
         TabViewPager tabViewPager = new TabViewPager();
-        bundle = new Bundle();
-        bundle.putString("UserId", userId); //아이디 전송
-        tabViewPager.setArguments(bundle);
 
         mFragmentManager = getSupportFragmentManager();
         mFragmentManager.beginTransaction()

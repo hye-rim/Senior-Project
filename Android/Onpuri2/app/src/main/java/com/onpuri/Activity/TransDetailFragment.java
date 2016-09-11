@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.InflateException;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -29,7 +30,7 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
 
     String sentence="";
     String trans="";
-    String userid="";
+    String id="";
     String day="";
     String reco="";
     String num="";
@@ -62,18 +63,18 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
         if (getArguments() != null) { //클릭한 문장 출력
             sentence = getArguments().getString("sen");
             trans = getArguments().getString("sen_trans");
-            userid = getArguments().getString("userid");
+            id = getArguments().getString("userid");
             day = getArguments().getString("day");
             reco = getArguments().getString("reco");
             num = getArguments().getString("num");
 
             item_sen.setText(sentence);
             item_trans.setText(trans);
-            item_userid.setText(userid);
+            item_userid.setText(id);
             item_day.setText(day);
             item_reco.setText(reco);
         }
-        reco = getArguments().getString("userId");
+        String userid = ((MainActivity)getActivity()).user.getuserId();
 
         Button item_reco = (Button) view.findViewById(R.id.item_reco);
         item_reco.setOnClickListener(this);
@@ -81,6 +82,10 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
         item_edit.setOnClickListener(this);
         ImageButton deltrans=(ImageButton)view.findViewById(R.id.del_trans);
         deltrans.setOnClickListener(this);
+
+        if (!id.equals(userid)) {
+            deltrans.setVisibility(View.INVISIBLE);
+        }
 
         return view;
     }
