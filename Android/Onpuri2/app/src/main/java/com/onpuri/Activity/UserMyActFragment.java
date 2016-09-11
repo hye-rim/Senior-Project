@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.onpuri.Adapter.MyActNewAdapter;
 import com.onpuri.Adapter.MyActRecordAdapter;
+import com.onpuri.Adapter.MyActTestAdapter;
 import com.onpuri.Adapter.MyActTranslateAdapter;
 import com.onpuri.DividerItemDecoration;
 import com.onpuri.Listener.RecyclerItemClickListener;
@@ -39,24 +40,24 @@ public class UserMyActFragment extends Fragment {
     private static View view;
     private TabHost mTabHost;
 
-    ArrayList<String> listNew, listRecord, listTrans;
-    ArrayList<String> listNewNum, listRecordNum, listTransNum;
+    ArrayList<String> listNew, listRecord, listTrans, listTest;
+    ArrayList<String> listNewNum, listRecordNum, listTransNum, listTestNum;
 
-    private RecyclerView mRecyclerNew, mRecyclerRecord, mRecyclerTrans;
-    private RecyclerView.Adapter mNewAdapter, mRecordAdapter, mTransAdapter;
+    private RecyclerView mRecyclerNew, mRecyclerRecord, mRecyclerTrans, mRecyclerTest;
+    private RecyclerView.Adapter mNewAdapter, mRecordAdapter, mTransAdapter, mTestAdapter;
 
-    private TextView tv_userId, tv_userInfo;
+    private TextView tv_userId, tv_userInfo_NewRec, tv_userInfo_TransTest;
 
     protected RecyclerView.LayoutManager mLayoutManager;
 
     private FrameLayout mItemFrame;
     private FragmentManager mFragmentManager;
 
-    private Boolean isNullNew, isNullRecord, isNullTrans;
+    private Boolean isNullNew, isNullRecord, isNullTrans, isNullTest;
 
     private workerAct mworker_act;
 
-    private int cntNew, cntRecord, cntTrans;
+    private int cntNew, cntRecord, cntTrans, cntTest;
 
     public static UserMyActFragment newInstance() {
         UserMyActFragment fragment = new UserMyActFragment();
@@ -89,7 +90,8 @@ public class UserMyActFragment extends Fragment {
         userId = extra.getString("ActId");
 
         tv_userId = (TextView)view.findViewById(R.id.tv_act_name);
-        tv_userInfo = (TextView)view.findViewById(R.id.tv_act_info);
+        tv_userInfo_NewRec = (TextView)view.findViewById(R.id.tv_act_info_new_rec);
+        tv_userInfo_TransTest = (TextView)view.findViewById(R.id.tv_act_info_trans_test);
 
         tv_userId.setText("     " + userId + " 님");
 
@@ -110,6 +112,9 @@ public class UserMyActFragment extends Fragment {
         mTabHost.addTab(mTabHost.newTabSpec("tab_3")
                 .setIndicator("해석문장")
                 .setContent(R.id.tab_act_translate));
+        mTabHost.addTab(mTabHost.newTabSpec("tab_4")
+                .setIndicator("출제목록")
+                .setContent(R.id.tab_act_test));
 
         setTabColor(); //탭 색상 지정
         mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() { //탭 색상 변경
@@ -121,8 +126,8 @@ public class UserMyActFragment extends Fragment {
 
         loadActData();
 
-        tv_userInfo.setText("등록 : " + cntNew + "\n녹음 : " + cntRecord + "\n해석 : " + cntTrans );
-
+        tv_userInfo_NewRec.setText("등록 : " + cntNew + "\n\n녹음 : " + cntRecord );
+        tv_userInfo_TransTest.setText("해석 : " + cntTrans + "\n\n시험 : " + cntTest  );
         Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_dark);
 
         //Set Sentence Adapter for Sentence RecyclerView (NoteTab)
@@ -221,7 +226,25 @@ public class UserMyActFragment extends Fragment {
 
                 }));
 
+    //Set Sentence Adapter for Sentence RecyclerView (NoteTab)
+        mRecyclerTest = (RecyclerView) view.findViewById(R.id.recycle_act_test);
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mTestAdapter = new MyActTestAdapter(getActivity().getApplicationContext(),listTest,mRecyclerTest);
+        mRecyclerTest.setAdapter(mTestAdapter);// Set CustomAdapter as the adapter for RecyclerView.
+        mRecyclerTest.addItemDecoration(new DividerItemDecoration(dividerDrawable));
 
+        mRecyclerTest.addOnItemTouchListener(
+                new RecyclerItemClickListener(getActivity().getApplicationContext(), mRecyclerTest, new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        if(isNullTest)
+                            Toast.makeText(getActivity().getApplicationContext(), "시험을 출제해보세요.", Toast.LENGTH_SHORT).show();
+                        else{
+                            Toast.makeText(getActivity().getApplicationContext(), "구현 예정입니다.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                }));
         return view;
     }
 
@@ -232,6 +255,8 @@ public class UserMyActFragment extends Fragment {
         listRecordNum = new ArrayList<String>();
         listTrans = new ArrayList<String>();
         listTransNum = new ArrayList<String>();
+        listTest = new ArrayList<String>();
+        listTestNum = new ArrayList<String>();
 
         if (mworker_act != null && mworker_act.isAlive()) {  //이미 동작하고 있을 경우 중지
             mworker_act.interrupt();
@@ -290,15 +315,22 @@ public class UserMyActFragment extends Fragment {
             listTrans.add("문장 번역을 해보세요.");
         }
 
+        i = 0;
+        if(listTest.isEmpty()){
+            isNullTest = true;
+            listTest.add("시험을 출제해보세요.");
+        }
+
         cntNew = ( isNullNew ? 0 : listNew.size() );
         cntRecord = ( isNullRecord ? 0 : listRecord.size() );
         cntTrans = ( isNullTrans ? 0 : listTrans.size() ) ;
+        cntTest = 0;
     }
 
     public void setTabColor() {
         for(int i=0;i< mTabHost.getTabWidget().getChildCount();i++) {
-            mTabHost.getTabWidget().getChildAt(i).setBackgroundColor(getResources().getColor(R.color.china_ivory)); //선택되지 않은 탭
+            mTabHost.getTabWidget().getChildAt(i).setBackgroundResource(R.drawable.btn_border_fuzzy_peach); //선택되지 않은 탭
         }
-        mTabHost.getTabWidget().getChildAt(mTabHost.getCurrentTab()).setBackgroundColor(getResources().getColor(R.color.pale_gold)); //선택된 탭
+        mTabHost.getTabWidget().getChildAt(mTabHost.getCurrentTab()).setBackgroundColor(getResources().getColor(R.color.fuzzy_peach)); //선택된 탭
     }
 }

@@ -25,6 +25,7 @@
         android:gravity="center">
 
         <Button
+            android:textSize="16dp"
             android:id="@+id/btn_new_sen"
             android:layout_width="100dp"
             android:layout_height="40dp"
@@ -33,6 +34,7 @@
             android:textColor="@color/primary_text_default_material_light"
             android:background="@drawable/btn_border" />
         <Button
+            android:textSize="16dp"
             android:id="@+id/btn_new_sen_back"
             android:layout_width="100dp"
             android:layout_height="40dp"
@@ -48,6 +50,5 @@
         android:layout_height="50dp"
         android:text="▶ 등록 후에는 수정이 되지 않으니 문장에 오류가 있는지\n    다시 한번 확인해주세요."
         android:textColor="@color/black"
-        android:textStyle="bold"
         android:layout_margin="25dp" />
 </LinearLayout>

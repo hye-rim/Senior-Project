@@ -46,13 +46,6 @@ public class PacketUser extends Application {
 
     static final public char USR_CHANGE = 50; //내정보 변경
     static final public char ACK_CHANGE = 51; //ACK 내정보 변경
-    static final public char USR_ACT = 52; //내활동 요청
-    static final public char ACK_ACTENRL = 53; //ACK 내활동 - 등록문장
-    static final public char ACK_NACTENRL = 54; //ACK 내활동 - 등록문장 없을 때
-    static final public char ACK_ACTREC = 55; //ACK 내활동 - 녹음문장
-    static final public char ACK_NACTREC = 56; //ACK 내활동 - 녹음문장 없을 때
-    static final public char ACK_ACTTRANS = 57; //ACK 내활동 - 해석문장
-    static final public char ACK_NACTTRANS = 58; //ACK 내활동 - 해석문장 없을 때
 
     static final public char USR_NOTE = 60; //내노트 정보 요청
     static final public char ACK_NOTE = 61; //내노트 이름 (1+단어모음이름, 2+문장모음이름 - 내노트 이하 패킷 동일 구조)
@@ -71,6 +64,17 @@ public class PacketUser extends Application {
     static final public char USR_NOTE_LOAD = 71; //해당 노트 문장or단어 리스트 받아오기
     static final public char ACK_NOTE_LOAD = 72; //ACK 해당 노트 문장or단어 리스트 받아오기
     static final public char ACK_NNOTE_LOAD = 73; //ACK 해당 노트 문장or단어 리스트 받아오기
+
+    static final public char USR_ACT = 52; //내활동 요청
+    static final public char ACK_ACTENRL = 53; //ACK 내활동 - 등록문장
+    static final public char ACK_NACTENRL = 54; //ACK 내활동 - 등록문장 없을 때
+    static final public char ACK_ACTREC = 55; //ACK 내활동 - 녹음문장
+    static final public char ACK_NACTREC = 56; //ACK 내활동 - 녹음문장 없을 때
+    static final public char ACK_ACTTRANS = 57; //ACK 내활동 - 해석문장
+    static final public char ACK_NACTTRANS = 58; //ACK 내활동 - 해석문장 없을 때
+    //static final public char ACK_ACTTEST = 82; //ACK 내활동 - 출제한시험
+    //static final public char ACK_NACTTEST = 83; //ACK 내활동 - 출제한시험 없을 때
+
 
     static final public char ACK_NSEN = 90; //홈 문장 리스트 없을 경우(no sentence ACK)
     static final public char USR_LEV = 99; //회원 탈퇴(user leave)
