@@ -128,7 +128,7 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
                                 Addsentence();
                                 Toast.makeText(getActivity(), "등록되었습니다.", Toast.LENGTH_SHORT).show();
                                 sen.setText("");
-                                viewPager.setCurrentItem(1);
+                                viewPager.setCurrentItem(0);
                             }
                         })
                         .setNegativeButton("아니오", new DialogInterface.OnClickListener() {
@@ -153,7 +153,7 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
                         .setPositiveButton("네", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 sen.setText("");
-                                viewPager.setCurrentItem(1);
+                                viewPager.setCurrentItem(0);
                             }
                         })
                         .setNegativeButton("아니오", new DialogInterface.OnClickListener() {

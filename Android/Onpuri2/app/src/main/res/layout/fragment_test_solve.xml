@@ -5,9 +5,74 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.onpuri.Activity.TestSolveFragment"
-    android:background="@color/more_light_gray">
+    android:background="@color/more_light_gray"
+    android:orientation="vertical">
 
     <!-- TODO: Update blank fragment layout -->
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/white"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="5dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="시험 리스트"
+            android:id="@+id/textView"
+            android:textSize="20dp"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/black" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical|right"
+            android:layout_marginRight="10dp"
+            android:id="@+id/testsetting">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="전체"
+                android:id="@+id/set1"
+                android:textSize="15dp"
+                android:gravity="right"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="/"
+                android:id="@+id/textView4"
+                android:textSize="15dp"
+                android:gravity="right"
+                android:layout_marginRight="3dp"
+                android:layout_marginLeft="3dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="전체"
+                android:id="@+id/set2"
+                android:textSize="15dp"
+                android:gravity="right"
+                android:layout_marginRight="3dp"
+                android:textColor="@color/black" />
+        </LinearLayout>
+
+    </LinearLayout>
+
     <android.support.v7.widget.RecyclerView
         android:scrollbars="vertical"
         app:layoutManager="LinearLayoutManager"
@@ -15,8 +80,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:listitem="@layout/test_list"
-        android:background="@color/more_light_gray"
-        android:layout_marginTop="8dp">
+        android:background="@color/more_light_gray">
     </android.support.v7.widget.RecyclerView>
 
 </LinearLayout>

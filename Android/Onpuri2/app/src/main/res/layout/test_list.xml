@@ -55,10 +55,10 @@
                 android:gravity="center_vertical">
 
                 <ImageView
-                    android:layout_width="23dp"
+                    android:layout_width="21dp"
                     android:layout_height="18dp"
-                    android:id="@+id/imageView2"
-                    android:background="@drawable/translation_icon"
+                    android:id="@+id/imageView1"
+                    android:background="@drawable/quiznum_icon"
                     android:layout_marginLeft="5dp" />
 
                 <TextView
@@ -82,7 +82,7 @@
                 <ImageView
                     android:layout_width="21dp"
                     android:layout_height="18dp"
-                    android:id="@+id/imageView3"
+                    android:id="@+id/imageView2"
                     android:background="@drawable/people_icon" />
 
                 <TextView
@@ -106,7 +106,7 @@
                 <ImageView
                     android:layout_width="18dp"
                     android:layout_height="18dp"
-                    android:id="@+id/imageView4"
+                    android:id="@+id/imageView3"
                     android:background="@drawable/reco_icon" />
 
                 <TextView
