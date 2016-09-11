@@ -19,7 +19,8 @@
             android:id="@+id/testname"
             android:layout_marginTop="150dp"
             android:gravity="center"
-            android:textSize="20dp" />
+            android:textSize="20dp"
+            android:textColor="@color/black" />
 
         <TextView
             android:layout_width="match_parent"
@@ -30,7 +31,8 @@
             android:gravity="center"
             android:layout_marginBottom="100dp"
             android:textSize="18dp"
-            android:layout_marginTop="10dp" />
+            android:layout_marginTop="10dp"
+            android:textColor="@color/black" />
 
         <Button
             android:layout_width="120dp"

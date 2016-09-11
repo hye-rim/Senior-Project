@@ -76,7 +76,7 @@ public class TestSolveFragment extends Fragment implements View.OnClickListener{
 
                         fm.beginTransaction()
                                 .replace(R.id.root_test, tssf)
-                                .addToBackStack(null)
+                                .addToBackStack("testlist")
                                 .commit();
                     }
 

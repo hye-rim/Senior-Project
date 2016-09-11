@@ -56,7 +56,7 @@ public class TestSolveStartFrgment extends Fragment implements View.OnClickListe
         FragmentManager fm = getActivity().getSupportFragmentManager();
 
         switch (v.getId()) {
-        /*    case R.id.start:
+            case R.id.start:
                 final TestSolveWordFragment tswf = new TestSolveWordFragment();
 
                 Bundle args = new Bundle();
@@ -67,7 +67,7 @@ public class TestSolveStartFrgment extends Fragment implements View.OnClickListe
                         .replace(R.id.root_test, tswf)
                         .addToBackStack(null)
                         .commit();
-                break;*/
+                break;
 
             case R.id.back:
                 fm.popBackStack();
