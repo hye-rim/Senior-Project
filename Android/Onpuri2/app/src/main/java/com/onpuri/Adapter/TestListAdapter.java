@@ -17,10 +17,8 @@ public class TestListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private final String TAG = "TestListAdapter";
     private ArrayList<String> testList = null;
 
-    public TestListAdapter(RecyclerView TransRecyclerView) {
-        testList = new ArrayList<String>();
-        this.testList.add("문장 쪽지시험");
-        this.testList.add("쪽지시험 2");
+    public TestListAdapter(ArrayList<String> testList, RecyclerView TransRecyclerView) {
+        this.testList=testList;
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
