@@ -6,12 +6,22 @@
 
 void clusteringStart(unsigned char* buff_rcv, MYSQL* conn_ptr){
 	MYSQL_RES	*res_ptr;
+	MYSQL_RES	*res_ptr1;
 	MYSQL_ROW	row;
+	MYSQL_ROW	row1;
 
 	char query[250];
 	int numOfSentence;
 	int* sentenceArr;
 	int i;
+// init TB_clustChart, TB_SentenceClick
+	memset(query, '\0', sizeof(query));
+	sprintf(query, "delete from TB_clustChart");
+	mysql_query(conn_ptr, query);
+	
+	memset(query, '\0', sizeof(query));
+	sprintf(query, "update TB_USER set clust = -1");
+	mysql_query(conn_ptr, query);
 
 	memset(query, '\0', sizeof(query));
 
@@ -66,6 +76,7 @@ void clusteringStart(unsigned char* buff_rcv, MYSQL* conn_ptr){
 						if(mysql_query(conn_ptr, query)){
 							printf("%s\n", mysql_error(conn_ptr));
 						}
+
 					}
 					}while(row != NULL);
 				}
@@ -73,6 +84,50 @@ void clusteringStart(unsigned char* buff_rcv, MYSQL* conn_ptr){
 		}
 		
 		free(sentenceArr);		
+	}
+//	mysql_free_result(res_ptr);
+	
+	memset(query, '\0', sizeof(query));
+
+	sprintf(query, "select distinct(clust) from TB_USER where clust != -1");
+	//sprintf(query, "select distinct(clust) from TB_USER");
+
+	if(mysql_query(conn_ptr, query)){
+		printf(" %s    failed\n", query);
+	}
+	else{
+		res_ptr = mysql_store_result(conn_ptr);
+		row = mysql_fetch_row(res_ptr);
+
+		memset(query, '\0', sizeof(query));
+		sprintf(query, "select seq from TB_SENTENCE");
+
+		if(mysql_query(conn_ptr, query)){
+			printf(" %s    failed\n", query);
+		}else{
+			res_ptr1 = mysql_store_result(conn_ptr);
+			row1 = mysql_fetch_row(res_ptr1);
+			
+			while(row != NULL){
+				while(row1 != NULL){
+					memset(query, '\0', sizeof(query));
+					sprintf(query, "insert into TB_clustChart(clustSeq, sentenceSeq, cnt) values(%s, %s, 1)", row[0], row1[0]);
+					if(mysql_query(conn_ptr, query)){
+						printf("%s failed\n%s", query, mysql_error(conn_ptr));
+						break;
+					}
+					else{
+						row1 = mysql_fetch_row(res_ptr1);
+					}
+				}
+				row = mysql_fetch_row(res_ptr);
+		memset(query, '\0', sizeof(query));
+		sprintf(query, "select seq from TB_SENTENCE");
+		mysql_query(conn_ptr, query);
+		res_ptr1 = mysql_store_result(conn_ptr);
+		row1 = mysql_fetch_row(res_ptr1);
+			}
+		}
 	}
 }
 
