@@ -56,13 +56,13 @@
 #define INFO_CHANGE 50
 #define INFO_CHACK 51
 
-#define MY_REQUEST 52
-#define MY_SEN 53
-#define MY_SEN_END 54
-#define MY_RECORD 55
-#define MY_RECORD_END 56
-#define MY_TRANS 57
-#define MY_TRANS_END 58
+#define MY_REQUEST 75
+#define MY_SEN 76
+#define MY_SEN_END 77
+#define MY_RECORD 78
+#define MY_RECORD_END 79
+#define MY_TRANS 80
+#define MY_TRANS_END 81
 
 #define NOTE_REQUEST 60
 #define NOTE_TRANS_NAME 61
@@ -782,7 +782,7 @@ void Send_Sentence(unsigned char* buff_rcv, unsigned char* userId, int client_fd
 				memset(query, '\0', sizeof(query));
 				memset(toClientData, '\0', sizeof(toClientData));
 		
-				sprintf(query, "SELECT SEN, SEQ FROM TB_SENTENCE LIMIT %d,%d", numOfSentence++,1);
+				sprintf(query, "SELECT SEN, SEQ, userSeq FROM TB_SENTENCE LIMIT %d,%d", numOfSentence++,1);
 		
 				if(mysql_query(conn_ptr, query)){
 					printf("%s\n", mysql_error(conn_ptr));
@@ -819,7 +819,14 @@ void Send_Sentence(unsigned char* buff_rcv, unsigned char* userId, int client_fd
 						strcpy(toClientData, row[0]);
 		//		puts(toClientData);
 						Make_Packet(buff_rcv, toClientData, client_fd);
-		
+
+						memset(query, '\0', sizeof(query));
+						sprintf(query, "select UID from TB_USER where seq = '%s'", row[2]);
+					
+						mysql_query(conn_ptr, query);
+						res_ptr1 = mysql_store_result(conn_ptr);
+						row1 = mysql_fetch_row(res_ptr1);
+			
 						memset(toClientData, '\0', sizeof(toClientData));
 						strcpy(toClientData, row[1]);
 						strcat(toClientData, "+");
@@ -827,7 +834,11 @@ void Send_Sentence(unsigned char* buff_rcv, unsigned char* userId, int client_fd
 						strcat(toClientData, "+");
 						strcat(toClientData, audioCount);
 						strcat(toClientData, "+");
-		//puts(toClientData);
+						if(row1 == NULL)
+							strcat(toClientData, "admin");
+						else						
+							strcat(toClientData, row1[0]);
+		puts(toClientData);
 						Make_Packet(buff_rcv, toClientData, client_fd);
 					}
 				}
@@ -839,7 +850,7 @@ puts("new method=\n");
 			memset(query, '\0', sizeof(query));
 			memset(toClientData, '\0', sizeof(toClientData));	
 	
-			sprintf(query, "select SEN, SEQ from TB_SENTENCE where seq = (select sentenceSeq from TB_clustChart where clustSeq = %d order by cnt DESC limit %d, %d)", clustSeq, numOfSentence++, 1);
+			sprintf(query, "select SEN, SEQ, userSeq from TB_SENTENCE where seq = (select sentenceSeq from TB_clustChart where clustSeq = %d order by cnt DESC limit %d, %d)", clustSeq, numOfSentence++, 1);
 		
 				if(mysql_query(conn_ptr, query)){
 					printf("%s\n", mysql_error(conn_ptr));
@@ -875,14 +886,24 @@ puts("new method=\n");
 						memset(query, '\0', sizeof(query));
 						sprintf(query, "select count(*) from TB_audioDir where sentenceSeq = '%s'", row[1]);
 		
-						mysql_query(conn_ptr, query);
+						if(mysql_query(conn_ptr, query))
+							printf("new method failed \n%s", mysql_error(conn_ptr));
+								
 						res_ptr1 = mysql_store_result(conn_ptr);
 						row1 = mysql_fetch_row(res_ptr1);
 						strcat(audioCount, row1[0]);
 						strcpy(toClientData, row[0]);
-		//		puts(toClientData);
+				puts(toClientData);
 						Make_Packet(buff_rcv, toClientData, client_fd);
 		
+						memset(query, '\0', sizeof(query));
+						sprintf(query, "select UID from TB_USER where seq = '%s'", row[2]);
+
+						if(mysql_query(conn_ptr, query))
+							printf("new method failed \n%s", mysql_error(conn_ptr));
+						res_ptr1 = mysql_store_result(conn_ptr);
+						row1 = mysql_fetch_row(res_ptr1);
+puts("nonononono");
 						memset(toClientData, '\0', sizeof(toClientData));
 						strcpy(toClientData, row[1]);
 						strcat(toClientData, "+");
@@ -890,7 +911,12 @@ puts("new method=\n");
 						strcat(toClientData, "+");
 						strcat(toClientData, audioCount);
 						strcat(toClientData, "+");
-		//puts(toClientData);
+						if(row1 == NULL)
+							strcat(toClientData, "admin");
+						else
+							strcat(toClientData, row1[0]);
+puts("mmmmm");
+		puts(toClientData);
 						Make_Packet(buff_rcv, toClientData, client_fd);
 					}
 				}
