@@ -101,12 +101,6 @@ public class TestSolveFragment extends Fragment implements View.OnClickListener{
                                 RadioButton button1= (RadioButton)group1.findViewById(group1.getCheckedRadioButtonId());
                                 TextView set_text1 = (TextView)view.findViewById(R.id.set1);
                                 set_text1.setText(button1.getText().toString());
-
-                                RadioGroup group2= (RadioGroup)setview.findViewById(R.id.radioGroup2);
-                                RadioButton button2= (RadioButton)group2.findViewById(group2.getCheckedRadioButtonId());
-                                TextView set_text2 = (TextView)view.findViewById(R.id.set2);
-                                set_text2.setText(button2.getText().toString());
-
                             }
                         });
 

@@ -47,6 +47,7 @@ public class HomeFragment extends Fragment {
     ArrayList<String> listSentenceNum = new ArrayList<String>();
     ArrayList<String> listTransNum = new ArrayList<String>();
     ArrayList<String> listListenNum = new ArrayList<String>();
+    ArrayList<String> listId = new ArrayList<String>();
     PacketUser userSentence;
 
     private RecyclerView mRecyclerView;
@@ -82,6 +83,8 @@ public class HomeFragment extends Fragment {
         listSentenceNum = new ArrayList<String>();
         listTransNum = new ArrayList<String>();
         listListenNum = new ArrayList<String>();
+        listId = new ArrayList<String>();
+
 
         FragmentManager fm = getActivity().getSupportFragmentManager();
         fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
@@ -93,7 +96,7 @@ public class HomeFragment extends Fragment {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_sentence);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new RecycleviewAdapter(listSentence, listTransNum, listListenNum, mRecyclerView);
+        mAdapter = new RecycleviewAdapter(listSentence, listTransNum, listListenNum, listId, mRecyclerView);
 
         mRecyclerView.setAdapter(mAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener((LinearLayoutManager) mLayoutManager) {
@@ -166,6 +169,7 @@ public class HomeFragment extends Fragment {
             listSentenceNum.add(userSentence.arrSentenceNum.get(i));
             listTransNum.add(userSentence.arrSentenceTransNum.get(i));
             listListenNum.add(userSentence.arrSentenceListenNum.get(i));
+            listId.add(userSentence.arrSentenceId.get(i));
             ival++;
         }
     }
@@ -193,6 +197,7 @@ public class HomeFragment extends Fragment {
                 listSentenceNum.add(userSentence.arrSentenceNum.get(i));
                 listTransNum.add(userSentence.arrSentenceTransNum.get(i));
                 listListenNum.add(userSentence.arrSentenceListenNum.get(i));
+                listId.add(userSentence.arrSentenceId.get(i));
                 ival++;
             }
             mAdapter.notifyDataSetChanged();
@@ -206,6 +211,7 @@ public class HomeFragment extends Fragment {
                 listSentenceNum.add(userSentence.arrSentenceNum.get(i));
                 listTransNum.add(userSentence.arrSentenceTransNum.get(i));
                 listListenNum.add(userSentence.arrSentenceListenNum.get(i));
+                listId.add(userSentence.arrSentenceId.get(i));
                 ival++;
             }
             mAdapter.notifyDataSetChanged();
