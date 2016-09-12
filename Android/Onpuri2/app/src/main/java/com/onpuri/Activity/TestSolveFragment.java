@@ -2,7 +2,9 @@ package com.onpuri.Activity;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,6 +15,7 @@ import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -36,6 +39,7 @@ public class TestSolveFragment extends Fragment implements View.OnClickListener{
     private RecyclerView TestRecyclerView;
     private TestListAdapter TestListAdapter;
 
+    Button btn_word, btn_sen;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,8 +60,10 @@ public class TestSolveFragment extends Fragment implements View.OnClickListener{
 
         testlist();
 
-        LinearLayout setting = (LinearLayout) view.findViewById(R.id.testsetting);
-        setting.setOnClickListener(this);
+        btn_word = (Button) view.findViewById(R.id.word);
+        btn_word.setOnClickListener(this);
+        btn_sen = (Button) view.findViewById(R.id.sen);
+        btn_sen.setOnClickListener(this);
 
         TestRecyclerView = (RecyclerView) view.findViewById(R.id.test_list);
 
@@ -88,24 +94,24 @@ public class TestSolveFragment extends Fragment implements View.OnClickListener{
 
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.testsetting:
-                LayoutInflater layout = getActivity().getLayoutInflater();
-                final View setview = layout.inflate(R.layout.test_setting, null);
+            case R.id.sen:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    btn_sen.setBackground(getResources().getDrawable(R.color.fuzzy_peach));
+                    btn_word.setBackground(getResources().getDrawable(R.drawable.btn_border));
+                }else{
+                    btn_sen.setBackgroundResource((R.color.fuzzy_peach));
+                    btn_word.setBackgroundResource((R.drawable.btn_border));
+                }
+                break;
 
-                final AlertDialog.Builder Setting = new AlertDialog.Builder(getActivity());
-                Setting.setView(setview)
-                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                RadioGroup group1= (RadioGroup)setview.findViewById(R.id.radioGroup1);
-                                RadioButton button1= (RadioButton)group1.findViewById(group1.getCheckedRadioButtonId());
-                                TextView set_text1 = (TextView)view.findViewById(R.id.set1);
-                                set_text1.setText(button1.getText().toString());
-                            }
-                        });
-
-                AlertDialog alert = Setting.create();
-                alert.show();
+            case R.id.word:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    btn_word.setBackground(getResources().getDrawable(R.color.fuzzy_peach));
+                    btn_sen.setBackground(getResources().getDrawable(R.drawable.btn_border));
+                }else{
+                    btn_word.setBackgroundResource((R.color.fuzzy_peach));
+                    btn_sen.setBackgroundResource((R.drawable.btn_border));
+                }
                 break;
         }
     }

@@ -4,59 +4,68 @@
     android:layout_height="75dp"
     android:gravity="center"
     android:background="@color/background_material_light">
-    <TextView
-        android:textSize="16dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:textColor="@color/black"
-        android:lineSpacingExtra="3dp"
-        android:ellipsize="end"
-        android:maxLines="2"
-        android:id="@+id/tv_trans_item"
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="none" />
+        android:layout_height="match_parent">
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:weightSum="1">
         <TextView
-            android:textSize="14dp"
+            android:textSize="16dp"
             android:layout_marginLeft="8dp"
-            android:textColor="@color/black"
-            android:lineSpacingExtra="3dp"
-            android:ellipsize="end"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:text="추천수 : " />
-
-        <TextView
-            android:textSize="14dp"
-            android:layout_marginLeft="8dp"
-            android:textColor="@color/black"
-            android:lineSpacingExtra="3dp"
-            android:ellipsize="end"
-            android:id="@+id/reco"
-            android:layout_width="60dp"
-            android:layout_height="match_parent"
-            android:text="000"
-            android:layout_weight="0.90" />
-
-        <TextView
-            android:textSize="14dp"
             android:layout_marginRight="8dp"
             android:textColor="@color/black"
             android:lineSpacingExtra="3dp"
             android:ellipsize="end"
-            android:id="@+id/day"
-            android:layout_width="80dp"
+            android:maxLines="2"
+            android:id="@+id/tv_trans_item"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="2016.00.00" />
-    </LinearLayout>
+            android:text="none"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="7dp" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:weightSum="1"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="7dp">
+            <TextView
+                android:textSize="14dp"
+                android:layout_marginLeft="8dp"
+                android:textColor="@color/black"
+                android:lineSpacingExtra="3dp"
+                android:ellipsize="end"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:text="추천수 : " />
+
+            <TextView
+                android:textSize="14dp"
+                android:layout_marginLeft="8dp"
+                android:textColor="@color/black"
+                android:lineSpacingExtra="3dp"
+                android:ellipsize="end"
+                android:id="@+id/reco"
+                android:layout_width="60dp"
+                android:layout_height="match_parent"
+                android:text="000"
+                android:layout_weight="0.90" />
+
+            <TextView
+                android:textSize="14dp"
+                android:layout_marginRight="8dp"
+                android:textColor="@color/black"
+                android:lineSpacingExtra="3dp"
+                android:ellipsize="end"
+                android:id="@+id/day"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:text="2016.00.00" />
+        </LinearLayout>
+    </RelativeLayout>
 
 </LinearLayout>

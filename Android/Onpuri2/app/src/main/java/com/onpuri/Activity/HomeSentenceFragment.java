@@ -75,6 +75,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
     TextView item;
     String sentence = "";
     String sentence_num = "";
+    String id = "";
     TextToSpeech tts;
 
     MediaRecorder mRecorder = null;
@@ -119,6 +120,8 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
         if (getArguments() != null) { //클릭한 문장 출력
             sentence = getArguments().getString("sen");
             sentence_num = getArguments().getString("sen_num");
+            id = getArguments().getString("id");
+
             item.setText(sentence);
         }
 
@@ -198,6 +201,11 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
 
         tts = new TextToSpeech(getActivity(), this);
 
+        String userid = ((MainActivity)getActivity()).user.getuserId();
+        if (!id.equals(userid)) {
+            del_sen.setVisibility(View.INVISIBLE);
+        }
+
         return view;
     }
 
@@ -221,8 +229,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
 
         switch (v.getId()) {
             case R.id.del_sen:
-                Toast.makeText(getActivity(),"구현 예정입니다.", Toast.LENGTH_SHORT).show();
-/*                AlertDialog.Builder sentenceDel = new AlertDialog.Builder(getActivity());
+                AlertDialog.Builder sentenceDel = new AlertDialog.Builder(getActivity());
                 sentenceDel.setTitle("문장을 삭제하시겠습니까?")
                         .setOnKeyListener(new DialogInterface.OnKeyListener() {
                             @Override
@@ -246,8 +253,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                                 Toast.makeText(getActivity(), "취소되었습니다", Toast.LENGTH_SHORT).show();
                             }
 
-                        }).show();*/
-
+                        }).show();
                 break;
             case R.id.add_note:
                 final String[] items = listNote.toArray(new String[listNote.size()]);

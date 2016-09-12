@@ -6,7 +6,7 @@
     android:layout_marginBottom="3dp"
     android:layout_width="match_parent"
     app:cardBackgroundColor="@color/fuzzy_peach"
-    android:layout_height="70dp"
+    android:layout_height="65dp"
     android:background="@color/white">
 
     <LinearLayout
@@ -18,7 +18,7 @@
         android:background="@color/white">
 
         <TextView
-            android:textSize="17dp"
+            android:textSize="18dp"
             android:layout_marginLeft="8dp"
             android:textColor="@color/black"
             android:ellipsize="end"
@@ -50,19 +50,19 @@
 
             <LinearLayout
                 android:orientation="horizontal"
-                android:layout_width="70dp"
+                android:layout_width="50dp"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical">
 
                 <ImageView
-                    android:layout_width="21dp"
-                    android:layout_height="18dp"
+                    android:layout_width="15dp"
+                    android:layout_height="13dp"
                     android:id="@+id/imageView1"
                     android:background="@drawable/quiznum_icon"
                     android:layout_marginLeft="5dp" />
 
                 <TextView
-                    android:textSize="15dp"
+                    android:textSize="14dp"
                     android:textColor="@color/black"
                     android:id="@+id/quizcount"
                     android:layout_width="20dp"
@@ -74,19 +74,19 @@
 
             <LinearLayout
                 android:orientation="horizontal"
-                android:layout_width="70dp"
+                android:layout_width="50dp"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 android:layout_marginLeft="10dp">
 
                 <ImageView
-                    android:layout_width="21dp"
-                    android:layout_height="18dp"
+                    android:layout_width="15dp"
+                    android:layout_height="13dp"
                     android:id="@+id/imageView2"
                     android:background="@drawable/people_icon" />
 
                 <TextView
-                    android:textSize="15dp"
+                    android:textSize="14dp"
                     android:textColor="@color/black"
                     android:id="@+id/usercount"
                     android:layout_width="20dp"
@@ -98,19 +98,19 @@
 
             <LinearLayout
                 android:orientation="horizontal"
-                android:layout_width="70dp"
+                android:layout_width="50dp"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 android:layout_marginLeft="10dp">
 
                 <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
+                    android:layout_width="13dp"
+                    android:layout_height="13dp"
                     android:id="@+id/imageView3"
                     android:background="@drawable/reco_icon" />
 
                 <TextView
-                    android:textSize="15dp"
+                    android:textSize="14dp"
                     android:textColor="@color/black"
                     android:id="@+id/recocount"
                     android:layout_width="20dp"

@@ -121,7 +121,7 @@ public class HomeFragment extends Fragment {
                         Bundle args = new Bundle();
                         args.putString("sen", listSentence.get(position));
                         args.putString("sen_num", listSentenceNum.get(position));
-                        args.putString("id", listSentenceNum.get(position));
+                        args.putString("id", listId.get(position));
                         hsf.setArguments(args);
 
                         fm.beginTransaction()

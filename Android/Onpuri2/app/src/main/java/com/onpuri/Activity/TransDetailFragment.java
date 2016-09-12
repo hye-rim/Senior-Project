@@ -74,7 +74,6 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
             item_day.setText(day);
             item_reco.setText(reco);
         }
-        String userid = ((MainActivity)getActivity()).user.getuserId();
 
         Button item_reco = (Button) view.findViewById(R.id.item_reco);
         item_reco.setOnClickListener(this);
@@ -83,6 +82,7 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
         ImageButton deltrans=(ImageButton)view.findViewById(R.id.del_trans);
         deltrans.setOnClickListener(this);
 
+        String userid = ((MainActivity)getActivity()).user.getuserId();
         if (!id.equals(userid)) {
             deltrans.setVisibility(View.INVISIBLE);
         }
