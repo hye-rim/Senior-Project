@@ -6,7 +6,7 @@
     android:layout_marginBottom="3dp"
     android:layout_width="match_parent"
     app:cardBackgroundColor="@color/fuzzy_peach"
-    android:layout_height="70dp">
+    android:layout_height="65dp">
 
     <LinearLayout
         android:orientation="vertical"
@@ -16,14 +16,14 @@
         android:weightSum="1">
 
         <TextView
-            android:textSize="17dp"
+            android:textSize="18dp"
             android:layout_marginLeft="8dp"
             android:textColor="@color/black"
             android:ellipsize="end"
             android:maxLines="2"
             android:id="@+id/tv_sen_item"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="42dp"
             android:text="영어 문장"
             android:layout_marginRight="8dp"
             android:gravity="center_vertical"
@@ -46,21 +46,41 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp">
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginRight="10dp"
+                android:gravity="left">
+
+                <TextView
+                    android:textSize="14dp"
+                    android:textColor="@color/black"
+                    android:id="@+id/id"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:layout_marginLeft="3dp"
+                    android:layout_alignParentLeft="true"
+                    android:gravity="left" />
+
+            </RelativeLayout>
+
             <LinearLayout
                 android:orientation="horizontal"
-                android:layout_width="70dp"
+                android:layout_width="50dp"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical">
 
                 <ImageView
-                    android:layout_width="23dp"
-                    android:layout_height="18dp"
+                    android:layout_width="15dp"
+                    android:layout_height="13dp"
                     android:id="@+id/imageView2"
                     android:background="@drawable/translation_icon"
                     android:layout_marginLeft="5dp" />
 
                 <TextView
-                    android:textSize="15dp"
+                    android:textSize="14dp"
                     android:textColor="@color/black"
                     android:id="@+id/transcount"
                     android:layout_width="20dp"
@@ -72,50 +92,53 @@
 
             <LinearLayout
                 android:orientation="horizontal"
-                android:layout_width="70dp"
+                android:layout_width="50dp"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 android:layout_marginLeft="10dp">
 
                 <ImageView
-                    android:layout_width="21dp"
-                    android:layout_height="18dp"
+                    android:layout_width="14dp"
+                    android:layout_height="13dp"
                     android:id="@+id/imageView3"
                     android:background="@drawable/listen_icon" />
 
                 <TextView
-                    android:textSize="15dp"
+                    android:textSize="14dp"
                     android:textColor="@color/black"
                     android:id="@+id/listencount"
                     android:layout_width="20dp"
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:gravity="center_horizontal"
-                    android:layout_marginLeft="3dp" />
+                    android:layout_marginLeft="3dp"
+                    android:textIsSelectable="false" />
             </LinearLayout>
 
             <LinearLayout
                 android:orientation="horizontal"
-                android:layout_width="70dp"
+                android:layout_width="50dp"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 android:layout_marginLeft="10dp">
 
                 <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
+                    android:layout_width="13dp"
+                    android:layout_height="13dp"
                     android:id="@+id/imageView4"
-                    android:background="@drawable/reco_icon" />
+                    android:background="@drawable/reco_icon"
+                    android:adjustViewBounds="true" />
 
                 <TextView
-                    android:textSize="15dp"
+                    android:textSize="14dp"
                     android:textColor="@color/black"
                     android:id="@+id/recocount"
                     android:layout_width="20dp"
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:gravity="center_horizontal"
-                    android:layout_marginLeft="3dp" />
+                    android:layout_marginLeft="3dp"
+                    android:textIsSelectable="false" />
 
             </LinearLayout>
 

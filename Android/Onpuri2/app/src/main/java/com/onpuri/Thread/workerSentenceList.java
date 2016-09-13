@@ -116,7 +116,7 @@ public class workerSentenceList extends Thread {//홈 문장 10개씩 서버에�
                             senData[j] = info[j];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
                         }
 
-                        //문장번호+해석수+듣기수 데이터
+                        //문장번호+해석수+듣기수+아이디 데이터
                         int len = (int) senData[3];
 
                         dis.read(info, 0, (1 + len));
@@ -132,12 +132,23 @@ public class workerSentenceList extends Thread {//홈 문장 10개씩 서버에�
                         seninfo = seninfo.substring(plus+1,seninfo.length());
                         plus = seninfo.indexOf('+');
                         String transNum = seninfo.substring(0, plus); //해석수
-                        String ListenNum = seninfo.substring(plus+1, seninfo.length()-1); //듣기수
+                        seninfo = seninfo.substring(plus+1,seninfo.length());
+                        Log.d(TAG, "seninfo : " + seninfo);
+
+                        plus = seninfo.indexOf('+');
+                        String ListenNum = seninfo.substring(0, plus); //듣기수
+                        String Id = seninfo.substring(plus+1, seninfo.length()); //아이디
+
+                        Log.d(TAG, "senNum : " + senNum);
+                        Log.d(TAG, "transNum : " + transNum);
+                        Log.d(TAG, "ListenNum : " + ListenNum);
+                        Log.d(TAG, "id : " + Id);
 
                         userSentence.setSentence(sen);
                         userSentence.setSentenceNum(senNum);
                         userSentence.setSentenceTransNum(transNum);
                         userSentence.setSentenceListenNum(ListenNum);
+                        userSentence.setsentenceId(Id);
 
                         sentence_num++;
                         num++;
