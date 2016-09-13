@@ -12,6 +12,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:background="@color/fuzzy_peach"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="시험 만들기"
         android:id="@+id/textView"
@@ -30,7 +31,7 @@
         android:gravity="center_vertical">
         <TextView
             android:textSize="16dp"
-            android:layout_width="60dp"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:maxLength="15"
             android:textColor="@color/black"
@@ -49,6 +50,7 @@
             android:singleLine="true"/>
     </LinearLayout>
 
+
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -59,7 +61,7 @@
         android:gravity="center_vertical">
         <TextView
             android:textSize="16dp"
-            android:layout_width="60dp"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:maxLength="15"
             android:textColor="@color/black"
@@ -67,11 +69,12 @@
             android:layout_gravity="center_vertical"/>
 
         <RadioGroup
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:checkedButton="@+id/radio_word">
             <RadioButton
+                android:buttonTint="@color/fuzzy_peach"
                 android:layout_marginRight="20dp"
                 android:id="@+id/radio_word"
                 android:text = "단어"
@@ -79,6 +82,7 @@
                 android:layout_height="wrap_content" />
 
             <RadioButton
+                android:buttonTint="@color/fuzzy_peach"
                 android:id="@+id/radio_sen"
                 android:text = "문장"
                 android:layout_width="wrap_content"
@@ -100,25 +104,26 @@
         <TextView
             android:layout_marginTop="5dp"
             android:textSize="16dp"
-            android:layout_width="60dp"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:maxLength="15"
             android:textColor="@color/black"
-            android:text="분류" />
+            android:text="문제 유형" />
 
         <RadioGroup
-            android:layout_marginLeft="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:checkedButton="@+id/radio_word_spelling">
             <RadioButton
+                android:buttonTint="@color/fuzzy_peach"
                 android:id="@+id/radio_word_spelling"
                 android:text = "영어단어 맞히기"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <RadioButton
+                android:buttonTint="@color/fuzzy_peach"
                 android:id="@+id/radio_word_mean"
                 android:text = "뜻 맞히기"
                 android:layout_width="wrap_content"
@@ -140,13 +145,14 @@
         <TextView
             android:layout_marginTop="5dp"
             android:textSize="16dp"
-            android:layout_width="60dp"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:maxLength="15"
             android:textColor="@color/black"
             android:text="분류" />
 
         <RadioButton
+            android:buttonTint="@color/fuzzy_peach"
             android:id="@+id/radio_sen_blank"
             android:checked="true"
             android:text = "문장 빈칸 맞히기"
@@ -164,41 +170,57 @@
         android:gravity="center_vertical">
         <TextView
             android:textSize="16dp"
-            android:layout_width="60dp"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:maxLength="15"
             android:textColor="@color/black"
-            android:text="출제 대상 "
+            android:text="응시 대상 "
             android:layout_gravity="center_vertical"/>
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:checkedButton="@+id/radio_every">
+            <RadioButton
+                android:buttonTint="@color/fuzzy_peach"
+                android:layout_marginRight="20dp"
+                android:id="@+id/radio_every"
+                android:text = "전체"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
-        <NumberPicker
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            <RadioButton
+                android:buttonTint="@color/fuzzy_peach"
+                android:id="@+id/radio_select"
+                android:text = "지정"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RadioGroup>
 
-        </NumberPicker>
     </LinearLayout>
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginLeft="20dp"
         android:layout_marginBottom="5dp"
         android:gravity="center_vertical">
         <TextView
             android:textSize="16dp"
-            android:layout_width="60dp"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:maxLength="15"
             android:textColor="@color/black"
             android:text="문제 수"
             android:layout_gravity="center_vertical"/>
 
-        <NumberPicker
+        <com.hrules.horizontalnumberpicker.HorizontalNumberPicker
+            android:id="@+id/horizontal_number_picker1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-        </NumberPicker>
+            android:layout_height="wrap_content"
+            />
     </LinearLayout>
+
 </LinearLayout>

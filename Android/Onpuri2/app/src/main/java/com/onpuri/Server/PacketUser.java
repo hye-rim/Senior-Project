@@ -65,16 +65,19 @@ public class PacketUser extends Application {
     static final public char ACK_NOTE_LOAD = 72; //ACK 해당 노트 문장or단어 리스트 받아오기
     static final public char ACK_NNOTE_LOAD = 73; //ACK 해당 노트 문장or단어 리스트 받아오기
 
-    static final public char USR_ACT = 52; //내활동 요청
-    static final public char ACK_ACTENRL = 53; //ACK 내활동 - 등록문장
-    static final public char ACK_NACTENRL = 54; //ACK 내활동 - 등록문장 없을 때
-    static final public char ACK_ACTREC = 55; //ACK 내활동 - 녹음문장
-    static final public char ACK_NACTREC = 56; //ACK 내활동 - 녹음문장 없을 때
-    static final public char ACK_ACTTRANS = 57; //ACK 내활동 - 해석문장
-    static final public char ACK_NACTTRANS = 58; //ACK 내활동 - 해석문장 없을 때
-    //static final public char ACK_ACTTEST = 82; //ACK 내활동 - 출제한시험
-    //static final public char ACK_NACTTEST = 83; //ACK 내활동 - 출제한시험 없을 때
+    static final public char USR_ACT = 75; //내활동 요청
+    static final public char ACK_ACTENRL = 76; //ACK 내활동 - 등록문장
+    static final public char ACK_NACTENRL = 77; //ACK 내활동 - 등록문장 없을 때
+    static final public char ACK_ACTREC = 78; //ACK 내활동 - 녹음문장
+    static final public char ACK_NACTREC = 79; //ACK 내활동 - 녹음문장 없을 때
+    static final public char ACK_ACTTRANS = 80; //ACK 내활동 - 해석문장
+    static final public char ACK_NACTTRANS = 81; //ACK 내활동 - 해석문장 없을 때
+    static final public char ACK_ACTTEST = 82; //ACK 내활동 - 출제한시험 ( 번호, 문제이름, 정답률)
+    static final public char ACK_NACTTEST = 83; //ACK 내활동 - 출제한시험 없을 때
 
+    static final public char USR_MYTEST = 84; //내활동 - 출제한 시험 목록 클릭 -> 시험번호 보내주기
+    static final public char ACK_MYTEST = 85; //출제한 시험 목록 리스트 - 아이디, 정답률, 날짜
+    static final public char ACK_NMYTEST = 86; //출제한 시험 목록 리스트 끝, 없을 때
 
     static final public char ACK_NSEN = 90; //홈 문장 리스트 없을 경우(no sentence ACK)
     static final public char USR_LEV = 99; //회원 탈퇴(user leave)
@@ -129,3 +132,4 @@ public class PacketUser extends Application {
     }
 
 }
+
