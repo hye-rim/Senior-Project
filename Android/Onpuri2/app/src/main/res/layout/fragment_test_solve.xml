@@ -26,7 +26,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="시험 목록"
             android:id="@+id/textView"
-            android:textSize="20dp"
+            android:textSize="18dp"
             android:layout_marginLeft="10dp"
             android:textColor="@color/black" />
 

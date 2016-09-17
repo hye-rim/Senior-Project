@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.onpuri.Activity.TestCreateFragment"
-    android:background="@color/background_material_light"
+    tools:context=".Activity.Test.Creating.TestCreateFragment"
+    android:background="@color/more_light_gray"
     android:orientation="vertical">
 
     <!-- TODO: Update blank fragment layout -->
@@ -12,215 +12,260 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:background="@color/fuzzy_peach"
+        android:background="@color/white"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="시험 만들기"
         android:id="@+id/textView"
         android:textSize="18dp"
-        android:paddingTop="10dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="5dp"
         android:paddingLeft="10dp"
+        android:gravity="center_vertical"
         android:textColor="@color/black" />
 
     <LinearLayout
-        android:orientation="horizontal"
+        android:orientation="vertical"
+        android:background="@color/white"
+        android:paddingTop="30dp"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginBottom="5dp"
-        android:gravity="center_vertical">
-        <TextView
-            android:textSize="16dp"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:maxLength="15"
-            android:textColor="@color/black"
-            android:text="제목"
-            android:layout_gravity="center_vertical"/>
-
-        <EditText
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:textSize="16dp"
-            android:layout_width="150dp"
-            android:layout_height="30dp"
-            android:background="@drawable/btn_border_black"
-            android:id="@+id/et_test_name"
-            android:layout_gravity="center_vertical"
-            android:singleLine="true"/>
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginBottom="5dp"
-        android:gravity="center_vertical">
-        <TextView
-            android:textSize="16dp"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:maxLength="15"
-            android:textColor="@color/black"
-            android:text="분류"
-            android:layout_gravity="center_vertical"/>
-
-        <RadioGroup
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        android:layout_height="match_parent">
+        <LinearLayout
             android:orientation="horizontal"
-            android:checkedButton="@+id/radio_word">
-            <RadioButton
-                android:buttonTint="@color/fuzzy_peach"
-                android:layout_marginRight="20dp"
-                android:id="@+id/radio_word"
-                android:text = "단어"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginBottom="5dp"
+            android:gravity="center_vertical">
+            <TextView
+                android:textSize="16dp"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:maxLength="15"
+                android:textColor="@color/black"
+                android:text="제목"
+                android:layout_gravity="center_vertical"/>
+
+            <EditText
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:textSize="16dp"
+                android:layout_width="150dp"
+                android:layout_height="30dp"
+                android:background="@drawable/btn_border_black"
+                android:id="@+id/et_test_title"
+                android:layout_gravity="center_vertical"
+                android:singleLine="true"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginBottom="5dp"
+            android:gravity="center_vertical">
+            <TextView
+                android:textSize="16dp"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:maxLength="15"
+                android:textColor="@color/black"
+                android:text="분류"
+                android:layout_gravity="center_vertical"/>
+
+            <RadioGroup
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:checkedButton="@+id/radio_word">
+                <RadioButton
+                    android:buttonTint="@color/fuzzy_peach"
+                    android:layout_marginRight="20dp"
+                    android:id="@+id/radio_word"
+                    android:text = "단어"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
 
-            <RadioButton
-                android:buttonTint="@color/fuzzy_peach"
-                android:id="@+id/radio_sen"
-                android:text = "문장"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </RadioGroup>
-    </LinearLayout>
+                <RadioButton
+                    android:buttonTint="@color/fuzzy_peach"
+                    android:id="@+id/radio_sen"
+                    android:text = "문장"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </RadioGroup>
+        </LinearLayout>
 
+        <!--
 
-    <!--단어 출제 방법-->
-    <LinearLayout
-        android:visibility="visible"
-        android:id="@+id/ll_word_kinds"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginBottom="5dp">
-        <TextView
-            android:layout_marginTop="5dp"
-            android:textSize="16dp"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:maxLength="15"
-            android:textColor="@color/black"
-            android:text="문제 유형" />
-
-        <RadioGroup
+        <!-단어 출제 방법-
+        <LinearLayout
+            android:visibility="visible"
+            android:id="@+id/ll_word_kinds"
+            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:checkedButton="@+id/radio_word_spelling">
-            <RadioButton
-                android:buttonTint="@color/fuzzy_peach"
-                android:id="@+id/radio_word_spelling"
-                android:text = "영어단어 맞히기"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginBottom="5dp">
+            <TextView
+                android:layout_marginTop="5dp"
+                android:textSize="16dp"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:maxLength="15"
+                android:textColor="@color/black"
+                android:text="문제 유형" />
 
-            <RadioButton
-                android:buttonTint="@color/fuzzy_peach"
-                android:id="@+id/radio_word_mean"
-                android:text = "뜻 맞히기"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </RadioGroup>
-    </LinearLayout>
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:checkedButton="@+id/radio_word_spelling">
+                <RadioButton
+                    android:buttonTint="@color/fuzzy_peach"
+                    android:id="@+id/radio_word_spelling"
+                    android:text = "영어단어 맞히기"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <RadioButton
+                    android:buttonTint="@color/fuzzy_peach"
+                    android:id="@+id/radio_word_mean"
+                    android:text = "뜻 맞히기"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </RadioGroup>
+        </LinearLayout>
 
 
-    <!--문장 출제 방법-->
-    <LinearLayout
-        android:visibility="gone"
-        android:id="@+id/ll_sen_kinds"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginBottom="5dp">
-        <TextView
-            android:layout_marginTop="5dp"
-            android:textSize="16dp"
-            android:layout_width="80dp"
+        <!-문장 출제 방법-
+        <LinearLayout
+            android:visibility="gone"
+            android:id="@+id/ll_sen_kinds"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLength="15"
-            android:textColor="@color/black"
-            android:text="분류" />
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginBottom="5dp">
+            <TextView
+                android:layout_marginTop="5dp"
+                android:textSize="16dp"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:maxLength="15"
+                android:textColor="@color/black"
+                android:text="분류" />
 
-        <RadioButton
-            android:buttonTint="@color/fuzzy_peach"
-            android:id="@+id/radio_sen_blank"
-            android:checked="true"
-            android:text = "문장 빈칸 맞히기"
-            android:layout_width="wrap_content"
+            <RadioButton
+                android:buttonTint="@color/fuzzy_peach"
+                android:id="@+id/radio_sen_blank"
+                android:checked="true"
+                android:text = "문장 빈칸 맞히기"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        -->
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginBottom="5dp"
+            android:gravity="center_vertical">
+            <TextView
+                android:textSize="16dp"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:maxLength="15"
+                android:textColor="@color/black"
+                android:text="응시 대상 "
+                android:layout_gravity="center_vertical"/>
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:checkedButton="@+id/radio_every">
+                <RadioButton
+                    android:buttonTint="@color/fuzzy_peach"
+                    android:layout_marginRight="20dp"
+                    android:id="@+id/radio_every"
+                    android:text = "전체"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <RadioButton
+                    android:buttonTint="@color/fuzzy_peach"
+                    android:id="@+id/radio_select"
+                    android:text = "지정"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </RadioGroup>
+
+        </LinearLayout>
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/select_list"
+            android:textSize="15dp"
+            android:textColor="@color/black"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-    </LinearLayout>
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginBottom="5dp"
-        android:gravity="center_vertical">
-        <TextView
-            android:textSize="16dp"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:maxLength="15"
-            android:textColor="@color/black"
-            android:text="응시 대상 "
-            android:layout_gravity="center_vertical"/>
-        <RadioGroup
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginBottom="5dp"
+            android:gravity="center_vertical">
+            <TextView
+                android:textSize="16dp"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:maxLength="15"
+                android:textColor="@color/black"
+                android:text="문제 수"
+                android:layout_gravity="center_vertical"/>
+
+            <com.hrules.horizontalnumberpicker.HorizontalNumberPicker
+                android:id="@+id/horizontal_number_picker1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+        </LinearLayout>
+
+        <LinearLayout
             android:orientation="horizontal"
-            android:checkedButton="@+id/radio_every">
-            <RadioButton
-                android:buttonTint="@color/fuzzy_peach"
-                android:layout_marginRight="20dp"
-                android:id="@+id/radio_every"
-                android:text = "전체"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <RadioButton
-                android:buttonTint="@color/fuzzy_peach"
-                android:id="@+id/radio_select"
-                android:text = "지정"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </RadioGroup>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginBottom="5dp"
-        android:gravity="center_vertical">
-        <TextView
-            android:textSize="16dp"
-            android:layout_width="80dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLength="15"
-            android:textColor="@color/black"
-            android:text="문제 수"
-            android:layout_gravity="center_vertical"/>
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="5dp"
+            android:gravity="center">
+            <Button
+                android:layout_marginRight="15dp"
+                android:layout_width="120dp"
+                android:layout_height="50dp"
+                android:text="만들기"
+                android:id="@+id/btn_creating"
+                android:background="@drawable/btn_border"
+                android:textSize="17dp"
+                android:textColor="@color/black" />
 
-        <com.hrules.horizontalnumberpicker.HorizontalNumberPicker
-            android:id="@+id/horizontal_number_picker1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
+            <Button
+                android:layout_width="120dp"
+                android:layout_height="50dp"
+                android:text="취소"
+                android:id="@+id/btn_creating_cancel"
+                android:background="@drawable/btn_border"
+                android:textSize="17dp"
+                android:textColor="@color/black" />
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

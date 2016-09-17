@@ -1,14 +1,6 @@
 package com.onpuri.Adapter;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.Color;
-import android.media.MediaPlayer;
-import android.os.Bundle;
-import android.os.Environment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,18 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.onpuri.Activity.MainActivity;
-import com.onpuri.Activity.NoteSenFragment;
 import com.onpuri.MediaPlayerManager;
 import com.onpuri.R;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class ListenListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {

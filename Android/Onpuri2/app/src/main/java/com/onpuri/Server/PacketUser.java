@@ -44,8 +44,19 @@ public class PacketUser extends Application {
     static final public char USR_ASEN = 40; //add sentence
     static final public char ACK_ASEN = 41; //add sentence ACK
 
-    static final public char USR_CHANGE = 50; //내정보 변경
-    static final public char ACK_CHANGE = 51; //ACK 내정보 변경
+    static final public char TEST_CREATE_SER = 45; //시험출제 - 유저 리스트 받아오기 - 1담아서 보내기(문자1)
+    static final public char ACK_TEST_CREATE_SER = 46; //시험출제 - 유저 리스트 받아오기 응답 - 아이디+이름
+    static final public char ACK_TEST_CREATE_NSER = 47; //시험출제 - 유저 리스트 없을 때, 끝 (문자1)
+
+    static final public char TEST_CREATE = 48; //시험출제 정보 보내기
+    static final public char TEST_CREATE_USR = 49; //시험출제 - 제목 + 응시자아이디 (1명씩)
+    static final public char ACK_TEST_CREATE = 50; //시험출제 생성 응답 - 실패 0, 성공 1
+
+    static final public char TEST_QUEST = 51; //패킷1 - 문제제목 + 문제, 패킷2 - 정답번호 + 보기리스트
+    static final public char ACK_TEST_QUEST = 52; //출제 성공여부 - 실패 0, 성공 1
+
+    static final public char USR_CHANGE = 58; //내정보 변경
+    static final public char ACK_CHANGE = 59; //ACK 내정보 변경
 
     static final public char USR_NOTE = 60; //내노트 정보 요청
     static final public char ACK_NOTE = 61; //내노트 이름 (1+단어모음이름, 2+문장모음이름 - 내노트 이하 패킷 동일 구조)

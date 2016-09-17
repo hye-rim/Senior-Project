@@ -18,6 +18,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.onpuri.Activity.Home.HomeRootFragment;
+import com.onpuri.Activity.Note.NoteRootFragment;
+import com.onpuri.Activity.Test.TestRootFragment;
 import com.onpuri.R;
 import com.tsengvn.typekit.TypekitContextWrapper;
 
