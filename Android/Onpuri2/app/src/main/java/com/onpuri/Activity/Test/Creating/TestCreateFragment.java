@@ -1,6 +1,8 @@
 package com.onpuri.Activity.Test.Creating;
 
+import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -35,8 +37,9 @@ import java.util.ArrayList;
  */
 public class TestCreateFragment extends Fragment implements View.OnClickListener, HorizontalNumberPickerListener {
     private static final String TAG = "TestCreateFragment" ;
-    private static final int SEN = 2;
+    private static final int SELECT_OBJECT_CODE = 1995;
     private static final int WORD = 1;
+    private static final int SEN = 2;
 
     private HorizontalNumberPicker horizontalNumberPicker1;
     private RadioButton mEveryRadio, mSelectRadio;
@@ -48,7 +51,11 @@ public class TestCreateFragment extends Fragment implements View.OnClickListener
     workerTestCreating mworker_test;
     FragmentManager fragmentManager;
 
+    private boolean isFirst = true;
+
     private int kinds, problemNum, objectNum;
+    private ArrayList<String> selectObjectList;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,12 +79,34 @@ public class TestCreateFragment extends Fragment implements View.OnClickListener
         mEveryRadio.setOnClickListener(this);
         mSelectRadio.setOnClickListener(this);
         horizontalNumberPicker1.setListener(this);
+        mCreatingButton.setOnClickListener(this);
+        mCancelButton.setOnClickListener(this);
+
+        if(!isFirst){
+            String selectObjectString = "";
+            for(int i = 0; i < selectObjectList.size(); i++){
+                selectObjectString = selectObjectString.concat(selectObjectList.get(i));
+                if( i < selectObjectList.size()-1)
+                    selectObjectString = selectObjectString.concat(", ");
+            }
+
+            mSelectListTextView.setVisibility(View.VISIBLE);
+            mSelectListTextView.setText(selectObjectString);
+            Log.v(TAG, selectObjectString + ", objectNum : " + objectNum);
+        }
+        Log.v(TAG, "objectNum : " + objectNum);
 
         return view;
     }
 
     public void init(){
         fragmentManager = getActivity().getSupportFragmentManager();
+        if(isFirst) {
+            kinds = WORD;
+            problemNum = 1;
+            objectNum = 0;
+            selectObjectList = new ArrayList<String>();
+        }
 
         //view 아이디
         mTestTitleTextView = (TextView)view.findViewById(R.id.et_test_title);
@@ -100,11 +129,8 @@ public class TestCreateFragment extends Fragment implements View.OnClickListener
                 .setTextColor(getResources().getColor(android.R.color.black));
 
         horizontalNumberPicker1.getTextValueView().setTextSize(20);
-        horizontalNumberPicker1.getButtonMinusView().setTextSize(16);
+        horizontalNumberPicker1.getButtonMinusView().setTextSize(13);
         horizontalNumberPicker1.getButtonPlusView().setTextSize(20);
-
-        mCreatingButton.setOnClickListener(this);
-        mCancelButton.setOnClickListener(this);
     }
 
     public void onClick(View v) {
@@ -123,16 +149,16 @@ public class TestCreateFragment extends Fragment implements View.OnClickListener
                 break;
 
             case R.id.radio_select:
-                mSelectListTextView.setVisibility(View.VISIBLE);
-                mSelectListTextView.setText("지정 하기");
-                final TestSelectObjectFragment testSelectObjectFragment = new TestSelectObjectFragment();
+                isFirst = false;
 
+                mSelectListTextView.setVisibility(View.VISIBLE);
+                final TestSelectObjectFragment testSelectObjectFragment = new TestSelectObjectFragment();
+                testSelectObjectFragment.setTargetFragment(this, SELECT_OBJECT_CODE);
                 fragmentManager.beginTransaction()
                         .replace(R.id.root_test, testSelectObjectFragment)
                         .addToBackStack(null)
                         .commit();
 
-                objectNum = 0; //임시값
                 break;
 
             case R.id.btn_creating:
@@ -143,31 +169,71 @@ public class TestCreateFragment extends Fragment implements View.OnClickListener
                 fragmentManager.popBackStack();
                 fragmentManager.beginTransaction().commit();
                 break;
-
         }
     }
 
     private void createTest() {
-        String testInfo = new String (mTestTitleTextView.getText().toString() + "+" + kinds + "+" + problemNum + "+" + objectNum);
+        selectObjectList.add( 0, mTestTitleTextView.getText().toString() );
+        for(int i = 1; i < selectObjectList.size(); i++){
+            String str = selectObjectList.get(i).toString();
+            //ID + 이름 => ID, 이름
+            int plus = str.indexOf('+');
+            str = str.substring(0,plus); //ID
+            Log.d(TAG, "ID : " + str);
+
+            selectObjectList.set(i, str);
+        }
+        Log.d(TAG, "selectObjectList ===>" + selectObjectList);
+        String testInfo = new String (selectObjectList.get(0) + "+" + kinds + "+" + problemNum + "+" + objectNum);
         Log.d(TAG, testInfo);
 
         toServer(testInfo);
 
-        if(mworker_test.getSuccess()) {
-            moveMakingProblem();
-        }else{
-            Toast.makeText(getActivity(), "추가에 실패하였습니다.", Toast.LENGTH_LONG).show();
+        if(objectNum == 0){
+            if (mworker_test.getSuccessInfo()) {
+                moveMakingProblem();
+            }
+            else {
+                Toast.makeText(getActivity(), "시험 출제를 실패하였습니다.", Toast.LENGTH_LONG).show();
+            }
         }
-
+        else{
+            if (mworker_test.getSuccessInfo() && mworker_test.getSuccessUser()) {
+                moveMakingProblem();
+            }
+            else {
+                Toast.makeText(getActivity(), "시험 출제를 실패하였습니다.", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     private void moveMakingProblem() {
-        final TestMakingProblemFragment testMakingProblemFragment = new TestMakingProblemFragment();
+        switch (kinds){
+            case WORD:
+                final TestMakingWordFragment testMakingWordFragment = new TestMakingWordFragment();
 
-        fragmentManager.beginTransaction()
-                .replace(R.id.root_test, testMakingProblemFragment)
-                .addToBackStack(null)
-                .commit();
+                Bundle args = new Bundle();
+                args.putString("test_title", selectObjectList.get(0));
+                args.putInt("test_max_num", problemNum);
+                testMakingWordFragment.setArguments(args);
+
+                fragmentManager.beginTransaction()
+                        .replace(R.id.root_test, testMakingWordFragment)
+                        .addToBackStack(null)
+                        .commit();
+
+                break;
+
+            case SEN:
+                final TestMakingProblemFragment testMakingProblemFragment = new TestMakingProblemFragment();
+
+                fragmentManager.beginTransaction()
+                        .replace(R.id.root_test, testMakingProblemFragment)
+                        .addToBackStack(null)
+                        .commit();
+
+                break;
+        }
 
     }
 
@@ -176,7 +242,7 @@ public class TestCreateFragment extends Fragment implements View.OnClickListener
         if (mworker_test != null && mworker_test.isAlive()) {  //이미 동작하고 있을 경우 중지
             mworker_test.interrupt();
         }
-        mworker_test = new workerTestCreating(true, data);
+        mworker_test = new workerTestCreating(true, data, objectNum, selectObjectList);
         mworker_test.start();
         try {
             mworker_test.join();
@@ -190,6 +256,20 @@ public class TestCreateFragment extends Fragment implements View.OnClickListener
         if (horizontalNumberPicker.getId() == R.id.horizontal_number_picker1) {
             Log.d(TAG, "problem num current value => " + value);
             problemNum = value;
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == SELECT_OBJECT_CODE && resultCode == Activity.RESULT_OK) {
+            if(data != null) {
+                selectObjectList.addAll( (ArrayList<String>) data.getSerializableExtra("select_object") );
+                if(selectObjectList != null) {
+                    Log.v(TAG, "Data passed from Child fragment = " + selectObjectList);
+                    objectNum = selectObjectList.size();
+
+                }
+            }
         }
     }
 }

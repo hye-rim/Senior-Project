@@ -49,11 +49,12 @@ public class PacketUser extends Application {
     static final public char ACK_TEST_CREATE_NSER = 47; //시험출제 - 유저 리스트 없을 때, 끝 (문자1)
 
     static final public char TEST_CREATE = 48; //시험출제 정보 보내기
-    static final public char TEST_CREATE_USR = 49; //시험출제 - 제목 + 응시자아이디 (1명씩)
-    static final public char ACK_TEST_CREATE = 50; //시험출제 생성 응답 - 실패 0, 성공 1
+    static final public char ACK_TEST_CREATE = 49; //시험출제 정보 응답 - 실패 0, 성공 1
+    static final public char TEST_CREATE_USR = 50; //시험출제 - 제목 + 응시자아이디 (1명씩)
+    static final public char ACK_TEST_CREATE_USR = 51; //시험출제 생성 응답 - 실패 0, 성공 1
 
-    static final public char TEST_QUEST = 51; //패킷1 - 문제제목 + 문제, 패킷2 - 정답번호 + 보기리스트
-    static final public char ACK_TEST_QUEST = 52; //출제 성공여부 - 실패 0, 성공 1
+    static final public char TEST_QUEST = 52; //패킷1 - 문제제목 + 문제, 패킷2 - 정답번호 + 보기리스트
+    static final public char ACK_TEST_QUEST = 53; //출제 성공여부 - 실패 0, 성공 1
 
     static final public char USR_CHANGE = 58; //내정보 변경
     static final public char ACK_CHANGE = 59; //ACK 내정보 변경
