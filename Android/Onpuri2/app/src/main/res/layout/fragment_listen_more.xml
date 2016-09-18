@@ -44,12 +44,6 @@
                 <ImageButton
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:id="@+id/tts"
-                    android:background="@drawable/tts_icon"
-                    android:layout_marginRight="10dp" />
-                <ImageButton
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
                     android:id="@+id/add_note"
                     android:background="@drawable/addnote_icon"
                     android:layout_marginRight="10dp" />

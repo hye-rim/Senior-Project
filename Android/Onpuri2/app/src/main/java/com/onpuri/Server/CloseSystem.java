@@ -4,14 +4,9 @@ package com.onpuri.Server;
  * Created by kutemsys on 2016-04-01.
  */
 import android.app.Activity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.widget.Toast;
 
-import com.onpuri.Activity.HomeFragment;
-import com.onpuri.Activity.HomeSentenceFragment;
 import com.onpuri.ActivityList;
-import com.onpuri.R;
 
 public class CloseSystem {
     private long backKeyPressedTime = 0;

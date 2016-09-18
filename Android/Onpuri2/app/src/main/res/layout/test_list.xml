@@ -51,16 +51,6 @@
             <TextView
                 android:textSize="14dp"
                 android:textColor="@color/black"
-                android:id="@+id/type"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="단어시험"
-                android:gravity="center_horizontal"
-                android:layout_marginLeft="5dp" />
-
-            <TextView
-                android:textSize="14dp"
-                android:textColor="@color/black"
                 android:id="@+id/textView3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -73,34 +63,6 @@
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 android:layout_marginLeft="15dp">
-
-                <TextView
-                    android:textSize="14dp"
-                    android:textColor="@color/black"
-                    android:id="@+id/textView6"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="문제 수"
-                    android:gravity="center_horizontal" />
-
-                <TextView
-                    android:textSize="14dp"
-                    android:textColor="@color/black"
-                    android:id="@+id/quizcount"
-                    android:layout_width="20dp"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:layout_marginLeft="3dp"
-                    android:gravity="center_horizontal" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="5dp">
 
                 <TextView
                     android:textSize="14dp"
@@ -120,6 +82,34 @@
                     android:text="0"
                     android:gravity="center_horizontal"
                     android:layout_marginLeft="3dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="5dp">
+
+                <TextView
+                    android:textSize="14dp"
+                    android:textColor="@color/black"
+                    android:id="@+id/textView6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="문제 수"
+                    android:gravity="center_horizontal" />
+
+                <TextView
+                    android:textSize="14dp"
+                    android:textColor="@color/black"
+                    android:id="@+id/quizcount"
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:layout_marginLeft="3dp"
+                    android:gravity="center_horizontal" />
             </LinearLayout>
 
         </LinearLayout>

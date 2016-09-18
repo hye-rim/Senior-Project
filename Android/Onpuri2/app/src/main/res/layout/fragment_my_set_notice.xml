@@ -7,12 +7,13 @@
         android:background="@color/fuzzy_peach"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:text= "     공지사항"
+        android:paddingLeft="10dp"
+        android:text= "공지사항"
         android:textColor="@color/black"
-        android:textSize="20dp"
+        android:textSize="16dp"
         android:gravity="center_vertical" />
     <ListView
-        android:background="@color/pale_gold"
+        android:background="@color/background_material_light"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/list_notice"

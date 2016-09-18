@@ -25,10 +25,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activity.JoinActivity"
+            android:name=".Activity.Join.JoinActivity"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
         <activity
-            android:name=".Activity.LoginActivity"
+            android:name=".Activity.Login.LoginActivity"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
 
         <activity

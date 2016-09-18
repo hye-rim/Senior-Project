@@ -7,12 +7,10 @@
     android:layout_height="match_parent"
     android:background="@color/background_material_light">
     <RelativeLayout
-        android:background="@color/pale_gold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
-            android:background="@color/pale_gold"
-            android:textSize="20dp"
+            android:textSize="18dp"
             android:id="@+id/tv_act_name"
             android:layout_width="wrap_content"
             android:layout_height="80dp"
@@ -23,10 +21,21 @@
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="20dp" />
         <TextView
-            android:id="@+id/tv_act_info"
+            android:textSize="14dp"
+            android:id="@+id/tv_act_info_new_rec"
+            android:layout_width="100dp"
+            android:layout_height="80dp"
+            android:text="등록 \n녹음"
+            android:textColor="#000000"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:layout_alignRight="@+id/tv_act_info_trans_test" />
+        <TextView
+            android:textSize="14dp"
+            android:id="@+id/tv_act_info_trans_test"
             android:layout_width="wrap_content"
             android:layout_height="80dp"
-            android:text="등록 녹음 해석"
+            android:text="해석 \n시험"
             android:textColor="#000000"
             android:layout_gravity="center_vertical"
             android:gravity="center_vertical"
@@ -95,6 +104,19 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         tools:listitem="@layout/my_act_trans_list" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/tab_act_test"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    >
+                    <android.support.v7.widget.RecyclerView
+                        android:scrollbars="vertical"
+                        app:layoutManager="LinearLayoutManager"
+                        android:id="@+id/recycle_act_test"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        tools:listitem="@layout/my_act_test_list" />
                 </LinearLayout>
             </FrameLayout>
         </LinearLayout>

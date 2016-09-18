@@ -96,14 +96,6 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
         btn_ok.setOnClickListener(this);
         btn_cancel.setOnClickListener(this);
 
-        /*
-        btn_gallery = (Button)view.findViewById(R.id.btn_new_picture);
-        btn_camera = (Button)view.findViewById(R.id.btn_new_camera);
-        btn_gallery.setOnClickListener(this);
-        btn_camera.setOnClickListener(this);
-        */
-
-
         return view;
     }
 
@@ -162,21 +154,6 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
                         }).show();
                 break;
 
-            /*
-            case R.id.btn_new_picture:
-                openGallery();
-                Toast.makeText(getActivity(), "텍스트 변환은 차후 추가 예정입니다.", Toast.LENGTH_SHORT).show();
-                break;
-
-            case R.id.btn_new_camera:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    perrmissionWork();
-                } else {
-                    openCamera();
-                }
-                break;
-
-            */
             default:
                 break;
         }
@@ -194,114 +171,6 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
             return "";
         }
     };
-
-    /*
-    private void openGallery() {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
-        intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent, REQ_CODE_SELECT_IMAGE);
-    }
-
-    private void openCamera() {
-        Intent intent = new Intent();
-        intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivity(intent);
-    }
-
-    private void perrmissionWork() {
-        String permissionsNeeded = new String();
-
-        final List<String> permissionsList = new ArrayList<String>();
-        if (!addPermission(permissionsList, Manifest.permission.CAMERA))
-            permissionsNeeded = new String("CAMERA");
-
-        if (permissionsList.size() > 0) {
-            if ( !permissionsNeeded.isEmpty() ) { //값이 있을 경우
-                // Need Rationale
-                String message = "You need to grant access to " + permissionsNeeded;
-                showMessageOKCancel(message, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        requestPermissions(permissionsList.toArray(new String[permissionsList.size()]),
-                                REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
-                    }
-                });
-                return;
-            }
-            requestPermissions(
-                    permissionsList.toArray(new String[permissionsList.size()]),
-                    REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
-            return;
-        }else{
-            openCamera();
-        }
-    }
-
-    @TargetApi(Build.VERSION_CODES.M)
-    private boolean addPermission(List<String> permissionsList,String permission) {
-        if (getActivity().checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
-            permissionsList.add(permission);
-            // Check for Rationale Option
-            if (!shouldShowRequestPermissionRationale(permission))
-                return false;
-        }
-        return true;
-    }
-
-    private void showMessageOKCancel(String message,android.content.DialogInterface.OnClickListener onClickListener) {
-        new AlertDialog.Builder(getActivity()).setMessage(message)
-                .setPositiveButton("OK", onClickListener).setCancelable(false)
-                .setNegativeButton("Cancel", null).create().show();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS: {
-                Map<String, Integer> perms = new HashMap<String, Integer>();
-                // Initial
-                perms.put(Manifest.permission.CAMERA, PackageManager.PERMISSION_GRANTED);
-
-                // Fill with results
-                for (int i = 0; i < permissions.length; i++)
-                    perms.put(permissions[i], grantResults[i]);
-                if (perms.get(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED ) {
-                    // All Permissions Granted
-                    openCamera();
-                } else {
-                    // Permission Denied
-                    Toast.makeText(getActivity(), "Some Permission is Denied", Toast.LENGTH_SHORT).show();
-                }
-            }
-            break;
-            default:
-                super.onRequestPermissionsResult(requestCode, permissions,grantResults);
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == REQ_CODE_SELECT_IMAGE)
-        {
-            if(resultCode == Activity.RESULT_OK)
-            {
-                try {
-                    //이미지 데이터를 비트맵으로 받아온다.
-                    Bitmap image_bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), data.getData());
-                    ImageView image = (ImageView)view.findViewById(R.id.imageView1);
-
-                    //배치해놓은 ImageView에 set
-                    image.setImageBitmap(image_bitmap);
-
-                }
-                catch (FileNotFoundException e) {       e.printStackTrace();          }
-                catch (IOException e)                 {      e.printStackTrace();          }
-                catch (Exception e)               {             e.printStackTrace();         }
-            }
-        }
-    }
-    */
 
     private void Addsentence() {
         if(worker_add_sen != null && worker_add_sen.isAlive()){  //이미 동작하고 있을 경우 중지

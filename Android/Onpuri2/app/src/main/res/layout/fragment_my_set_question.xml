@@ -9,15 +9,16 @@
         android:layout_height="50dp"
         android:text= "     문의사항"
         android:textColor="@color/black"
-        android:textSize="20dp"
+        android:textSize="18dp"
         android:gravity="center_vertical" />
     <EditText
         android:id="@+id/tv_question"
-        android:background="#FFFFFF"
         android:textSize="15dp"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_margin="20dp"
+        android:padding="15dp"
+        android:layout_margin="30dp"
+        android:background="@color/material_grey_300"
         android:gravity="start"
         android:hint="문의사항을 입력해주세요. " />
     <LinearLayout
@@ -26,17 +27,21 @@
         android:layout_gravity="center"
         android:gravity="center">
         <Button
+            android:textColor="@color/primary_text_default_material_light"
+            android:background="@drawable/btn_border"
             android:layout_marginRight="20dp"
             android:layout_width="100dp"
             android:layout_height="40dp"
             android:id="@+id/btn_question_ok"
             android:text="확인"
-            android:textSize="17dp"/>
+            android:textSize="16dp"/>
         <Button
+            android:textColor="@color/primary_text_default_material_light"
+            android:background="@drawable/btn_border"
             android:layout_width="100dp"
             android:layout_height="40dp"
             android:id="@+id/btn_question_cancel"
             android:text="취소"
-            android:textSize="17dp"/>
+            android:textSize="16dp"/>
     </LinearLayout>
 </LinearLayout>

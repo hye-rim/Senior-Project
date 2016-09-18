@@ -1,8 +1,6 @@
 package com.onpuri.Adapter;
 
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,12 +24,10 @@ public class TransListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
         public TextView trans;
-        public TextView day;
         public TextView reco;
         public ItemViewHolder(View v) {
             super(v);
             trans = (TextView) v.findViewById(R.id.tv_trans_item);
-            day = (TextView) v.findViewById(R.id.day);
             reco = (TextView) v.findViewById(R.id.reco);
         }
     }
@@ -46,7 +42,6 @@ public class TransListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
         itemViewHolder.trans.setText(transList.get(position));
-        itemViewHolder.day.setText(dayList.get(position));
         itemViewHolder.reco.setText(recoList.get(position));
     }
 

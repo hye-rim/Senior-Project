@@ -29,14 +29,14 @@
             android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
-            android:layout_marginRight="20dp">
+            android:layout_marginRight="15dp">
 
             <ImageButton
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:id="@+id/reco_bnt"
                 android:background="@drawable/reco_icon"
-                android:layout_marginRight="10dp"
+                android:layout_marginRight="5dp"
                 android:layout_marginLeft="3dp" />
 
             <TextView
@@ -52,8 +52,8 @@
         </LinearLayout>
 
         <ImageButton
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
             android:id="@+id/del_listen"
             android:background="@drawable/deltrans_icon"
             android:layout_marginRight="10dp" />
