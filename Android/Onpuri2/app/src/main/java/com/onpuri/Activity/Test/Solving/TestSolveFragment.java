@@ -1,28 +1,18 @@
 package com.onpuri.Activity.Test.Solving;
 
-import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.Color;
-import android.net.Uri;
+
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.onpuri.Adapter.SenListenListAdapter;
 import com.onpuri.Adapter.TestListAdapter;
 import com.onpuri.Listener.HomeItemClickListener;
 import com.onpuri.R;
@@ -31,7 +21,7 @@ import java.util.ArrayList;
 
 
 public class TestSolveFragment extends Fragment implements View.OnClickListener{
-
+    private static final String TAG = "TestSolveFragment" ;
     private static View view;
 
     ArrayList<String> list_test;
@@ -41,6 +31,7 @@ public class TestSolveFragment extends Fragment implements View.OnClickListener{
 
     Button btn_word, btn_sen;
     TextView btn_selftest;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

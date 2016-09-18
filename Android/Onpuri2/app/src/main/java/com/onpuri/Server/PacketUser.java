@@ -27,6 +27,8 @@ public class PacketUser extends Application {
     static final public char USR_MTRANS = 16; //more translation
     static final public char USR_ATRANS = 17; //add translation
     static final public char ACK_ATRANS = 18; //add translation ACK
+    static final public char USR_TRANS_RECO = 19; //해석 추천
+
 
     static final public char USR_SENLISTEN = 20, USR_SENLISTEN_LEN = 2; //3 recoder
     static final public char ACK_SENLISTEN = 21; //3 recoder ACK
@@ -34,6 +36,8 @@ public class PacketUser extends Application {
     static final public char USR_MLISTEN = 23; //more recoder
     static final public char USR_ALISTEN = 24; //add recoder
     static final public char ACK_ALISTEN = 25; //add recoder ACK
+    static final public char USR_LISTEN_RECO = 26; //듣기 추천
+
 
     static final public char USR_SEARCH = 30; //검색 문장,단어 (search)
     static final public char ACK_WORSER = 31; //검색 단어 응답
