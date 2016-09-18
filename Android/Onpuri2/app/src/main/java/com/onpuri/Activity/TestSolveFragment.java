@@ -117,8 +117,9 @@ public class TestSolveFragment extends Fragment implements View.OnClickListener{
     }
     void testlist() {
         list_test = new ArrayList<String>();
-        this.list_test.add("70%  test님    문장 쪽지시험");
-        this.list_test.add("80%  admin님   쪽지시험 2");
+        this.list_test.add("70%  test님    쪽지시험(문장 10문제)입니다.");
+        this.list_test.add("80%  admin님   문장 쪽지시험 2");
+        this.list_test.add("65%  admin님   문장 쪽지시험 1");
     }
 
 }

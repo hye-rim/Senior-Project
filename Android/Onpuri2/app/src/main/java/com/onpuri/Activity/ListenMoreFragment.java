@@ -105,7 +105,6 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
             sentence_num=getArguments().getString("sen_num");
             item.setText(sentence);
         }
-
         listen();
         noteLoad();
 
@@ -121,7 +120,7 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
         RecyclerView = (RecyclerView) view.findViewById(R.id.recycler_listen);
         LayoutManager = new LinearLayoutManager(getActivity());
         RecyclerView.setLayoutManager(LayoutManager);
-        Adapter = new ListenListAdapter(((MainActivity)getActivity()).mPlayer, list_listen, list_userid, list_day, list_reco, list_num, con, fm, RecyclerView);
+        Adapter = new ListenListAdapter(getActivity(), ((MainActivity)getActivity()).mPlayer, ((MainActivity)getActivity()).user.getuserId(), list_listen, list_userid, list_reco, list_num, con, fm, RecyclerView);
         RecyclerView.setAdapter(Adapter);// Set CustomAdapter as the adapter for RecyclerView.
 
         Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_dark);

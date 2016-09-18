@@ -79,12 +79,12 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
         item_reco.setOnClickListener(this);
         Button item_edit = (Button) view.findViewById(R.id.item_edit);
         item_edit.setOnClickListener(this);
-        ImageButton deltrans=(ImageButton)view.findViewById(R.id.del_trans);
-        deltrans.setOnClickListener(this);
+        ImageButton del_trans=(ImageButton)view.findViewById(R.id.del_trans);
+        del_trans.setOnClickListener(this);
 
         String userid = ((MainActivity)getActivity()).user.getuserId();
         if (!id.equals(userid)) {
-            deltrans.setVisibility(View.INVISIBLE);
+            del_trans.setVisibility(View.INVISIBLE);
         }
 
         return view;
