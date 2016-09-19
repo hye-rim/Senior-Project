@@ -39,7 +39,7 @@ public class UserMyActTestFragment extends Fragment {
                 parent.removeView(view);
         }
         try {
-            view = inflater.inflate(R.layout.fragment_my_act, container, false);
+            view = inflater.inflate(R.layout.fragment_my_act_test, container, false);
         } catch (InflateException e) {
             //map is already there, just return view as it is
         }

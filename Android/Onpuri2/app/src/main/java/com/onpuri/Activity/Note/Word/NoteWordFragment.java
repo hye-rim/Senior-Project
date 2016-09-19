@@ -18,6 +18,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.onpuri.Activity.Search.SearchFragment;
 import com.onpuri.Data.WordData;
 import com.onpuri.DividerItemDecoration;
 import com.onpuri.Listener.RecyclerItemClickListener;
@@ -91,7 +92,17 @@ public class NoteWordFragment  extends Fragment implements View.OnClickListener 
                         if(isNullWord)
                             Toast.makeText(getActivity().getApplicationContext(), itemName + "에 단어를 추가해보세요.", Toast.LENGTH_SHORT).show();
                         else{
-                            Toast.makeText(getActivity().getApplicationContext(), "구현예정입니다.", Toast.LENGTH_SHORT).show();
+                            SearchFragment searchFragment = new SearchFragment();
+                            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+
+                            Bundle args = new Bundle();
+                            args.putString("searchText", itemWord.get(position).getWord());
+                            searchFragment.setArguments(args);
+
+                            fragmentManager.beginTransaction()
+                                    .add(R.id.containerView, searchFragment)
+                                    .addToBackStack("fragBack")
+                                    .commit();
                         }
                     }
 

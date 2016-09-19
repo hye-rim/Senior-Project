@@ -18,11 +18,13 @@ import java.util.ArrayList;
 public class MyActTestAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
     private final String TAG = "MyActTestAdapter";
 
-    private ArrayList<String> senList;
+    private ArrayList<String> testTitleList;
+    private ArrayList<String> testPercentList;
     private Context mContext;
 
-    public MyActTestAdapter(Context context, ArrayList<String> listSentence, RecyclerView recyclerView) {
-        this.senList=listSentence;
+    public MyActTestAdapter(Context context, ArrayList<String> testTitle, ArrayList<String> testPercent, RecyclerView recyclerView) {
+        this.testTitleList = testTitle;
+        this.testPercentList = testPercent;
         this.mContext = context;
     }
 
@@ -72,8 +74,8 @@ public class MyActTestAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHol
         // Get element from your dataset at this position and replace the contents of the view with that element
 
         ItemViewHolder itemViewHolder = (ItemViewHolder)holder;
-        itemViewHolder.mTestName.setText(senList.get(position));
-        itemViewHolder.mTestPer.setText("0%");
+        itemViewHolder.mTestName.setText(testTitleList.get(position));
+        itemViewHolder.mTestPer.setText(testPercentList.get(position) + "%");
         itemViewHolder.itemView.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -84,7 +86,6 @@ public class MyActTestAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public int getItemCount() {
-        return senList.size();
+        return testTitleList.size();
     }
-
 }

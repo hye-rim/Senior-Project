@@ -1,34 +1,23 @@
 package com.onpuri.Activity.Test.Creating;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hrules.horizontalnumberpicker.HorizontalNumberPicker;
 import com.hrules.horizontalnumberpicker.HorizontalNumberPickerListener;
-import com.onpuri.Activity.Note.workerNoteChanges;
-import com.onpuri.Activity.Test.Solving.TestSolveStartFrgment;
-import com.onpuri.Adapter.TestListAdapter;
-import com.onpuri.Listener.HomeItemClickListener;
 import com.onpuri.R;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -218,18 +207,18 @@ public class TestCreateFragment extends Fragment implements View.OnClickListener
                 testMakingWordFragment.setArguments(args);
 
                 fragmentManager.beginTransaction()
-                        .replace(R.id.root_test, testMakingWordFragment)
-                        .addToBackStack(null)
+                        .replace(R.id.containerView, testMakingWordFragment)
+                        .addToBackStack("fragBack")
                         .commit();
 
                 break;
 
             case SEN:
-                final TestMakingProblemFragment testMakingProblemFragment = new TestMakingProblemFragment();
+                final TestMakingSenFragment testMakingSenFragment = new TestMakingSenFragment();
 
                 fragmentManager.beginTransaction()
-                        .replace(R.id.root_test, testMakingProblemFragment)
-                        .addToBackStack(null)
+                        .replace(R.id.containerView, testMakingSenFragment)
+                        .addToBackStack("fragBack")
                         .commit();
 
                 break;

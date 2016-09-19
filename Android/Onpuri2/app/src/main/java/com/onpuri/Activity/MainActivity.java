@@ -227,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     searchView.clearFocus();
 
                     fragmentManager.beginTransaction()
-                            .add(R.id.root_home, searchFragment)
+                            .add(R.id.containerView, searchFragment)
                             .addToBackStack("fragBack")
                             .commit();
                 }
