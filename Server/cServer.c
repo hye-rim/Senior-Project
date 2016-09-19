@@ -57,10 +57,11 @@
 #define USER_INFO 46
 #define USER_INFO_END 47
 #define TEST_REGISTER 48
-#define TEST_EXAMINEE 49
-#define TEST_REGISTER_END 50
-#define QUESTION_REGISTER 51
-#define QUESTION_REGISTER_END 52
+#define TEST_REGISTER_END 49
+#define TEST_EXAMINEE 50
+#define TEST_EXAMINEE_END 51
+#define QUESTION_REGISTER 52
+#define QUESTION_REGISTER_END 53
 
 #define INFO_CHANGE 58
 #define INFO_CHACK 59
@@ -94,6 +95,8 @@
 
 
 #define SEN_NOMORE 90
+#define RECOMMEND 91
+#define RECOMMEND_ACK 92
 #define USR_LEAVE 99 //
 #define USR_BYE 100 // 회원 탈퇴
 
@@ -123,7 +126,8 @@ void searchWord		(unsigned char*, int);
 void user_logout	(unsigned char*, int);
 void userSearch		(unsigned char*, int);
 void testExaminee 	(unsigned char*, int);
-void questionRegister   (unsigned char*, int);
+void recommendation 	(unsigned char*, int);
+void questionRegister   (unsigned char*, unsigned char*, int);
 
 void audioRequest	(unsigned char*, int, int);
 
@@ -280,7 +284,8 @@ printf("auauauau lengTH: %d \n", audioLength);
 			else{
 				if(readByte = read(client_fd, buff_temp, buff_rcv[3]+1) > 0){	// 데이터의 길이 + CRC
 					strcat(buff_rcv, buff_temp);	// buff_temp[3]을 통해 데이터의 길이를 알고 +1하여 CRC까지 읽어서 buff_rcv에 붙인다.
-	
+for(i = 0; i < strlen(buff_rcv); i++)
+	printf("(%d)", buff_rcv[i]);	
 					switch(buff_rcv[1]){
 					case MPC_RDY:{	
 						deviceCheck(buff_rcv, client_fd);		// device id, model을 디비 조회해서 옳은지 조사, 없으면 추가 후 ack
@@ -351,6 +356,7 @@ printf("auauauau lengTH: %d \n", audioLength);
 						break;
 						}
 					case AUDIO_REQUEST_ALL:{
+puts("audio all");
 						audioRequest(buff_rcv, client_fd, 0);
 						break;
 						}
@@ -399,7 +405,11 @@ printf("auauauau lengTH: %d \n", audioLength);
 						break;
 						}
 					case QUESTION_REGISTER:{
-						questionRegister(buff_rcv, client_fd);
+						questionRegister(buff_rcv, userId, client_fd);
+						break;
+						}
+					case RECOMMEND:{
+						recommendation(buff_rcv, client_fd);
 						break;
 						}
 					case USR_LEAVE:{
@@ -1383,7 +1393,9 @@ void searchWord(unsigned char* buff_rcv, int client_fd){
 }*/
 void searchSentence(unsigned char* buff_rcv, int client_fd){
 	MYSQL_RES* res_ptr;
+	MYSQL_RES* res_ptr1;
 	MYSQL_ROW row;
+	MYSQL_ROW row1;
 
 	char toClientData[LEN_DATA];
 	char query[LEN_QUERY];
@@ -1448,42 +1460,89 @@ printf("EXTRACTED WORD : %s\n", search);
 	tempIndex = 0;
 	memset(query, '\0', sizeof(query));
 	memset(toClientData, '\0', sizeof(toClientData));
-	sprintf(query, "select SEN, SEQ from TB_SENTENCE where SEN like '%%%s%%' limit 10", search);
+	sprintf(query, "select SEN, SEQ, userSeq from TB_SENTENCE where SEN like '%%%s%%' limit 10", search);
 
 	if(mysql_query(conn_ptr, query)){
 		printf("%s\n", mysql_error(conn_ptr));
 	}
 	else{
 		res_ptr = mysql_store_result(conn_ptr);
+		row = mysql_fetch_row(res_ptr);
 
-		while(1){
-			row = mysql_fetch_row(res_ptr);
-			if(row == NULL || tempIndex == 10){
-				toClientData[0] = '1';
-				buff_rcv[1] = SEN_NORESULT; 
-				Make_Packet(buff_rcv, toClientData, client_fd);
-				break;
-			}
-		//	else if(tempIndex == 10)
-		//		break;
-			else{
-				buff_rcv[1] = SEN_SEARCH;
-
-				memset(toClientData, '\0', sizeof(toClientData));
-				strcat(toClientData, row[0]);
-				Make_Packet(buff_rcv, toClientData, client_fd);
-//printf("data from client:: %s\n", toClientData);
-				
-				memset(toClientData, '\0', sizeof(toClientData));
-			
-				strcat(toClientData, row[1]);
-				Make_Packet(buff_rcv, toClientData, client_fd);
-//printf("data from client:: %s\n", toClientData);
-			
-				tempIndex++;
-			}
+		memset(query, '\0', sizeof(query));
+		if(row != NULL){
+			sprintf(query, "select UID from TB_USER where seq = '%s'", row[2]);
+			printf("select UID from TB_USER where seq = '%s'", row[2]);
 		}
-		mysql_free_result(res_ptr);
+
+		if(mysql_query(conn_ptr, query)){
+			printf("%s\n", mysql_error(conn_ptr));
+					toClientData[0] = '1';
+					buff_rcv[1] = SEN_NORESULT; 
+					Make_Packet(buff_rcv, toClientData, client_fd);
+		}
+		else{
+			//res_ptr1 = mysql_store_result(conn_ptr);
+
+			while(1){
+				if(row == NULL || tempIndex == 10){
+					toClientData[0] = '1';
+					buff_rcv[1] = SEN_NORESULT; 
+					Make_Packet(buff_rcv, toClientData, client_fd);
+					break;
+				}
+			//	else if(tempIndex == 10)
+			//		break;
+				else{
+			res_ptr1 = mysql_store_result(conn_ptr);
+				row1 = mysql_fetch_row(res_ptr1);
+					buff_rcv[1] = SEN_SEARCH;
+	
+					memset(toClientData, '\0', sizeof(toClientData));
+					strcat(toClientData, row[0]);
+					Make_Packet(buff_rcv, toClientData, client_fd);
+	//printf("data from client:: %s\n", toClientData);
+					
+					memset(toClientData, '\0', sizeof(toClientData));
+				
+					strcat(toClientData, row[1]);
+					strcat(toClientData, "+");
+puts("212121212");
+					if(row1 == NULL){
+						strcat(toClientData, "admin");
+puts("mdkm");
+					}
+					else{
+puts("ssssssm");
+						strcat(toClientData, row1[0]);
+puts("mfkdsfmsdlakfm");
+					}
+
+					Make_Packet(buff_rcv, toClientData, client_fd);
+	printf("data from client:: %s\n", toClientData);
+				
+					tempIndex++;
+				}
+				row = mysql_fetch_row(res_ptr);
+
+				if(row != NULL){
+puts("zzzzzzz");
+					memset(query, '\0', sizeof(query));
+					sprintf(query, "select UID from TB_USER where seq = '%s'", row[2]);
+puts("ggggggg");
+					printf("select UID from TB_USER where seq = '%s'", row[2]);
+					if(mysql_query(conn_ptr, query)){
+					}
+				}
+				else{
+					toClientData[0] = '1';
+					buff_rcv[1] = SEN_NORESULT; 
+					Make_Packet(buff_rcv, toClientData, client_fd);
+					break;
+				}
+			}
+			mysql_free_result(res_ptr);
+		}
 	}
 }
 
@@ -1804,14 +1863,15 @@ void audioRequest(unsigned char* buff_rcv, int client_fd, int numOfAudio){
 
 	FILE* fp;
 	sentenceNumber = (buff_rcv[4]-48)*100 + (buff_rcv[5]-48)*10 + buff_rcv[6] - 48;
-
+printf("numOnAudio: %d\n", numOfAudio);
 	if(numOfAudio == 0)
 		numOfAudio = 2000;
 
 	temp = 0;
 
+printf("numOnAudio: %d\n", numOfAudio);
 	memset(query, '\0', sizeof(query));
-	sprintf(query, "select audioDir, size, userSeq, recommend, regDay, seq from TB_audioDir where sentenceSeq = %d limit 3", sentenceNumber);
+	sprintf(query, "select audioDir, size, userSeq, recommend, regDay, seq from TB_audioDir where sentenceSeq = %d limit %d", sentenceNumber, numOfAudio);
 
 printf("sentenceNumber: %d\n", sentenceNumber);
 	if(mysql_query(conn_ptr, query)){
@@ -2258,8 +2318,10 @@ void noteSentenceRegist(unsigned char* buff_rcv, unsigned char* userId, int clie
 void noteContentReq(unsigned char* buff_rcv, unsigned char* userId, int client_fd){
 	MYSQL_RES* res_ptr;
 	MYSQL_RES* res_ptr1;
+	MYSQL_RES* res_ptr2;
 	MYSQL_ROW row;
 	MYSQL_ROW row1;
+	MYSQL_ROW row2;
 
 	char toClientData[LEN_DATA];
 	char query[LEN_QUERY];
@@ -2332,7 +2394,7 @@ void noteContentReq(unsigned char* buff_rcv, unsigned char* userId, int client_f
 				else{
 					memset(query, '\0', LEN_QUERY);
 					if(senOrWord == 1)
-						sprintf(query, "select SEN, SEQ from TB_SENTENCE where SEQ = '%s'", row[0]);
+						sprintf(query, "select SEN, SEQ, userSeq from TB_SENTENCE where SEQ = '%s'", row[0]);
 					else
 						sprintf(query, "select word, mean from TB_dictionary where seq = '%s'", row[0]);
 
@@ -2361,6 +2423,33 @@ void noteContentReq(unsigned char* buff_rcv, unsigned char* userId, int client_f
 							strcat(toClientData, row1[1]);
 							
 							Make_Packet(buff_rcv, toClientData, client_fd);
+
+							memset(query, '\0', LEN_QUERY);
+							
+							sprintf(query, "select UID from TB_USER where seq = '%s'", row1[2]);
+
+							if(mysql_query(conn_ptr, query)){
+								//memset(toClientData, '\0', LEN_DATA);
+//								strcat(toClientData, "admin");
+								
+//								Make_Packet(buff_rcv, toClientData, client_fd);
+							}
+							else{
+								res_ptr2 = mysql_store_result(conn_ptr);
+								row2 = mysql_fetch_row(res_ptr2);
+			
+								memset(toClientData, '\0', LEN_DATA);
+								if(row2 != NULL){
+									strcat(toClientData, row2[0]);
+								}
+								else{
+									strcat(toClientData, "admin");
+								}
+
+								Make_Packet(buff_rcv, toClientData, client_fd);
+							}
+
+							
 						}
 						else{
 							memset(toClientData, '\0', LEN_DATA);
@@ -2391,6 +2480,7 @@ void userSearch (unsigned char* buff_rcv, int client_fd){
 	char query[LEN_QUERY];
 	
 	if(buff_rcv[4] == '1'){	// send user search result all
+puts("1111");
 		memset(query, '\0', LEN_QUERY);
 
 		sprintf(query, "select UID, R_NAME from TB_USER");
@@ -2406,6 +2496,7 @@ void userSearch (unsigned char* buff_rcv, int client_fd){
 			Make_Packet(buff_rcv, toClientData, client_fd);
 		}
 		else{
+puts("2222");
 			res_ptr = mysql_store_result(conn_ptr);
 			row = mysql_fetch_row(res_ptr);
 			
@@ -2419,13 +2510,21 @@ void userSearch (unsigned char* buff_rcv, int client_fd){
 				buff_rcv[1] = USER_INFO;
 							
 				Make_Packet(buff_rcv, toClientData, client_fd);
-
+puts(toClientData);
 				row = mysql_fetch_row(res_ptr);
 			}	
 			mysql_free_result(res_ptr);
+	
+			memset(toClientData, '\0', LEN_DATA);
+
+			toClientData[0] = '1';
+			buff_rcv[1] = USER_INFO_END;
+
+			Make_Packet(buff_rcv, toClientData, client_fd);
 		}
 	}
 	else{	// send opc 47
+puts("3333");
 		memset(toClientData, '\0', LEN_DATA);
 
 		toClientData[0] = '1';
@@ -2438,6 +2537,7 @@ void userSearch (unsigned char* buff_rcv, int client_fd){
 void testRegister(unsigned char* buff_rcv, unsigned char* userId, int client_fd, int userSeq){
 	MYSQL_RES* res_ptr;
 	MYSQL_ROW row;
+	char toClientData[LEN_DATA];
 	char query[LEN_QUERY];
 	char testName[LEN_NAME];
 	int testType, numOfQuestion, examinee;
@@ -2452,24 +2552,67 @@ void testRegister(unsigned char* buff_rcv, unsigned char* userId, int client_fd,
 	}
 
 	i++;
-	testType = buff_rcv[4 + (i++)];
+	testType = buff_rcv[4 + (i++)] - 48;
 
 	i++;
-	numOfQuestion = buff_rcv[4 + (i++)];
+	numOfQuestion = buff_rcv[4 + (i++)] - 48;
 
 	i++;
-	examinee = buff_rcv[4 + (i++)];
+	examinee = buff_rcv[4 + (i++)] - 48;
+/////
+	puts(buff_rcv);
+for(i = 0 ; i < strlen(buff_rcv); i++)
+	printf("@ %d @", buff_rcv[i]);
+////
+/////
 
 	memset(query, '\0', LEN_QUERY);
-	
-	sprintf(query, "insert into TB_test(userSeq, title, type, num, examinee, date)\
-			values(%d, '%s', %d, %d, %d, CURDATE())"\
-			, userSeq, testName, testType, numOfQuestion, examinee);
+	sprintf(query, "select count(*) from TB_test where userSeq = %d and title = '%s'", userSeq, testName);
 
-	if(mysql_query(conn_ptr, query)){
-		printf("testRegister failed! \n%s", mysql_error(conn_ptr));
-	}
+	if(!mysql_query(conn_ptr, query)){
+		printf("testRegister 2 fafa\n%s", mysql_error(conn_ptr));
+		res_ptr = mysql_store_result(conn_ptr);
+		row = mysql_fetch_row(res_ptr);
+
+		if(strcmp(row[0], "0") == 0){
+/////
+			memset(query, '\0', LEN_QUERY);
 	
+			sprintf(query, "insert into TB_test(userSeq, title, type, num, examinee, date)\
+					values(%d, '%s', %d, %d, %d, CURDATE())"\
+					, userSeq, testName, testType, numOfQuestion, examinee);
+
+			if(mysql_query(conn_ptr, query)){
+				memset(toClientData, '\0', LEN_DATA);
+
+				toClientData[0] = '0';
+
+				Make_Packet(buff_rcv, toClientData, client_fd);
+			}
+			else{
+				memset(toClientData, '\0', LEN_DATA);
+
+				toClientData[0] = '1';
+
+				Make_Packet(buff_rcv, toClientData, client_fd);
+			}
+		}
+		else{
+			memset(toClientData, '\0', LEN_DATA);	
+
+			toClientData[0] = '2';
+
+			Make_Packet(buff_rcv, toClientData, client_fd);	
+		}
+	}
+	else{
+		memset(toClientData, '\0', LEN_DATA);
+
+		toClientData[0] = '0';
+
+		Make_Packet(buff_rcv, toClientData, client_fd);	
+	}
+
 }
 
 void testExaminee(unsigned char* buff_rcv, int client_fd){
@@ -2485,8 +2628,11 @@ void testExaminee(unsigned char* buff_rcv, int client_fd){
 	memset(testTitle, '\0', LEN_NAME);
 	memset(examineeId, '\0', LEN_NAME);
 
+for(i = 0 ; i < strlen(buff_rcv); i++)
+	printf("@ %d @", buff_rcv[i]);
+i=0;
 	while(1){
-		if(buff_rcv[4 + i] = '+'){
+		if(buff_rcv[4 + i] == '+'){
 			j++;
 			break;
 		}
@@ -2507,13 +2653,21 @@ void testExaminee(unsigned char* buff_rcv, int client_fd){
 			j++;
 		}
 	}
-
+puts(buff_rcv);
+for(i = 0 ; i < strlen(buff_rcv); i++)
+	printf("# %d @", buff_rcv[i]);
+puts("");
+for(i = 0 ; i < strlen(buff_rcv); i++)
+	printf("# %c @", buff_rcv[i]);
 	memset(query, '\0', LEN_QUERY);
 
 	sprintf(query, "insert into TB_examinee(testSeq, userSeq) values(\
 			(select seq from TB_test where title = '%s')\
 			,(select seq from TB_USER where UID = '%s'))", testTitle, examineeId);
 	
+	printf("insert into TB_examinee(testSeq, userSeq) values(\
+			(select seq from TB_test where title = '%s')\
+			,(select seq from TB_USER where UID = '%s'))", testTitle, examineeId);
 	if(mysql_query(conn_ptr, query)){
 		printf("testExaminee failed! \n%s", mysql_error(conn_ptr));
 		
@@ -2531,7 +2685,7 @@ void testExaminee(unsigned char* buff_rcv, int client_fd){
 	}
 }
 
-void questionRegister(unsigned char* buff_rcv, int client_fd){
+void questionRegister(unsigned char* buff_rcv, unsigned char* userId, int client_fd){
 	MYSQL_RES* res_ptr;
 	MYSQL_ROW row;
 	char toClientData[LEN_DATA];
@@ -2569,22 +2723,28 @@ void questionRegister(unsigned char* buff_rcv, int client_fd){
 			j++;
 		}
 	}
-
+puts(buff_rcv);
+for(i = 0 ; i < strlen(buff_rcv); i++)
+	printf("@ %d @", buff_rcv[i]);
 	memset(query, '\0', LEN_QUERY);
 	sprintf(query, "insert into TB_question(testSeq, question) values(\
-			(select seq from TB_test where title = '%s')\
-			, '%s')", testTitle, question);
-
-	if(mysql_query(conn_ptr, query)){
+			(select seq from TB_test where title = '%s' and userSeq = (select seq from TB_USER where UID = '%s')), '%s')", testTitle, userId, question);
+	printf("insert into TB_question(testSeq, question) values(\
+			(select seq from TB_test where title = '%s' and userSeq = (select seq from TB_USER where UID = '%s')), '%s')", testTitle, userId, question);
+puts("1111111");
+	if(!mysql_query(conn_ptr, query)){
 		memset(query, '\0', LEN_QUERY);
 		sprintf(query, "select seq from TB_question where testSeq = (select seq from TB_test where title = '%s') and question = '%s'", testTitle, question);
+		printf("select seq from TB_question where testSeq = (select seq from TB_test where title = '%s') and question = '%s'", testTitle, question);
 		
+puts("222222");
 		mysql_query(conn_ptr, query);
 		res_ptr = mysql_store_result(conn_ptr);
 		row = mysql_fetch_row(res_ptr);
 	
 		questionSeq = atoi(row[0]);
 	
+puts("33333");
 		// read question & answer frim client buffer
 		memset(temp_rcv, '\0', LEN_DATA);
 		memset(head_rcv, '\0', LEN_DATA);
@@ -2595,6 +2755,7 @@ void questionRegister(unsigned char* buff_rcv, int client_fd){
 		read(client_fd, head_rcv, temp_rcv[3] + 1);
 		strcat(temp_rcv, head_rcv);
 
+puts("44444");
 		// answer extract
 		memset(answer, '\0', LEN_ANSWER);
 		memset(ans1, '\0', LEN_ANSWER);
@@ -2607,6 +2768,7 @@ void questionRegister(unsigned char* buff_rcv, int client_fd){
 		i = j = 0;
 		dataLength = temp_rcv[3] - 2;
 
+puts("555555");
 		while(1){
 			if(temp_rcv[6 + j] == '+'){
 				j++;
@@ -2655,9 +2817,9 @@ void questionRegister(unsigned char* buff_rcv, int client_fd){
 				j++;
 			}
 		}
-
+puts("HERE");
 		memset(query, '\0', LEN_QUERY);
-		sprintf(query, "insert into TB_answer(questionSeq, ans1, ans2, ans2, ans4, answer)\
+		sprintf(query, "insert into TB_answer(questionSeq, ans1, ans2, ans3, ans4, answer)\
 				values(%d, '%s', '%s', '%s', '%s', '%s')", questionSeq, ans1, ans2, ans3, ans4, answer);
 
 		if(mysql_query(conn_ptr, query)){
@@ -2669,24 +2831,85 @@ void questionRegister(unsigned char* buff_rcv, int client_fd){
 			buff_rcv[1] = QUESTION_REGISTER_END;
 
 			Make_Packet(buff_rcv, toClientData, client_fd);
+for(i = 0 ; i < strlen(buff_rcv); i++)
+	printf("* %d", buff_rcv[i]);
 		}
 		else{
 			memset(toClientData, '\0', LEN_DATA);
 
-			toClientData[0] = '0';
+			toClientData[0] = '1';
 			buff_rcv[1] = QUESTION_REGISTER_END;
 
 			Make_Packet(buff_rcv, toClientData, client_fd);
+for(i = 0 ; i < strlen(buff_rcv); i++)
+	printf("& %d", buff_rcv[i]);
 		}
 
 	}
 	else
 	{
+puts("wheehehehe");
 		memset(toClientData, '\0', LEN_DATA);
 
 		toClientData[0] = '0';
 		buff_rcv[1] = QUESTION_REGISTER_END;
 
+		Make_Packet(buff_rcv, toClientData, client_fd);
+for(i = 0 ; i < strlen(buff_rcv); i++)
+	printf("^ %d", buff_rcv[i]);
+	}
+}
+
+void recommendation(unsigned char* buff_rcv, int client_fd){	
+	char toClientData[LEN_DATA];
+	char query[LEN_QUERY];
+	char targetNum[LEN_NAME];
+	int type, num;
+	int i, dataLength;
+	
+	i = 0;
+	dataLength = buff_rcv[3] - 2;
+	type = buff_rcv[4] - 48;
+
+	memset(targetNum, '\0', LEN_NAME);
+
+	while(1){
+		if(i == dataLength)
+			break;
+		else{
+			targetNum[i] = buff_rcv[6 + i];
+			i++;
+		}
+	}
+for(i = 0 ; i < strlen(buff_rcv); i++)
+	printf(" !! %d", buff_rcv[i]);
+
+	num = atoi(targetNum);
+puts(targetNum);
+puts(buff_rcv);
+printf("recommend :: %d\n", num);
+	memset(query, '\0', LEN_QUERY);
+
+	switch(type){
+		case 1:{sprintf(query, "update TB_SENTENCE set recommend = recommend + 1 where seq = %d", num); break;}
+		case 2:{sprintf(query, "update TB_Translation set recommend = recommend + 1 where seq = %d", num); break;}
+		case 3:{sprintf(query, "update TB_audioDir set recommend = recommend + 1 where seq = %d", num); break;}
+	}	
+	
+	if(mysql_query(conn_ptr, query)){
+		printf("recommdation failed!\n%s", mysql_error(conn_ptr));	
+		
+		memset(toClientData, '\0', LEN_DATA);
+
+		toClientData[0] = '0';
+		
+		Make_Packet(buff_rcv, toClientData, client_fd);
+	}
+	else{
+		memset(toClientData, '\0', LEN_DATA);
+
+		toClientData[0] = '1';
+		
 		Make_Packet(buff_rcv, toClientData, client_fd);
 	}
 }
@@ -2741,8 +2964,10 @@ void Make_Packet(unsigned char* buff_rcv, unsigned char* toClientData, int clien
 	case MY_TEST_END: buff_snd[1] = MY_TEST_END; break;
 	case USER_INFO: buff_snd[1] = USER_INFO; break;
 	case USER_INFO_END: buff_snd[1] = USER_INFO_END; break;
-	case TEST_EXAMINEE: buff_snd[1] = TEST_REGISTER_END; break;
+	case TEST_REGISTER: buff_snd[1] = TEST_REGISTER_END; break;
+	case TEST_EXAMINEE: buff_snd[1] = TEST_EXAMINEE_END; break;
 	case QUESTION_REGISTER_END: buff_snd[1] = QUESTION_REGISTER_END; break;
+	case RECOMMEND: buff_snd[1] = RECOMMEND_ACK; break;
 	}
 
 	buff_snd[2] = buff_rcv[2];	// 받은 패킷과 같은 시퀀스를 붙여서 보낸다.(클라이언트는 이값을 확인하여 같은 경우에 작업 처리)
