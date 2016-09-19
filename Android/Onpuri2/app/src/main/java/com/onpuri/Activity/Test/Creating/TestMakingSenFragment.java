@@ -14,7 +14,6 @@ import com.onpuri.R;
  * Created by kutemsys on 2016-09-19.
  */
 public class TestMakingSenFragment extends Fragment {
-
     private static View view;
 
     TextView testname;

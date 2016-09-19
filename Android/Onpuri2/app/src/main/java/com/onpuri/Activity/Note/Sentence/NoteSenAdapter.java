@@ -321,7 +321,7 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         toServer(USR_NOTE_ADD ,nameData);
 
         if(mworker_add.getSuccess()) {
-            noteSenList.add(new NoteData(itemName));
+           // noteSenList.add(new NoteData(itemName));
             notifyDataSetChanged();
         }else{
             Toast.makeText(context, "추가에 실패하였습니다.", Toast.LENGTH_LONG).show();
@@ -335,7 +335,7 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         toServer(USR_NOTE_EDIT ,nameData);
 
         if(mworker_add.getSuccess()) {
-            noteSenList.get(position).setName(changeName);
+            //noteSenList.get(position).setName(changeName);
             notifyDataSetChanged();
         }else{
             Toast.makeText(context, "수정에 실패하였습니다.", Toast.LENGTH_LONG).show();
@@ -348,7 +348,7 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         toServer(USR_NOTE_DEL ,nameData);
 
         if(mworker_add.getSuccess()) {
-            noteSenList.remove(position);
+            //noteSenList.remove(position);
             notifyDataSetChanged();
         }else{
             Toast.makeText(context, "삭제에 실패하였습니다.", Toast.LENGTH_LONG).show();

@@ -353,7 +353,7 @@ public class UserMyActFragment extends Fragment {
         cntNew = ( isNullNew ? 0 : listNew.size() );
         cntRecord = ( isNullRecord ? 0 : listRecord.size() );
         cntTrans = ( isNullTrans ? 0 : listTrans.size() ) ;
-        cntTest =( isNullTest ? 0 : listTrans.size() ) ;
+        cntTest =( isNullTest ? 0 : listTest.size() ) ;
     }
 
 

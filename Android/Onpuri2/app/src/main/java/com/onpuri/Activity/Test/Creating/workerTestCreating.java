@@ -22,7 +22,7 @@ public class workerTestCreating extends Thread {
     DataOutputStream dos;
     DataInputStream dis;
 
-    byte[] outData = new byte[261];
+    byte[] outData;
     byte[] inData = new byte[20];
 
     private Boolean isSuccessInfo, isSuccessUser;
@@ -99,6 +99,7 @@ public class workerTestCreating extends Thread {
 
     private void sendData(String sendingData, int opc) {
         byte[] dataByte = sendingData.getBytes();
+        outData  = new byte[261];
 
         outData[0] = (byte) PacketUser.SOF;
         outData[1] = (byte) opc;
@@ -108,6 +109,7 @@ public class workerTestCreating extends Thread {
             outData[i] = (byte) dataByte[i-4];
         }
         outData[4 + dataByte.length] = (byte)PacketUser.CRC;
+        Log.d(TAG,"out : " + new String(dataByte));
         Log.d(TAG,"out : " + new String(outData));
 
 

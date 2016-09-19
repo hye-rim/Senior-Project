@@ -21,7 +21,7 @@ public class workerProblemCreating extends Thread {
     DataOutputStream dos;
     DataInputStream dis;
 
-    byte[] outData = new byte[261];
+    byte[] outData;
     byte[] inData = new byte[20];
 
     private Boolean isSuccess;
@@ -48,7 +48,6 @@ public class workerProblemCreating extends Thread {
     public void run() {
         super.run();
         while (isPlay) {
-
             String titleProblem, example;
             for(int i = 0; i < problemList.size() ; i++){
                 titleProblem = title + "+" + problemList.get(i).getProblem();
@@ -76,6 +75,7 @@ public class workerProblemCreating extends Thread {
 
 
     private void sendData(String sendingData, int opc) {
+        outData = new byte[261];
         byte[] dataByte = sendingData.getBytes();
 
         outData[0] = (byte) PacketUser.SOF;
@@ -105,10 +105,8 @@ public class workerProblemCreating extends Thread {
             dis.read(inData);
             Log.d(TAG, "opc : " + inData[1]);
             Log.d(TAG, "succes : " + inData[4]);
-
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 }

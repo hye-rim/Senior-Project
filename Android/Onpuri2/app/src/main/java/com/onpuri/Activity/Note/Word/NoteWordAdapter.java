@@ -245,7 +245,7 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         toServer(USR_NOTE_ADD ,nameData);
 
         if(mworker_add.getSuccess()) {
-            noteWordList.add(new NoteWordData(itemName));
+            //noteWordList.add(new NoteWordData(itemName));
             notifyDataSetChanged();
         }else{
             Toast.makeText(context, "추가에 실패하였습니다.", Toast.LENGTH_LONG).show();
@@ -259,7 +259,7 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         toServer(USR_NOTE_EDIT ,nameData);
 
         if(mworker_add.getSuccess()) {
-            noteWordList.get(position).setName(changeName);
+            //noteWordList.get(position).setName(changeName);
             notifyDataSetChanged();
         }else{
             Toast.makeText(context, "수정에 실패하였습니다.", Toast.LENGTH_LONG).show();
@@ -272,7 +272,7 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         toServer(USR_NOTE_DEL ,nameData);
 
         if(mworker_add.getSuccess()) {
-            noteWordList.remove(position);
+            //noteWordList.remove(position);
             notifyDataSetChanged();
         }else{
             Toast.makeText(context, "삭제에 실패하였습니다.", Toast.LENGTH_LONG).show();
