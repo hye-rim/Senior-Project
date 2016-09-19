@@ -15,6 +15,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.onpuri.Activity.Home.workerRecommend;
 import com.onpuri.MediaPlayerManager;
 import com.onpuri.R;
 
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 
 public class ListenListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
     private final String TAG = "ListenListAdapter";
+    private workerRecommend worker_reco;
     private final FragmentActivity activity;
 
     private ArrayList<String> listenList;
@@ -102,7 +104,9 @@ public class ListenListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             reco_listen.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(activity, "추천하셨습니다(구현예정)", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity, "추천되었습니다", Toast.LENGTH_SHORT).show();
+                    recommend(numList.get(getPosition()));
+
                 }
             });
         }
@@ -128,5 +132,18 @@ public class ListenListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public int getItemCount() {
         return listenList.size();
+    }
+
+    void recommend(String num) {
+        if (worker_reco != null && worker_reco.isAlive()) {  //이미 동작하고 있을 경우 중지
+            worker_reco.interrupt();
+        }
+        worker_reco = new workerRecommend(true, "3+", num);
+        worker_reco.start();
+        try {
+            worker_reco.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

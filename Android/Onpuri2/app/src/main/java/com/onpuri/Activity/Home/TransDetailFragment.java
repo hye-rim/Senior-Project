@@ -25,7 +25,8 @@ import com.onpuri.Server.PacketUser;
 
 
 public class TransDetailFragment extends Fragment implements View.OnClickListener {
-    private static final String TAG = "TransAddFragment";
+    private static final String TAG = "TransDetailFragment";
+    private workerRecommend worker_reco;
     private com.onpuri.Server.PacketUser user;
     private static View view;
     private Toast toast;
@@ -104,10 +105,6 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
         args.putString("sen_trans", trans);
 
         switch (v.getId()) {
-            case R.id.item_reco:
-                toast = Toast.makeText(getActivity(), "추천", Toast.LENGTH_SHORT);
-                toast.show();
-                break;
             case R.id.item_edit:
                 final TransEditFragment tef = new TransEditFragment();
                 args.putString("sen", sentence);
@@ -145,6 +142,20 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
                             }
                         }).show();
                 break;
+            case R.id.item_reco:
+                recommend();
+        }
+    }
+    void recommend() {
+        if (worker_reco != null && worker_reco.isAlive()) {  //이미 동작하고 있을 경우 중지
+            worker_reco.interrupt();
+        }
+        worker_reco = new workerRecommend(true, "2+", num);
+        worker_reco.start();
+        try {
+            worker_reco.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }

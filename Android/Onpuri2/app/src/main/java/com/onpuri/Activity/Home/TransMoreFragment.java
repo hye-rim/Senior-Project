@@ -35,6 +35,7 @@ import static com.onpuri.R.drawable.divider_dark;
 public class TransMoreFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "TransMoreFragment";
     private workerTransMore worker_trans_more;
+    private workerRecommend worker_reco;
 
     private static View view;
 
@@ -88,6 +89,8 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
         add_note.setOnClickListener(this);
         ImageButton add_trans = (ImageButton) view.findViewById(R.id.add_trans);
         add_trans.setOnClickListener(this);
+        ImageButton reco_sen = (ImageButton) view.findViewById(R.id.reco_sen);
+        reco_sen.setOnClickListener(this);
 
         RecyclerView = (RecyclerView) view.findViewById(R.id.recycler_trans);
         LayoutManager = new LinearLayoutManager(getActivity());
@@ -108,6 +111,7 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
                         args.putString("userid", list_userid.get(position));
                         args.putString("day", list_day.get(position));
                         args.putString("reco", list_reco.get(position));
+                        args.putString("num", list_num.get(position));
                         tdf.setArguments(args);
 
                         ft.replace(R.id.root_home, tdf);
@@ -206,6 +210,8 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
                 ft.addToBackStack(null);
                 ft.commit();
                 break;
+            case R.id.reco_sen:
+                recommend();
         }
     }
 
@@ -258,6 +264,18 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
             Toast.makeText(getActivity(), item + "에 이미 있습니다.", Toast.LENGTH_LONG).show();
         }else{
             Toast.makeText(getActivity(), "추가에 실패하였습니다.", Toast.LENGTH_LONG).show();
+        }
+    }
+    void recommend() {
+        if (worker_reco != null && worker_reco.isAlive()) {  //이미 동작하고 있을 경우 중지
+            worker_reco.interrupt();
+        }
+        worker_reco = new workerRecommend(true, "1+", sentence_num);
+        worker_reco.start();
+        try {
+            worker_reco.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }

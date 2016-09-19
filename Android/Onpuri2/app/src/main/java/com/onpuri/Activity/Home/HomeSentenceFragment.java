@@ -48,6 +48,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
     private static final String TAG = "HomeSentenceFragment";
     private workerTrans worker_sentence_trans;
     private workerListen worker_sentence_listen;
+    private workerRecommend worker_reco;
 
     private static View view;
 
@@ -130,6 +131,8 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
         add_trans.setOnClickListener(this);
         ImageButton add_listen = (ImageButton) view.findViewById(R.id.add_listen);
         add_listen.setOnClickListener(this);
+        ImageButton reco_sen = (ImageButton) view.findViewById(R.id.reco_sen);
+        reco_sen.setOnClickListener(this);
 
         Button trans_more = (Button) view.findViewById(R.id.trans_more);
         trans_more.setOnClickListener(this);
@@ -191,8 +194,18 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
         tts = new TextToSpeech(getActivity(), this);
 
         String userid = ((MainActivity)getActivity()).user.getuserId();
+
         if (!id.equals(userid)) {
             del_sen.setVisibility(View.INVISIBLE);
+            del_sen.setEnabled(false);
+            reco_sen.setVisibility(View.VISIBLE);
+            reco_sen.setEnabled(true);
+        }
+        else {
+            reco_sen.setVisibility(View.INVISIBLE);
+            reco_sen.setEnabled(false);
+            del_sen.setVisibility(View.VISIBLE);
+            del_sen.setEnabled(true);
         }
 
         return view;
@@ -321,6 +334,8 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 mplayerStop();
                 tts.speak(sentence, TextToSpeech.QUEUE_FLUSH, null);
                 break;
+            case R.id.reco_sen :
+                recommend();
         }
     }
 
@@ -462,6 +477,19 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
     public void mplayerStop() {
         if(((MainActivity)getActivity()).mPlayer.mpfile != null) {
             ((MainActivity)getActivity()).mPlayer.mpfile.pause();
+        }
+    }
+
+    void recommend() {
+        if (worker_reco != null && worker_reco.isAlive()) {  //이미 동작하고 있을 경우 중지
+            worker_reco.interrupt();
+        }
+        worker_reco = new workerRecommend(true, "1+", sentence_num);
+        worker_reco.start();
+        try {
+            worker_reco.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }

@@ -27,8 +27,6 @@ public class PacketUser extends Application {
     static final public char USR_MTRANS = 16; //more translation
     static final public char USR_ATRANS = 17; //add translation
     static final public char ACK_ATRANS = 18; //add translation ACK
-    static final public char USR_TRANS_RECO = 19; //해석 추천
-
 
     static final public char USR_SENLISTEN = 20, USR_SENLISTEN_LEN = 2; //3 recoder
     static final public char ACK_SENLISTEN = 21; //3 recoder ACK
@@ -36,8 +34,6 @@ public class PacketUser extends Application {
     static final public char USR_MLISTEN = 23; //more recoder
     static final public char USR_ALISTEN = 24; //add recoder
     static final public char ACK_ALISTEN = 25; //add recoder ACK
-    static final public char USR_LISTEN_RECO = 26; //듣기 추천
-
 
     static final public char USR_SEARCH = 30; //검색 문장,단어 (search)
     static final public char ACK_WORSER = 31; //검색 단어 응답
@@ -95,6 +91,11 @@ public class PacketUser extends Application {
     static final public char ACK_NMYTEST = 86; //출제한 시험 목록 리스트 끝, 없을 때
 
     static final public char ACK_NSEN = 90; //홈 문장 리스트 없을 경우(no sentence ACK)
+    static final public char USR_RECO = 91; //추천
+    static final public char ACK_RECO = 92; //ACK 추천
+    static final public char USR_DEL = 93; //삭제
+    static final public char ACK_DEL = 94; //ACK 추천
+
     static final public char USR_LEV = 99; //회원 탈퇴(user leave)
     static final public char ACK_LEV = 100; //회원 탈퇴 응답(user leave ACK)
 

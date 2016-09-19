@@ -49,28 +49,33 @@
                 <ImageButton
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:id="@+id/del_sen"
-                    android:background="@drawable/del_icon"
-                    android:layout_marginRight="10dp" />
-
-                <ImageButton
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
                     android:id="@+id/tts"
                     android:background="@drawable/tts_icon"
-                    android:layout_marginRight="10dp" />
+                    android:layout_marginRight="20dp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="20dp">
+
+                    <ImageButton
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:id="@+id/del_sen"
+                        android:background="@drawable/del_icon" />
+
+                    <ImageButton
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:id="@+id/reco_sen"
+                        android:background="@drawable/reco_icon" />
+                </RelativeLayout>
+
                 <ImageButton
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:id="@+id/add_note"
                     android:background="@drawable/addnote_icon"
-                    android:layout_marginRight="10dp" />
-
-                <ImageButton
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:id="@+id/reco_sen"
-                    android:background="@drawable/reco_icon"
                     android:layout_marginRight="10dp" />
             </LinearLayout>
         </LinearLayout>
