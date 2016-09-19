@@ -149,12 +149,16 @@ public class workerSearch extends Thread {
                                     for (index = 0; index <= numEnd; index++) {
                                         numSentence[index + 4] = temp[index];    // 패킷의 Data부분을 inData에 추가해준다.
                                     }
-                                    String num = Character.toString((char) numSentence[4])
-                                            + Character.toString((char) numSentence[5])
-                                            + Character.toString((char) numSentence[6]); //문장번호
+
+                                    String senInfo = new String(numSentence, 4, numEnd);
+                                    Log.d(TAG, "senInfo : " + senInfo);
+                                    int plus = senInfo.indexOf('+');
+                                    String num = senInfo.substring(0,plus); //문장번호
+                                    String Id = senInfo.substring(plus+1, senInfo.length()); //아이디
 
                                     userSentence.setSentence(str);
                                     userSentence.setSentenceNum(num);
+                                    userSentence.setsentenceId(Id);
 
                                     Log.d(TAG, "lenNum : " + num);
                                     break;

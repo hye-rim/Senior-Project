@@ -38,6 +38,7 @@
             <Button
                 android:text="완료"
                 android:id="@+id/btn_test_select_ok"
+                android:textColor="@color/black"
                 android:background="@drawable/btn_border_fuzzy_peach"
                 android:layout_marginRight="20dp"
                 android:layout_width="100dp"
@@ -45,6 +46,7 @@
             <Button
                 android:text="취소"
                 android:id="@+id/btn_test_select_cancel"
+                android:textColor="@color/black"
                 android:background="@drawable/btn_border_fuzzy_peach"
                 android:layout_width="100dp"
                 android:layout_height="30dp" />

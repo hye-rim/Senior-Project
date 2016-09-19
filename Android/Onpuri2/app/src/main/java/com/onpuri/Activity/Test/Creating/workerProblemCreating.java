@@ -75,8 +75,8 @@ public class workerProblemCreating extends Thread {
 
 
     private void sendData(String sendingData, int opc) {
-        outData = new byte[261];
         byte[] dataByte = sendingData.getBytes();
+        outData = new byte[dataByte.length + 6];
 
         outData[0] = (byte) PacketUser.SOF;
         outData[1] = (byte) opc;
@@ -87,7 +87,8 @@ public class workerProblemCreating extends Thread {
         }
         outData[4 + dataByte.length] = (byte)PacketUser.CRC;
         Log.d(TAG,"out : " + new String(outData));
-
+        for(int i = 0; i < outData.length; i++)
+            System.out.println(outData[i]);
 
         try {
             dos = new DataOutputStream(SocketConnection.socket.getOutputStream());

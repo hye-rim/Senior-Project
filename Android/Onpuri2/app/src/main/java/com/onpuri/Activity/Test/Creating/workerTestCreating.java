@@ -26,6 +26,7 @@ public class workerTestCreating extends Thread {
     byte[] inData = new byte[20];
 
     private Boolean isSuccessInfo, isSuccessUser;
+    private Boolean isTitleOverlap;
     private String toServerData;
     private int object;
 
@@ -46,10 +47,14 @@ public class workerTestCreating extends Thread {
         Log.d(TAG, "userlist : " + this.userList);
         isSuccessInfo = false;
         isSuccessUser = false;
+        isTitleOverlap = false;
     }
 
     public Boolean getSuccessInfo() {
         return isSuccessInfo;
+    }
+    public Boolean getTitleOverlap() {
+        return isTitleOverlap;
     }
     public Boolean getSuccessUser() {
         return isSuccessUser;
@@ -69,6 +74,7 @@ public class workerTestCreating extends Thread {
             //시험에 대한 정보 보낸 후 성공 /실패 확인
             if(inData[1] == PacketUser.ACK_TEST_CREATE) {
                 isSuccessInfo = inData[4] == '1' ? true : false; //실패 0, 성공 1
+                isTitleOverlap = inData[4] == '2' ? true : false; //title 중복여부 2일 경우 중복됨
                 isPlay = false;
                 Log.d(TAG, "success? " + isSuccessInfo);
             }
@@ -99,7 +105,7 @@ public class workerTestCreating extends Thread {
 
     private void sendData(String sendingData, int opc) {
         byte[] dataByte = sendingData.getBytes();
-        outData  = new byte[261];
+        outData  = new byte[dataByte.length + 6];
 
         outData[0] = (byte) PacketUser.SOF;
         outData[1] = (byte) opc;
@@ -109,8 +115,8 @@ public class workerTestCreating extends Thread {
             outData[i] = (byte) dataByte[i-4];
         }
         outData[4 + dataByte.length] = (byte)PacketUser.CRC;
-        Log.d(TAG,"out : " + new String(dataByte));
-        Log.d(TAG,"out : " + new String(outData));
+        Log.d(TAG,"out : " + new String(dataByte)); //데이터부분
+        Log.d(TAG,"out : " + new String(outData)); //나가는데이터
 
 
         try {

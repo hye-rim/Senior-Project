@@ -32,7 +32,7 @@ import static com.onpuri.R.drawable.divider_light;
 /**
  * Created by HYERIM on 2016-07-11.
  */
-public class NoteWordFragment  extends Fragment implements View.OnClickListener {
+public class NoteWordFragment  extends Fragment  {
     private static final String TAG = "NoteWordFragment";
     private static View view;
 
@@ -40,7 +40,6 @@ public class NoteWordFragment  extends Fragment implements View.OnClickListener 
 
     private RecyclerView mRecyclerWordItem;
     private TextView tvItemName;
-    private Button btn_listen,btn_edit;
 
     protected RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.Adapter mWordAdapter;
@@ -82,7 +81,7 @@ public class NoteWordFragment  extends Fragment implements View.OnClickListener 
         //Set Word Adapter for Word RecyclerView (NoteTab)
         mRecyclerWordItem = (RecyclerView) view.findViewById(R.id.recycle_note_word);
         mLayoutManager = new LinearLayoutManager(getActivity());
-        mWordAdapter = new NoteWordItemAdapter(itemWord, isEdit, context);
+        mWordAdapter = new NoteWordItemAdapter(itemWord, context);
         mRecyclerWordItem.setAdapter(mWordAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerWordItem.addItemDecoration(new DividerItemDecoration(dividerDrawable));
         mRecyclerWordItem.addOnItemTouchListener(
@@ -95,24 +94,24 @@ public class NoteWordFragment  extends Fragment implements View.OnClickListener 
                             SearchFragment searchFragment = new SearchFragment();
                             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 
+                            Log.d(TAG, "search word : " + itemWord.get(position).getWord().toString());
+                            String search = itemWord.get(position).getWord().toString();
+                            search = search.replace(" ", "");
+
                             Bundle args = new Bundle();
-                            args.putString("searchText", itemWord.get(position).getWord());
+                            args.putString("searchText", search);
                             searchFragment.setArguments(args);
 
                             fragmentManager.beginTransaction()
-                                    .add(R.id.containerView, searchFragment)
-                                    .addToBackStack("fragBack")
+                                    .add(R.id.root_note, searchFragment)
+                                    .addToBackStack(null)
                                     .commit();
                         }
                     }
 
                 }));
 
-        btn_listen = (Button)view.findViewById(R.id.note_word_listen);
-        btn_edit = (Button)view.findViewById(R.id.note_word_edit);
 
-        btn_listen.setOnClickListener(this);
-        btn_edit.setOnClickListener(this);
 
         return view;
     }
@@ -147,29 +146,6 @@ public class NoteWordFragment  extends Fragment implements View.OnClickListener 
         if(itemWord.isEmpty()){
             isNullWord = true;
             itemWord.add(new WordData("추가된 단어가 없습니다.", ""));
-        }
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.note_word_listen:
-                Toast.makeText(getActivity(),"기능 추가 예정입니다.",Toast.LENGTH_SHORT).show();
-                break;
-
-            case R.id.note_word_edit:
-                Toast.makeText(getActivity(),"기능 추가 예정입니다.",Toast.LENGTH_SHORT).show();
-                /*
-                isEdit = !isEdit;
-                 mWordAdapter = new NoteWordItemAdapter(itemWord, isEdit, context);
-                 mRecyclerWordItem.setAdapter(mWordAdapter);// Set CustomAdapter as the adapter for RecyclerView.
-
-                if(isEdit)
-                    Toast.makeText(getActivity(),"아직 데이터 반영이 되지않습니다. " + String.valueOf(isEdit),Toast.LENGTH_SHORT).show();
-                    */
-                break;
-            default:
-                break;
         }
     }
 

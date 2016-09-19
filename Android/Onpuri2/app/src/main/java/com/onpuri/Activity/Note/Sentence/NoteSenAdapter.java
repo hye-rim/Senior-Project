@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.onpuri.Activity.Note.workerNote;
 import com.onpuri.Activity.Note.workerNoteChanges;
 import com.onpuri.Data.NoteData;
 import com.onpuri.R;
@@ -51,6 +52,8 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     Context context;
 
     workerNoteChanges mworker_add;
+    private workerNote mworker_note;
+
     String originalName;
     FragmentManager fm;
 
@@ -314,6 +317,36 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
+    private void dataChange(){
+        if (mworker_note != null && mworker_note.isAlive()) {  //이미 동작하고 있을 경우 중지
+            mworker_note.interrupt();
+        }
+        mworker_note = new workerNote(true);
+        mworker_note.start();
+        try {
+            mworker_note.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        noteSenList.clear();
+
+        //문장 모음 리스트
+        int i = 0;
+        if(mworker_note.getNoteSen() != null){
+            while( i < mworker_note.getNoteSen().size()){
+                noteSenList.add(new NoteData( mworker_note.getNoteSen().get(i).toString() ));
+                Log.d(TAG, mworker_note.getNoteSen().get(i).toString());
+                i++;
+            }
+        }
+        if(noteSenList.isEmpty()){
+            isNullSen = true;
+            noteSenList.add(new NoteData("새로운 문장 모음을 등록해보세요."));
+        }
+
+    }
+
 
     private void addItem(int position, String itemName) {
         String nameData = new String ("1+" + itemName);
@@ -321,7 +354,7 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         toServer(USR_NOTE_ADD ,nameData);
 
         if(mworker_add.getSuccess()) {
-           // noteSenList.add(new NoteData(itemName));
+            dataChange();
             notifyDataSetChanged();
         }else{
             Toast.makeText(context, "추가에 실패하였습니다.", Toast.LENGTH_LONG).show();
@@ -335,11 +368,12 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         toServer(USR_NOTE_EDIT ,nameData);
 
         if(mworker_add.getSuccess()) {
-            //noteSenList.get(position).setName(changeName);
+            dataChange();
             notifyDataSetChanged();
         }else{
             Toast.makeText(context, "수정에 실패하였습니다.", Toast.LENGTH_LONG).show();
         }
+
     }
 
     private void removeItem(int position, String itemName){
@@ -348,7 +382,7 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         toServer(USR_NOTE_DEL ,nameData);
 
         if(mworker_add.getSuccess()) {
-            //noteSenList.remove(position);
+            dataChange();
             notifyDataSetChanged();
         }else{
             Toast.makeText(context, "삭제에 실패하였습니다.", Toast.LENGTH_LONG).show();

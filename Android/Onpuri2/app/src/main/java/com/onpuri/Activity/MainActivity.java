@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -67,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TextView mToolbarTitle;
     private Bundle bundle;
 
+    private ViewPager viewPager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
 
+        viewPager = (ViewPager)findViewById(R.id.viewpager);
     }
 
     @Override
@@ -226,9 +229,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     searchView.clearFocus();
 
+                    //int i = viewPager.getCurrentItem();
+
+                    int[] list = {R.id.root_home, R.id.root_note, R.id.root_test};
+
                     fragmentManager.beginTransaction()
-                            .add(R.id.containerView, searchFragment)
-                            .addToBackStack("fragBack")
+                            .add(list[0], searchFragment)
+                            .addToBackStack(null)
                             .commit();
                 }
                 return true;

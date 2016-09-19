@@ -123,24 +123,31 @@ public class TestMakingWordFragment extends Fragment implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_making_word_next:
-                getEnteredData();
-                listSize = problemList.size();
+                if(!isNull(mProblemEditText) && !isNull(mExampleEditText1)
+                        && !isNull(mExampleEditText2) && !isNull(mExampleEditText3)
+                        && !isNull(mExampleEditText4)) {
+                    getEnteredData();
+                    listSize = problemList.size();
 
-                if(listSize == nowNum-1)
-                    problemList.add(new CreatedTestData(problem, example1, example2, example3, example4, correctNum));
-                else
-                    problemList.set(nowNum-1, new CreatedTestData(problem, example1, example2, example3, example4, correctNum));
+                    if (listSize == nowNum - 1)
+                        problemList.add(new CreatedTestData(problem, example1, example2, example3, example4, correctNum));
+                    else
+                        problemList.set(nowNum - 1, new CreatedTestData(problem, example1, example2, example3, example4, correctNum));
 
-                if(nowNum == maxNum)
-                    checkExitDialog();
-                else{
-                    changeToNextData();
+                    if (nowNum == maxNum)
+                        checkExitDialog();
+                    else {
+                        changeToNextData();
+                    }
                 }
-
+                else{
+                    Toast.makeText(getActivity(), "빈칸이 존재합니다.", Toast.LENGTH_LONG).show();
+                }
                 break;
 
             case R.id.btn_making_word_back:
-                changeToBackData();
+                if(nowNum != 1)
+                    changeToBackData();
                 break;
 
             case R.id.radio_example1:
@@ -177,6 +184,12 @@ public class TestMakingWordFragment extends Fragment implements View.OnClickList
         }
     }
 
+    private boolean isNull(TextView test) {
+        if ( test.getText().toString().isEmpty() || test.getText().toString() == "")
+            return true;
+        return false;
+    }
+
     private void changeToBackData() {
         nowNum--;
         mNowNumTextView.setText("" + nowNum);
@@ -193,8 +206,6 @@ public class TestMakingWordFragment extends Fragment implements View.OnClickList
         mExampleEditText2.setText(example2);
         mExampleEditText3.setText(example3);
         mExampleEditText4.setText(example4);
-
-        mExampleRadio.check(((RadioButton)mExampleRadio.getChildAt( correctNum-1 )).getId());
 
     }
 
@@ -213,6 +224,11 @@ public class TestMakingWordFragment extends Fragment implements View.OnClickList
         example3 = new String();
         example4 = new String();
         correctNum = 1;
+
+        mExampleRadio1.setChecked(true);
+        mExampleRadio2.setChecked(false);
+        mExampleRadio3.setChecked(false);
+        mExampleRadio4.setChecked(false);
     }
 
     private void checkExitDialog() {
@@ -244,7 +260,9 @@ public class TestMakingWordFragment extends Fragment implements View.OnClickList
 
         if(mworker_problem.getSuccess()){
             Toast.makeText(getActivity(), "등록되었습니다.", Toast.LENGTH_SHORT).show();
-            getFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            FragmentManager.BackStackEntry entry = getActivity().getSupportFragmentManager().getBackStackEntryAt(0);
+            getActivity().getSupportFragmentManager().popBackStack(entry.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            getActivity().getSupportFragmentManager().beginTransaction().commit();
         }
         else{
             Toast.makeText(getActivity(), "등록에 실패하였습니다. \n다시 시도해주세요.", Toast.LENGTH_SHORT).show();

@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,7 +33,8 @@ public class TestCreateFragment extends Fragment implements View.OnClickListener
 
     private HorizontalNumberPicker horizontalNumberPicker1;
     private RadioButton mEveryRadio, mSelectRadio;
-    private TextView mSelectListTextView, mTestTitleTextView;
+    private TextView mSelectListTextView;
+    private EditText mTestTitleTextView;
     private Button mCreatingButton, mCancelButton;
 
     private static View view;
@@ -98,7 +100,7 @@ public class TestCreateFragment extends Fragment implements View.OnClickListener
         }
 
         //view 아이디
-        mTestTitleTextView = (TextView)view.findViewById(R.id.et_test_title);
+        mTestTitleTextView = (EditText)view.findViewById(R.id.et_test_title);
         mEveryRadio = (RadioButton)view. findViewById(R.id.radio_every);
         mSelectRadio = (RadioButton)view. findViewById(R.id.radio_select);
         mSelectListTextView = (TextView)view. findViewById(R.id.select_list);
@@ -139,6 +141,9 @@ public class TestCreateFragment extends Fragment implements View.OnClickListener
 
             case R.id.radio_select:
                 isFirst = false;
+                objectNum = 0;
+                selectObjectList.clear();
+                mSelectListTextView.setText("");
 
                 mSelectListTextView.setVisibility(View.VISIBLE);
                 final TestSelectObjectFragment testSelectObjectFragment = new TestSelectObjectFragment();
@@ -151,7 +156,11 @@ public class TestCreateFragment extends Fragment implements View.OnClickListener
                 break;
 
             case R.id.btn_creating:
-                createTest();
+                if(!checkNull()) //false여야 한다.
+                    createTest();
+                else{
+                    Toast.makeText(getActivity(), "시험 제목을 입력해주세요.", Toast.LENGTH_LONG).show();
+                }
                 break;
 
             case R.id.btn_creating_cancel:
@@ -159,6 +168,12 @@ public class TestCreateFragment extends Fragment implements View.OnClickListener
                 fragmentManager.beginTransaction().commit();
                 break;
         }
+    }
+
+    private boolean checkNull() {
+        if ( mTestTitleTextView.getText().toString().isEmpty() || mTestTitleTextView.getText().toString() == "")
+            return true;
+        return false;
     }
 
     private void createTest() {
@@ -182,7 +197,10 @@ public class TestCreateFragment extends Fragment implements View.OnClickListener
             if (mworker_test.getSuccessInfo()) {
                 moveMakingProblem();
             }
-            else {
+            else if (mworker_test.getTitleOverlap()){
+                Toast.makeText(getActivity(), "같은 제목의 시험이 존재합니다. \n변경해주세요.", Toast.LENGTH_LONG).show();
+            }
+            else{
                 Toast.makeText(getActivity(), "시험 출제를 실패하였습니다.", Toast.LENGTH_LONG).show();
             }
         }
@@ -207,8 +225,8 @@ public class TestCreateFragment extends Fragment implements View.OnClickListener
                 testMakingWordFragment.setArguments(args);
 
                 fragmentManager.beginTransaction()
-                        .replace(R.id.containerView, testMakingWordFragment)
-                        .addToBackStack("fragBack")
+                        .replace(R.id.root_test, testMakingWordFragment)
+                        .addToBackStack("testBack")
                         .commit();
 
                 break;
@@ -218,7 +236,7 @@ public class TestCreateFragment extends Fragment implements View.OnClickListener
 
                 fragmentManager.beginTransaction()
                         .replace(R.id.containerView, testMakingSenFragment)
-                        .addToBackStack("fragBack")
+                        .addToBackStack("testBack")
                         .commit();
 
                 break;

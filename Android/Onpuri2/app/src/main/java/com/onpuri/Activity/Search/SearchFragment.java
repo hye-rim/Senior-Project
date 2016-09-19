@@ -53,6 +53,7 @@ public class SearchFragment extends Fragment {
 
     ArrayList<String> searchList = new ArrayList<String>();
     ArrayList<String> sentenceNumList = new ArrayList<String>();
+    ArrayList<String> sentenceIdList = new ArrayList<String>();
     private ArrayList<String> listNote;
 
     private int pos;
@@ -168,6 +169,8 @@ public class SearchFragment extends Fragment {
                 Bundle args = new Bundle();
                 args.putString("sen", searchList.get(position));
                 args.putString("sen_num", sentenceNumList.get(position));
+                args.putString("id", sentenceIdList.get(position));
+
                 homeSentenceFragment.setArguments(args);
 
                 fm.beginTransaction()
@@ -177,6 +180,7 @@ public class SearchFragment extends Fragment {
                 fm.executePendingTransactions();
             }
         });
+
 
         return view;
     }
@@ -209,6 +213,7 @@ public class SearchFragment extends Fragment {
             while (i < mworker_search.getUserSentence().arrSentence.size()) {
                 searchList.add(mworker_search.getUserSentence().arrSentence.get(i));
                 sentenceNumList.add(mworker_search.getUserSentence().arrSentenceNum.get(i));
+                sentenceIdList.add(mworker_search.getUserSentence().arrSentenceId.get(i));
                 Log.d(TAG, mworker_search.getUserSentence().arrSentence.get(i));
                 i++;
             }

@@ -68,7 +68,7 @@ public class TestFragment  extends Fragment implements View.OnClickListener{
             case R.id.btn_test_creating:
                 final TestCreateFragment testCreateFragment = new TestCreateFragment();
                 fm.beginTransaction()
-                        .replace(R.id.containerView, testCreateFragment)
+                        .replace(R.id.root_test, testCreateFragment)
                         .addToBackStack(null)
                         .commit();
                 break;

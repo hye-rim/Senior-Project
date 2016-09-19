@@ -126,6 +126,22 @@ public class workerNoteLoad extends Thread {
                                 noteSentence.setSentenceNum(num);
 
                                 Log.d(TAG, "lenNum : " + num);
+
+                                dis.read(temp, 0, 4);
+                                for (index = 0; index < 4; index++) {
+                                    inData[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
+                                }
+
+                                int idEnd = (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);
+
+                                dis.read(temp, 0, 1 + idEnd);
+                                for (index = 0; index <= idEnd; index++) {
+                                    inData[index + 4] = temp[index];    // 패킷의 Data부분을 inData에 추가해준다.
+                                }
+
+                                String id = new String(inData, 4, idEnd);
+                                noteSentence.setsentenceId(id);
+                                Log.d(TAG, "id : " + id);
                             }
                             else if(outKinds == 2){
                                 wordLen = end;

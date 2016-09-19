@@ -5,8 +5,11 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_material_light">
+    android:background="@color/more_light_gray">
     <RelativeLayout
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="5dp"
+        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:orientation="horizontal">
@@ -22,29 +25,15 @@
             android:textSize="18dp"
             android:textColor="@color/black"
             android:textStyle="bold"/>
-        <Button
-            android:id="@+id/note_sen_listen"
-            android:text="듣기"
-            android:drawablePadding="18dip"
-            android:layout_centerInParent="true"
-            android:layout_toLeftOf="@+id/note_sen_edit"
-            android:layout_width="80dp"
-            android:layout_height="match_parent" />
-        <Button
-            android:id="@+id/note_sen_edit"
-            android:text="편집"
-            android:drawablePadding="18dip"
-            android:layout_centerInParent="true"
-            android:layout_alignParentRight="true"
-            android:layout_width="80dp"
-            android:layout_height="match_parent" />
     </RelativeLayout>
     <android.support.v7.widget.RecyclerView
+
         android:scrollbars="vertical"
         app:layoutManager="LinearLayoutManager"
         android:id="@+id/recycle_note_sen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/white"
         tools:listitem="@layout/note_sen_item_list" />
 
 </LinearLayout>
