@@ -33,12 +33,13 @@ import static com.onpuri.R.drawable.divider_dark;
 public class UserMyActFragment extends Fragment {
     private static final String TAG = "UserMyActFragment";
     private static View view;
+    private static final String ALL = "0";
     private TabHost mTabHost;
 
     ArrayList<String> listNew, listNewNum, listNewId;
     ArrayList<String> listRecord, listRecordNum,  listRecordId;
     ArrayList<String> listTrans, listTransNum, listTransId;
-    ArrayList<String> listTest, listTestNum, listTestPercent;
+    ArrayList<String> listTest, listTestNum, listTestPercent, listTestKinds;
 
     private RecyclerView mRecyclerNew, mRecyclerRecord, mRecyclerTrans, mRecyclerTest;
     private RecyclerView.Adapter mNewAdapter, mRecordAdapter, mTransAdapter, mTestAdapter;
@@ -234,7 +235,7 @@ public class UserMyActFragment extends Fragment {
     //Set Sentence Adapter for Sentence RecyclerView (NoteTab)
         mRecyclerTest = (RecyclerView) view.findViewById(R.id.recycle_act_test);
         mLayoutManager = new LinearLayoutManager(getActivity());
-        mTestAdapter = new MyActTestAdapter(getActivity().getApplicationContext(),listTest, listTestPercent,mRecyclerTest);
+        mTestAdapter = new MyActTestAdapter(getActivity().getApplicationContext(),listTest, listTestPercent, listTestKinds ,mRecyclerTest);
         mRecyclerTest.setAdapter(mTestAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerTest.addItemDecoration(new DividerItemDecoration(dividerDrawable));
 
@@ -244,12 +245,16 @@ public class UserMyActFragment extends Fragment {
                     public void onItemClick(View view, int position) {
                         if(isNullTest)
                             Toast.makeText(getActivity().getApplicationContext(), "시험을 출제해보세요.", Toast.LENGTH_SHORT).show();
+                        else if( ALL.compareTo(listTestKinds.get(position).toString()) == 0){
+                            Toast.makeText(getActivity().getApplicationContext(), "전체 대상 시험입니다.", Toast.LENGTH_SHORT).show();
+                        }
                         else{
                             UserMyActTestFragment userMyActTestFragment = new UserMyActTestFragment();
 
                             Bundle args = new Bundle();
                             args.putString("test_title", listTest.get(position));
                             args.putString("test_percent", listTestPercent.get(position));
+                            args.putString("test_num", listTestNum.get(position));
 
                             userMyActTestFragment.setArguments(args);
 
@@ -269,15 +274,19 @@ public class UserMyActFragment extends Fragment {
         listNew = new ArrayList<String>();
         listNewNum = new ArrayList<String>();
         listNewId = new ArrayList<String>();
+
         listRecord = new ArrayList<String>();
         listRecordNum = new ArrayList<String>();
         listRecordId = new ArrayList<String>();
+
         listTrans = new ArrayList<String>();
         listTransNum = new ArrayList<String>();
         listTransId = new ArrayList<String>();
+
         listTest = new ArrayList<String>();
         listTestNum = new ArrayList<String>();
         listTestPercent = new ArrayList<String>();
+        listTestKinds = new ArrayList<String>();
     }
 
     public void loadActData(){
@@ -349,17 +358,22 @@ public class UserMyActFragment extends Fragment {
         i = 0;
         if(mworker_act.getActTest().arrSentence != null) {
             isNullTest = false;
-            String testInfo, testTitle, testPercent;
+            String testInfo, testTitle, testPercent, testKinds;
             int plus;
 
             while (i < mworker_act.getActTest().arrSentence.size()) {
                 testInfo = mworker_act.getActTest().arrSentence.get(i);
                 plus = testInfo.indexOf('+');
                 testTitle = testInfo.substring(0,plus); //시험제목
-                testPercent = testInfo.substring(plus+1, testInfo.length()); //시험 평균 정답률
+                testInfo = testInfo.substring(plus+1, testInfo.length()); //시험 평균 정답률
+
+                plus = testInfo.indexOf('+');
+                testPercent = testInfo.substring(0,plus); //시험제목
+                testKinds = testInfo.substring(plus+1, testInfo.length()); //시험 평균 정답률
 
                 listTest.add(testTitle);
                 listTestPercent.add(testPercent);
+                listTestKinds.add(testKinds);
                 listTestNum.add(mworker_act.getActTest().arrSentenceNum.get(i));
                 Log.d(TAG, "출제목록 =>" + mworker_act.getActTest().arrSentence.get(i));
 

@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import com.onpuri.R;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 /**
@@ -17,21 +19,24 @@ import java.util.ArrayList;
  */
 public class MyActTestAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
     private final String TAG = "MyActTestAdapter";
+    private final String ALL = "0";
 
     private ArrayList<String> testTitleList;
     private ArrayList<String> testPercentList;
+    private ArrayList<String> testKinds;
     private Context mContext;
 
-    public MyActTestAdapter(Context context, ArrayList<String> testTitle, ArrayList<String> testPercent, RecyclerView recyclerView) {
+    public MyActTestAdapter(Context context, ArrayList<String> testTitle, ArrayList<String> testPercent, ArrayList<String> testKinds, RecyclerView recyclerView) {
         this.testTitleList = testTitle;
         this.testPercentList = testPercent;
+        this.testKinds = testKinds;
         this.mContext = context;
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
         public TextView mTestName;
         public TextView mTestPer;
-
+        public TextView mTestKinds;
 
         public ItemViewHolder(View v) {
             super(v);
@@ -46,13 +51,17 @@ public class MyActTestAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             mTestName = (TextView) v.findViewById(R.id.tv_act_test_name);
             mTestPer = (TextView) v.findViewById(R.id.tv_act_test_per);
+            mTestKinds = (TextView) v.findViewById(R.id.tv_act_test_kinds);
 
         }
 
-        public TextView getTextView() {
+        public TextView getmTestName() {
             return mTestName;
         }
         public TextView getmTestPer() {
+            return mTestPer;
+        }
+        public TextView getmTestKinds() {
             return mTestPer;
         }
     }
@@ -75,7 +84,15 @@ public class MyActTestAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         ItemViewHolder itemViewHolder = (ItemViewHolder)holder;
         itemViewHolder.mTestName.setText(testTitleList.get(position));
-        itemViewHolder.mTestPer.setText(testPercentList.get(position) + "%");
+
+        if( ALL.compareTo(testKinds.get(position).toString()) == 0){
+            itemViewHolder.mTestPer.setVisibility(View.GONE);
+            itemViewHolder.mTestKinds.setText("전체");
+        }
+        else{
+            itemViewHolder.mTestPer.setText(testPercentList.get(position) + "%");
+            itemViewHolder.mTestKinds.setText("지정");
+        }
         itemViewHolder.itemView.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
