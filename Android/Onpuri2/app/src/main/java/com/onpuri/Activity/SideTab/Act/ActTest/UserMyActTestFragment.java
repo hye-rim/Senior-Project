@@ -2,15 +2,15 @@ package com.onpuri.Activity.SideTab.Act.ActTest;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.onpuri.Data.ActTestData;
 import com.onpuri.R;
 
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public class UserMyActTestFragment  extends Fragment{
 
     private workerActTest mWorker_testList;
     private ArrayList<ActTestData> mTestUserList;
-    private ArrayAdapter testArrayAdapter;
+    private MyActTestItemAdapter testArrayAdapter;
     private android.support.v4.app.FragmentManager mFragmentManager;
 
     @Override
@@ -54,8 +54,10 @@ public class UserMyActTestFragment  extends Fragment{
         receiveBundleData(); //프래그먼트 바뀔때 받은 title, percent, id 받기
 
         mTitleTextView.setText(title);
-        mPercentTextView.setText(percent + "%");
+        mPercentTextView.setText( percent + "%");
+
         receiveTestUserList(); //시험을 푼 유저리스트 서버로부터 받아 저장
+
         initListView(); //리스트뷰 설정
 
         return view;
@@ -69,22 +71,25 @@ public class UserMyActTestFragment  extends Fragment{
     }
 
     private void initListView() {
-        testArrayAdapter = new ArrayAdapter<ActTestData>(this.getContext(), android.R.layout.simple_list_item_1, mTestUserList){
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                View view = super.getView(position, convertView, parent);
-
-                TextView textView = (TextView)view.findViewById(android.R.id.text1);
-                textView.setTextSize(15);
-                return view;
-            }
-        };
+        testArrayAdapter = new MyActTestItemAdapter();
         mTestListView.setAdapter(testArrayAdapter);
 
-        TestListUtils.setDynamicHeight(mTestListView);
+        if( !mTestUserList.isEmpty() ) {
+            for (int i = 0; i < mTestUserList.size(); i++) {
+                testArrayAdapter.addItem(mTestUserList.get(i).getTestId().toString() + "님",
+                        mTestUserList.get(i).getTestDate().toString(),
+                        mTestUserList.get(i).getTestCorrect().toString());
+            }
+        }else{
+            testArrayAdapter.addItem("지정된 응시자가 없습니다", "","");
+        }
+
+        //TestListUtils.setDynamicHeight(mTestListView);
     }
 
     private void receiveTestUserList() {
+        mTestUserList = new ArrayList<ActTestData>();
+
         if (mWorker_testList != null && mWorker_testList.isAlive()) {  //이미 동작하고 있을 경우 중지
             mWorker_testList.interrupt();
         }
@@ -97,36 +102,15 @@ public class UserMyActTestFragment  extends Fragment{
         }
 
         mTestUserList = mWorker_testList.getmTestList();
+
     }
 
     public void init(){
         mFragmentManager = getActivity().getSupportFragmentManager();
 
         mTitleTextView = (TextView)view.findViewById(R.id.tv_act_test_item_title);
-        mPercentTextView = (TextView)view.findViewById(R.id.tv_act_test_item_percent);
+        mPercentTextView = (TextView)view.findViewById(R.id.tv_act_test_item_total_percent);
         mTestListView = (ListView)view.findViewById(R.id.listView1);
 
-        mTestUserList = new ArrayList<ActTestData>();
-    }
-
-    public static class TestListUtils {
-        public static void setDynamicHeight(ListView mListView) {
-            ListAdapter mListAdapter = mListView.getAdapter();
-            if (mListAdapter == null) {
-                // when adapter is null
-                return;
-            }
-            int height = 0;
-            int desiredWidth = View.MeasureSpec.makeMeasureSpec(mListView.getWidth(), View.MeasureSpec.UNSPECIFIED);
-            for (int i = 0; i < mListAdapter.getCount(); i++) {
-                View listItem = mListAdapter.getView(i, null, mListView);
-                listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
-                height += listItem.getMeasuredHeight();
-            }
-            ViewGroup.LayoutParams params = mListView.getLayoutParams();
-            params.height = height + (mListView.getDividerHeight() * (mListAdapter.getCount() - 1));
-            mListView.setLayoutParams(params);
-            mListView.requestLayout();
-        }
     }
 }

@@ -146,6 +146,9 @@ public class UserMyActFragment extends Fragment {
                     public void onItemClick(View view, int position) {
                         if(isNullNew)
                             Toast.makeText(getActivity().getApplicationContext(), "문장을 등록해보세요.", Toast.LENGTH_SHORT).show();
+                        else if(listNew.size() != listNewNum.size()){
+
+                        }
                         else{
                             HomeSentenceFragment homeSentenceFragment = new HomeSentenceFragment();
 
@@ -179,6 +182,9 @@ public class UserMyActFragment extends Fragment {
                     public void onItemClick(View view, int position) {
                         if(isNullRecord)
                             Toast.makeText(getActivity().getApplicationContext(), "문장 녹음을 등록해보세요.", Toast.LENGTH_SHORT).show();
+                        else if(listRecord.size() != listRecordNum.size()){
+
+                        }
                         else{
                             HomeSentenceFragment homeSentenceFragment = new HomeSentenceFragment();
 
@@ -212,6 +218,9 @@ public class UserMyActFragment extends Fragment {
                     public void onItemClick(View view, int position) {
                         if(isNullTrans)
                             Toast.makeText(getActivity().getApplicationContext(), "문장 번역을 등록해보세요.", Toast.LENGTH_SHORT).show();
+                        else if(listTrans.size() != listTransNum.size()){
+
+                        }
                         else{
                             HomeSentenceFragment homeSentenceFragment = new HomeSentenceFragment();
 
@@ -247,6 +256,9 @@ public class UserMyActFragment extends Fragment {
                             Toast.makeText(getActivity().getApplicationContext(), "시험을 출제해보세요.", Toast.LENGTH_SHORT).show();
                         else if( ALL.compareTo(listTestKinds.get(position).toString()) == 0){
                             Toast.makeText(getActivity().getApplicationContext(), "전체 대상 시험입니다.", Toast.LENGTH_SHORT).show();
+                        }
+                        else if(listTest.size() != listTestNum.size()){
+
                         }
                         else{
                             UserMyActTestFragment userMyActTestFragment = new UserMyActTestFragment();
@@ -319,6 +331,8 @@ public class UserMyActFragment extends Fragment {
         if(listNew.isEmpty()){
             listNew.add("문장을 등록해보세요.");
             isNullNew = true;
+        }else{
+            listNew.add("");
         }
 
         i = 0;
@@ -336,6 +350,8 @@ public class UserMyActFragment extends Fragment {
         if(listRecord.isEmpty()){
             isNullRecord = true;
             listRecord.add("문장 녹음을 해보세요.");
+        }else{
+            listRecord.add("");
         }
 
         i = 0;
@@ -353,6 +369,8 @@ public class UserMyActFragment extends Fragment {
         if(listTrans.isEmpty()){
             isNullTrans = true;
             listTrans.add("문장 번역을 해보세요.");
+        }else{
+            listTrans.add("");
         }
 
         i = 0;

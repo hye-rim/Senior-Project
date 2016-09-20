@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
@@ -32,7 +33,7 @@ public class TestCreateFragment extends Fragment implements View.OnClickListener
     private static final int SEN = 2;
 
     private HorizontalNumberPicker horizontalNumberPicker1;
-    private RadioButton mEveryRadio, mSelectRadio;
+    private RadioButton mSentenceRadio, mWordRadio, mEveryRadio, mSelectRadio;
     private TextView mSelectListTextView;
     private EditText mTestTitleTextView;
     private Button mCreatingButton, mCancelButton;
@@ -67,6 +68,8 @@ public class TestCreateFragment extends Fragment implements View.OnClickListener
         init();
 
         //click listener 설정
+        mSentenceRadio.setOnClickListener(this);
+        mWordRadio.setOnClickListener(this);
         mEveryRadio.setOnClickListener(this);
         mSelectRadio.setOnClickListener(this);
         horizontalNumberPicker1.setListener(this);
@@ -101,12 +104,19 @@ public class TestCreateFragment extends Fragment implements View.OnClickListener
 
         //view 아이디
         mTestTitleTextView = (EditText)view.findViewById(R.id.et_test_title);
+        mSentenceRadio = (RadioButton)view.findViewById(R.id.radio_sen);
+        mWordRadio = (RadioButton)view.findViewById(R.id.radio_word);
         mEveryRadio = (RadioButton)view. findViewById(R.id.radio_every);
         mSelectRadio = (RadioButton)view. findViewById(R.id.radio_select);
         mSelectListTextView = (TextView)view. findViewById(R.id.select_list);
         horizontalNumberPicker1 = (HorizontalNumberPicker)view.findViewById(R.id.horizontal_number_picker1);
         mCreatingButton = (Button)view.findViewById(R.id.btn_creating);
         mCancelButton = (Button)view.findViewById(R.id.btn_creating_cancel);
+
+        //제목 입력 15자로 제한
+        InputFilter[] FilterArray = new InputFilter[1];
+        FilterArray[0] = new InputFilter.LengthFilter(15);
+        mTestTitleTextView.setFilters(FilterArray);
 
         //응시자 수 250으로 제한
         //horizontal number picker 기본값, 디자인 설정
@@ -215,11 +225,12 @@ public class TestCreateFragment extends Fragment implements View.OnClickListener
     }
 
     private void moveMakingProblem() {
+        Bundle args;
         switch (kinds){
             case WORD:
                 final TestMakingWordFragment testMakingWordFragment = new TestMakingWordFragment();
 
-                Bundle args = new Bundle();
+                args = new Bundle();
                 args.putString("test_title", selectObjectList.get(0));
                 args.putInt("test_max_num", problemNum);
                 testMakingWordFragment.setArguments(args);
@@ -234,8 +245,13 @@ public class TestCreateFragment extends Fragment implements View.OnClickListener
             case SEN:
                 final TestMakingSenFragment testMakingSenFragment = new TestMakingSenFragment();
 
+                args = new Bundle();
+                args.putString("test_title", selectObjectList.get(0));
+                args.putInt("test_max_num", problemNum);
+                testMakingSenFragment.setArguments(args);
+
                 fragmentManager.beginTransaction()
-                        .replace(R.id.containerView, testMakingSenFragment)
+                        .replace(R.id.root_test, testMakingSenFragment)
                         .addToBackStack("testBack")
                         .commit();
 

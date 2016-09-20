@@ -53,7 +53,6 @@ public class workerTestList extends Thread{
 
     public void run() {
         super.run();
-        Log.d(TAG, "type : " + type);
 
         while(isPlay) {
             outData[0] = (byte) PacketUser.SOF;
@@ -62,8 +61,6 @@ public class workerTestList extends Thread{
             outData[3] = (byte) type.length();
             for (int i = 4; i < 4 + type.length(); i++) {
                 outData[4] = (byte) type.charAt(i - 4);
-                Log.d(TAG, "data:"+outData[i]);
-
             }
             outData[4 + type.length()] = (byte) PacketUser.CRC;
 
@@ -75,11 +72,8 @@ public class workerTestList extends Thread{
 
                 int n = 0;
                 while(true) {
-                    Log.d(TAG,"n");
-                    dis.read(inData, 0, 4);
-                    Log.d(TAG, "indata:" + inData[0]);
-                    Log.d(TAG, "indata:" + inData[1]);
 
+                    dis.read(inData, 0, 4);
                     int len = inData[3];
 
                     if (inData[1] == PacketUser.ACK_TEST_LIST) {
@@ -100,17 +94,12 @@ public class workerTestList extends Thread{
                         info = info.substring(plus+1);
                         plus = info.indexOf('+');
                         part.add(info.substring(0,plus));
-                        title.add(info.substring(plus + 1, (info.length() - 1))+"% "+ Title);
-
-                        Log.d(TAG, "num:" + num);
-                        Log.d(TAG, "userid:" + userid);
-                        Log.d(TAG, "quiz:" + quiz);
-                        Log.d(TAG, "part:" + part);
-                        Log.d(TAG, "title:" + title);
+                        String Per = info.substring(plus+1,(info.length() - 1));
+                        if(Per == null) { Per="0";}
+                        title.add(Per+"% "+ Title);
 
                         n++;
                     } else if (inData[1] == PacketUser.ACK_NTEST_LIST) {
-                        Log.d(TAG,"없더");
                         dis.read(inData);
                         count = n;
                         break;

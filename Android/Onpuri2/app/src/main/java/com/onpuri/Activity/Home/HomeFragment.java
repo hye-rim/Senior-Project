@@ -30,12 +30,12 @@ public class HomeFragment extends Fragment {
 
     private workerSentenceList mworker_sentence;
 
-    ArrayList<String> listSentence = new ArrayList<String>();
-    ArrayList<String> listSentenceNum = new ArrayList<String>();
-    ArrayList<String> listTransNum = new ArrayList<String>();
-    ArrayList<String> listListenNum = new ArrayList<String>();
-    ArrayList<String> listId = new ArrayList<String>();
-    ArrayList<String> listReco = new ArrayList<String>();
+    ArrayList<String> listSentence;
+    ArrayList<String> listSentenceNum;
+    ArrayList<String> listTransNum;
+    ArrayList<String> listListenNum;
+    ArrayList<String> listId;
+    ArrayList<String> listReco;
 
     PacketUser userSentence;
 
@@ -134,6 +134,12 @@ public class HomeFragment extends Fragment {
 
     // By default, we add 10 objects for first time.
     private void loadData(int current_page) {
+        listSentence = new ArrayList<String>();
+        listSentenceNum = new ArrayList<String>();
+        listTransNum = new ArrayList<String>();
+        listListenNum = new ArrayList<String>();
+        listId = new ArrayList<String>();
+
         if (mworker_sentence != null && mworker_sentence.isAlive()) {  //이미 동작하고 있을 경우 중지
             mworker_sentence.interrupt();
         }

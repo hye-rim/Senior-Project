@@ -67,6 +67,7 @@ public class MyActNewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         ItemViewHolder itemViewHolder = (ItemViewHolder)holder;
         itemViewHolder.mSenItem.setText(senList.get(position));
+        itemViewHolder.mSenItem.setMaxLines(2);
     }
 
     @Override

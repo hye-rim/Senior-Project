@@ -76,7 +76,7 @@ public class workerProblemCreating extends Thread {
 
     private void sendData(String sendingData, int opc) {
         byte[] dataByte = sendingData.getBytes();
-        outData = new byte[dataByte.length + 6];
+        outData = new byte[dataByte.length + 5];
 
         outData[0] = (byte) PacketUser.SOF;
         outData[1] = (byte) opc;
@@ -92,7 +92,7 @@ public class workerProblemCreating extends Thread {
 
         try {
             dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
-            dos.write(outData, 0, outData[3] + 5);
+            dos.write(outData);
             dos.flush();
         } catch (IOException e) {
             e.printStackTrace();

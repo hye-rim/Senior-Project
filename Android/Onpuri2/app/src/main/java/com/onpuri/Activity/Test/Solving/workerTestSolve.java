@@ -72,6 +72,10 @@ public class workerTestSolve extends Thread{
             }
             outData[4 + num.length()] = (byte) PacketUser.CRC;
 
+            Log.d(TAG, "data:"+outData[0]+" "+outData[1]+" "+outData[2]+" "+outData[3] );
+
+            outData[4 + num.length()] = (byte) PacketUser.CRC;
+
             try {
                 dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
                 dos.write(outData, 0, outData[3] + 5);
@@ -82,8 +86,7 @@ public class workerTestSolve extends Thread{
                 while(true) {
                     //패킷1
                     dis.read(quizData, 0, 4);
-                    Log.d(TAG, "indata:" + quizData[0]);
-                    Log.d(TAG, "indata:" + quizData[1]);
+                    Log.d(TAG, "indata:"+quizData[0]+" "+quizData[1]+" "+quizData[2]+" "+quizData[3] );
 
                     int q_len = quizData[3];
 
@@ -127,7 +130,7 @@ public class workerTestSolve extends Thread{
                         Log.d(TAG,"5"+sol);
 
                         n++;
-                    } else if (quizData[1] == PacketUser.ACK_NTEST_LIST) {
+                    } else if (quizData[1] == PacketUser.ACK_NTEST) {
                         dis.read(quizData);
                         count = n;
                         break;

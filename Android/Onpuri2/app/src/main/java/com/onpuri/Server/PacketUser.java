@@ -108,7 +108,7 @@ public class PacketUser extends Application {
     static final public char ACK_NTEST_LIST = 107; //ACK no 시험 목록
     static final public char USR_TEST = 108; //시험 요청
     static final public char ACK_TEST = 109; //ACK 시험 요청
-    static final public char ACK_NTEST = 109; //ACK no시험 요청
+    static final public char ACK_NTEST = 110; //ACK no시험 요청
 
 
 
