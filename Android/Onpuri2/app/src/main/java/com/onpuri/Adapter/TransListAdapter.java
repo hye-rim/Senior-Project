@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,32 +16,38 @@ import android.widget.Toast;
 
 import com.onpuri.Activity.Home.TransDetailFragment;
 import com.onpuri.Activity.Home.workerRecommend;
+import com.onpuri.Activity.Home.workerTransMore;
 import com.onpuri.R;
 
 import java.util.ArrayList;
 
 public class TransListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
     private final String TAG = "TransListAdapter";
-
+    private workerTransMore worker_trans_more;
     private workerRecommend worker_reco;
 
     String sen;
     String sen_num;
+
     private ArrayList<String> transList;
+    private ArrayList<String> useridList;
     private ArrayList<String> dayList;
     private ArrayList<String> recoList;
     private ArrayList<String> numList;
 
     FragmentTransaction ft;
 
-    public TransListAdapter(String sen, String sen_num, ArrayList<String> list_trans, ArrayList<String> list_day, ArrayList<String> list_reco, ArrayList<String> list_num, FragmentTransaction ft, RecyclerView TransrecyclerView) {
+    public TransListAdapter(String sen, String sen_num, FragmentTransaction ft, RecyclerView TransrecyclerView) {
         this.sen=sen;
         this.sen_num=sen_num;
-        this.transList=list_trans;
-        this.dayList=list_day;
-        this.recoList=list_reco;
-        this.numList=list_num;
         this.ft=ft;
+        transList = new ArrayList<String>();
+        useridList = new ArrayList<String>();
+        dayList = new ArrayList<String>();
+        recoList = new ArrayList<String>();
+        numList = new ArrayList<String>();
+        translation();
+
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
@@ -62,7 +69,10 @@ public class TransListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     Bundle args = new Bundle();
                     args.putString("sen", sen);
                     args.putString("sennum", sen_num);
+                    args.putString("trans", transList.get(getPosition()));
                     args.putString("num", numList.get(getPosition()));
+                    args.putString("id", useridList.get(getPosition()));
+                    args.putString("day", dayList.get(getPosition()));
                     tdf.setArguments(args);
 
                     ft.replace(R.id.root_home, tdf)
@@ -74,8 +84,10 @@ public class TransListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             reco_trans.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Log.d(TAG, numList.get(getPosition()));
                     recommend(numList.get(getPosition()));
-
+                    translation();
+                    Log.d(TAG, numList.get(getPosition()));
                 }
             });
         }
@@ -109,6 +121,33 @@ public class TransListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             worker_reco.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void translation() {
+        if (worker_trans_more != null && worker_trans_more.isAlive()) {  //이미 동작하고 있을 경우 중지
+            worker_trans_more.interrupt();
+        }
+        worker_trans_more = new workerTransMore(true, sen_num);
+        worker_trans_more.start();
+        try {
+            worker_trans_more.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        transList.clear();
+        useridList.clear();
+        dayList.clear();
+        recoList.clear();
+        numList.clear();
+
+        for (int i = 0; i < worker_trans_more.getCount(); i++) {
+            transList.add(worker_trans_more.getTrans().get(i).toString());
+            useridList.add(worker_trans_more.getUserid().get(i).toString());
+            dayList.add(worker_trans_more.getDay().get(i).toString());
+            recoList.add(worker_trans_more.getReco().get(i).toString());
+            numList.add(worker_trans_more.getTransnum().get(i).toString());
         }
     }
 }

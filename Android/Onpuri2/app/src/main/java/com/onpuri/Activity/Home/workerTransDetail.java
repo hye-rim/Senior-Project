@@ -12,43 +12,38 @@ import java.io.IOException;
 /**
  * Created by kutemsys on 2016-09-19.
  */
-public class workerDelete extends Thread{
+public class workerTransDetail extends Thread{
     private static final String TAG = "workerRecommend";
     private boolean isPlay = false;
 
     DataOutputStream dos;
     DataInputStream dis;
     byte[] outData = new byte[30];
-    byte[] inData = new byte[30];
+    byte[] inData = new byte[10];
 
-    String type;
     String num;
+    String recommend;
 
-    public workerDelete(boolean isPlay, String type, String num) {
+    public workerTransDetail(boolean isPlay, String num) {
         this.isPlay = isPlay;
-        this.type = type;
         this.num = num;
 
     }
+    public String getRecommend() { return recommend; };
+
     public void run() {
         super.run();
-        Log.d(TAG, "num : " + num);
-
-        String data = type+num;
 
         while(isPlay) {
             outData[0] = (byte) PacketUser.SOF;
-            outData[1] = (byte) PacketUser.USR_DEL;
+            outData[1] = (byte) PacketUser.USR_TRANS_DETAIL;
             outData[2] = (byte) PacketUser.getSEQ();
-            outData[3] = (byte) data.length();
-            for (int i = 4; i < 4 + data.length(); i++) {
-                outData[i] = (byte) data.charAt(i - 4);
-                Log.d(TAG, "data:"+outData[i]);
-
+            outData[3] = (byte) num.length();
+            for (int i = 4; i < 4 + num.length(); i++) {
+                outData[i] = (byte) num.charAt(i - 4);
             }
-            Log.d(TAG, "total data:"+data);
 
-            outData[4 + data.length()] = (byte) PacketUser.CRC;
+            outData[4 + num.length()] = (byte) PacketUser.CRC;
 
             try {
                 dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
@@ -57,10 +52,9 @@ public class workerDelete extends Thread{
                 dis = new DataInputStream(SocketConnection.socket.getInputStream());
 
                 dis.read(inData);
-                Log.d(TAG, "indata:"+inData[1]);
 
-                if(inData[1] == PacketUser.ACK_DEL) {
-                    Log.d(TAG,"삭제");
+                if(inData[1] == PacketUser.ACK_TRANS_DETAIL) {
+                    recommend = new String(inData, 4, inData[3]);
                 }
 
             } catch (IOException e) {

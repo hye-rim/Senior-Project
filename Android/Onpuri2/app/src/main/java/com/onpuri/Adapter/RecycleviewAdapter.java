@@ -23,13 +23,16 @@ public class RecycleviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private ArrayList<String> transList;
     private ArrayList<String> listenList;
     private ArrayList<String> IdList;
+    private ArrayList<String> recoList;
 
-
-    public RecycleviewAdapter(ArrayList<String> listSentence, ArrayList<String> listTransNum, ArrayList<String> listListenNum, ArrayList<String> listId, RecyclerView recyclerView) {
+    public RecycleviewAdapter(ArrayList<String> listSentence, ArrayList<String> listTransNum, ArrayList<String> listListenNum,
+                              ArrayList<String> listId, ArrayList<String> listReco, RecyclerView recyclerView) {
         this.senList=listSentence;
         this.transList=listTransNum;
         this.listenList=listListenNum;
         this.IdList=listId;
+        this.recoList=listReco;
+
 
     }
     public class ItemViewHolder extends RecyclerView.ViewHolder {
@@ -37,6 +40,7 @@ public class RecycleviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         public TextView mTransItem;
         public TextView mListenItem;
         public TextView mSenId;
+        public TextView mRecoItem;
 
         public ItemViewHolder(View v) {
             super(v);
@@ -44,6 +48,7 @@ public class RecycleviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             mTransItem = (TextView) v.findViewById(R.id.transcount);
             mListenItem = (TextView) v.findViewById(R.id.listencount);
             mSenId = (TextView) v.findViewById(R.id.id);
+            mRecoItem = (TextView) v. findViewById(R.id.recocount);
 
         }
     }
@@ -58,14 +63,12 @@ public class RecycleviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        Log.d(TAG, "Element " + position + " set.");
-
         ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
         itemViewHolder.mSenItem.setText(senList.get(position));
         itemViewHolder.mTransItem.setText(transList.get(position));
         itemViewHolder.mListenItem.setText(listenList.get(position));
         itemViewHolder.mSenId.setText(IdList.get(position)+"님");
-
+        itemViewHolder.mRecoItem.setText(recoList.get(position));
 
         //itemViewHolder.itemView.setBackgroundColor(Color.parseColor("#FDF5D2"));
         itemViewHolder.itemView.setBackgroundColor(Color.WHITE);

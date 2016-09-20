@@ -156,7 +156,10 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                             Bundle args = new Bundle();
                             args.putString("sen", sentence);
                             args.putString("sennum", sentence_num);
+                            args.putString("trans", list_trans.get(position));
                             args.putString("num", list_trans_num.get(position));
+                            args.putString("id", list_trans_userid.get(position));
+                            args.putString("day", list_trans_day.get(position));
                             tdf.setArguments(args);
 
                             fm.beginTransaction()
@@ -248,7 +251,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                                 delete();
                                 fm.popBackStack();
                                 ft.commit();
-                                Toast.makeText(getActivity(), "삭제되었습니다(구현예정)", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), "삭제되었습니다", Toast.LENGTH_SHORT).show();
                             }
                         })
                         .setNegativeButton("취소", new DialogInterface.OnClickListener() {

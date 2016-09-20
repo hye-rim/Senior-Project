@@ -79,7 +79,7 @@ public class ListenListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 @Override
                 public void onClick(View v) {
                     new AlertDialog.Builder(activity)
-                            .setTitle("선택한 해석을 삭제하시겠습니까?")
+                            .setTitle("선택한 듣기를 삭제하시겠습니까?")
                             .setOnKeyListener(new DialogInterface.OnKeyListener() {
                                 @Override
                                 public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {

@@ -22,13 +22,14 @@ import java.util.Locale;
 
 public class TestSolveWordFragment extends Fragment implements View.OnClickListener, TextToSpeech.OnInitListener{
     private static final String TAG = "TestSolveWordFragment";
-
     private static View view;
 
-    TextView testname, next;
+    private workerTestSolve worker_test_solve;
+
+    TextView testname, next, total;
     Button ex1, ex2, ex3, ex4;
 
-    String name="";
+    String name, num, quiz;
     String word="";
     TextToSpeech tts;
 
@@ -54,8 +55,14 @@ public class TestSolveWordFragment extends Fragment implements View.OnClickListe
         testname = (TextView) view.findViewById(R.id.testname);
         if (getArguments() != null) { //클릭한 문장 출력
             name = getArguments().getString("testname");
+            num = getArguments().getString("testnum");
+            quiz = getArguments().getString("testquiz");
             testname.setText(name);
         }
+
+        testlist(num);
+
+        total = (TextView) view.findViewById(R.id.total);
 
         ex1 = (Button) view.findViewById(R.id.example1);
         ex1.setOnClickListener(this);
@@ -115,5 +122,18 @@ public class TestSolveWordFragment extends Fragment implements View.OnClickListe
     @Override
     public void onInit(int status) {
         tts.setLanguage(Locale.US);
+    }
+
+    private void testlist(String num) {
+        if(worker_test_solve != null && worker_test_solve.isAlive()){
+            worker_test_solve.interrupt();
+        }
+        worker_test_solve = new workerTestSolve(true, num);
+        worker_test_solve.start();
+        try {
+            worker_test_solve.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -35,6 +35,8 @@ public class HomeFragment extends Fragment {
     ArrayList<String> listTransNum = new ArrayList<String>();
     ArrayList<String> listListenNum = new ArrayList<String>();
     ArrayList<String> listId = new ArrayList<String>();
+    ArrayList<String> listReco = new ArrayList<String>();
+
     PacketUser userSentence;
 
     private RecyclerView mRecyclerView;
@@ -71,7 +73,7 @@ public class HomeFragment extends Fragment {
         listTransNum = new ArrayList<String>();
         listListenNum = new ArrayList<String>();
         listId = new ArrayList<String>();
-
+        listReco = new ArrayList<String>();
 
         FragmentManager fm = getActivity().getSupportFragmentManager();
         fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
@@ -83,7 +85,7 @@ public class HomeFragment extends Fragment {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_sentence);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new RecycleviewAdapter(listSentence, listTransNum, listListenNum, listId, mRecyclerView);
+        mAdapter = new RecycleviewAdapter(listSentence, listTransNum, listListenNum, listId, listReco, mRecyclerView);
 
         mRecyclerView.setAdapter(mAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener((LinearLayoutManager) mLayoutManager) {
@@ -158,6 +160,8 @@ public class HomeFragment extends Fragment {
             listTransNum.add(userSentence.arrSentenceTransNum.get(i));
             listListenNum.add(userSentence.arrSentenceListenNum.get(i));
             listId.add(userSentence.arrSentenceId.get(i));
+            listReco.add(userSentence.arrSentenceReco.get(i));
+
             ival++;
         }
     }
@@ -186,6 +190,8 @@ public class HomeFragment extends Fragment {
                 listTransNum.add(userSentence.arrSentenceTransNum.get(i));
                 listListenNum.add(userSentence.arrSentenceListenNum.get(i));
                 listId.add(userSentence.arrSentenceId.get(i));
+                listReco.add(userSentence.arrSentenceReco.get(i));
+
                 ival++;
             }
             mAdapter.notifyDataSetChanged();

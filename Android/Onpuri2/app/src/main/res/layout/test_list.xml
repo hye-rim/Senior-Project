@@ -51,11 +51,13 @@
             <TextView
                 android:textSize="14dp"
                 android:textColor="@color/black"
-                android:id="@+id/textView3"
+                android:id="@+id/id"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text="id"
+                android:layout_marginLeft="5dp" />
 
             <LinearLayout
                 android:orientation="horizontal"
