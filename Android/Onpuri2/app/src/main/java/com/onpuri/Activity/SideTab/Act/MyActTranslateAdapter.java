@@ -64,6 +64,7 @@ public class MyActTranslateAdapter  extends RecyclerView.Adapter<RecyclerView.Vi
 
         ItemViewHolder itemViewHolder = (ItemViewHolder)holder;
         itemViewHolder.mSenItem.setText(senList.get(position));
+        itemViewHolder.mSenItem.setMaxLines(2);
         itemViewHolder.itemView.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){

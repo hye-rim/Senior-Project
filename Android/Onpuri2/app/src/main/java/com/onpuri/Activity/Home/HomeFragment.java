@@ -43,11 +43,8 @@ public class HomeFragment extends Fragment {
 
     private workerSentenceList mworker_sentence;
 
-    ArrayList<String> listSentence = new ArrayList<String>();
-    ArrayList<String> listSentenceNum = new ArrayList<String>();
-    ArrayList<String> listTransNum = new ArrayList<String>();
-    ArrayList<String> listListenNum = new ArrayList<String>();
-    ArrayList<String> listId = new ArrayList<String>();
+    ArrayList<String> listSentence, listSentenceNum, listId;
+    ArrayList<String> listTransNum, listListenNum;
     PacketUser userSentence;
 
     private RecyclerView mRecyclerView;
@@ -78,13 +75,6 @@ public class HomeFragment extends Fragment {
 
         sentence_num = 0;
         userSentence = new PacketUser();
-
-        listSentence = new ArrayList<String>();
-        listSentenceNum = new ArrayList<String>();
-        listTransNum = new ArrayList<String>();
-        listListenNum = new ArrayList<String>();
-        listId = new ArrayList<String>();
-
 
         FragmentManager fm = getActivity().getSupportFragmentManager();
         fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
@@ -145,6 +135,12 @@ public class HomeFragment extends Fragment {
 
     // By default, we add 10 objects for first time.
     private void loadData(int current_page) {
+        listSentence = new ArrayList<String>();
+        listSentenceNum = new ArrayList<String>();
+        listTransNum = new ArrayList<String>();
+        listListenNum = new ArrayList<String>();
+        listId = new ArrayList<String>();
+
         if (mworker_sentence != null && mworker_sentence.isAlive()) {  //이미 동작하고 있을 경우 중지
             mworker_sentence.interrupt();
         }

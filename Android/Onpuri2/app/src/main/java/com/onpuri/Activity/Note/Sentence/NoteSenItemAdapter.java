@@ -52,6 +52,7 @@ public class NoteSenItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         if( getItemViewType(position) == VIEW_TYPE_ITEM) {
             ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
             itemViewHolder.getTextView().setText(senItemList.get(position));
+            itemViewHolder.getTextView().setMaxLines(2);
             itemViewHolder.getTextView().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

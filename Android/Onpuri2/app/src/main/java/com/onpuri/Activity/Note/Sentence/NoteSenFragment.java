@@ -91,7 +91,9 @@ public class NoteSenFragment extends Fragment {
                     public void onItemClick(View view, int position) {
                         if(isNullSen)
                             Toast.makeText(getActivity().getApplicationContext(), itemName + "에 문장을 추가해보세요.", Toast.LENGTH_SHORT).show();
-                        else{
+                        else if(itemSentence.size() != itemSentenceNum.size()){
+
+                        }else{
                             HomeSentenceFragment homeSentenceFragment = new HomeSentenceFragment();
                             FragmentManager fm = getActivity().getSupportFragmentManager();
 
@@ -148,6 +150,8 @@ public class NoteSenFragment extends Fragment {
         if(itemSentence.isEmpty()){
             isNullSen = true;
             itemSentence.add("추가된 문장이 없습니다.");
+        }else{
+            itemSentence.add("");
         }
 
     }

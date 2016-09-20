@@ -90,11 +90,15 @@ public class TestSelectObjectFragment extends Fragment implements AdapterView.On
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_test_select_ok:
-                Log.d(TAG, "select object list : " + mSelectUserList);
-                Intent intent = new Intent();
-                intent.putExtra("select_object", mSelectUserList);
-                getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
-                getFragmentManager().popBackStack();
+                if(checkNull()){
+                    Toast.makeText(getActivity(), "지정된 응시자가 없습니다.", Toast.LENGTH_SHORT).show();
+                }else {
+                    Log.d(TAG, "select object list : " + mSelectUserList);
+                    Intent intent = new Intent();
+                    intent.putExtra("select_object", mSelectUserList);
+                    getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
+                    getFragmentManager().popBackStack();
+                }
                 break;
 
             case R.id.btn_test_select_cancel:
@@ -105,6 +109,14 @@ public class TestSelectObjectFragment extends Fragment implements AdapterView.On
         }
 
     }
+
+    private boolean checkNull() {
+        if(mSelectUserList.isEmpty()){
+            return true;
+        }
+        return false;
+    }
+
     private void initListView() {
         selectArrayAdapter = new ArrayAdapter<String>(this.getContext(), android.R.layout.simple_list_item_checked, mSelectUserList){
             @Override
@@ -144,9 +156,6 @@ public class TestSelectObjectFragment extends Fragment implements AdapterView.On
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if(mListView1 == parent){
             CheckedTextView item = (CheckedTextView) view;
-
-            Toast.makeText(getActivity(), mSelectUserList.get(position).toString() + "  checked : " +
-                    item.isChecked(), Toast.LENGTH_SHORT).show();
 
             if(item.isChecked()) {
                 mSelectUserList.remove(position);

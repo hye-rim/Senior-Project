@@ -25,7 +25,6 @@
             android:id="@+id/listView1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:listSelector="@color/fuzzy_peach"
             android:background="@color/white" />
 
         <LinearLayout
@@ -64,7 +63,6 @@
 
         <ListView
             android:id="@+id/listView2"
-            android:listSelector="@color/fuzzy_peach"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

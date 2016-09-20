@@ -65,11 +65,13 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
     private static View view;
 
     private Button btn_ok, btn_cancel;
-    private EditText sen;
+    private EditText mSentenceEditText;
 
     ViewPager viewPager;
 
     int i;
+
+    int checkLen;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -85,9 +87,9 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
         }
         viewPager = (ViewPager)getActivity().findViewById(R.id.viewpager);
 
-        sen = (EditText) view.findViewById(R.id.sentence);
-        sen.setFilters(new InputFilter[]{filterAlphaNum});
-        sen.setPrivateImeOptions("defaultInputmode=english;");
+        mSentenceEditText = (EditText) view.findViewById(R.id.sentence);
+        mSentenceEditText.setFilters(new InputFilter[]{filterAlphaNum});
+        mSentenceEditText.setPrivateImeOptions("defaultInputmode=english;");
 
         btn_ok = (Button)view.findViewById(R.id.btn_new_sen);
         btn_cancel = (Button)view.findViewById(R.id.btn_new_sen_back);
@@ -115,10 +117,10 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
                         })
                         .setPositiveButton("네", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                Addsentence();
-                                Toast.makeText(getActivity(), "등록되었습니다.", Toast.LENGTH_SHORT).show();
-                                sen.setText("");
-                                viewPager.setCurrentItem(0);
+                                checkingLen();
+
+                                checkEnrollment();
+
                             }
                         })
                         .setNegativeButton("아니오", new DialogInterface.OnClickListener() {
@@ -142,7 +144,7 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
                         })
                         .setPositiveButton("네", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                sen.setText("");
+                                mSentenceEditText.setText("");
                                 viewPager.setCurrentItem(0);
                             }
                         })
@@ -154,6 +156,37 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
 
             default:
                 break;
+        }
+    }
+
+    private void checkEnrollment() {
+        switch (checkLen){
+            case 0: //ok
+                Addsentence();
+                Toast.makeText(getActivity(), "등록되었습니다.", Toast.LENGTH_SHORT).show();
+                mSentenceEditText.setText("");
+                viewPager.setCurrentItem(0);
+                break;
+
+            case 1: //null
+                Toast.makeText(getActivity(), "문장을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                break;
+
+            case 2: //max
+                Toast.makeText(getActivity(), "등록하려는 문장이 너무 깁니다.", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+    private void checkingLen() {
+        String inputSentence = mSentenceEditText.getText().toString();
+
+        if(inputSentence.compareTo("") == 0 || mSentenceEditText.getText().toString().isEmpty()){
+            checkLen = 1; //null
+        }else if( inputSentence.getBytes().length >= 230){
+            checkLen = 2;//max
+        }else{
+            checkLen = 0; //OK
         }
     }
 
@@ -185,7 +218,7 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
 
     class worker_add_sen extends Thread {
         private boolean isPlay = false;
-        String AddSen = sen.getText().toString();
+        String AddSen = mSentenceEditText.getText().toString();
 
         public worker_add_sen(boolean isPlay) {
             this.isPlay = isPlay;

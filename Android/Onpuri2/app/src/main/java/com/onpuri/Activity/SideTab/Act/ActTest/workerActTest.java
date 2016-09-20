@@ -2,6 +2,7 @@ package com.onpuri.Activity.SideTab.Act.ActTest;
 
 import android.util.Log;
 
+import com.onpuri.Data.ActTestData;
 import com.onpuri.Server.PacketInfo;
 import com.onpuri.Server.PacketUser;
 import com.onpuri.Server.SocketConnection;
@@ -10,9 +11,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by kutemsys on 2016-09-20.
@@ -32,7 +30,7 @@ public class workerActTest extends Thread {
     private Boolean testListEnd;
     private String testNum;
 
-    private ArrayList mTestList;
+    private ArrayList<ActTestData> mTestList;
     private String testId, testDate, testCorrect;
 
     public workerActTest(boolean isPlay, String testNum) {
@@ -88,8 +86,6 @@ public class workerActTest extends Thread {
         String str = new String(inData, 4, dataLen); //byte 데이터 배열 string으로 변환
         Log.d(TAG, "data : " + str);
 
-        mTestList.add(str);
-
         //ID + 이름 => ID, 이름
         int plus = str.indexOf('+');
         testId = str.substring(0,plus); //user id
@@ -97,9 +93,10 @@ public class workerActTest extends Thread {
 
         plus = temp.indexOf('+');
         testDate = temp.substring(0, plus); //푼 날짜
-        testCorrect = str.substring(plus+1, temp.length()); //정답률
-        if(testCorrect.compareTo("0000-00-00") == 0){
-            testCorrect = new String("미응시");
+        testCorrect = temp.substring(plus+1, temp.length()) + "%"; //정답률
+
+        if(testDate.compareTo("0000-00-00") == 0){
+            testDate = new String("미응시");
         }
         Log.d(TAG, "ID : " + testId + ", date : " + testDate + ", correct : " + testCorrect);
 
