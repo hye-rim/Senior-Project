@@ -98,6 +98,9 @@ public class workerActTest extends Thread {
         plus = temp.indexOf('+');
         testDate = temp.substring(0, plus); //푼 날짜
         testCorrect = str.substring(plus+1, temp.length()); //정답률
+        if(testCorrect.compareTo("0000-00-00") == 0){
+            testCorrect = new String("미응시");
+        }
         Log.d(TAG, "ID : " + testId + ", date : " + testDate + ", correct : " + testCorrect);
 
         //ID + 날짜 + 정답률

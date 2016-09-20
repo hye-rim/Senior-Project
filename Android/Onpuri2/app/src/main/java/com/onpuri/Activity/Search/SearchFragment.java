@@ -51,9 +51,8 @@ public class SearchFragment extends Fragment {
     private workerNote mworker_note;
     private workerNoteItemAdd mworker_item_add;
 
-    ArrayList<String> searchList = new ArrayList<String>();
-    ArrayList<String> sentenceNumList = new ArrayList<String>();
-    ArrayList<String> sentenceIdList = new ArrayList<String>();
+    ArrayList<String> searchList;
+    ArrayList<String> sentenceNumList, sentenceIdList;
     private ArrayList<String> listNote;
 
     private int pos;
@@ -166,10 +165,11 @@ public class SearchFragment extends Fragment {
                 HomeSentenceFragment homeSentenceFragment = new HomeSentenceFragment();
                 FragmentManager fm = getActivity().getSupportFragmentManager();
 
+                int realPosition = position -1;
                 Bundle args = new Bundle();
-                args.putString("sen", searchList.get(position));
-                args.putString("sen_num", sentenceNumList.get(position));
-                args.putString("id", sentenceIdList.get(position));
+                args.putString("sen", searchList.get(realPosition));
+                args.putString("sen_num", sentenceNumList.get(realPosition));
+                args.putString("id", sentenceIdList.get(realPosition));
 
                 homeSentenceFragment.setArguments(args);
 
@@ -186,6 +186,10 @@ public class SearchFragment extends Fragment {
     }
 
     public void loadSearchData(){
+        searchList = new ArrayList<String>();
+        sentenceNumList = new ArrayList<String>();
+        sentenceIdList = new ArrayList<String>();
+
         if (mworker_search != null && mworker_search.isAlive()) {  //이미 동작하고 있을 경우 중지
             mworker_search.interrupt();
         }
