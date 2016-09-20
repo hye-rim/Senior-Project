@@ -4,3 +4,4 @@
 
 void clusteringStart(unsigned char*, MYSQL*);
 void countInClust(unsigned char*, MYSQL*);
+void newSenClustRegister( MYSQL*, int);

@@ -92,13 +92,22 @@
 #define MY_TRANS_END 81
 #define MY_TEST 82
 #define MY_TEST_END 83
+#define TEST_CLICK 84
+#define TEST_CLICK_ACK 85
+#define TEST_CLICK_END 86
 
 
 #define SEN_NOMORE 90
 #define RECOMMEND 91
 #define RECOMMEND_ACK 92
+#define DELETE 93
+#define DELETE_ACK 94
 #define USR_LEAVE 99 //
 #define USR_BYE 100 // 회원 탈퇴
+
+#define TRANS_RECOMMEND 101
+#define TRANS_REC_ACK 102
+
 
 #define LEN_USER_ID 40
 #define LEN_PASS 40
@@ -127,6 +136,9 @@ void user_logout	(unsigned char*, int);
 void userSearch		(unsigned char*, int);
 void testExaminee 	(unsigned char*, int);
 void recommendation 	(unsigned char*, int);
+void deleteResource 	(unsigned char*, int);
+void testClick	 	(unsigned char*, int);
+void transRecommend	(unsigned char*, int);
 void questionRegister   (unsigned char*, unsigned char*, int);
 
 void audioRequest	(unsigned char*, int, int);
@@ -263,7 +275,9 @@ void* client_session(void* cSocket){
 		if(readByte = read(client_fd, buff_temp, PCK_HEAD) > 0){		// 클라이언트로부터 패킷 헤더만 받아오기			
 			strcat(buff_rcv, buff_temp);	// 일단 헤더까지만 읽어서 buff_temp에 저장			
 			memset(buff_temp, '\0', sizeof(buff_temp));	// 머저 받은 패킷의 헤더 지움
+puts("=============");
 printf("OPC: %d\n", buff_rcv[1]);			
+puts("=============");
 			if(buff_rcv[1] == ADD_RECORD){
 printf("sssss  %d\n", buff_rcv[3]);
 				read(client_fd, buff_temp, buff_rcv[3] + 2);
@@ -284,8 +298,6 @@ printf("auauauau lengTH: %d \n", audioLength);
 			else{
 				if(readByte = read(client_fd, buff_temp, buff_rcv[3]+1) > 0){	// 데이터의 길이 + CRC
 					strcat(buff_rcv, buff_temp);	// buff_temp[3]을 통해 데이터의 길이를 알고 +1하여 CRC까지 읽어서 buff_rcv에 붙인다.
-for(i = 0; i < strlen(buff_rcv); i++)
-	printf("(%d)", buff_rcv[i]);	
 					switch(buff_rcv[1]){
 					case MPC_RDY:{	
 						deviceCheck(buff_rcv, client_fd);		// device id, model을 디비 조회해서 옳은지 조사, 없으면 추가 후 ack
@@ -410,6 +422,18 @@ puts("audio all");
 						}
 					case RECOMMEND:{
 						recommendation(buff_rcv, client_fd);
+						break;
+						}
+					case TEST_CLICK:{
+						testClick(buff_rcv, client_fd);
+						break;
+						}
+					case DELETE:{
+						deleteResource(buff_rcv, client_fd);
+						break;
+						}
+					case TRANS_RECOMMEND:{
+						transRecommend(buff_rcv, client_fd);
 						break;
 						}
 					case USR_LEAVE:{
@@ -797,7 +821,7 @@ void Send_Sentence(unsigned char* buff_rcv, unsigned char* userId, int client_fd
 				memset(query, '\0', sizeof(query));
 				memset(toClientData, '\0', sizeof(toClientData));
 		
-				sprintf(query, "SELECT SEN, SEQ, userSeq FROM TB_SENTENCE LIMIT %d,%d", numOfSentence++,1);
+				sprintf(query, "SELECT SEN, SEQ, userSeq, recommend FROM TB_SENTENCE LIMIT %d,%d", numOfSentence++,1);
 		
 				if(mysql_query(conn_ptr, query)){
 					printf("%s\n", mysql_error(conn_ptr));
@@ -860,7 +884,10 @@ void Send_Sentence(unsigned char* buff_rcv, unsigned char* userId, int client_fd
 							strcat(toClientData, "admin");
 						else						
 							strcat(toClientData, row1[0]);
-
+						
+						strcat(toClientData, "+");
+						strcat(toClientData, row[3]);
+puts(toClientData);
 						Make_Packet(buff_rcv, toClientData, client_fd);
 					}
 				}
@@ -872,7 +899,7 @@ puts("new method=\n");
 			memset(query, '\0', sizeof(query));
 			memset(toClientData, '\0', sizeof(toClientData));	
 	
-			sprintf(query, "select SEN, SEQ, userSeq from TB_SENTENCE where seq = (select sentenceSeq from TB_clustChart where clustSeq = %d order by cnt DESC limit %d, %d)", clustSeq, numOfSentence++, 1);
+			sprintf(query, "select SEN, SEQ, userSeq, recommend from TB_SENTENCE where seq = (select sentenceSeq from TB_clustChart where clustSeq = %d order by cnt DESC limit %d, %d)", clustSeq, numOfSentence++, 1);
 		
 				if(mysql_query(conn_ptr, query)){
 					printf("%s\n", mysql_error(conn_ptr));
@@ -919,7 +946,7 @@ puts("new method=\n");
 
 						strcat(audioCount, row1[0]);
 						strcpy(toClientData, row[0]);
-
+puts(toClientData);
 						Make_Packet(buff_rcv, toClientData, client_fd);
 		
 						memset(query, '\0', sizeof(query));
@@ -945,6 +972,9 @@ puts("new method=\n");
 							strcat(toClientData, "admin");
 						else
 							strcat(toClientData, row1[0]);
+
+						strcat(toClientData, "+");
+						strcat(toClientData, row[3]);
 
 						Make_Packet(buff_rcv, toClientData, client_fd);
 					}
@@ -1349,6 +1379,8 @@ puts("zzzzzzzzzz\n");
 }
 
 void sentenceRegister(unsigned char* buff_rcv, unsigned char* userId, int client_fd){
+	MYSQL_RES* res_ptr;
+	MYSQL_ROW row;
 	char toClientData[LEN_DATA];
 	char query[LEN_QUERY];
 	unsigned char sentence[LEN_DATA];
@@ -1378,6 +1410,16 @@ void sentenceRegister(unsigned char* buff_rcv, unsigned char* userId, int client
 
 	toClientData[0] = 1;
 	Make_Packet(buff_rcv, toClientData, client_fd);
+
+	memset(query, '\0', LEN_QUERY);
+	sprintf(query, "select seq from TB_SENTENCE where SEN = '%s'", sentence);
+	printf("select seq from TB_SENTENCE where SEN = '%s'", sentence);
+	
+	mysql_query(conn_ptr, query);
+	res_ptr = mysql_store_result(conn_ptr);
+	row = mysql_fetch_row(res_ptr);
+	
+	newSenClustRegister(conn_ptr, atoi(row[0]));
 }
 /*
 void searchWord(unsigned char* buff_rcv, int client_fd){
@@ -1802,7 +1844,7 @@ puts(toClientData);
 	// test information
 	
 	memset(query, '\0', sizeof(query));
-	sprintf(query, "select title, ratio, seq from TB_test where userSeq = %d", userSeq);	
+	sprintf(query, "select title, ratio, seq, examinee from TB_test where userSeq = %d", userSeq);	
 	
 	if(mysql_query(conn_ptr, query)){
 		printf("sendMyActivity 5 failed\n%s", mysql_error(conn_ptr));
@@ -1824,6 +1866,8 @@ puts(toClientData);
 			strcat(toClientData, row[0]);
 			strcat(toClientData, "+");
 			strcat(toClientData, row[1]);
+			strcat(toClientData, "+");
+			strcat(toClientData, row[3]);
 
 			buff_rcv[1] = MY_TEST;
 puts(toClientData);
@@ -2661,9 +2705,9 @@ for(i = 0 ; i < strlen(buff_rcv); i++)
 	printf("# %c @", buff_rcv[i]);
 	memset(query, '\0', LEN_QUERY);
 
-	sprintf(query, "insert into TB_examinee(testSeq, userSeq) values(\
+	sprintf(query, "insert into TB_examinee(testSeq, userSeq, date) values(\
 			(select seq from TB_test where title = '%s')\
-			,(select seq from TB_USER where UID = '%s'))", testTitle, examineeId);
+			,(select seq from TB_USER where UID = '%s'), CURDATE())", testTitle, examineeId);
 	
 	printf("insert into TB_examinee(testSeq, userSeq) values(\
 			(select seq from TB_test where title = '%s')\
@@ -2914,6 +2958,160 @@ printf("recommend :: %d\n", num);
 	}
 }
 
+void testClick(unsigned char* buff_rcv, int client_fd){
+	MYSQL_RES* res_ptr;
+	MYSQL_RES* res_ptr1;
+	MYSQL_ROW row;
+	MYSQL_ROW row1;
+	char toClientData[LEN_DATA];
+	char query[LEN_QUERY];
+	char num[LEN_NAME];
+	int i, dataLength;
+
+	dataLength = buff_rcv[3];
+	i = 0;
+	memset(num, '\0', LEN_NAME);
+
+	while(1){
+		if(dataLength == i)
+			break;
+		else{
+			num[i] = buff_rcv[4 + i];
+			i++;
+		}	
+	}
+	
+	memset(query, '\0', LEN_QUERY);
+
+	sprintf(query, "select userSeq, date, ratio from TB_examinee where testSeq = '%s'", num);
+
+	if(mysql_query(conn_ptr, query)){
+		printf("testClick1\n%s", mysql_error(conn_ptr));
+		memset(toClientData, '\0', LEN_DATA);
+		buff_rcv[1] = TEST_CLICK_END;
+		toClientData[0] = '1';
+		Make_Packet(buff_rcv, toClientData, client_fd);
+	}
+	else{
+		res_ptr = mysql_store_result(conn_ptr);
+		row = mysql_fetch_row(res_ptr);
+
+		while(row != NULL){
+
+			memset(query, '\0', LEN_QUERY);
+			sprintf(query, "select UID from TB_USER where seq = '%s'", row[0]);
+	
+			if(mysql_query(conn_ptr, query)){
+				printf("testClick1\n%s", mysql_error(conn_ptr));
+				memset(toClientData, '\0', LEN_DATA);
+				buff_rcv[1] = TEST_CLICK_END;
+				toClientData[0] = '1';
+				Make_Packet(buff_rcv, toClientData, client_fd);
+				break;
+			}
+			else{
+				res_ptr1 = mysql_store_result(conn_ptr);
+				row1 = mysql_fetch_row(res_ptr1);
+			
+				memset(toClientData, '\0', LEN_DATA);
+	
+				strcat(toClientData, row1[0]);
+				strcat(toClientData, "+");
+				strcat(toClientData, row[1]);
+				strcat(toClientData, "+");
+				strcat(toClientData, row[2]);
+
+				Make_Packet(buff_rcv, toClientData, client_fd);
+			}	
+			row = mysql_fetch_row(res_ptr);
+		}
+		if(row == NULL){
+				printf("testClick1\n%s", mysql_error(conn_ptr));
+				memset(toClientData, '\0', LEN_DATA);
+				buff_rcv[1] = TEST_CLICK_END;
+				toClientData[0] = '1';
+				Make_Packet(buff_rcv, toClientData, client_fd);
+		}
+	}
+}
+
+void deleteResource(unsigned char* buff_rcv, int client_fd){
+	char toClientData[LEN_DATA];
+	char num[LEN_NAME];
+	char query[LEN_QUERY];
+	int type, dataLength;
+	int i;
+		
+	memset(num, '\0', LEN_NAME);
+
+	i = 0;
+	dataLength = buff_rcv[3] - 2;
+	type = buff_rcv[4] - 48;
+
+	while(1){
+		if(dataLength == i)
+			break;
+		else{
+			num[i] = buff_rcv[6 + i];
+			i++;
+		}
+	}
+
+	memset(query, '\0', LEN_QUERY);
+
+	switch(type){
+		case 1: sprintf(query, "delete from TB_SENTENCE where seq = '%s'", num); break;
+		case 2: sprintf(query, "delete from TB_Translation where seq = '%s'", num); break;
+		case 3: sprintf(query, "delete from TB_audioDir where seq = '%s'", num); break;
+	}
+	
+	memset(toClientData, '\0', LEN_DATA);
+printf("delete function::  %s\n", query);
+	if(mysql_query(conn_ptr, query)){
+		printf("deleteResource 1\n%s", mysql_error(conn_ptr));
+		toClientData[0] = '0';
+		Make_Packet(buff_rcv, toClientData, client_fd);			
+	}
+	else{
+		toClientData[0] = '1';
+		Make_Packet(buff_rcv, toClientData, client_fd);			
+	}
+}
+
+void transRecommend(unsigned char* buff_rcv, int client_fd){
+	MYSQL_RES* res_ptr;
+	MYSQL_ROW row;
+	char toClientData[LEN_DATA];
+	char query[LEN_QUERY];
+	char senNum[LEN_NAME];
+	char i, dataLength;
+
+	i = 0;
+	dataLength = buff_rcv[3];
+	memset(senNum, '\0', LEN_NAME);
+
+	while(i != dataLength){
+		senNum[i] = buff_rcv[4 + i];
+		i++;
+	}
+
+	memset(query, '\0', LEN_QUERY);
+	sprintf(query, "select recommend from TB_Translation where seq = '%s'", senNum);
+
+	if(mysql_query(conn_ptr, query)){
+		printf("transRecommend1 \n%s", mysql_error(conn_ptr));
+	}	
+	else{
+		res_ptr = mysql_store_result(conn_ptr);
+		row = mysql_fetch_row(res_ptr);
+
+		memset(toClientData, '\0', LEN_DATA);
+		strcat(toClientData, row[0]);
+
+		Make_Packet(buff_rcv, toClientData, client_fd);
+	}	
+}
+
 // client에게 패킷을 만들어서 전송
 // 패킷은 헤더와 toClientData, CRC를 추가하여 전송한다.
 void Make_Packet(unsigned char* buff_rcv, unsigned char* toClientData, int client_fd){
@@ -2968,6 +3166,10 @@ void Make_Packet(unsigned char* buff_rcv, unsigned char* toClientData, int clien
 	case TEST_EXAMINEE: buff_snd[1] = TEST_EXAMINEE_END; break;
 	case QUESTION_REGISTER_END: buff_snd[1] = QUESTION_REGISTER_END; break;
 	case RECOMMEND: buff_snd[1] = RECOMMEND_ACK; break;
+	case TEST_CLICK: buff_snd[1] = TEST_CLICK_ACK; break;
+	case TEST_CLICK_END: buff_snd[1] = TEST_CLICK_END; break;
+	case DELETE: buff_snd[1] = DELETE_ACK; break;
+	case TRANS_RECOMMEND: buff_snd[1] = TRANS_REC_ACK; break;
 	}
 
 	buff_snd[2] = buff_rcv[2];	// 받은 패킷과 같은 시퀀스를 붙여서 보낸다.(클라이언트는 이값을 확인하여 같은 경우에 작업 처리)

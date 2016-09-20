@@ -214,6 +214,27 @@ void countInClust(unsigned char* buff_rcv, MYSQL* conn_ptr){
 }
 
 
+void newSenClustRegister(MYSQL* conn_ptr, int sentenceSeq){
+	MYSQL_RES* res_ptr;
+	MYSQL_ROW row;
+	char query[250];
+
+	memset(query, '\0', 250);
+	sprintf(query, "select distinct clustSeq from TB_clustChart");
+
+	mysql_query(conn_ptr, query);
+
+	res_ptr = mysql_store_result(conn_ptr);
+	row = mysql_fetch_row(res_ptr);
+
+	while(row != NULL){
+		memset(query, '\0', 250);
+		sprintf(query, "insert into TB_clustChart(clustSeq, sentenceSeq, cnt) values('%s', %d, 1)", row[0], sentenceSeq);
+		mysql_query(conn_ptr, query);	
+			
+		row = mysql_fetch_row(res_ptr);
+	}
+}
 
 
 
