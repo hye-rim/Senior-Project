@@ -31,16 +31,16 @@ public class TransListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private ArrayList<String> recoList;
     private ArrayList<String> numList;
 
-    FragmentManager fm;
+    FragmentTransaction ft;
 
-    public TransListAdapter(String sen, String sen_num, ArrayList<String> list_trans, ArrayList<String> list_day, ArrayList<String> list_reco, ArrayList<String> list_num, FragmentManager fm, RecyclerView TransrecyclerView) {
+    public TransListAdapter(String sen, String sen_num, ArrayList<String> list_trans, ArrayList<String> list_day, ArrayList<String> list_reco, ArrayList<String> list_num, FragmentTransaction ft, RecyclerView TransrecyclerView) {
         this.sen=sen;
         this.sen_num=sen_num;
         this.transList=list_trans;
         this.dayList=list_day;
         this.recoList=list_reco;
         this.numList=list_num;
-        this.fm=fm;
+        this.ft=ft;
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
@@ -58,17 +58,16 @@ public class TransListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 @Override
                 public void onClick(View v) {
                     final TransDetailFragment tdf = new TransDetailFragment();
-                    final FragmentTransaction ft = fm.beginTransaction();
+
                     Bundle args = new Bundle();
                     args.putString("sen", sen);
                     args.putString("sennum", sen_num);
                     args.putString("num", numList.get(getPosition()));
                     tdf.setArguments(args);
 
-                    ft.replace(R.id.root_home, tdf);
-                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                    ft.addToBackStack(null);
-                    ft.commit();
+                    ft.replace(R.id.root_home, tdf)
+                            .addToBackStack(null)
+                            .commit();
                 }
             });
 

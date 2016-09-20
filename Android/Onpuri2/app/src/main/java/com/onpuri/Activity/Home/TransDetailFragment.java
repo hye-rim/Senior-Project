@@ -29,9 +29,7 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
     private workerRecommend worker_reco;
     private workerDelete worker_delete;
 
-    private com.onpuri.Server.PacketUser user;
     private static View view;
-    private Toast toast;
 
     String sentence="";
     String sen_num="";

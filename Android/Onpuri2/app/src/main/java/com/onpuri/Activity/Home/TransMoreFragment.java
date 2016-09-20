@@ -50,8 +50,6 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
     String sentence = "";
     String sentence_num = "";
 
-    private FragmentManager fm;
-
     private RecyclerView RecyclerView;
     private TransListAdapter Adapter;
     protected RecyclerView.LayoutManager LayoutManager;
@@ -96,7 +94,7 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
         RecyclerView = (RecyclerView) view.findViewById(R.id.recycler_trans);
         LayoutManager = new LinearLayoutManager(getActivity());
         RecyclerView.setLayoutManager(LayoutManager);
-        Adapter = new TransListAdapter(sentence, sentence_num, list_trans, list_day, list_reco, list_num, fm, RecyclerView);
+        Adapter = new TransListAdapter(sentence, sentence_num, list_trans, list_day, list_reco, list_num, getFragmentManager().beginTransaction(), RecyclerView);
         RecyclerView.setAdapter(Adapter);
 
         Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_dark);
