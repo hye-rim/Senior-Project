@@ -1,4 +1,4 @@
-package com.onpuri.Activity.SideTab.Act;
+package com.onpuri.Activity.SideTab.Act.ActTest;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,6 +7,8 @@ import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.onpuri.Activity.SideTab.Act.UserMyActFragment;
 import com.onpuri.R;
 
 /**
@@ -47,6 +49,7 @@ public class UserMyActTestFragment extends Fragment {
         return view;
     }
 
-    private void initActData() {
+    private void initView() {
+
     }
 }

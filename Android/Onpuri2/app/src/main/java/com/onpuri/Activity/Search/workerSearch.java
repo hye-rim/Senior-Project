@@ -32,6 +32,8 @@ public class workerSearch extends Thread {
     private PacketUser userSentence;
     private String userWord;
 
+    private int sentenceLen, sentenceInfoLen;
+
     public workerSearch(boolean isPlay, String searchStr) {
         this.isPlay = isPlay;
         toServerDataUser = searchStr;
@@ -61,42 +63,18 @@ public class workerSearch extends Thread {
         super.run();
         while (isPlay) {
             int i, index;
-            byte[] dataByte = toServerDataUser.getBytes();
             userSentence = new PacketUser();
 
-            outData[0] = (byte) PacketUser.SOF;
-            outData[1] = (byte) PacketUser.USR_SEARCH;
-            outData[2] = (byte) PacketUser.getSEQ();
-            outData[3] = (byte) dataByte.length;
-            for (i = 4; i < 4 + dataByte.length ; i++) {
-                outData[i] = (byte) dataByte[i-4];
-            }
-            outData[4 + dataByte.length] = (byte)PacketUser.CRC;
-            Log.d(TAG,"out : " + new String(outData));
-
+            sendData( toServerDataUser, PacketUser.USR_SEARCH);
             try {
-                dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
-                dos.write(outData, 0, outData[3] + 5);
-                dos.flush();
-                Log.d(TAG,"out : " + new String(outData));
 
                 dis = new DataInputStream(SocketConnection.socket.getInputStream());
 
                 while (!searchEnd) {
-                    //문장
+
                     Log.d(TAG, "gogo");
 
-                    dis.read(temp, 0, 4);
-                    for (index = 0; index < 4; index++) {
-                        inData[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
-                    }
-
-                    int end = (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);
-
-                    dis.read(temp, 0, 1 + end);
-                    for (index = 0; index <= end; index++) {
-                        inData[index + 4] = temp[index];    // 패킷의 Data부분을 inData에 추가해준다.
-                    }
+                    receiveData(inData, sentenceLen); //문장받기
 
                     Log.d(TAG, "opc : " + inData[1]);
                     if(inData[1] == PacketUser.ACK_NWORSER ||
@@ -126,41 +104,32 @@ public class workerSearch extends Thread {
                     else if(inData[1] == PacketUser.ACK_WORSER ||
                             inData[1] == PacketUser.ACK_SENSER ) {
                         if (!searchEnd) {
-                            userSentence.sentence_len = end;
-                            String str = new String(inData, 4, userSentence.sentence_len); //문장
+                            userSentence.sentence_len = sentenceLen;
+                            String sentence = new String(inData, 4, userSentence.sentence_len); //문장
                             Log.d(TAG, "len : " + userSentence.sentence_len);
-                            Log.d(TAG, "new search : " + str);
+                            Log.d(TAG, "new search sentence : " + sentence);
 
                             switch (inData[1]){
                                 case PacketUser.ACK_WORSER:
-                                    userWord = str;
+                                    userWord = sentence;
                                     break;
 
                                 case PacketUser.ACK_SENSER:
-                                    //문장번호 정보
-                                    dis.read(temp, 0, 4);
-                                    for (index = 0; index < 4; index++) {
-                                        numSentence[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
-                                    }
 
-                                    int numEnd = (numSentence[3] <= 0 ? (int) numSentence[3] + 256 : (int) numSentence[3]);
-                                    dis.read(temp, 0, 1 + numEnd);
+                                    receiveData(numSentence, sentenceInfoLen); //문장번호+아이디
 
-                                    for (index = 0; index <= numEnd; index++) {
-                                        numSentence[index + 4] = temp[index];    // 패킷의 Data부분을 inData에 추가해준다.
-                                    }
+                                    String senInfo = new String(numSentence, 4, sentenceInfoLen);
+                                    Log.d(TAG, "sen num + id : " + senInfo);
 
-                                    String senInfo = new String(numSentence, 4, numEnd);
-                                    Log.d(TAG, "senInfo : " + senInfo);
                                     int plus = senInfo.indexOf('+');
-                                    String num = senInfo.substring(0,plus); //문장번호
-                                    String Id = senInfo.substring(plus+1, senInfo.length()); //아이디
+                                    String sentenceNum = senInfo.substring(0,plus); //문장번호
+                                    String sentenceId = senInfo.substring(plus+1, senInfo.length()); //아이디
 
-                                    userSentence.setSentence(str);
-                                    userSentence.setSentenceNum(num);
-                                    userSentence.setsentenceId(Id);
+                                    userSentence.setSentence(sentence);
+                                    userSentence.setSentenceNum(sentenceNum);
+                                    userSentence.setsentenceId(sentenceId);
 
-                                    Log.d(TAG, "lenNum : " + num);
+                                    Log.d(TAG, "sentenceNum : " + sentenceNum);
                                     break;
                                 default:
                                     break;
@@ -173,5 +142,52 @@ public class workerSearch extends Thread {
             }
             isPlay = false;
         }
+    }
+
+    private void sendData(String sendingData, int opc) {
+        byte[] dataByte = sendingData.getBytes();
+        outData = new byte[dataByte.length + 6];
+
+
+        outData[0] = (byte) PacketUser.SOF;
+        outData[1] = (byte) opc;
+        outData[2] = (byte) PacketUser.getSEQ();
+        outData[3] = (byte) dataByte.length;
+        for (int i = 4; i < 4 + dataByte.length ; i++) {
+            outData[i] = (byte) dataByte[i-4];
+        }
+        outData[4 + dataByte.length] = (byte)PacketUser.CRC;
+        Log.d(TAG,"out : " + new String(outData));
+
+        try {
+            dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
+            dos.write(outData, 0, outData[3] + 5);
+            dos.flush();
+            Log.d(TAG, "after sending : " + new String(outData));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void receiveData(byte[] receiveByteData, int len) {
+        try {
+            dis.read(temp, 0, 4);
+
+            for (int index = 0; index < 4; index++) {
+                receiveByteData[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
+            }
+
+            len = (receiveByteData[3] <= 0 ? (int) receiveByteData[3] + 256 : (int) receiveByteData[3]);
+
+            dis.read(temp, 0, 1 + len);
+            for (int index = 0; index <= len; index++) {
+                receiveByteData[index + 4] = temp[index];    // 패킷의 Data부분을 inData에 추가해준다.
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Log.d(TAG, "receve data : " + receiveByteData);
+
     }
 }
