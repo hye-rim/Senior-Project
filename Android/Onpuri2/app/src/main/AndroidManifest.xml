@@ -33,6 +33,7 @@
 
         <activity
             android:name=".Activity.MainActivity"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/AppTheme" />
 
         <meta-data

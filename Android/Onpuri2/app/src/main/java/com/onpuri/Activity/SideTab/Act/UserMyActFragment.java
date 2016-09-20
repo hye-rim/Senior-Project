@@ -18,14 +18,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.onpuri.Activity.Home.HomeSentenceFragment;
-import com.onpuri.Activity.SideTab.Act.MyActNewAdapter;
-import com.onpuri.Activity.SideTab.Act.MyActRecordAdapter;
-import com.onpuri.Activity.SideTab.Act.MyActTestAdapter;
-import com.onpuri.Activity.SideTab.Act.MyActTranslateAdapter;
+import com.onpuri.Activity.SideTab.Act.ActTest.UserMyActTestFragment;
 import com.onpuri.DividerItemDecoration;
 import com.onpuri.Listener.RecyclerItemClickListener;
 import com.onpuri.R;
-import com.onpuri.Activity.SideTab.Act.workerAct;
 
 import java.util.ArrayList;
 
@@ -39,9 +35,10 @@ public class UserMyActFragment extends Fragment {
     private static View view;
     private TabHost mTabHost;
 
-    ArrayList<String> listNew, listRecord, listTrans, listTest;
-    ArrayList<String> listNewNum, listRecordNum, listTransNum, listTestNum;
-    ArrayList<String> listNewId, listRecordId, listTransId;
+    ArrayList<String> listNew, listNewNum, listNewId;
+    ArrayList<String> listRecord, listRecordNum,  listRecordId;
+    ArrayList<String> listTrans, listTransNum, listTransId;
+    ArrayList<String> listTest, listTestNum, listTestPercent;
 
     private RecyclerView mRecyclerNew, mRecyclerRecord, mRecyclerTrans, mRecyclerTest;
     private RecyclerView.Adapter mNewAdapter, mRecordAdapter, mTransAdapter, mTestAdapter;
@@ -58,6 +55,8 @@ public class UserMyActFragment extends Fragment {
     private workerAct mworker_act;
 
     private int cntNew, cntRecord, cntTrans, cntTest;
+
+    FragmentManager fm;
 
     public static UserMyActFragment newInstance() {
         UserMyActFragment fragment = new UserMyActFragment();
@@ -85,6 +84,8 @@ public class UserMyActFragment extends Fragment {
         isNullRecord = false;
         isNullTrans = false;
         isNullTest = false;
+
+        fm = getActivity().getSupportFragmentManager();
 
         Bundle extra = getArguments();
         String userId = null;
@@ -146,7 +147,6 @@ public class UserMyActFragment extends Fragment {
                             Toast.makeText(getActivity().getApplicationContext(), "문장을 등록해보세요.", Toast.LENGTH_SHORT).show();
                         else{
                             HomeSentenceFragment homeSentenceFragment = new HomeSentenceFragment();
-                            FragmentManager fm = getActivity().getSupportFragmentManager();
 
                             Bundle args = new Bundle();
                             args.putString("sen", listNew.get(position));
@@ -180,7 +180,6 @@ public class UserMyActFragment extends Fragment {
                             Toast.makeText(getActivity().getApplicationContext(), "문장 녹음을 등록해보세요.", Toast.LENGTH_SHORT).show();
                         else{
                             HomeSentenceFragment homeSentenceFragment = new HomeSentenceFragment();
-                            FragmentManager fm = getActivity().getSupportFragmentManager();
 
                             Bundle args = new Bundle();
                             args.putString("sen", listRecord.get(position));
@@ -214,7 +213,6 @@ public class UserMyActFragment extends Fragment {
                             Toast.makeText(getActivity().getApplicationContext(), "문장 번역을 등록해보세요.", Toast.LENGTH_SHORT).show();
                         else{
                             HomeSentenceFragment homeSentenceFragment = new HomeSentenceFragment();
-                            FragmentManager fm = getActivity().getSupportFragmentManager();
 
                             Bundle args = new Bundle();
                             args.putString("sen", listTrans.get(position));
@@ -236,7 +234,7 @@ public class UserMyActFragment extends Fragment {
     //Set Sentence Adapter for Sentence RecyclerView (NoteTab)
         mRecyclerTest = (RecyclerView) view.findViewById(R.id.recycle_act_test);
         mLayoutManager = new LinearLayoutManager(getActivity());
-        mTestAdapter = new MyActTestAdapter(getActivity().getApplicationContext(),listTest,mRecyclerTest);
+        mTestAdapter = new MyActTestAdapter(getActivity().getApplicationContext(),listTest, listTestPercent,mRecyclerTest);
         mRecyclerTest.setAdapter(mTestAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerTest.addItemDecoration(new DividerItemDecoration(dividerDrawable));
 
@@ -247,7 +245,19 @@ public class UserMyActFragment extends Fragment {
                         if(isNullTest)
                             Toast.makeText(getActivity().getApplicationContext(), "시험을 출제해보세요.", Toast.LENGTH_SHORT).show();
                         else{
-                            Toast.makeText(getActivity().getApplicationContext(), "구현 예정입니다.", Toast.LENGTH_SHORT).show();
+                            UserMyActTestFragment userMyActTestFragment = new UserMyActTestFragment();
+
+                            Bundle args = new Bundle();
+                            args.putString("test_title", listTest.get(position));
+                            args.putString("test_percent", listTestPercent.get(position));
+
+                            userMyActTestFragment.setArguments(args);
+
+                            fm.beginTransaction()
+                                    .add(R.id.containerView, userMyActTestFragment)
+                                    .addToBackStack("fragBack")
+                                    .commit();
+                            fm.executePendingTransactions();
                         }
                     }
 
@@ -267,6 +277,7 @@ public class UserMyActFragment extends Fragment {
         listTransId = new ArrayList<String>();
         listTest = new ArrayList<String>();
         listTestNum = new ArrayList<String>();
+        listTestPercent = new ArrayList<String>();
     }
 
     public void loadActData(){
@@ -338,10 +349,20 @@ public class UserMyActFragment extends Fragment {
         i = 0;
         if(mworker_act.getActTest().arrSentence != null) {
             isNullTest = false;
+            String testInfo, testTitle, testPercent;
+            int plus;
+
             while (i < mworker_act.getActTest().arrSentence.size()) {
-                listTest.add(mworker_act.getActTest().arrSentence.get(i));
+                testInfo = mworker_act.getActTest().arrSentence.get(i);
+                plus = testInfo.indexOf('+');
+                testTitle = testInfo.substring(0,plus); //시험제목
+                testPercent = testInfo.substring(plus+1, testInfo.length()); //시험 평균 정답률
+
+                listTest.add(testTitle);
+                listTestPercent.add(testPercent);
                 listTestNum.add(mworker_act.getActTest().arrSentenceNum.get(i));
                 Log.d(TAG, "출제목록 =>" + mworker_act.getActTest().arrSentence.get(i));
+
                 i++;
             }
         }
@@ -353,7 +374,7 @@ public class UserMyActFragment extends Fragment {
         cntNew = ( isNullNew ? 0 : listNew.size() );
         cntRecord = ( isNullRecord ? 0 : listRecord.size() );
         cntTrans = ( isNullTrans ? 0 : listTrans.size() ) ;
-        cntTest =( isNullTest ? 0 : listTrans.size() ) ;
+        cntTest =( isNullTest ? 0 : listTest.size() ) ;
     }
 
 

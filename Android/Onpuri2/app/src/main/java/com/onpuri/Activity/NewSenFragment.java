@@ -63,10 +63,8 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
     byte[] temp = new byte[261];
 
     private static View view;
-    private static final int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 1;
-    private static final int REQ_CODE_SELECT_IMAGE = 2;
 
-    private Button btn_ok, btn_cancel, btn_gallery, btn_camera;
+    private Button btn_ok, btn_cancel;
     private EditText sen;
 
     ViewPager viewPager;

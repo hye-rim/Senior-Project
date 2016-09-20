@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -32,16 +33,14 @@ import static com.onpuri.R.drawable.divider_light;
 /**
  * Created by HYERIM on 2016-07-11.
  */
-public class NoteSenFragment extends Fragment implements View.OnClickListener {
+public class NoteSenFragment extends Fragment {
     private static final String TAG = "NoteSenFragment";
     private static View view;
 
-    ArrayList<String> itemSentence;
-    ArrayList<String> itemSentenceNum;
+    ArrayList<String> itemSentence, itemSentenceNum, itemSentenceId;
 
     private RecyclerView mRecyclerSenItem;
     private TextView tvItemName;
-    private Button btn_listen, btn_edit;
 
     protected RecyclerView.LayoutManager mLayoutManager;
     private Context context;
@@ -54,7 +53,7 @@ public class NoteSenFragment extends Fragment implements View.OnClickListener {
     private workerNoteLoad mworker_note;
 
     private Boolean isNullSen;
-
+    private ViewPager viewPager;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (view != null) {
@@ -67,6 +66,7 @@ public class NoteSenFragment extends Fragment implements View.OnClickListener {
         } catch (InflateException e) {
             //map is already there, just return view as it is
         }
+        viewPager = (ViewPager)getActivity().findViewById(R.id.viewpager);
         isNullSen = false;
 
         mFragmentManager = getFragmentManager();
@@ -83,7 +83,7 @@ public class NoteSenFragment extends Fragment implements View.OnClickListener {
         //Set Sentence Adapter for Sentence RecyclerView (NoteTab)
         mRecyclerSenItem = (RecyclerView) view.findViewById(R.id.recycle_note_sen);
         mLayoutManager = new LinearLayoutManager(getActivity());
-        mRecyclerSenItem.setAdapter(new NoteSenItemAdapter(itemSentence, isEdit));// Set CustomAdapter as the adapter for RecyclerView.
+        mRecyclerSenItem.setAdapter(new NoteSenItemAdapter(itemSentence));// Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerSenItem.addItemDecoration(new DividerItemDecoration(dividerDrawable));
         mRecyclerSenItem.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity().getApplicationContext(), mRecyclerSenItem, new RecyclerItemClickListener.OnItemClickListener() {
@@ -98,6 +98,7 @@ public class NoteSenFragment extends Fragment implements View.OnClickListener {
                             Bundle args = new Bundle();
                             args.putString("sen", itemSentence.get(position));
                             args.putString("sen_num", itemSentenceNum.get(position));
+                            args.putString("id", itemSentenceId.get(position));
                             homeSentenceFragment.setArguments(args);
 
                             fm.beginTransaction()
@@ -105,16 +106,12 @@ public class NoteSenFragment extends Fragment implements View.OnClickListener {
                                     .addToBackStack(null)
                                     .commit();
                             fm.executePendingTransactions();
+
+                            viewPager.setCurrentItem(0);
                         }
                     }
 
                 }));
-
-        btn_listen = (Button)view.findViewById(R.id.note_sen_listen);
-        btn_edit = (Button)view.findViewById(R.id.note_sen_edit);
-
-        btn_listen.setOnClickListener(this);
-        btn_edit.setOnClickListener(this);
 
         return view;
     }
@@ -123,6 +120,7 @@ public class NoteSenFragment extends Fragment implements View.OnClickListener {
         String nameData = new String ("1+" + itemName);
         itemSentence = new ArrayList<String>();
         itemSentenceNum = new ArrayList<String>();
+        itemSentenceId = new ArrayList<String>();
 
         if (mworker_note != null && mworker_note.isAlive()) {  //이미 동작하고 있을 경우 중지
             mworker_note.interrupt();
@@ -142,6 +140,7 @@ public class NoteSenFragment extends Fragment implements View.OnClickListener {
             while (i < mworker_note.getNoteSentence().arrSentence.size()) {
                 itemSentence.add(mworker_note.getNoteSentence().arrSentence.get(i));
                 itemSentenceNum.add(mworker_note.getNoteSentence().arrSentenceNum.get(i));
+                itemSentenceId.add(mworker_note.getNoteSentence().arrSentenceId.get(i));
                 Log.d(TAG, mworker_note.getNoteSentence().arrSentence.get(i));
                 i++;
             }
@@ -153,26 +152,4 @@ public class NoteSenFragment extends Fragment implements View.OnClickListener {
 
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.note_sen_listen:
-                Toast.makeText(getActivity(),"기능 추가 예정입니다.",Toast.LENGTH_SHORT).show();
-                break;
-
-            case R.id.note_sen_edit:
-                Toast.makeText(getActivity(),"기능 추가 예정입니다.",Toast.LENGTH_SHORT).show();
-                /*
-                isEdit = !isEdit;
-                mRecyclerSenItem.setAdapter(new NoteSenItemAdapter(itemSentence, isEdit));
-
-                if(isEdit)
-                    Toast.makeText(getActivity(),"편집 모드 : " + String.valueOf(isEdit),Toast.LENGTH_SHORT).show();
-                    */
-                break;
-
-            default:
-                break;
-        }
-    }
 }

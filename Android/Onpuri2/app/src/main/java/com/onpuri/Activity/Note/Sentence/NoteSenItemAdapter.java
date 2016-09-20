@@ -17,20 +17,14 @@ import java.util.ArrayList;
  */
 public class NoteSenItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int VIEW_TYPE_ITEM = 0;
-    private static final int VIEW_TYPE_EDIT = 1;
     private final String TAG = "NoteSenItemAdapter";
 
     private ArrayList<String> senItemList = new ArrayList<>();
-    private Boolean isEdit;
 
     private TextView mSenItem;
-    private TextView mSenEdit;
 
-    private ImageButton mUp, mDown, mDelete;
-
-    public NoteSenItemAdapter(ArrayList<String> listSentence, Boolean isEdit) {
+    public NoteSenItemAdapter(ArrayList<String> listSentence) {
         senItemList.addAll(listSentence);
-        this.isEdit = isEdit;
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
@@ -41,31 +35,14 @@ public class NoteSenItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         public TextView getTextView() {  return mSenItem;  }
     }
 
-    public class EditViewHolder extends RecyclerView.ViewHolder {
-        public EditViewHolder(View v) {
-            super(v);
-            mSenEdit = (TextView) v.findViewById(R.id.tv_note_sen_edit);
-            mUp = (ImageButton)v.findViewById(R.id.btn_sen_item_up);
-            mDown = (ImageButton)v.findViewById(R.id.btn_sen_item_down);
-            mDelete = (ImageButton)v.findViewById(R.id.btn_sen_item_delete);
-        }
-        public TextView getTextViewEdit() {  return mSenEdit;  }
-        public ImageButton getButtonUp() { return mUp; }
-        public ImageButton getButtonDown() { return mDown; }
-        public ImageButton getButtonDelete() { return mDelete; }
-    }
     //create new views(invoked by the layout manager)
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v;
-        if(viewType == VIEW_TYPE_ITEM) {
-            //Create viewholder for your default cell
-            v = LayoutInflater.from(parent.getContext()).inflate(R.layout.note_sen_item_list, parent, false);
-            return new ItemViewHolder(v);
-        } else {
-            v = LayoutInflater.from(parent.getContext()).inflate(R.layout.note_sen_item_edit, parent, false);
-            return new EditViewHolder(v);
-        }
+
+        //Create viewholder for your default cell
+        v = LayoutInflater.from(parent.getContext()).inflate(R.layout.note_sen_item_list, parent, false);
+        return new ItemViewHolder(v);
     }
 
     @Override
@@ -81,44 +58,12 @@ public class NoteSenItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     Log.d(TAG, "Sentence List clicked.");
                 }
             });
-        }else {
-            EditViewHolder editViewHolder = (EditViewHolder) holder;
-            editViewHolder.getTextViewEdit().setText(senItemList.get(position));
-            editViewHolder.getButtonUp().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (holder.getAdapterPosition() > 0) {
-                        String temp;
-                        temp = senItemList.remove(holder.getAdapterPosition());
-                        senItemList.add(holder.getAdapterPosition() - 1, temp);
-                        notifyItemMoved(holder.getAdapterPosition(), holder.getAdapterPosition() - 1);
-                    }
-                }
-            });
-            editViewHolder.getButtonDown().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (holder.getAdapterPosition() < senItemList.size() - 1 ) {
-                        String temp;
-                        temp = senItemList.remove(holder.getAdapterPosition());
-                        senItemList.add(holder.getAdapterPosition() + 1, temp);
-                        notifyItemMoved(holder.getAdapterPosition(), holder.getAdapterPosition() + 1);
-                    }
-                }
-            });
-            editViewHolder.getButtonDelete().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    senItemList.remove(holder.getAdapterPosition());
-                    notifyItemRemoved(holder.getAdapterPosition());
-                }
-            });
         }
     }
 
     @Override
     public int getItemViewType(int position) {
-        return (isEdit ? VIEW_TYPE_EDIT : VIEW_TYPE_ITEM);
+        return VIEW_TYPE_ITEM;
     }
 
 
