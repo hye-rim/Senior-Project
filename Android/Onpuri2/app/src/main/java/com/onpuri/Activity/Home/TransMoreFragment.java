@@ -22,14 +22,12 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.onpuri.Activity.MainActivity;
 import com.onpuri.Adapter.TransListAdapter;
 import com.onpuri.DividerItemDecoration;
 import com.onpuri.Listener.HomeItemClickListener;
 import com.onpuri.R;
 import com.onpuri.Activity.Note.workerNote;
 import com.onpuri.Activity.Note.workerNoteItemAdd;
-import com.onpuri.Thread.workerTransMore;
 
 import java.util.ArrayList;
 
@@ -38,6 +36,7 @@ import static com.onpuri.R.drawable.divider_dark;
 public class TransMoreFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "TransMoreFragment";
     private workerTransMore worker_trans_more;
+    private workerRecommend worker_reco;
 
     private static View view;
 
@@ -95,60 +94,8 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
         RecyclerView = (RecyclerView) view.findViewById(R.id.recycler_trans);
         LayoutManager = new LinearLayoutManager(getActivity());
         RecyclerView.setLayoutManager(LayoutManager);
-        Adapter = new TransListAdapter(list_trans, list_day, list_reco, RecyclerView);
+        Adapter = new TransListAdapter(sentence, sentence_num, list_trans, list_day, list_reco, list_num, getFragmentManager().beginTransaction(), RecyclerView);
         RecyclerView.setAdapter(Adapter);
-        RecyclerView.addOnItemTouchListener(
-                new HomeItemClickListener(getActivity().getApplicationContext(), RecyclerView ,new HomeItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        Adapter.notifyDataSetChanged();
-                        final TransDetailFragment tdf = new TransDetailFragment();
-                        FragmentTransaction ft = getFragmentManager().beginTransaction();
-
-                        Bundle args = new Bundle();
-                        args.putString("sen", sentence);
-                        args.putString("sen_trans", list_trans.get(position));
-                        args.putString("userid", list_userid.get(position));
-                        args.putString("day", list_day.get(position));
-                        args.putString("reco", list_reco.get(position));
-                        tdf.setArguments(args);
-
-                        ft.replace(R.id.root_home, tdf);
-                        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                        ft.addToBackStack(null);
-                        ft.commit();
-                    }
-                    public void onLongItemClick(View view, int position) {
-                        String userid = ((MainActivity)getActivity()).user.getuserId();
-                        Log.d(TAG,list_userid.get(position));
-                        Log.d(TAG, userid);
-                        if (list_userid.get(position).equals(userid)) {
-                            Log.d(TAG, "true");
-                            new AlertDialog.Builder(getActivity())
-                                    .setTitle("선택한 해석을 삭제하시겠습니까?")
-                                    .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int whichButton) {
-                                            final FragmentManager fm = getActivity().getSupportFragmentManager();
-                                            final FragmentTransaction ft = getFragmentManager().beginTransaction();
-                                            fm.popBackStack();
-                                            ft.commit();
-                                            Toast.makeText(getActivity(), "삭제되었습니다(구현예정)", Toast.LENGTH_SHORT).show();
-                                        }
-                                    })
-                                    .setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dlg, int sumthin) {
-                                            Toast.makeText(getActivity(), "취소되었습니다", Toast.LENGTH_SHORT).show();
-                                        }
-
-                                    }).show();
-                        }
-                        else {
-                            Log.d(TAG, "false");
-                            Toast.makeText(getContext(), "본인이 등록한 해석만 삭제가능합니다.", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                })
-        );
 
         Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_dark);
         RecyclerView.addItemDecoration(new DividerItemDecoration(dividerDrawable));

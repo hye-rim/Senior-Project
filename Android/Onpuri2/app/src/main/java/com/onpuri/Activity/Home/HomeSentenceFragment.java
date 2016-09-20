@@ -32,8 +32,6 @@ import com.onpuri.Listener.HomeItemClickListener;
 import com.onpuri.R;
 import com.onpuri.Activity.Note.workerNote;
 import com.onpuri.Activity.Note.workerNoteItemAdd;
-import com.onpuri.Thread.workerTrans;
-import com.onpuri.Thread.workerListen;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -50,6 +48,8 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
     private static final String TAG = "HomeSentenceFragment";
     private workerTrans worker_sentence_trans;
     private workerListen worker_sentence_listen;
+    private workerRecommend worker_reco;
+    private workerDelete worker_delete;
 
     private static View view;
 
@@ -132,6 +132,8 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
         add_trans.setOnClickListener(this);
         ImageButton add_listen = (ImageButton) view.findViewById(R.id.add_listen);
         add_listen.setOnClickListener(this);
+        ImageButton reco_sen = (ImageButton) view.findViewById(R.id.reco_sen);
+        reco_sen.setOnClickListener(this);
 
         Button trans_more = (Button) view.findViewById(R.id.trans_more);
         trans_more.setOnClickListener(this);
@@ -153,10 +155,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
 
                             Bundle args = new Bundle();
                             args.putString("sen", sentence);
-                            args.putString("sen_trans", list_trans.get(position));
-                            args.putString("userid", list_trans_userid.get(position));
-                            args.putString("day", list_trans_day.get(position));
-                            args.putString("reco", list_trans_reco.get(position));
+                            args.putString("sennum", sentence_num);
                             args.putString("num", list_trans_num.get(position));
                             tdf.setArguments(args);
 
@@ -182,9 +181,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 new HomeItemClickListener(getActivity().getApplicationContext(), ListenRecyclerView ,new HomeItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        if(tts != null) {
-                            tts.stop();
-                        }
+                        ttsStop();
                         ((MainActivity)getActivity()).mPlayer.PlayFile(list_listen_num.get(position));
                     }
                     public void onLongItemClick(View view, int position) {}
@@ -195,8 +192,18 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
         tts = new TextToSpeech(getActivity(), this);
 
         String userid = ((MainActivity)getActivity()).user.getuserId();
+
         if (!id.equals(userid)) {
             del_sen.setVisibility(View.INVISIBLE);
+            del_sen.setEnabled(false);
+            reco_sen.setVisibility(View.VISIBLE);
+            reco_sen.setEnabled(true);
+        }
+        else {
+            reco_sen.setVisibility(View.INVISIBLE);
+            reco_sen.setEnabled(false);
+            del_sen.setVisibility(View.VISIBLE);
+            del_sen.setEnabled(true);
         }
 
         return view;
@@ -222,6 +229,8 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
 
         switch (v.getId()) {
             case R.id.del_sen:
+                ttsStop();
+                mplayerStop();
                 AlertDialog.Builder sentenceDel = new AlertDialog.Builder(getActivity());
                 sentenceDel.setTitle("문장을 삭제하시겠습니까?")
                         .setOnKeyListener(new DialogInterface.OnKeyListener() {
@@ -236,6 +245,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                         })
                         .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
+                                delete();
                                 fm.popBackStack();
                                 ft.commit();
                                 Toast.makeText(getActivity(), "삭제되었습니다(구현예정)", Toast.LENGTH_SHORT).show();
@@ -249,6 +259,8 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                         }).show();
                 break;
             case R.id.add_note:
+                ttsStop();
+                mplayerStop();
                 final String[] items = listNote.toArray(new String[listNote.size()]);
                 AlertDialog.Builder noteSelectDialog = new AlertDialog.Builder(getActivity());
 
@@ -282,6 +294,8 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 alert_dialog.getListView().setItemChecked(num, true);
                 break;
             case R.id.add_trans:
+                ttsStop();
+                mplayerStop();
                 final TransAddFragment atf = new TransAddFragment();
                 atf.setArguments(args);
                 ft.replace(R.id.root_home, atf);
@@ -289,6 +303,8 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 ft.commit();
                 break;
             case R.id.trans_more:
+                ttsStop();
+                mplayerStop();
                 final TransMoreFragment tmf = new TransMoreFragment();
                 tmf.setArguments(args);
                 ft.replace(R.id.root_home, tmf);
@@ -296,6 +312,8 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 ft.commit();
                 break;
             case R.id.add_listen:
+                ttsStop();
+                mplayerStop();
                 final ListenAddFragment alf = new ListenAddFragment();
                 alf.setArguments(args);
                 ft.replace(R.id.root_home, alf);
@@ -303,6 +321,8 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 ft.commit();
                 break;
             case R.id.listen_more:
+                ttsStop();
+                mplayerStop();
                 final ListenMoreFragment lmf = new ListenMoreFragment();
                 lmf.setArguments(args);
                 ft.replace(R.id.root_home, lmf);
@@ -310,11 +330,11 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 ft.commit();
                 break;
             case R.id.tts :
-                if(((MainActivity)getActivity()).mPlayer.mpfile != null) {
-                    ((MainActivity)getActivity()).mPlayer.mpfile.pause();
-                }
+                mplayerStop();
                 tts.speak(sentence, TextToSpeech.QUEUE_FLUSH, null);
                 break;
+            case R.id.reco_sen :
+                recommend();
         }
     }
 
@@ -371,7 +391,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
         list_listen_num.clear();
 
         for (int i = 0; i < worker_sentence_listen.getCount(); i++) {
-            list_listen.add(worker_sentence_listen.getUserid().get(i).toString()+"님   "+worker_sentence_listen.getDay().get(i).toString());
+            list_listen.add(worker_sentence_listen.getUserid().get(i).toString()+"   "+worker_sentence_listen.getDay().get(i).toString());
             list_listen_userid.add(worker_sentence_listen.getUserid().get(i).toString());
             list_listen_day.add(worker_sentence_listen.getDay().get(i).toString());
             list_listen_reco.add(worker_sentence_listen.getReco().get(i).toString());
@@ -448,5 +468,40 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
             Toast.makeText(getActivity(), "추가에 실패하였습니다.", Toast.LENGTH_LONG).show();
         }
     }
+    public void ttsStop() {
+        if (tts != null) {
+            tts.stop();
+        }
+    }
+    public void mplayerStop() {
+        if(((MainActivity)getActivity()).mPlayer.mpfile != null) {
+            ((MainActivity)getActivity()).mPlayer.mpfile.pause();
+        }
+    }
 
+    void recommend() {
+        if (worker_reco != null && worker_reco.isAlive()) {  //이미 동작하고 있을 경우 중지
+            worker_reco.interrupt();
+        }
+        worker_reco = new workerRecommend(true, "1+", sentence_num);
+        worker_reco.start();
+        try {
+            worker_reco.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    void delete() {
+        if (worker_delete != null && worker_delete.isAlive()) {  //이미 동작하고 있을 경우 중지
+            worker_delete.interrupt();
+        }
+        worker_delete = new workerDelete(true, "1+", sentence_num);
+        worker_delete.start();
+        try {
+            worker_delete.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }

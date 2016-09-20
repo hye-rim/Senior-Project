@@ -1,28 +1,18 @@
 package com.onpuri.Activity.Test.Solving;
 
-import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.Color;
-import android.net.Uri;
+
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.onpuri.Adapter.SenListenListAdapter;
 import com.onpuri.Adapter.TestListAdapter;
 import com.onpuri.Listener.HomeItemClickListener;
 import com.onpuri.R;
@@ -31,7 +21,7 @@ import java.util.ArrayList;
 
 
 public class TestSolveFragment extends Fragment implements View.OnClickListener{
-
+    private static final String TAG = "TestSolveFragment" ;
     private static View view;
 
     ArrayList<String> list_test;
@@ -40,6 +30,8 @@ public class TestSolveFragment extends Fragment implements View.OnClickListener{
     private TestListAdapter TestListAdapter;
 
     Button btn_word, btn_sen;
+    TextView btn_selftest;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +56,8 @@ public class TestSolveFragment extends Fragment implements View.OnClickListener{
         btn_word.setOnClickListener(this);
         btn_sen = (Button) view.findViewById(R.id.sen);
         btn_sen.setOnClickListener(this);
+        btn_selftest = (TextView) view.findViewById(R.id.selftest);
+        btn_selftest.setOnClickListener(this);
 
         TestRecyclerView = (RecyclerView) view.findViewById(R.id.test_list);
 
@@ -82,7 +76,7 @@ public class TestSolveFragment extends Fragment implements View.OnClickListener{
 
                         fm.beginTransaction()
                                 .replace(R.id.root_test, tssf)
-                                .addToBackStack("testlist")
+                                .addToBackStack(null)
                                 .commit();
                     }
 
@@ -113,12 +107,26 @@ public class TestSolveFragment extends Fragment implements View.OnClickListener{
                     btn_sen.setBackgroundResource((R.drawable.btn_border));
                 }
                 break;
+            case R.id.selftest:
+                final TestSolveStartFrgment tssf = new TestSolveStartFrgment();
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+
+                Bundle args = new Bundle();
+                args.putString("testname", "자가 시험");
+                tssf.setArguments(args);
+
+                fm.beginTransaction()
+                        .replace(R.id.root_test, tssf)
+                        .addToBackStack(null)
+                        .commit();
+                break;
         }
     }
     void testlist() {
         list_test = new ArrayList<String>();
-        this.list_test.add("70%  test님    문장 쪽지시험");
-        this.list_test.add("80%  admin님   쪽지시험 2");
+        this.list_test.add("70%  test님    쪽지시험(문장 10문제)입니다.");
+        this.list_test.add("80%  admin님   문장 쪽지시험 2");
+        this.list_test.add("65%  admin님   문장 쪽지시험 1");
     }
 
 }

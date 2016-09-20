@@ -1,110 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="75dp"
+    android:layout_height="40dp"
     android:weightSum="1"
     android:gravity="center_vertical"
     android:background="@color/background_material_light">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="180dp"
-        android:layout_height="match_parent"
+    <TextView
+        android:textSize="16dp"
         android:layout_marginLeft="8dp"
-        android:layout_weight="0.88"
-        android:gravity="center_vertical">
+        android:layout_marginRight="8dp"
+        android:textColor="@color/black"
+        android:lineSpacingExtra="3dp"
+        android:ellipsize="end"
+        android:id="@+id/tv_listen_item"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:text="none"
+        android:gravity="center_vertical" />
 
-        <TextView
-            android:textSize="16dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:textColor="@color/black"
-            android:lineSpacingExtra="3dp"
-            android:ellipsize="end"
-            android:id="@+id/tv_listen_item"
-            android:layout_width="200dp"
-            android:layout_height="35dp"
-            android:text="none"
-            android:gravity="center_vertical" />
-
-        <Button
-            android:layout_width="85dp"
-            android:layout_height="25dp"
-            android:text="추천하기"
-            android:id="@+id/tv_reco_item"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:textSize="14dp"
-            android:background="@drawable/btn_border"
-            android:textColor="#000000" />
-
-    </LinearLayout>
+    <ImageButton
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:id="@+id/del_listen"
+        android:background="@drawable/deltrans_icon"
+        android:layout_marginRight="10dp" />
 
     <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="100dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:weightSum="1"
-        android:layout_marginRight="8dp"
-        android:gravity="center">
+        android:layout_weight="1"></LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_marginRight="15dp">
+
+        <ImageButton
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:id="@+id/reco_bnt"
+            android:background="@drawable/reco_icon"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="3dp" />
 
         <TextView
             android:textSize="14dp"
-            android:layout_marginRight="8dp"
             android:textColor="@color/black"
             android:lineSpacingExtra="3dp"
             android:ellipsize="end"
-            android:id="@+id/userid"
+            android:id="@+id/reco"
             android:layout_width="match_parent"
             android:layout_height="20dp"
-            android:text="닉네임"
-            android:layout_gravity="right"
-            android:gravity="left" />
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="20dp">
-
-            <TextView
-                android:textSize="14dp"
-                android:layout_marginRight="8dp"
-                android:textColor="@color/black"
-                android:lineSpacingExtra="3dp"
-                android:ellipsize="end"
-                android:layout_width="50dp"
-                android:layout_height="20dp"
-                android:layout_gravity="right"
-                android:gravity="left"
-                android:text="추천수 :" />
-
-            <TextView
-                android:textSize="14dp"
-                android:layout_marginRight="8dp"
-                android:textColor="@color/black"
-                android:lineSpacingExtra="3dp"
-                android:ellipsize="end"
-                android:id="@+id/reco"
-                android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:text="00"
-                android:layout_gravity="right"
-                android:gravity="left" />
-        </LinearLayout>
-
-        <TextView
-            android:textSize="14dp"
-            android:layout_marginRight="8dp"
-            android:textColor="@color/black"
-            android:lineSpacingExtra="3dp"
-            android:ellipsize="end"
-            android:id="@+id/day"
-            android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:text="2016.00.00"
-            android:layout_gravity="right"
-            android:gravity="left" />
-
+            android:text="00"
+            android:gravity="center_vertical" />
     </LinearLayout>
 
 </LinearLayout>

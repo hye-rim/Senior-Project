@@ -1,4 +1,6 @@
-package com.onpuri.Thread;
+package com.onpuri.Activity.Home;
+
+import android.util.Log;
 
 import com.onpuri.Server.PacketUser;
 import com.onpuri.Server.SocketConnection;
@@ -10,9 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by kutemsys on 2016-08-25.
+ * Created by kutemsys on 2016-08-24.
  */
-public class workerTransMore extends Thread {
+public class workerTrans extends Thread {
     private static final String TAG = "workerTrans";
     private boolean isPlay = false;
 
@@ -53,20 +55,16 @@ public class workerTransMore extends Thread {
         return transnum;
     }
 
-    public workerTransMore(boolean isPlay, String sentence_num) {
+    public workerTrans(boolean isPlay, String sentence_num) {
         this.isPlay = isPlay;
         this.sentence_num = sentence_num;
-    }
-
-    public void stopThread() {
-        isPlay = !isPlay;
     }
 
     public void run() {
         super.run();
         while (isPlay) {
             outData[0] = (byte) PacketUser.SOF;
-            outData[1] = (byte) PacketUser.USR_MTRANS;
+            outData[1] = (byte) PacketUser.USR_SENTRNAS;
             outData[2] = (byte) PacketUser.getSEQ();
             outData[3] = (byte) sentence_num.length();
             for (int i = 4; i < 4 + sentence_num.length(); i++) {
@@ -74,26 +72,28 @@ public class workerTransMore extends Thread {
             }
             outData[4 + sentence_num.length()] = (byte) 85;
 
+
             try {
                 dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
-                dos.write(outData, 0, outData[3]+5); // packet transmission
+                dos.write(outData, 0, outData[3]+5);
                 dos.flush();
                 dis = new DataInputStream(SocketConnection.socket.getInputStream());
 
-                int num=0;
-                while (true) {
-                    //패킷1
+                int num = 0;
+                while (num < 3) {
                     dis.read(temp, 0, 4);
                     for (index = 0; index < 4; index++) {
-                        transData[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
+                        transData[index] = temp[index];
                     }
+
+                    Log.d(TAG, "opc : " + transData[1]);
                     int trans_len = ((int) transData[3] <= 0 ? (int) transData[3] + 256 : (int) transData[3]);
 
                     if (transData[1] == PacketUser.ACK_SENTRNAS) {
                         //해석 읽어오기
                         dis.read(temp, 0, 1 + (trans_len));
                         for (index = 0; index <= trans_len; index++) {
-                            transData[index + 4] = temp[index];    // 패킷의 Data부분을 inData에 추가해준다.
+                            transData[index + 4] = temp[index];
                         }
 
                         index = 0;
@@ -109,7 +109,6 @@ public class workerTransMore extends Thread {
                                 i++;
                             }
                         }
-
                         trans.add(new String(transbyte, 0, i)); //해석
 
                         //아이디-날짜-추천수-해석번호 읽어오기
@@ -136,32 +135,32 @@ public class workerTransMore extends Thread {
                                 j++;
                             }
                         }
-
                         String transinfo = new String(transinfobyte, 0, j);
                         int plus = transinfo.indexOf('+');
                         userid.add(transinfo.substring(0, plus)); //아이디
                         day.add(transinfo.substring(plus + 1, plus + 11)); //날짜
-                        transinfo = transinfo.substring(plus + 12);
+                        transinfo = transinfo.substring(plus+12);
                         plus = transinfo.indexOf('+');
                         reco.add(transinfo.substring(0, plus)); //추천수
                         plus = transinfo.indexOf('+');
-                        transnum.add(transinfo.substring(plus + 1, (transinfo.length() - 1))); //해석번호
+                        transnum.add(transinfo.substring(plus + 1, (transinfo.length()-1))); //해석번호
 
                         num++;
-                    } else if (transData[1] == PacketUser.ACK_NTRANS) {
-                        count = num;
+                        count=num;
+                    }
+                    else if (transData[1] == PacketUser.ACK_NTRANS) {
+                        count=num;
                         break;
                     } else {
-                        count = num;
+                        count=num;
                         break;
                     }
                 }
                 dis.read(temp);
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            isPlay = !isPlay;
+            isPlay = false;
         }
     }
 }

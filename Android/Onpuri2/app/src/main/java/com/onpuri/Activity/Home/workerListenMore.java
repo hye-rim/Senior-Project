@@ -1,4 +1,4 @@
-package com.onpuri.Thread;
+package com.onpuri.Activity.Home;
 
 import android.os.Environment;
 import android.util.Log;
@@ -15,10 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by kutemsys on 2016-08-24.
+ * Created by kutemsys on 2016-08-30.
  */
-public class workerListen extends Thread {
-    private static final String TAG = "workerListen";
+public class workerListenMore extends Thread {
+    private static final String TAG = "workerListenMore";
     private boolean isPlay = false;
 
     int index;
@@ -52,16 +52,20 @@ public class workerListen extends Thread {
     }
 
 
-    public workerListen(boolean isPlay, String sentence_num) {
+    public workerListenMore(boolean isPlay, String sentence_num) {
         this.isPlay = isPlay;
         this.sentence_num = sentence_num;
+    }
+
+    public void stopThread() {
+        isPlay = !isPlay;
     }
 
     public void run() {
         super.run();
         while (isPlay) {
             outData[0] = (byte) PacketUser.SOF;
-            outData[1] = (byte) PacketUser.USR_SENLISTEN;
+            outData[1] = (byte) PacketUser.USR_MLISTEN;
             outData[2] = (byte) PacketUser.getSEQ();
             outData[3] = (byte) sentence_num.length();
             for (int i = 4; i < 4 + sentence_num.length(); i++) {
@@ -75,8 +79,8 @@ public class workerListen extends Thread {
                 dos.flush();
                 dis = new DataInputStream(SocketConnection.socket.getInputStream());
 
-                int num = 0;
-                while (num < 3) {
+                int num=0;
+                while (true) {
                     //패킷1
                     byte[] inData = new byte[10];
                     dis.read(inData, 0, 4);
@@ -94,6 +98,7 @@ public class workerListen extends Thread {
                         recordbyte = new byte[listen_len];
                         inData = new byte[(listen_len)+1];
 
+                        Log.d(TAG, "read");
                         int readPacket = 0;
                         while(readPacket < (listen_len+1)) {
                             int readVal = dis.read(inData, readPacket, ((listen_len + 1) - readPacket));
@@ -109,6 +114,7 @@ public class workerListen extends Thread {
                         byte[] infoData = new byte[10];
                         dis.read(infoData, 0, 4);
                         int len = (int) infoData[3];
+                        Log.d(TAG, "opc2 : " + infoData[1]);
 
                         // 아이디-날짜-추천수-듣기번호 읽어오기
                         byte[] listeninfobyte = new byte[len];
@@ -159,6 +165,7 @@ public class workerListen extends Thread {
                         break;
                     }
                 }
+
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -14,7 +14,7 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="45dp"
         android:background="@color/white"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="5dp"
@@ -66,15 +66,72 @@
 
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:scrollbars="vertical"
-        app:layoutManager="LinearLayoutManager"
-        android:id="@+id/test_list"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:listitem="@layout/test_list"
-        android:background="@color/more_light_gray"
-        android:layout_alignParentTop="true">
-    </android.support.v7.widget.RecyclerView>
+        android:layout_height="35dp"
+        android:gravity="center_vertical"
+        android:weightSum="1"
+        android:background="@color/white"
+        android:layout_marginBottom="3dp">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical|right">
+
+            <TextView
+                android:textSize="16dp"
+                android:layout_marginLeft="8dp"
+                android:textColor="@color/black"
+                android:id="@+id/selftest"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="자가 시험"
+                android:gravity="center_vertical" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp">
+
+                <TextView
+                    android:textSize="14dp"
+                    android:textColor="@color/black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="문제 수"
+                    android:gravity="center_horizontal" />
+
+                <TextView
+                    android:textSize="14dp"
+                    android:textColor="@color/black"
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content"
+                    android:text="10"
+                    android:layout_marginLeft="3dp"
+                    android:gravity="center_horizontal" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+            android:scrollbars="vertical"
+            app:layoutManager="LinearLayoutManager"
+            android:id="@+id/test_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/test_list"
+            android:background="@color/more_light_gray"
+            android:layout_alignParentTop="true"
+            android:layout_weight="1">
+        </android.support.v7.widget.RecyclerView>
 
 </LinearLayout>

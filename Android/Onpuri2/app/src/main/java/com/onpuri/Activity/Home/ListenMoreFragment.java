@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -26,17 +25,15 @@ import com.onpuri.Activity.MainActivity;
 import com.onpuri.DividerItemDecoration;
 import com.onpuri.Adapter.ListenListAdapter;
 import com.onpuri.R;
-import com.onpuri.Thread.workerListenMore;
 import com.onpuri.Activity.Note.workerNote;
 import com.onpuri.Activity.Note.workerNoteItemAdd;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 import static com.onpuri.R.drawable.divider_dark;
 
 
-public class ListenMoreFragment extends Fragment implements View.OnClickListener, TextToSpeech.OnInitListener {
+public class ListenMoreFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "ListenMoreFragment";
     private workerListenMore worker_listen_more;
 
@@ -51,7 +48,6 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
     TextView item;
     String sentence = "";
     String sentence_num = "";
-    TextToSpeech tts;
 
     private Context con;
     private FragmentManager fm;
@@ -89,23 +85,18 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
             sentence_num=getArguments().getString("sen_num");
             item.setText(sentence);
         }
-
         listen();
         noteLoad();
 
-        ImageButton tts_sen = (ImageButton) view.findViewById(R.id.tts);
-        tts_sen.setOnClickListener(this);
         ImageButton add_note = (ImageButton) view.findViewById(R.id.add_note);
         add_note.setOnClickListener(this);
         ImageButton add_listen = (ImageButton) view.findViewById(R.id.add_listen);
         add_listen.setOnClickListener(this);
 
-        tts = new TextToSpeech(getActivity(), this);
-
         RecyclerView = (RecyclerView) view.findViewById(R.id.recycler_listen);
         LayoutManager = new LinearLayoutManager(getActivity());
         RecyclerView.setLayoutManager(LayoutManager);
-        Adapter = new ListenListAdapter(((MainActivity)getActivity()).mPlayer, list_listen, list_userid, list_day, list_reco, list_num, con, fm, RecyclerView);
+        Adapter = new ListenListAdapter(getActivity(), ((MainActivity)getActivity()).mPlayer, ((MainActivity)getActivity()).user.getuserId(), list_listen, list_userid, list_reco, list_num, con, fm, RecyclerView);
         RecyclerView.setAdapter(Adapter);// Set CustomAdapter as the adapter for RecyclerView.
 
         Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_dark);
@@ -133,21 +124,12 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
         list_num.clear();
 
         for (int i = 0; i < worker_listen_more.getCount(); i++) {
-            list_listen.add(worker_listen_more.getUserid().get(i).toString()+"님   "+worker_listen_more.getDay().get(i).toString());
+            list_listen.add(worker_listen_more.getUserid().get(i).toString()+"님 "+worker_listen_more.getDay().get(i).toString());
             list_userid.add(worker_listen_more.getUserid().get(i).toString());
             list_day.add(worker_listen_more.getDay().get(i).toString());
             list_reco.add(worker_listen_more.getReco().get(i).toString());
             list_num.add(worker_listen_more.getListennum().get(i).toString());
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        if (tts != null) {
-            tts.stop();
-            tts.shutdown();
-        }
-        super.onDestroy();
     }
 
     @Override
@@ -159,6 +141,7 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
 
         switch (v.getId()) {
             case R.id.add_note:
+                mplayerStop();
                 final String[] items = listNote.toArray(new String[listNote.size()]);
                 AlertDialog.Builder noteSelectDialog = new AlertDialog.Builder(getActivity());
 
@@ -193,24 +176,14 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
                 alert_dialog.getListView().setItemChecked(pos, true);
                 break;
             case R.id.add_listen:
+                mplayerStop();
                 final ListenAddFragment alf = new ListenAddFragment();
                 alf.setArguments(args);
                 ft.replace(R.id.root_home, alf);
                 ft.addToBackStack(null);
                 ft.commit();
                 break;
-            case R.id.tts:
-                if(((MainActivity)getActivity()).mPlayer.mpfile != null) {
-                    ((MainActivity)getActivity()).mPlayer.mpfile.pause();
-                }
-                tts.speak(sentence, TextToSpeech.QUEUE_FLUSH, null);
-                break;
         }
-    }
-
-    @Override
-    public void onInit(int status) {
-        tts.setLanguage(Locale.US);
     }
 
     private void noteLoad(){
@@ -263,4 +236,9 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
         }
     }
 
+    public void mplayerStop() {
+        if(((MainActivity)getActivity()).mPlayer.mpfile != null) {
+            ((MainActivity)getActivity()).mPlayer.mpfile.pause();
+        }
+    }
 }

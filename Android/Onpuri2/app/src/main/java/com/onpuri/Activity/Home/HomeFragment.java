@@ -1,17 +1,12 @@
 package com.onpuri.Activity.Home;
 
-import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,20 +14,12 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.onpuri.Adapter.RecycleviewAdapter;
-import com.onpuri.DividerItemDecoration;
 import com.onpuri.Listener.EndlessRecyclerOnScrollListener;
 import com.onpuri.Listener.HomeItemClickListener;
 import com.onpuri.R;
 import com.onpuri.Server.PacketUser;
-import com.onpuri.Server.SocketConnection;
-import com.onpuri.Thread.workerSentenceList;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
-
-import static com.onpuri.R.drawable.divider_dark;
 
 /**
  * Created by kutemsys on 2016-05-03.
