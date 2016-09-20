@@ -29,10 +29,10 @@
         android:layout_marginRight="10dp"
         android:layout_marginLeft="5dp">
 
-        <ImageView
+        <ImageButton
             android:layout_width="15dp"
             android:layout_height="15dp"
-            android:id="@+id/imageView5"
+            android:id="@+id/reco_bnt"
             android:background="@drawable/reco_icon" />
 
         <TextView

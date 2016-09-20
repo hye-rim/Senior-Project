@@ -34,7 +34,7 @@ public class workerDelete extends Thread{
         super.run();
         Log.d(TAG, "num : " + num);
 
-        String data = type+num;
+  /*      String data = type+num;
 
         while(isPlay) {
             outData[0] = (byte) PacketUser.SOF;
@@ -67,6 +67,6 @@ public class workerDelete extends Thread{
                 e.printStackTrace();
             }
             isPlay = false;
-        }
+        }*/
     }
 }

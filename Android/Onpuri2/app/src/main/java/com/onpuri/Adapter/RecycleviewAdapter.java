@@ -64,7 +64,7 @@ public class RecycleviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         itemViewHolder.mSenItem.setText(senList.get(position));
         itemViewHolder.mTransItem.setText(transList.get(position));
         itemViewHolder.mListenItem.setText(listenList.get(position));
-        itemViewHolder.mSenId.setText(IdList.get(position));
+        itemViewHolder.mSenId.setText(IdList.get(position)+"님");
 
 
         //itemViewHolder.itemView.setBackgroundColor(Color.parseColor("#FDF5D2"));

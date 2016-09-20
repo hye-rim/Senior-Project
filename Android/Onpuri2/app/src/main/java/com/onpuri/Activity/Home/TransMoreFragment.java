@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -49,6 +50,8 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
     String sentence = "";
     String sentence_num = "";
 
+    private FragmentManager fm;
+
     private RecyclerView RecyclerView;
     private TransListAdapter Adapter;
     protected RecyclerView.LayoutManager LayoutManager;
@@ -89,40 +92,12 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
         add_note.setOnClickListener(this);
         ImageButton add_trans = (ImageButton) view.findViewById(R.id.add_trans);
         add_trans.setOnClickListener(this);
-        ImageButton reco_sen = (ImageButton) view.findViewById(R.id.reco_sen);
-        reco_sen.setOnClickListener(this);
 
         RecyclerView = (RecyclerView) view.findViewById(R.id.recycler_trans);
         LayoutManager = new LinearLayoutManager(getActivity());
         RecyclerView.setLayoutManager(LayoutManager);
-        Adapter = new TransListAdapter(list_trans, list_day, list_reco, RecyclerView);
+        Adapter = new TransListAdapter(sentence, sentence_num, list_trans, list_day, list_reco, list_num, fm, RecyclerView);
         RecyclerView.setAdapter(Adapter);
-        RecyclerView.addOnItemTouchListener(
-                new HomeItemClickListener(getActivity().getApplicationContext(), RecyclerView ,new HomeItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        Adapter.notifyDataSetChanged();
-                        final TransDetailFragment tdf = new TransDetailFragment();
-                        FragmentTransaction ft = getFragmentManager().beginTransaction();
-
-                        Bundle args = new Bundle();
-                        args.putString("sen", sentence);
-                        args.putString("sen_trans", list_trans.get(position));
-                        args.putString("userid", list_userid.get(position));
-                        args.putString("day", list_day.get(position));
-                        args.putString("reco", list_reco.get(position));
-                        args.putString("num", list_num.get(position));
-                        tdf.setArguments(args);
-
-                        ft.replace(R.id.root_home, tdf);
-                        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                        ft.addToBackStack(null);
-                        ft.commit();
-                    }
-                    public void onLongItemClick(View view, int position) {
-                    }
-                })
-        );
 
         Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_dark);
         RecyclerView.addItemDecoration(new DividerItemDecoration(dividerDrawable));
@@ -210,8 +185,6 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
                 ft.addToBackStack(null);
                 ft.commit();
                 break;
-            case R.id.reco_sen:
-                recommend();
         }
     }
 
@@ -264,18 +237,6 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
             Toast.makeText(getActivity(), item + "에 이미 있습니다.", Toast.LENGTH_LONG).show();
         }else{
             Toast.makeText(getActivity(), "추가에 실패하였습니다.", Toast.LENGTH_LONG).show();
-        }
-    }
-    void recommend() {
-        if (worker_reco != null && worker_reco.isAlive()) {  //이미 동작하고 있을 경우 중지
-            worker_reco.interrupt();
-        }
-        worker_reco = new workerRecommend(true, "1+", sentence_num);
-        worker_reco.start();
-        try {
-            worker_reco.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
     }
 }

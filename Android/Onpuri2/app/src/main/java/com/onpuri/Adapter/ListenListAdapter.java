@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.onpuri.Activity.Home.workerDelete;
 import com.onpuri.Activity.Home.workerRecommend;
 import com.onpuri.MediaPlayerManager;
 import com.onpuri.R;
@@ -23,7 +25,10 @@ import java.util.ArrayList;
 
 public class ListenListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
     private final String TAG = "ListenListAdapter";
+
     private workerRecommend worker_reco;
+    private workerDelete worker_delete;
+
     private final FragmentActivity activity;
 
     private ArrayList<String> listenList;
@@ -38,7 +43,8 @@ public class ListenListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     FragmentManager fm;
     String id;
 
-    public ListenListAdapter(FragmentActivity activity, MediaPlayerManager mPlayer, String id, ArrayList<String> list_listen, ArrayList<String> list_userid, ArrayList<String> list_reco, ArrayList<String> list_num,  Context con, FragmentManager fm, RecyclerView recyclerView) {
+    public ListenListAdapter(FragmentActivity activity, MediaPlayerManager mPlayer, String id,
+                             ArrayList<String> list_listen, ArrayList<String> list_userid, ArrayList<String> list_reco, ArrayList<String> list_num, Context con, FragmentManager fm, RecyclerView recyclerView) {
         this.listenList=list_listen;
         this.useridList=list_userid;
         this.recoList=list_reco;
@@ -88,15 +94,13 @@ public class ListenListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                 public void onClick(DialogInterface dialog, int whichButton) {
                                     final FragmentManager fm = activity.getSupportFragmentManager();
                                     final FragmentTransaction ft = fm.beginTransaction();
+                                    delete(numList.get(getPosition()));
                                     fm.popBackStack();
                                     ft.commit();
-                                    Toast.makeText(activity, "삭제되었습니다(구현예정)", Toast.LENGTH_SHORT).show();
                                 }
                             })
                             .setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dlg, int sumthin) {
-                                    Toast.makeText(activity, "취소되었습니다", Toast.LENGTH_SHORT).show();
-                                }
+                                public void onClick(DialogInterface dlg, int sumthin) {}
                             }).show();
                 }
             });
@@ -104,7 +108,6 @@ public class ListenListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             reco_listen.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(activity, "추천되었습니다", Toast.LENGTH_SHORT).show();
                     recommend(numList.get(getPosition()));
 
                 }
@@ -142,6 +145,19 @@ public class ListenListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         worker_reco.start();
         try {
             worker_reco.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    void delete(String num) {
+        if (worker_delete != null && worker_delete.isAlive()) {  //이미 동작하고 있을 경우 중지
+            worker_delete.interrupt();
+        }
+        worker_delete = new workerDelete(true, "3+", num);
+        worker_delete.start();
+        try {
+            worker_delete.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

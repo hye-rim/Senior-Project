@@ -49,6 +49,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
     private workerTrans worker_sentence_trans;
     private workerListen worker_sentence_listen;
     private workerRecommend worker_reco;
+    private workerDelete worker_delete;
 
     private static View view;
 
@@ -154,10 +155,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
 
                             Bundle args = new Bundle();
                             args.putString("sen", sentence);
-                            args.putString("sen_trans", list_trans.get(position));
-                            args.putString("userid", list_trans_userid.get(position));
-                            args.putString("day", list_trans_day.get(position));
-                            args.putString("reco", list_trans_reco.get(position));
+                            args.putString("sennum", sentence_num);
                             args.putString("num", list_trans_num.get(position));
                             tdf.setArguments(args);
 
@@ -247,6 +245,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                         })
                         .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
+                                delete();
                                 fm.popBackStack();
                                 ft.commit();
                                 Toast.makeText(getActivity(), "삭제되었습니다(구현예정)", Toast.LENGTH_SHORT).show();
@@ -488,6 +487,19 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
         worker_reco.start();
         try {
             worker_reco.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    void delete() {
+        if (worker_delete != null && worker_delete.isAlive()) {  //이미 동작하고 있을 경우 중지
+            worker_delete.interrupt();
+        }
+        worker_delete = new workerDelete(true, "1+", sentence_num);
+        worker_delete.start();
+        try {
+            worker_delete.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

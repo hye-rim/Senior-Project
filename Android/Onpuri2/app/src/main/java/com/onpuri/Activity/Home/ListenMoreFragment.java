@@ -36,7 +36,6 @@ import static com.onpuri.R.drawable.divider_dark;
 public class ListenMoreFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "ListenMoreFragment";
     private workerListenMore worker_listen_more;
-    private workerRecommend worker_reco;
 
     private static View view;
 
@@ -93,8 +92,6 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
         add_note.setOnClickListener(this);
         ImageButton add_listen = (ImageButton) view.findViewById(R.id.add_listen);
         add_listen.setOnClickListener(this);
-        ImageButton reco_sen = (ImageButton) view.findViewById(R.id.reco_sen);
-        reco_sen.setOnClickListener(this);
 
         RecyclerView = (RecyclerView) view.findViewById(R.id.recycler_listen);
         LayoutManager = new LinearLayoutManager(getActivity());
@@ -127,7 +124,7 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
         list_num.clear();
 
         for (int i = 0; i < worker_listen_more.getCount(); i++) {
-            list_listen.add(worker_listen_more.getUserid().get(i).toString()+"   "+worker_listen_more.getDay().get(i).toString());
+            list_listen.add(worker_listen_more.getUserid().get(i).toString()+"님 "+worker_listen_more.getDay().get(i).toString());
             list_userid.add(worker_listen_more.getUserid().get(i).toString());
             list_day.add(worker_listen_more.getDay().get(i).toString());
             list_reco.add(worker_listen_more.getReco().get(i).toString());
@@ -186,8 +183,6 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
                 ft.addToBackStack(null);
                 ft.commit();
                 break;
-            case R.id.reco_sen :
-                recommend();
         }
     }
 
@@ -244,19 +239,6 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
     public void mplayerStop() {
         if(((MainActivity)getActivity()).mPlayer.mpfile != null) {
             ((MainActivity)getActivity()).mPlayer.mpfile.pause();
-        }
-    }
-
-    void recommend() {
-        if (worker_reco != null && worker_reco.isAlive()) {  //이미 동작하고 있을 경우 중지
-            worker_reco.interrupt();
-        }
-        worker_reco = new workerRecommend(true, "1+", sentence_num);
-        worker_reco.start();
-        try {
-            worker_reco.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
     }
 }

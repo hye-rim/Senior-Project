@@ -27,11 +27,14 @@ import com.onpuri.Server.PacketUser;
 public class TransDetailFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "TransDetailFragment";
     private workerRecommend worker_reco;
+    private workerDelete worker_delete;
+
     private com.onpuri.Server.PacketUser user;
     private static View view;
     private Toast toast;
 
     String sentence="";
+    String sen_num="";
     String trans="";
     String id="";
     String day="";
@@ -65,17 +68,14 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
 
         if (getArguments() != null) { //클릭한 문장 출력
             sentence = getArguments().getString("sen");
-            trans = getArguments().getString("sen_trans");
-            id = getArguments().getString("userid");
-            day = getArguments().getString("day");
-            reco = getArguments().getString("reco");
+            sen_num= getArguments().getString("sen_num");
             num = getArguments().getString("num");
 
             item_sen.setText(sentence);
-            item_trans.setText(trans);
-            item_userid.setText(id);
-            item_day.setText(day);
-            item_reco.setText(reco);
+            item_trans.setText("A");
+            item_userid.setText("님");
+            item_day.setText("A");
+            item_reco.setText("A");
         }
 
         Button item_reco = (Button) view.findViewById(R.id.item_reco);
@@ -86,9 +86,9 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
         del_trans.setOnClickListener(this);
 
         String userid = ((MainActivity)getActivity()).user.getuserId();
-        if (!id.equals(userid)) {
+      /*  if (!id.equals(userid)) {
             del_trans.setVisibility(View.INVISIBLE);
-        }
+        }*/
 
         return view;
     }
@@ -131,6 +131,7 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 final FragmentManager fm = getActivity().getSupportFragmentManager();
                                 final FragmentTransaction ft = getFragmentManager().beginTransaction();
+                                delete();
                                 fm.popBackStack();
                                 ft.commit();
                                 Toast.makeText(getActivity(), "삭제되었습니다(구현예정)", Toast.LENGTH_SHORT).show();
@@ -154,6 +155,19 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
         worker_reco.start();
         try {
             worker_reco.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    void delete() {
+        if (worker_delete != null && worker_delete.isAlive()) {  //이미 동작하고 있을 경우 중지
+            worker_delete.interrupt();
+        }
+        worker_delete = new workerDelete(true, "2+", num);
+        worker_delete.start();
+        try {
+            worker_delete.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
