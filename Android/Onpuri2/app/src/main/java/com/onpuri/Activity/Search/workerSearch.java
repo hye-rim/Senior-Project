@@ -62,7 +62,7 @@ public class workerSearch extends Thread {
     public void run() {
         super.run();
         while (isPlay) {
-            int i, index;
+            int i;
             userSentence = new PacketUser();
 
             sendData( toServerDataUser, PacketUser.USR_SEARCH);
@@ -74,7 +74,24 @@ public class workerSearch extends Thread {
 
                     Log.d(TAG, "gogo");
 
-                    receiveData(inData, sentenceLen); //문장받기
+                    try {
+                        dis.read(temp, 0, 4);
+
+                        for (int index = 0; index < 4; index++) {
+                            inData[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
+                        }
+
+                        sentenceLen = (inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);
+
+                        dis.read(temp, 0, 1 + sentenceLen);
+                        for (int index = 0; index <= sentenceLen; index++) {
+                            inData[index + 4] = temp[index];    // 패킷의 Data부분을 inData에 추가해준다.
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    Log.d(TAG, "receve data : " + new String(inData));
 
                     Log.d(TAG, "opc : " + inData[1]);
                     if(inData[1] == PacketUser.ACK_NWORSER ||
@@ -115,8 +132,24 @@ public class workerSearch extends Thread {
                                     break;
 
                                 case PacketUser.ACK_SENSER:
+                                    try {
+                                        dis.read(temp, 0, 4);
 
-                                    receiveData(numSentence, sentenceInfoLen); //문장번호+아이디
+                                        for (int index = 0; index < 4; index++) {
+                                            numSentence[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
+                                        }
+
+                                        sentenceInfoLen = (numSentence[3] <= 0 ? (int) numSentence[3] + 256 : (int) numSentence[3]);
+
+                                        dis.read(temp, 0, 1 + sentenceInfoLen);
+                                        for (int index = 0; index <= sentenceInfoLen; index++) {
+                                            numSentence[index + 4] = temp[index];    // 패킷의 Data부분을 inData에 추가해준다.
+                                        }
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    Log.d(TAG, "receve data : " + new String(numSentence));
 
                                     String senInfo = new String(numSentence, 4, sentenceInfoLen);
                                     Log.d(TAG, "sen num + id : " + senInfo);
@@ -130,6 +163,7 @@ public class workerSearch extends Thread {
                                     userSentence.setsentenceId(sentenceId);
 
                                     Log.d(TAG, "sentenceNum : " + sentenceNum);
+                                    Log.d(TAG, "sentenceId : " + sentenceId);
                                     break;
                                 default:
                                     break;
@@ -167,27 +201,5 @@ public class workerSearch extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private void receiveData(byte[] receiveByteData, int len) {
-        try {
-            dis.read(temp, 0, 4);
-
-            for (int index = 0; index < 4; index++) {
-                receiveByteData[index] = temp[index];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
-            }
-
-            len = (receiveByteData[3] <= 0 ? (int) receiveByteData[3] + 256 : (int) receiveByteData[3]);
-
-            dis.read(temp, 0, 1 + len);
-            for (int index = 0; index <= len; index++) {
-                receiveByteData[index + 4] = temp[index];    // 패킷의 Data부분을 inData에 추가해준다.
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        Log.d(TAG, "receve data : " + receiveByteData);
-
     }
 }
