@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.onpuri.Activity.Home.TransDetailFragment;
+import com.onpuri.Activity.Home.TransMoreFragment;
 import com.onpuri.Activity.Home.workerRecommend;
 import com.onpuri.Activity.Home.workerTransMore;
 import com.onpuri.R;
@@ -36,11 +37,13 @@ public class TransListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private ArrayList<String> numList;
 
     FragmentTransaction ft;
+    TransMoreFragment fragment;
 
-    public TransListAdapter(String sen, String sen_num, FragmentTransaction ft, RecyclerView TransrecyclerView) {
+    public TransListAdapter(TransMoreFragment fragment, String sen, String sen_num, FragmentTransaction ft, RecyclerView TransrecyclerView) {
         this.sen=sen;
         this.sen_num=sen_num;
         this.ft=ft;
+        this.fragment=fragment;
         transList = new ArrayList<String>();
         useridList = new ArrayList<String>();
         dayList = new ArrayList<String>();
@@ -84,10 +87,9 @@ public class TransListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             reco_trans.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(TAG, numList.get(getPosition()));
                     recommend(numList.get(getPosition()));
                     translation();
-                    Log.d(TAG, numList.get(getPosition()));
+                    ft.detach(fragment).attach(fragment).commit();
                 }
             });
         }

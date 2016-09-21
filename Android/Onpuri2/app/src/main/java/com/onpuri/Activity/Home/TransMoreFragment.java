@@ -82,7 +82,7 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
         RecyclerView = (RecyclerView) view.findViewById(R.id.recycler_trans);
         LayoutManager = new LinearLayoutManager(getActivity());
         RecyclerView.setLayoutManager(LayoutManager);
-        Adapter = new TransListAdapter(sentence, sentence_num, getFragmentManager().beginTransaction(), RecyclerView);
+        Adapter = new TransListAdapter(this, sentence, sentence_num, getFragmentManager().beginTransaction(), RecyclerView);
         RecyclerView.setAdapter(Adapter);
 
         Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_dark);

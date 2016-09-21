@@ -20,13 +20,12 @@ public class workerTestSolve extends Thread{
 
     DataOutputStream dos;
     DataInputStream dis;
-    byte[] outData = new byte[20];
-    byte[] quizData = new byte[261];
-    byte[] exampleData = new byte[200];
-
 
     String num;
-    int count;
+    public int count;
+    public int tmp=0;
+    public int score=0;
+
 
     List quiz = new ArrayList();
     List ex1 = new ArrayList();
@@ -35,7 +34,6 @@ public class workerTestSolve extends Thread{
     List ex4 = new ArrayList();
     List sol = new ArrayList();
 
-    public int getCount() { return count;}
     public List getQuiz() {return quiz;}
     public List getEx1() {return ex1;}
     public List getEx2() {
@@ -58,7 +56,11 @@ public class workerTestSolve extends Thread{
 
     public void run() {
         super.run();
-        Log.d(TAG, "num : " + num);
+        Log.d(TAG, "num:"+num);
+
+        byte[] outData = new byte[20];
+        byte[] quizData = new byte[200];
+        byte[] exampleData = new byte[200];
 
         while(isPlay) {
             outData[0] = (byte) PacketUser.SOF;
@@ -66,7 +68,7 @@ public class workerTestSolve extends Thread{
             outData[2] = (byte) PacketUser.getSEQ();
             outData[3] = (byte) num.length();
             for (int i = 4; i < 4 + num.length(); i++) {
-                outData[4] = (byte) num.charAt(i - 4);
+                outData[i] = (byte) num.charAt(i-4);
                 Log.d(TAG, "data:"+outData[i]);
 
             }
@@ -95,7 +97,7 @@ public class workerTestSolve extends Thread{
 
                         byte[] quizbyte = new byte[(q_len)+1];
                         for(int i=0; i<q_len; i++) {
-                            quizbyte[i] += quizData[4 + i];
+                            quizbyte[i] += quizData[i];
                         }
 
                         quiz.add(new String(quizbyte, 0, q_len));
@@ -104,12 +106,13 @@ public class workerTestSolve extends Thread{
                         dis.read(exampleData, 0, 4);
                         int ex_len = exampleData[3];
 
-                        dis.read(exampleData, 0, 1+(ex_len));
-                        byte[] examplebyte = new byte[(ex_len)+1];
-                        for(int i=0; i<q_len; i++) {
-                            examplebyte[i] += exampleData[4 + i];
+                        dis.read(exampleData, 0, ex_len+1);
+                        byte[] examplebyte = new byte[ex_len];
+                        for(int i=0; i<ex_len; i++) {
+                            examplebyte[i] += exampleData[i];
                         }
-                        String example = new String(examplebyte, 0, q_len);
+                        String example = new String(examplebyte, 0, ex_len);
+                        Log.d(TAG,example);
                         int plus = example.indexOf('+');
                         ex1.add(example.substring(0, plus));
                         example = example.substring(plus+1);
@@ -121,7 +124,7 @@ public class workerTestSolve extends Thread{
                         example = example.substring(plus+1);
                         plus = example.indexOf('+');
                         ex4.add(example.substring(0, plus));
-                        sol.add(example.substring(plus+1, (ex_len)-1));
+                        sol.add(example.substring(plus+1, (example.length())));
 
                         Log.d(TAG,"1"+ex1);
                         Log.d(TAG,"2"+ex2);

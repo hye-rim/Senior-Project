@@ -149,9 +149,10 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
                 break;
             case R.id.item_reco:
                 recommend();
+                ft.detach(this).attach(this).commit();
         }
     }
-    void recommend() {
+    void recommend() {// 해석을 추천
         if (worker_reco != null && worker_reco.isAlive()) {  //이미 동작하고 있을 경우 중지
             worker_reco.interrupt();
         }
@@ -164,7 +165,7 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
         }
     }
 
-    void delete() {
+    void delete() { //해석을 삭제
         if (worker_delete != null && worker_delete.isAlive()) {  //이미 동작하고 있을 경우 중지
             worker_delete.interrupt();
         }
@@ -177,7 +178,7 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
         }
     }
 
-    void transrecommend(String num) {
+    void transrecommend(String num) { //해석의 추천수 호출
         if (worker_trans_detail != null && worker_trans_detail.isAlive()) {  //이미 동작하고 있을 경우 중지
             worker_trans_detail.interrupt();
         }

@@ -95,8 +95,8 @@ public class workerTestList extends Thread{
                         plus = info.indexOf('+');
                         part.add(info.substring(0,plus));
                         String Per = info.substring(plus+1,(info.length() - 1));
-                        if(Per == null) { Per="0";}
-                        title.add(Per+"% "+ Title);
+                        if(Per.length()==0) Per="0";
+                        title.add(Per + "% " + Title);
 
                         n++;
                     } else if (inData[1] == PacketUser.ACK_NTEST_LIST) {

@@ -64,7 +64,6 @@ public class TestSolveStartFrgment extends Fragment implements View.OnClickListe
                 Bundle args = new Bundle();
                 args.putString("testname", name);
                 args.putString("testnum", num);
-                args.putString("testquiz", quiz);
                 tswf.setArguments(args);
 
                 fm.beginTransaction()

@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.InflateException;
@@ -159,6 +160,9 @@ public class HomeFragment extends Fragment {
         listSentenceNum.clear();
         listTransNum.clear();
         listListenNum.clear();
+        listId.clear();
+        listReco.clear();
+
 
         for (int i = 0; i < loadLimit; i++) {
             listSentence.add(userSentence.arrSentence.get(i));
@@ -212,6 +216,8 @@ public class HomeFragment extends Fragment {
                 listTransNum.add(userSentence.arrSentenceTransNum.get(i));
                 listListenNum.add(userSentence.arrSentenceListenNum.get(i));
                 listId.add(userSentence.arrSentenceId.get(i));
+                listReco.add(userSentence.arrSentenceReco.get(i));
+
                 ival++;
             }
             mAdapter.notifyDataSetChanged();

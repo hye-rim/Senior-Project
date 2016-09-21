@@ -78,7 +78,7 @@ public class workerSentenceList extends Thread {//홈 문장 10개씩 서버에�
                 num = 0;
                 while (num < 10) {
                     byte[] inData = new byte[261];
-                    byte[] senData = new byte[20];
+                    byte[] senData = new byte[50];
 
                     for (i = 0; i < 261; i++)
                         inData[i] = 0;
