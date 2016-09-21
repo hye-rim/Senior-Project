@@ -89,9 +89,10 @@ public class NoteSenFragment extends Fragment {
                 new RecyclerItemClickListener(getActivity().getApplicationContext(), mRecyclerSenItem, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        if(isNullSen)
+                        if(isNullSen) {
                             Toast.makeText(getActivity().getApplicationContext(), itemName + "에 문장을 추가해보세요.", Toast.LENGTH_SHORT).show();
-                        else if(itemSentence.size() != itemSentenceNum.size()){
+                        }
+                        else if( position >= itemSentenceNum.size()){
 
                         }else{
                             HomeSentenceFragment homeSentenceFragment = new HomeSentenceFragment();

@@ -78,8 +78,14 @@ public class TestCreateFragment extends Fragment implements View.OnClickListener
 
         if(!isFirst){
             String selectObjectString = "";
+
+            String temp;
+            int slush;
+
             for(int i = 0; i < selectObjectList.size(); i++){
-                selectObjectString = selectObjectString.concat(selectObjectList.get(i));
+                slush = selectObjectList.get(i).indexOf('/');
+                temp = selectObjectList.get(i).substring(0,slush-1);
+                selectObjectString = selectObjectString.concat(temp);
                 if( i < selectObjectList.size()-1)
                     selectObjectString = selectObjectString.concat(", ");
             }
@@ -188,16 +194,19 @@ public class TestCreateFragment extends Fragment implements View.OnClickListener
 
     private void createTest() {
         selectObjectList.add( 0, mTestTitleTextView.getText().toString() );
-        for(int i = 1; i < selectObjectList.size(); i++){
-            String str = selectObjectList.get(i).toString();
-            //ID + 이름 => ID, 이름
-            int plus = str.indexOf('+');
-            str = str.substring(0,plus); //ID
-            Log.d(TAG, "ID : " + str);
 
-            selectObjectList.set(i, str);
+        if(objectNum != 0) {
+            for (int i = 1; i < selectObjectList.size(); i++) {
+                String str = selectObjectList.get(i).toString();
+                //ID + 이름 => ID, 이름
+                int slash = str.indexOf('/');
+                str = str.substring(0, slash-1); //ID
+                Log.d(TAG, "ID : " + str);
+
+                selectObjectList.set(i, str);
+            }
+            Log.d(TAG, "selectObjectList ===>" + selectObjectList);
         }
-        Log.d(TAG, "selectObjectList ===>" + selectObjectList);
         String testInfo = new String (selectObjectList.get(0) + "+" + kinds + "+" + problemNum + "+" + objectNum);
         Log.d(TAG, testInfo);
 

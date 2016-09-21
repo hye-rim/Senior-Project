@@ -100,6 +100,9 @@ public class PacketUser extends Application {
     static final public char USR_LEV = 99; //회원 탈퇴(user leave)
     static final public char ACK_LEV = 100; //회원 탈퇴 응답(user leave ACK)
 
+    static final public char SELECT_SENTENCE = 111;
+    static final public char ACK_SELECT_SENTENCE = 112;
+    static final public char ACK_NSELECT_SENTENCE = 113;
     public static char SOF = 0xcc;//Decimal=204
     static public char CRC = 0x55;//Decimal=85
 

@@ -1,4 +1,4 @@
-package com.onpuri.Activity.Home;
+package com.onpuri.Activity.Test.Creating;
 
 import android.util.Log;
 
@@ -12,7 +12,7 @@ import java.io.IOException;
 /**
  * Created by kutemsys on 2016-08-18.
  */
-public class workerSentenceList extends Thread {//홈 문장 10개씩 서버에서 불러오는 쓰레드
+public class workerSelectSentenceList extends Thread {//홈 문장 10개씩 서버에서 불러오는 쓰레드
     private static final String TAG = "workerSentenceList";
     private boolean isPlay = false; //플래그
 
@@ -22,14 +22,14 @@ public class workerSentenceList extends Thread {//홈 문장 10개씩 서버에�
     DataInputStream dis;
     byte[] outData = new byte[261]; //나가는 데이터
     byte[] sen = new byte[261];
-    byte[] info = new byte[30];
+    byte[] info = new byte[40];
 
     PacketUser userSentence;
     int sentence_num;
     int count, num; //서버로부터 받은 문장의 수
     private Boolean sentenceEnd = false; //문장의 끝인지 여부
 
-    public workerSentenceList(boolean isPlay, PacketUser userSentence, int sentence_num) { //생성자 함수
+    public workerSelectSentenceList(boolean isPlay, PacketUser userSentence, int sentence_num) { //생성자 함수
         this.isPlay = isPlay; //true여야 시작한다.
         this.userSentence = userSentence; //문장 정보
         this.sentence_num = sentence_num; //받은 문장 수
@@ -62,7 +62,7 @@ public class workerSentenceList extends Thread {//홈 문장 10개씩 서버에�
             int sNumN = sentence_num%255 + 1;
 
             outData[0] = (byte) PacketUser.SOF;
-            outData[1] = (byte) PacketUser.USR_MSL;
+            outData[1] = (byte) PacketUser.SELECT_SENTENCE;
             outData[2] = (byte) PacketUser.getSEQ();
             outData[3] = (byte) PacketUser.USR_MSL_LEN;
             outData[4] = (byte) sNum; //255이하일 때 1
@@ -76,9 +76,9 @@ public class workerSentenceList extends Thread {//홈 문장 10개씩 서버에�
                 dis = new DataInputStream(SocketConnection.socket.getInputStream());
 
                 num = 0;
-                while (num < 10) {
+                while (!sentenceEnd) {
                     byte[] inData = new byte[261];
-                    byte[] senData = new byte[30];
+                    byte[] senData = new byte[40];
 
                     for (i = 0; i < 261; i++)
                         inData[i] = 0;
@@ -93,7 +93,7 @@ public class workerSentenceList extends Thread {//홈 문장 10개씩 서버에�
                     }
                     Log.d(TAG, "num : " + num);
 
-                    if(inData[1] == PacketUser.ACK_UMS){
+                    if(inData[1] == PacketUser.ACK_SELECT_SENTENCE){
                         //문장 데이터
                         userSentence.sentence_len = ((int) inData[3] <= 0 ? (int) inData[3] + 256 : (int) inData[3]);
 
@@ -153,7 +153,7 @@ public class workerSentenceList extends Thread {//홈 문장 10개씩 서버에�
                         sentence_num++;
                         num++;
                     }
-                    else if(inData[1] == PacketUser.ACK_NSEN){ //더이상 문장이 없을 경우
+                    else if(inData[1] == PacketUser.ACK_NSELECT_SENTENCE){ //더이상 문장이 없을 경우
                         count = num; //현재까지 서버에서 받은 문장 수를 count에 저장
                         sentenceEnd = true;  //문장의 끝임을 표시
                         dis.read(sen, 0, 1 + inData[3]);

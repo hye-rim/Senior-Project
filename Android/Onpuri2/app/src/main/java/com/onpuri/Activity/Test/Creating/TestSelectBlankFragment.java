@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
@@ -16,37 +15,37 @@ import android.widget.CheckedTextView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.onpuri.Activity.Home.workerSentenceList;
 import com.onpuri.R;
 import com.onpuri.Server.PacketUser;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Created by kutemsys on 2016-09-21.
  */
-public class TestSelectSentenceFragment extends Fragment implements AdapterView.OnItemClickListener {
-    private static final String TAG = "TestSelectSenFragment" ;
-    private static final int SELECT_BLANK_CODE = 1997;
+public class TestSelectBlankFragment extends Fragment implements AdapterView.OnItemClickListener {
+    private static final String TAG = "TestSelectBlankFragment" ;
     private static View view;
 
     private ListView mSentenceListView;
+    private TextView mSelectSentenceTextView;
 
-    private workerSelectSentenceList mWorker_sentenceList;
-    private ArrayList<String> mSentenceList;
+    private ArrayList<String> mSelectBlankList;
     private ArrayAdapter allSentenceArrayAdapter;
     private android.support.v4.app.FragmentManager mFragmentManager;
 
-    private PacketUser sentence;
-    private int sentenceNum;
+    private String select;
+    private String sentence;
 
     private String[] selectSentence;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -58,12 +57,12 @@ public class TestSelectSentenceFragment extends Fragment implements AdapterView.
                 parent.removeView(view);
         }
         try {
-            view = inflater.inflate(R.layout.fragment_test_select_sentence, container, false);
+            view = inflater.inflate(R.layout.fragment_test_select_blank, container, false);
         } catch (InflateException e) {}
 
         init();
 
-        receiveSentenceList(); //유저리스트 서버로부터 받아 저장
+        changeSentenceList(); //string 변환하여 저장
         initListView();
 
         return view;
@@ -71,28 +70,31 @@ public class TestSelectSentenceFragment extends Fragment implements AdapterView.
 
     public void init(){
         mFragmentManager = getActivity().getSupportFragmentManager();
+        getArgumentsData();
 
         mSentenceListView = (ListView)view.findViewById(R.id.listView);
+        mSelectSentenceTextView = (TextView)view.findViewById(R.id.tv_blank_select_sentence);
 
-        mSentenceList = new ArrayList<String>();
+        mSelectBlankList = new ArrayList<String>();
 
-        sentence = new PacketUser();
-        sentenceNum = 0;
+        mSelectSentenceTextView.setText(sentence);
 
-        selectSentence = new String[2];
+    }
+
+    private void getArgumentsData() {
+        if (getArguments() != null) { //클릭한 문장 출력
+            sentence = getArguments().getString("select_sentence", "null");
+        }
     }
 
     private void initListView() {
-        allSentenceArrayAdapter = new ArrayAdapter<String>(this.getContext(), android.R.layout.simple_list_item_checked, mSentenceList){
+        allSentenceArrayAdapter = new ArrayAdapter<String>(this.getContext(), android.R.layout.simple_list_item_checked, mSelectBlankList){
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
 
                 TextView textView = (TextView)view.findViewById(android.R.id.text1);
                 textView.setTextSize(15);
-                textView.setMaxLines(2);
-                textView.setEllipsize(TextUtils.TruncateAt.END);
-
                 return view;
             }
         };
@@ -108,47 +110,29 @@ public class TestSelectSentenceFragment extends Fragment implements AdapterView.
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if(mSentenceListView == parent){
             CheckedTextView item = (CheckedTextView) view;
-
-            selectSentence[0] = mSentenceList.get(position).toString();
-            Log.d(TAG, mSentenceList.get(position));
+            select = mSelectBlankList.get(position).toString();
+            Log.d(TAG, mSelectBlankList.get(position));
             changeLayout();
         }
     }
 
     private void changeLayout() {
-        final TestSelectBlankFragment testSelectBlankFragment = new TestSelectBlankFragment();
-        testSelectBlankFragment.setTargetFragment(this, SELECT_BLANK_CODE);
+        selectSentence = new String[2];
+        selectSentence[0] = sentence;
+        selectSentence[1] = select;
 
-        Bundle args = new Bundle();
-        args.putString("select_sentence", selectSentence[0]);
-        testSelectBlankFragment.setArguments(args);
+        Intent intent = new Intent();
+        intent.putExtra("select_blank", selectSentence);
+        getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
+        getFragmentManager().popBackStack();
 
-        mFragmentManager.beginTransaction()
-                .replace(R.id.root_test, testSelectBlankFragment)
-                .addToBackStack("select_sen")
-                .commit();
-
-        Log.d(TAG, selectSentence[0]);
+        Log.d(TAG, select);
     }
 
-    private void receiveSentenceList() {
-        toServer();
 
-        mSentenceList = mWorker_sentenceList.getUserSentence().arrSentence;
-        sentenceNum = mWorker_sentenceList.getSentence_num();
-    }
-
-    private void toServer() {
-        if (mWorker_sentenceList != null && mWorker_sentenceList.isAlive()) {  //이미 동작하고 있을 경우 중지
-            mWorker_sentenceList.interrupt();
-        }
-        mWorker_sentenceList = new workerSelectSentenceList(true, sentence, sentenceNum );
-        mWorker_sentenceList.start();
-        try {
-            mWorker_sentenceList.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    private void changeSentenceList() {
+        String[] arStrRegexMultiSpace = sentence.split("\\s+");
+        Collections.addAll(mSelectBlankList, arStrRegexMultiSpace);
     }
 
     public static class ListUtils {
@@ -170,29 +154,6 @@ public class TestSelectSentenceFragment extends Fragment implements AdapterView.
             mListView.setLayoutParams(params);
             mListView.requestLayout();
         }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == SELECT_BLANK_CODE && resultCode == Activity.RESULT_OK) {
-            if(data != null) {
-                selectSentence = new String[2];
-                selectSentence = data.getStringArrayExtra("select_blank");
-                if(selectSentence[1] != null) {
-                    Log.v(TAG, "Data passed from Child fragment = " + selectSentence[1]);
-                }
-                moveProblem();
-            }
-        }
-    }
-
-    private void moveProblem(){
-        Intent intent = new Intent();
-        intent.putExtra("select_sentence", selectSentence);
-        getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
-        getFragmentManager().popBackStack();
-
-        Log.d(TAG, selectSentence[1] + "," + selectSentence[0]);
     }
 
 }
