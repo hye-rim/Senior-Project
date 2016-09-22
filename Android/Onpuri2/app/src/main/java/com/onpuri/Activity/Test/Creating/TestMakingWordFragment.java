@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.InflateException;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -134,6 +135,7 @@ public class TestMakingWordFragment extends Fragment implements View.OnClickList
                     else
                         problemList.set(nowNum - 1, new CreatedTestData(problem, example1, example2, example3, example4, correctNum));
 
+                    Log.d(TAG,"problem :: " + problem);
                     if (nowNum == maxNum)
                         checkExitDialog();
                     else {
@@ -288,5 +290,6 @@ public class TestMakingWordFragment extends Fragment implements View.OnClickList
         example2 = mExampleEditText2.getText().toString();
         example3 = mExampleEditText3.getText().toString();
         example4 = mExampleEditText4.getText().toString();
+        Log.d(TAG, "problem: " + problem);
     }
 }

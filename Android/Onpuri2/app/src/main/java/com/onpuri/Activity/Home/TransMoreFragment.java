@@ -112,11 +112,8 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
                             public void onClick(DialogInterface dialog, int index) {
                                 pos = index;
 
-                                if( index == listNote.size() -1  ){
-                                    Toast.makeText(getActivity(), "기능 추가 예정입니다.", Toast.LENGTH_SHORT).show();
-                                }else {
-                                    selectNote(items[index]);
-                                }
+                                selectNote(items[index]);
+
                                 dialog.cancel();
                             }
                         })
@@ -170,8 +167,6 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
                 i++;
             }
         }
-        listNote.add("새로운 문장 모음 등록하기");
-
     }
 
     private void selectNote(String item) {

@@ -1,7 +1,9 @@
 package com.onpuri.Activity.Test.Creating;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -30,10 +32,12 @@ import java.util.ArrayList;
  */
 public class TestMakingSenFragment extends Fragment implements View.OnClickListener{
     private static final String TAG = "TestMakingSenFragment";
+    private static final int SELECT_SENTENCE_CODE = 1996;
 
     private static View view;
+    private FragmentManager fragmentManager;
 
-    private TextView mTitleTextView, mNowNumTextView, mMaxNumTextView;
+    private TextView mTitleTextView, mNowNumTextView, mMaxNumTextView, mTempSelectSentence;
     private Button mNextButton, mBackButton, mProblemSelectButton;
     private EditText mExampleEditText1, mExampleEditText2, mExampleEditText3, mExampleEditText4;
     private RadioButton mExampleRadio1, mExampleRadio2, mExampleRadio3, mExampleRadio4;
@@ -42,7 +46,8 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
     private RadioButton[] mExampleRadioList;
     private EditText[] mExampleEditTextList;
 
-    private  String title, problem, example1, example2, example3, example4;
+    private  String title, problem;
+    private String example[];
     private int nowNum, maxNum, correctNum;
 
     private ArrayList<CreatedTestData> problemList;
@@ -50,13 +55,13 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
 
     private int listSize;
 
-    String[] tempProblem;
-    String[] tempCorrect;
+    private String[] selectSentence;
+    private boolean isFirst = true;
+    private String correct;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -77,11 +82,7 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
 
         mNextButton.setOnClickListener(this);
         mBackButton.setOnClickListener(this);
-
-        for(int i = 0; i < 4; i++)
-            mExampleRadioList[i].setEnabled(false);
-
-        randomCorrect();
+        mProblemSelectButton.setOnClickListener(this);
 
         return view;
     }
@@ -94,30 +95,17 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
     }
 
     private void initData() {
+        fragmentManager = getActivity().getSupportFragmentManager();
         getArgumentsData();
 
         nowNum = 1;
-        problemList = new ArrayList<CreatedTestData>();
-        correctNum = 1;
 
         mTitleTextView.setText(title);
         mNowNumTextView.setText(""+nowNum);
         mMaxNumTextView.setText(""+maxNum);
 
-        tempProblem = new String[4];
-        tempCorrect = new String[4];
         mExampleEditTextList = new EditText[4];
         mExampleRadioList = new RadioButton[4];
-
-        tempProblem[0] = new String("An executive is someone who is employed by a business at a senior @.");
-        tempProblem[1] = new String("Executives decide what the @ should do, and ensure that it is done.");
-        tempProblem[2] = new String("Leaders also began a 10-day meeting in Bonn, Germany on Monday to follow up on the @ and to work out just how to make these targets achievable.");
-        tempProblem[3] = new String("Scientists and leaders have agreed that global @ gas emissions will need to peak soon and be followed by quick reductions over the years ahead to contain temperature rises. ");
-
-        tempCorrect[0] = new String("level");
-        tempCorrect[1] = new String("business");
-        tempCorrect[2] = new String("agreement");
-        tempCorrect[3] = new String("greenhouse");
 
         mExampleEditTextList[0] = mExampleEditText1;
         mExampleEditTextList[1] = mExampleEditText2;
@@ -128,6 +116,27 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
         mExampleRadioList[1] = mExampleRadio2;
         mExampleRadioList[2] = mExampleRadio3;
         mExampleRadioList[3] = mExampleRadio4;
+
+        if(isFirst) {
+            problemList = new ArrayList<CreatedTestData>();
+            correctNum = 1;
+
+            correct = new String();
+            selectSentence = new String[2];
+            mProblemSelectButton.setVisibility(View.VISIBLE);
+            mTempSelectSentence.setVisibility(View.GONE);
+
+            for(int i = 0; i < 4; i++)
+                mExampleRadioList[i].setEnabled(false);
+        }else if(!isFirst){
+            mProblemSelectButton.setVisibility(View.GONE);
+            mTempSelectSentence.setVisibility(View.VISIBLE);
+            mTempSelectSentence.setText(selectSentence[0]);
+            correct = selectSentence[1];
+            Log.d(TAG, "correct isFirst : " + correct);
+
+            randomCorrect();
+        }
     }
 
 
@@ -139,8 +148,9 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
         mMaxNumTextView  = (TextView)view.findViewById(R.id.tv_making_sen_max);
 
         mProblemSelectButton = (Button)view.findViewById(R.id.btn_making_sen_problem);
+        mTempSelectSentence = (TextView)view.findViewById(R.id.tv_select_sentence);
 
-        mExampleEditText1 = (EditText)view.findViewById(R.id.et_making_sen_example1);
+        mExampleEditText1 = (EditText)view.findViewById(R.id.et_making_sen_example);
         mExampleEditText2 = (EditText)view.findViewById(R.id.et_making_sen_example2);
         mExampleEditText3 = (EditText)view.findViewById(R.id.et_making_sen_example3);
         mExampleEditText4 = (EditText)view.findViewById(R.id.et_making_sen_example4);
@@ -156,19 +166,24 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_making_sen_next:
-                Log.d(TAG,"여기?");
+                mExampleEditTextList[correctNum-1].setText(correct);
+                Toast.makeText(getActivity(), "정답 : " + correct, Toast.LENGTH_LONG).show();
+                Log.d(TAG, "mExampleEditTextList set : " + mExampleEditTextList[correctNum-1].getText().toString());
                 if (/*!isNull(mProblemEditText) &&*/ !isNull(mExampleEditText1)
                         && !isNull(mExampleEditText2) && !isNull(mExampleEditText3)
                         && !isNull(mExampleEditText4)) {
-                    getEnteredData();
-                    Log.d(TAG,"여기?");
+                    getEnteredData(correctNum-1);
+
                     listSize = problemList.size();
-                    Log.d(TAG,"여기?");
+
+                    example[correctNum-1] = correct;
+                    Log.d(TAG, "mExampleEditTextList set : " + example[correctNum-1].toString());
+
                     if (listSize == nowNum - 1)
-                        problemList.add(new CreatedTestData(problem, example1, example2, example3, example4, correctNum));
+                        problemList.add(new CreatedTestData(problem, example[0], example[1], example[2], example[3], correctNum));
                     else
-                        problemList.set(nowNum - 1, new CreatedTestData(problem, example1, example2, example3, example4, correctNum));
-                    Log.d(TAG,"여기?");
+                        problemList.set(nowNum - 1, new CreatedTestData(problem, example[0], example[1], example[2], example[3], correctNum));
+
                     if (nowNum == maxNum)
                         checkExitDialog();
                     else {
@@ -183,22 +198,39 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
                 if (nowNum != 1)
                     changeToBackData();
                 break;
+
+            case R.id.btn_making_sen_problem:
+                isFirst = false;
+
+                final TestSelectSentenceFragment testSelectSentenceFragment = new TestSelectSentenceFragment();
+                testSelectSentenceFragment.setTargetFragment(this, SELECT_SENTENCE_CODE);
+                fragmentManager.beginTransaction()
+                        .replace(R.id.root_test, testSelectSentenceFragment)
+                        .addToBackStack("select_sen")
+                        .commit();
+
+                break;
         }
     }
 
     private void exampleSet(int index) {
         for(int i = 0; i < 4; i ++){
             if(i == index) {
-                mExampleEditTextList[i].setText(tempCorrect[i]);
+                Log.d(TAG, "correct set : " + correct);
+                mExampleEditTextList[i].setText(correct+selectSentence[1].toString());
                 mExampleEditTextList[i].setEnabled(false);
-
                 mExampleRadioList[i].setChecked(true);
+                mExampleRadioList[i].setEnabled(false);
             }
             else {
                 mExampleEditTextList[i].setEnabled(true);
                 mExampleRadioList[i].setChecked(false);
+                mExampleRadioList[i].setEnabled(false);
             }
         }
+        Log.d(TAG, "correct set : " + correct);
+        mExampleEditTextList[index].setText(correct);
+        Log.d(TAG, "mExampleEditTextList set : " + mExampleEditTextList[index].getText().toString());
     }
 
 
@@ -213,17 +245,15 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
         mNowNumTextView.setText("" + nowNum);
 
         problem = problemList.get(nowNum-1).getProblem();
-        example1 = problemList.get(nowNum-1).getExample1();
-        example2 = problemList.get(nowNum-1).getExample2();
-        example3 = problemList.get(nowNum-1).getExample3();
-        example4 = problemList.get(nowNum-1).getExample4();
+        example[0] = problemList.get(nowNum-1).getExample1();
+        example[1] = problemList.get(nowNum-1).getExample2();
+        example[2] = problemList.get(nowNum-1).getExample3();
+        example[3] = problemList.get(nowNum-1).getExample4();
         correctNum = problemList.get(nowNum-1).getCorrectNum();
 
         //mProblemEditText.setText(problem);
-        mExampleEditText1.setText(example1);
-        mExampleEditText2.setText(example2);
-        mExampleEditText3.setText(example3);
-        mExampleEditText4.setText(example4);
+        for(int i = 0; i< 4; i++)
+            mExampleEditTextList[i].setText(example[i]);
 
         exampleSet(nowNum-1);
 
@@ -241,19 +271,24 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
         mExampleEditText4.setText(null);
 
         problem = new String();
-        example1 = new String();
-        example2 = new String();
-        example3 = new String();
-        example4 = new String();
+        for(int i = 0; i< 4; i++)
+            example[i] = new String();
         correctNum = 1;
 
-        randomCorrect(); //랜덤하게 답위치 지정
-        /*
         mExampleRadio1.setChecked(true);
         mExampleRadio2.setChecked(false);
         mExampleRadio3.setChecked(false);
         mExampleRadio4.setChecked(false);
-        */
+
+        selectSentence = new String[2];
+        mProblemSelectButton.setVisibility(View.VISIBLE);
+        mTempSelectSentence.setVisibility(View.GONE);
+        mTempSelectSentence.setText(selectSentence[0]);
+
+        for(int i = 0; i < 4; i ++){
+            mExampleEditTextList[i].setEnabled(true);
+            mExampleRadioList[i].setEnabled(true);
+        }
     }
 
     private void randomCorrect() {
@@ -262,8 +297,6 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
         Log.d(TAG, "random : " + random);
 
         exampleSet(random); //0~3
-        correctNum = random+1; //1~4
-
     }
 
     private void checkExitDialog() {
@@ -317,12 +350,40 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
         }
     }
 
-    private void getEnteredData() {
-        //problem = mProblemEditText.getText().toString();
-        problem = tempProblem[nowNum-1];
-        example1 = mExampleEditText1.getText().toString();
-        example2 = mExampleEditText2.getText().toString();
-        example3 = mExampleEditText3.getText().toString();
-        example4 = mExampleEditText4.getText().toString();
+    private void getEnteredData(int correctNum) {
+        problem = mTempSelectSentence.getText().toString();
+        for(int i = 0; i < 4; i++ ){
+            if(correctNum == i){
+
+            }
+            else{
+                example[i] = mExampleEditTextList[i].getText().toString();
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == SELECT_SENTENCE_CODE && resultCode == Activity.RESULT_OK) {
+            if(data != null) {
+                selectSentence = data.getStringArrayExtra("select_sentence");
+                if(selectSentence != null) {
+                    Log.v(TAG, "Data passed " + selectSentence[1] + ", " + selectSentence[0]);
+                }
+
+                mProblemSelectButton.setVisibility(View.GONE);
+                mTempSelectSentence.setVisibility(View.VISIBLE);
+
+                selectSentence[0] = selectSentence[0].replace(selectSentence[1], "______");
+                correct = selectSentence[1];
+                mTempSelectSentence.setText(""+selectSentence);
+
+            }else{
+                mProblemSelectButton.setVisibility(View.VISIBLE);
+                mTempSelectSentence.setVisibility(View.GONE);
+            }
+
+            Log.d(TAG, "correct passed : " + correct);
+        }
     }
 }

@@ -91,20 +91,9 @@ public class workerReceiveUserList extends Thread {
     private void saveUser() {
         String str = new String(inData, 4, dataLen); //byte 데이터 배열 string으로 변환
         Log.d(TAG, "data : " + str);
+        str = str.replace("+", " / ");
 
         mUserList.add(str);
-
-        //ID + 이름 => ID, 이름
-        int plus = str.indexOf('+');
-        userId = str.substring(0,plus); //ID
-        userName = str.substring(plus+1, str.length()); //이름
-        Log.d(TAG, "ID : " + userId + ", name : " + userName);
-
-        //ID + 이름
-        Map<String, String> user = new HashMap<String, String>();
-        user.put(userId, userName);
-
-        userList.add(user);
     }
 
 

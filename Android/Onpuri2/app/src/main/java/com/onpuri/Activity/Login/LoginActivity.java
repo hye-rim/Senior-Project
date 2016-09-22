@@ -242,21 +242,21 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         check = mworker_login.getCheck();
         checkLength = mworker_login.getCheckLength();
 
-        if ( !mworker_login.isFail() ) {
-            return true;
-        }
-        else if( check == '5' || et_loginId.getText().equals("")) {
+        if( check == '5' || et_loginId.getText().toString().compareTo("") == 0) {
             Toast.makeText(getApplicationContext(), "ID와 비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        else if (setting.getString("id","").equals(null)) {
-            Toast.makeText(getApplicationContext(), "가입을 먼저 해주세요.", Toast.LENGTH_SHORT).show();
             return false;
         }
         else if( mworker_login.isFail() && isLoginBtn){
             Toast.makeText(getApplicationContext(), "ID 또는 비밀번호가 틀렸습니다", Toast.LENGTH_SHORT).show();
             return false;
-        }else{
+        }
+        else if ( !mworker_login.isFail() ) {
+            return true;
+        }else if (setting.getString("id","").equals("")) {
+            Toast.makeText(getApplicationContext(), "가입을 먼저 해주세요.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        else{
             return false;
         }
     }

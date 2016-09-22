@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -59,6 +60,8 @@ public class UserMyActFragment extends Fragment {
 
     FragmentManager fm;
 
+    private ViewPager viewPager;
+
     public static UserMyActFragment newInstance() {
         UserMyActFragment fragment = new UserMyActFragment();
         return fragment;
@@ -81,6 +84,8 @@ public class UserMyActFragment extends Fragment {
         } catch (InflateException e) {
             //map is already there, just return view as it is
         }
+        viewPager = (ViewPager)getActivity().findViewById(R.id.viewpager);
+
         isNullNew = false;
         isNullRecord = false;
         isNullTrans = false;
@@ -146,7 +151,7 @@ public class UserMyActFragment extends Fragment {
                     public void onItemClick(View view, int position) {
                         if(isNullNew)
                             Toast.makeText(getActivity().getApplicationContext(), "문장을 등록해보세요.", Toast.LENGTH_SHORT).show();
-                        else if(listNew.size() != listNewNum.size()){
+                        else if( position >=  listNewNum.size()){
 
                         }
                         else{
@@ -158,12 +163,15 @@ public class UserMyActFragment extends Fragment {
                             args.putString("id", listNewId.get(position));
 
                             homeSentenceFragment.setArguments(args);
-
+                            FragmentManager.BackStackEntry entry = fm.getBackStackEntryAt(0);
+                            fm.popBackStack(entry.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
                             fm.beginTransaction()
                                     .replace(R.id.root_home, homeSentenceFragment)
                                     .addToBackStack(null)
                                     .commit();
                             fm.executePendingTransactions();
+
+                            viewPager.setCurrentItem(0);
                         }
                     }
 
@@ -182,7 +190,7 @@ public class UserMyActFragment extends Fragment {
                     public void onItemClick(View view, int position) {
                         if(isNullRecord)
                             Toast.makeText(getActivity().getApplicationContext(), "문장 녹음을 등록해보세요.", Toast.LENGTH_SHORT).show();
-                        else if(listRecord.size() != listRecordNum.size()){
+                        else if( position >=  listRecordNum.size()){
 
                         }
                         else{
@@ -195,11 +203,15 @@ public class UserMyActFragment extends Fragment {
 
                             homeSentenceFragment.setArguments(args);
 
+                            FragmentManager.BackStackEntry entry = fm.getBackStackEntryAt(0);
+                            fm.popBackStack(entry.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
                             fm.beginTransaction()
                                     .replace(R.id.root_home, homeSentenceFragment)
                                     .addToBackStack(null)
                                     .commit();
                             fm.executePendingTransactions();
+
+                            viewPager.setCurrentItem(0);
                         }
                     }
 
@@ -218,7 +230,7 @@ public class UserMyActFragment extends Fragment {
                     public void onItemClick(View view, int position) {
                         if(isNullTrans)
                             Toast.makeText(getActivity().getApplicationContext(), "문장 번역을 등록해보세요.", Toast.LENGTH_SHORT).show();
-                        else if(listTrans.size() != listTransNum.size()){
+                        else if( position >= listTransNum.size()){
 
                         }
                         else{
@@ -231,11 +243,15 @@ public class UserMyActFragment extends Fragment {
 
                             homeSentenceFragment.setArguments(args);
 
+                            FragmentManager.BackStackEntry entry = fm.getBackStackEntryAt(0);
+                            fm.popBackStack(entry.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
                             fm.beginTransaction()
                                     .replace(R.id.root_home, homeSentenceFragment)
                                     .addToBackStack(null)
                                     .commit();
                             fm.executePendingTransactions();
+
+                            viewPager.setCurrentItem(0);
                         }
                     }
 
@@ -257,7 +273,7 @@ public class UserMyActFragment extends Fragment {
                         else if( ALL.compareTo(listTestKinds.get(position).toString()) == 0){
                             Toast.makeText(getActivity().getApplicationContext(), "전체 대상 시험입니다.", Toast.LENGTH_SHORT).show();
                         }
-                        else if(listTest.size() != listTestNum.size()){
+                        else if( position >= listTestNum.size()){
 
                         }
                         else{
@@ -401,6 +417,8 @@ public class UserMyActFragment extends Fragment {
         if(listTest.isEmpty()){
             isNullTest = true;
             listTest.add("시험을 출제해보세요.");
+            listTestPercent.add("");
+            listTestKinds.add("");
         }
 
         cntNew = ( isNullNew ? 0 : listNew.size() );

@@ -110,11 +110,9 @@ public class PacketUser extends Application {
     static final public char ACK_TEST = 109; //ACK 시험 요청
     static final public char ACK_NTEST = 110; //ACK no시험 요청
 
-
-
-
-
-
+    static final public char SELECT_SENTENCE = 111;
+    static final public char ACK_SELECT_SENTENCE = 112;
+    static final public char ACK_NSELECT_SENTENCE = 113;
 
     public static char SOF = 0xcc;//Decimal=204
     static public char CRC = 0x55;//Decimal=85

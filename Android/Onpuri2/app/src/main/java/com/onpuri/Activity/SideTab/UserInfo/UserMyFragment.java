@@ -175,9 +175,13 @@ public class UserMyFragment extends Fragment implements View.OnClickListener {
                     }
 
                     Toast.makeText(getActivity(), "정보수정이 완료되었습니다.", Toast.LENGTH_SHORT).show();
-                    mFragmentManager.popBackStack();
+                    FragmentManager.BackStackEntry entry = mFragmentManager.getBackStackEntryAt(0);
+                    mFragmentManager.popBackStack(entry.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
                     mFragmentManager.beginTransaction()
                             .commit();
+
+
+
                 }
                 else if(!checkNewPw){
                     Toast.makeText(getActivity(), "새 비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();

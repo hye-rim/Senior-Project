@@ -150,11 +150,8 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
                             public void onClick(DialogInterface dialog, int index) {
                                 pos = index;
 
-                                if( index == listNote.size() -1  ){
-                                    Toast.makeText(getActivity(), "기능 추가 예정입니다.", Toast.LENGTH_SHORT).show();
-                                }else {
-                                    selectNote(items[index]);
-                                }
+                                selectNote(items[index]);
+
                                 dialog.cancel();
                             }
                         })
@@ -186,7 +183,7 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
         }
     }
 
-    private void noteLoad(){
+    private void noteLoad() {
         listNote = new ArrayList<String>();
 
         if (mworker_note != null && mworker_note.isAlive()) {  //이미 동작하고 있을 경우 중지
@@ -202,16 +199,13 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
 
         //문장 모음 리스트
         int i = 0;
-        if(mworker_note.getNoteSen() != null){
-            while( i < mworker_note.getNoteSen().size()){
-                listNote.add( mworker_note.getNoteSen().get(i).toString() );
+        if (mworker_note.getNoteSen() != null) {
+            while (i < mworker_note.getNoteSen().size()) {
+                listNote.add(mworker_note.getNoteSen().get(i).toString());
                 Log.d(TAG, mworker_note.getNoteSen().get(i).toString());
                 i++;
             }
         }
-
-        listNote.add("새로운 문장 모음 등록하기");
-
     }
 
     private void selectNote(String item) {

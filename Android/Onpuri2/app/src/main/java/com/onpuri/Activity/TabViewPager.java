@@ -78,24 +78,29 @@ public class TabViewPager extends Fragment {
 
         @Override
         public Fragment getItem(int position) {
+            final Fragment result;
             switch (position) {
                 case 0:
-                    HomeRootFragment tab1 = new HomeRootFragment();
-                    return tab1;
+                    result = new HomeRootFragment();
+                    break;
 
                 case 1:
-                    NoteRootFragment tab2 = new NoteRootFragment();
-                    return tab2;
+                    result = new NoteRootFragment();
+                   break;
 
                 case 2:
-                    TestRootFragment tab3 = new TestRootFragment();
-                    return tab3;
+                    result = new TestRootFragment();
+                    break;
 
                 case 3:
-                    NewSenFragment tab4 = new NewSenFragment();
-                    return tab4;
+                    result = new NewSenFragment();
+                    break;
+
+                default:
+                    result = null;
+                    break;
             }
-            return null;
+            return result;
         }
 
         @Override

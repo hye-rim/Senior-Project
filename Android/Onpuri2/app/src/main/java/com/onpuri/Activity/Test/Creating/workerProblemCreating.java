@@ -51,6 +51,7 @@ public class workerProblemCreating extends Thread {
             String titleProblem, example;
             for(int i = 0; i < problemList.size() ; i++){
                 titleProblem = title + "+" + problemList.get(i).getProblem();
+                titleProblem = titleProblem.replace("______", "@");
                 example = problemList.get(i).toStringExmaple();
 
                 Log.d(TAG,"title + problem : " + titleProblem);
@@ -58,17 +59,16 @@ public class workerProblemCreating extends Thread {
 
                 sendData(titleProblem, PacketUser.TEST_QUEST);
                 sendData(example, PacketUser.TEST_QUEST);
+
+                receiveData();
+
+                //시험에 대한 정보 보낸 후 성공 /실패 확인
+                if(inData[1] == PacketUser.ACK_TEST_QUEST) {
+                    isSuccess = inData[4] == '1' ? true : false; //실패 0, 성공 1
+                    //isPlay = false;
+                    Log.d(TAG, "success? " + isSuccess);
+                }
             }
-
-            receiveData();
-
-            //시험에 대한 정보 보낸 후 성공 /실패 확인
-            if(inData[1] == PacketUser.ACK_TEST_QUEST) {
-                isSuccess = inData[4] == '1' ? true : false; //실패 0, 성공 1
-                isPlay = false;
-                Log.d(TAG, "success? " + isSuccess);
-            }
-
             isPlay = false;
         }
     }

@@ -17,28 +17,6 @@ public class CreatedTestData {
         this.correctNum = correctNum;
     }
 
-    //setter
-    public void setProblem(String problem) {
-        this.problem = problem;
-    }
-
-    public void setExample1(String example1) {
-        this.example1 = example1;
-    }
-    public void setExample2(String example2) {
-        this.example2 = example2;
-    }
-    public void setExample3(String example3) {
-        this.example3 = example3;
-    }
-    public void setExample4(String example4) {
-        this.example4 = example4;
-    }
-
-    public void setCorrectNum(int correctNum) {
-        this.correctNum = correctNum;
-    }
-
     //getter
     public String getProblem() {
         return problem;

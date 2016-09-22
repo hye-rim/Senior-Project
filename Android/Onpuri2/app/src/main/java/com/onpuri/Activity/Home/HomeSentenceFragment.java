@@ -271,11 +271,8 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                         .setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int index) {
                                 num = index;
-                                if( index == listNote.size() -1  ){
-                                    addNote();
-                                }else {
-                                    selectNote(items[index]);
-                                }
+                                selectNote(items[index]);
+
                                 dialog.cancel();
                             }
                         })
@@ -442,14 +439,8 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
             }
         }
 
-        listNote.add("새로운 문장 모음 등록하기");
 
     }
-
-    private void addNote() {
-        Toast.makeText(getActivity(), "기능 구현 예정입니다.", Toast.LENGTH_SHORT).show();
-    }
-
     private void selectNote(String item) {
         String nameData = new String ("1+" + item + "+" );
         if (mworker_item_add != null && mworker_item_add.isAlive()) {  //이미 동작하고 있을 경우 중지

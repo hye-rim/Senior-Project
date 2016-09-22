@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewPager;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -54,7 +55,7 @@ public class SearchFragment extends Fragment {
     ArrayList<String> searchList;
     ArrayList<String> sentenceNumList, sentenceIdList;
     private ArrayList<String> listNote;
-
+    private ViewPager viewPager;
     private int pos;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -68,7 +69,7 @@ public class SearchFragment extends Fragment {
         } catch (InflateException e) {
             /* map is already there, just return view as it is */
         }
-
+        viewPager = (ViewPager)getActivity().findViewById(R.id.viewpager);
         Bundle extra = getArguments();
         searchText = null;
         searchText = extra.getString("searchText");
@@ -117,11 +118,8 @@ public class SearchFragment extends Fragment {
                             public void onClick(DialogInterface dialog, int index) {
                                 pos = index;
 
-                                if( index == listNote.size() -1  ){
-                                    Toast.makeText(getActivity(), "기능 추가 예정입니다.", Toast.LENGTH_SHORT).show();
-                                }else {
-                                    selectNote(items[index]);
-                                }
+                                selectNote(items[index]);
+
                                 dialog.cancel();
                             }
                         })
@@ -178,6 +176,8 @@ public class SearchFragment extends Fragment {
                         .addToBackStack(null)
                         .commit();
                 fm.executePendingTransactions();
+
+                viewPager.setCurrentItem(0);
             }
         });
 
@@ -247,8 +247,6 @@ public class SearchFragment extends Fragment {
                 i++;
             }
         }
-
-        listNote.add("새로운 단어 모음 등록하기");
 
     }
 

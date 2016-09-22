@@ -90,16 +90,19 @@ public class NoteWordFragment  extends Fragment  {
                     public void onItemClick(View view, int position) {
                         if(isNullWord)
                             Toast.makeText(getActivity().getApplicationContext(), itemName + "에 단어를 추가해보세요.", Toast.LENGTH_SHORT).show();
-                        else{
+                        else if(itemWord.size() <= position) {
+
+                        }else{
                             SearchFragment searchFragment = new SearchFragment();
                             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 
                             Log.d(TAG, "search word : " + itemWord.get(position).getWord().toString());
                             String search = itemWord.get(position).getWord().toString();
-                            search = search.replace(" ", "");
+                            String searchString = search.replaceAll("\\p{Z}", "");
+                            searchString = searchString.trim();
 
                             Bundle args = new Bundle();
-                            args.putString("searchText", search);
+                            args.putString("searchText", searchString);
                             searchFragment.setArguments(args);
 
                             fragmentManager.beginTransaction()
@@ -146,6 +149,8 @@ public class NoteWordFragment  extends Fragment  {
         if(itemWord.isEmpty()){
             isNullWord = true;
             itemWord.add(new WordData("추가된 단어가 없습니다.", ""));
+        }else{
+            itemWord.add(new WordData("", ""));
         }
     }
 
