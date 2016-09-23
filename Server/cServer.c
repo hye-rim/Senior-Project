@@ -108,6 +108,7 @@
 #define TRANS_RECOMMEND 101
 #define TRANS_REC_ACK 102
 
+#define USER_TESTLIST_REQ_ALL 104
 #define USER_TESTLIST_REQ 105
 #define USER_TESTLIST_ACK 106
 #define USER_TESTLIST_END 107
@@ -119,6 +120,7 @@
 #define SEN_SEND_ALL 111
 #define SEN_SEND_ALL_ACK 112
 #define SEN_SEND_ALL_END 113
+
 #define TEST_RESULT 114
 #define TEST_RESULT_ACK 115
 
@@ -163,6 +165,7 @@ void registTranslation	(unsigned char*, int, int);
 void send_trans_all	(unsigned char*, int, int);
 void audioRequest	(unsigned char*, int, int);
 void userTestlistReq 	(unsigned char*, int, int);
+void userTestlistReqAll	(unsigned char*, int, int);
 
 void Make_Packet	(unsigned char*, unsigned char*, int);
 void Send_Sentence	(unsigned char*, unsigned char*, int);
@@ -460,6 +463,10 @@ puts("audio all");
 						}
 					case USER_TESTLIST_REQ:{
 						userTestlistReq(buff_rcv, userSeq, client_fd);
+						break;
+						}
+					case USER_TESTLIST_REQ_ALL:{
+						userTestlistReqAll(buff_rcv, userSeq, client_fd);
 						break;
 						}
 					case TEST_REQ:{
@@ -3447,6 +3454,79 @@ puts("im 107 hahahah");
 	}
 }
 
+
+void userTestlistReqAll(unsigned char* buff_rcv, int userSeq, int client_fd){
+	MYSQL_RES* res_ptr;
+	MYSQL_RES* res_ptr1;
+	MYSQL_RES* res_ptr2;
+	MYSQL_ROW row;
+	MYSQL_ROW row1;
+	MYSQL_ROW row2;
+	char toClientData[LEN_DATA];
+	char query[LEN_QUERY];
+	int type;
+
+	type = buff_rcv[4] - 48;
+
+	memset(query, '\0', LEN_QUERY);
+
+	sprintf(query, "select seq, userSeq, title, num, examinee, ratio from TB_test where examinee = 0 and type = %d", type);
+	puts(query);
+
+	if(mysql_query(conn_ptr, query)){
+		memset(toClientData, '\0', LEN_DATA);
+		toClientData[0] = '1';
+		buff_rcv[1] = USER_TESTLIST_END;
+		Make_Packet(buff_rcv, toClientData, client_fd);
+	}
+	else{
+		res_ptr = mysql_store_result(conn_ptr);
+		row = mysql_fetch_row(res_ptr);
+					
+		while(row != NULL){
+			memset(query, '\0', LEN_QUERY);
+			sprintf(query, "select UID from TB_USER where seq = '%s'", row[1]);
+
+			if(mysql_query(conn_ptr, query)){
+ 				memset(toClientData, '\0', LEN_DATA);
+				toClientData[0] = '1';
+				buff_rcv[1] = USER_TESTLIST_END;
+				Make_Packet(buff_rcv, toClientData, client_fd);
+				break;
+			}
+			else{
+				res_ptr1 = mysql_store_result(conn_ptr);
+				row1 = mysql_fetch_row(res_ptr1);
+	
+				memset(toClientData, '\0', LEN_DATA);
+				strcat(toClientData, row[0]);
+				strcat(toClientData, "+");
+				strcat(toClientData, row1[0]);
+				strcat(toClientData, "+");
+				strcat(toClientData, row[2]);
+				strcat(toClientData, "+");
+				strcat(toClientData, row[3]);
+				strcat(toClientData, "+");
+				strcat(toClientData, row[4]);
+				strcat(toClientData, "+");
+				strcat(toClientData, row[5]);
+	puts("-----------");
+	puts(toClientData);
+	puts("-----------");
+				Make_Packet(buff_rcv, toClientData, client_fd);
+			}
+			row = mysql_fetch_row(res_ptr);
+		}
+		if(row == NULL){
+puts("im 107 hahahah");
+			memset(toClientData, '\0', LEN_DATA);	
+			toClientData[0] = '0';
+			buff_rcv[1] = USER_TESTLIST_END;
+			Make_Packet(buff_rcv, toClientData, client_fd);
+		}
+	}
+}
+
 void testReqAck(unsigned char* buff_rcv, int client_fd){
 	MYSQL_RES* res_ptr;
 	MYSQL_RES* res_ptr1;
@@ -3703,6 +3783,7 @@ void Make_Packet(unsigned char* buff_rcv, unsigned char* toClientData, int clien
 	case DELETE: buff_snd[1] = DELETE_ACK; break;
 	case TRANS_RECOMMEND: buff_snd[1] = TRANS_REC_ACK; break;
 	case USER_TESTLIST_REQ: buff_snd[1] = USER_TESTLIST_ACK; break;
+	case USER_TESTLIST_REQ_ALL: buff_snd[1] = USER_TESTLIST_ACK; break;
 	case USER_TESTLIST_END: buff_snd[1] = USER_TESTLIST_END; break;
 	case TEST_REQ: buff_snd[1] = TEST_REQ_ACK; break;
 	case TEST_REQ_END: buff_snd[1] = TEST_REQ_END; break;

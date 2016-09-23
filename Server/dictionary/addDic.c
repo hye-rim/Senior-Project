@@ -12,9 +12,9 @@ MYSQL* conn_ptr;
 MYSQL_RES* res_ptr;
 MYSQL_ROW row;
 
-unsigned char word[30];
-unsigned char mean[150];
-char query[200];
+unsigned char word[100];
+unsigned char mean[300];
+char query[500];
 int i, j, a, s;
 
 int main(){
@@ -39,18 +39,18 @@ int main(){
 	i = 0;
 
 	while(!feof(fp)){
-		memset(word, '\0', 30);
-		memset(mean, '\0', 150);
-		memset(query, '\0', 200);
+		memset(word, '\0', 100);
+		memset(mean, '\0', 300);
+		memset(query, '\0', 500);
 	
 //		wordLeng = fread(word, sizeof(char), 30, fp);
 //		meanLeng = fread(mean, sizeof(char), 150, fp);
-		fgets(word, 30, fp);
-		fgets(mean, 150, fp);
+		fgets(word, 100, fp);
+		fgets(mean, 300, fp);
 		a = strlen(word);
 		s = strlen(mean);
-		puts(word);
-		puts(mean);
+//		puts(word);
+//		puts(mean);
 		word[a-2] = '\0';
 		mean[s-2] = '\0';
 //		printf("insert into TB_dictionary2(word, mean) values('%s', '%s')", word, mean);
@@ -68,11 +68,11 @@ puts("");
 
 
 
-puts(word);
-printf("strlen: %d\n", strlen(word));
-puts("--------------");
-puts(mean);
-printf("strlen: %d\n", strlen(mean));
+//puts(word);
+//printf("strlen: %d\n", strlen(word));
+//puts("--------------");
+//puts(mean);
+//printf("strlen: %d\n", strlen(mean));
 
 //		printf("insert into TB_dictionary2(word, mean) values('%s', '%s')\n", word, mean);		
 
@@ -82,7 +82,7 @@ printf("strlen: %d\n", strlen(mean));
 		if(mysql_query(conn_ptr, query)){
 			printf("%s\n", mysql_error(conn_ptr));
 		}
-		break;
+//		break;
 	}
 
 /*	memset(query, '\0', 200);		
