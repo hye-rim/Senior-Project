@@ -38,7 +38,7 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
     private FragmentManager fragmentManager;
 
     private TextView mTitleTextView, mNowNumTextView, mMaxNumTextView, mTempSelectSentence;
-    private Button mNextButton, mProblemSelectButton;
+    private Button mNextButton, mProblemSelectButton, mCorrectCheckButton;
     private EditText mExampleEditText1, mExampleEditText2, mExampleEditText3, mExampleEditText4;
     private RadioButton mExampleRadio1, mExampleRadio2, mExampleRadio3, mExampleRadio4;
     private RadioGroup mExampleRadio;
@@ -82,9 +82,8 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
 
         mNextButton.setOnClickListener(this);
         mProblemSelectButton.setOnClickListener(this);
+        mCorrectCheckButton.setOnClickListener(this);
 
-        mExampleEditTextList[correctNum-1].setText(correct);
-        exampleSet(correctNum-1);
         return view;
     }
 
@@ -116,6 +115,9 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
         mExampleRadioList[2] = mExampleRadio3;
         mExampleRadioList[3] = mExampleRadio4;
 
+        for(int i = 0; i < 4; i++)
+            mExampleRadioList[i].setEnabled(false);
+
         example = new String[4];
 
         if(isFirst) {
@@ -128,8 +130,8 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
             mProblemSelectButton.setVisibility(View.VISIBLE);
             mTempSelectSentence.setVisibility(View.GONE);
 
-            for(int i = 0; i < 4; i++)
-                mExampleRadioList[i].setEnabled(false);
+            isFirst = false;
+
         }else if(!isFirst){
             mProblemSelectButton.setVisibility(View.GONE);
             mTempSelectSentence.setVisibility(View.VISIBLE);
@@ -144,6 +146,7 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
 
 
     private void initView() {
+        mCorrectCheckButton = (Button)view.findViewById(R.id.btn_correct_check);
         mNextButton  = (Button)view.findViewById(R.id.btn_making_sen_next);
         mTitleTextView = (TextView)view.findViewById(R.id.tv_making_sen_title);
         mNowNumTextView  = (TextView)view.findViewById(R.id.tv_making_sen_now);
@@ -170,6 +173,7 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
             case R.id.btn_making_sen_next:
                 exampleSet(correctNum-1);
                 mExampleEditTextList[correctNum-1].setText(correct);
+
                 Log.d(TAG, "mExampleEditTextList set : " + mExampleEditTextList[correctNum-1].getText().toString());
                 if (!isNull(mTempSelectSentence) && !isNull(mExampleEditText1)
                         && !isNull(mExampleEditText2) && !isNull(mExampleEditText3)
@@ -207,6 +211,17 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
                         .commit();
 
                 break;
+
+            case R.id.btn_correct_check:
+                if(!correct.isEmpty()) {
+                    exampleSet(correctNum - 1);
+                    mExampleEditTextList[correctNum - 1].setText(correct);
+                }else{
+                    Toast.makeText(getActivity(), "문제를 선택하세요.", Toast.LENGTH_SHORT).show();
+                }
+
+                break;
+
         }
     }
 
@@ -225,8 +240,7 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
                 mExampleRadioList[i].setEnabled(false);
             }
         }
-        Log.d(TAG, "correct set : " + correct);
-        mExampleEditTextList[index].setText(correct);
+
         Log.d(TAG, "mExampleEditTextList set : " + mExampleEditTextList[index].getText().toString());
     }
 
@@ -240,6 +254,7 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
     private void changeToNextData() {
         nowNum++;
         mNowNumTextView.setText("" + nowNum);
+        correct = new String();
 
         //mProblemEditText.setText(null);
 

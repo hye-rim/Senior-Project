@@ -90,8 +90,8 @@
         <TextView
             android:text="select test"
             android:visibility="gone"
-            android:layout_marginTop="70dp"
-            android:layout_marginBottom="70dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="40dp"
             android:id="@+id/tv_select_sentence"
             android:textColor="@color/black"
             android:layout_width="250dp"
@@ -106,6 +106,18 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:checkedButton="@+id/radio_sen_example1">
+
+            <Button
+                android:layout_gravity="right"
+                android:layout_marginRight="30dp"
+                android:textColor="@color/black"
+                android:text = "정답확인"
+                android:textSize="14dp"
+                android:id="@+id/btn_correct_check"
+                android:background="@color/fuzzy_peach"
+                android:layout_width="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_height="30dp" />
 
             <LinearLayout
                 android:orientation="horizontal"

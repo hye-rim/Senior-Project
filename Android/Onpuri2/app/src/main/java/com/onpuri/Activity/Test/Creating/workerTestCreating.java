@@ -87,15 +87,17 @@ public class workerTestCreating extends Thread {
                     titleUser = title + "+" + userList.get(i);
                     Log.d(TAG,"title + userID : " + titleUser);
                     sendData(titleUser, PacketUser.TEST_CREATE_USR);
+
+                    receiveData();
+
+                    if(inData[1] == PacketUser.ACK_TEST_CREATE_USR) {
+                        isSuccessUser = inData[4] == '1' ? true : false; //실패 0, 성공 1
+                        Log.d(TAG, "success? " + isSuccessUser);
+                        isPlay = false;
+                    }
+
                 }
 
-                receiveData();
-
-                if(inData[1] == PacketUser.ACK_TEST_CREATE_USR) {
-                    isSuccessUser = inData[4] == '1' ? true : false; //실패 0, 성공 1
-                    Log.d(TAG, "success? " + isSuccessUser);
-                    isPlay = false;
-                }
             }
 
             isPlay = false;
