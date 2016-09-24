@@ -1,24 +1,18 @@
-package com.onpuri.Adapter;
+package com.onpuri.Activity.Home.Adapter;
 
-import android.media.Image;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.onpuri.Activity.Home.TransDetailFragment;
-import com.onpuri.Activity.Home.TransMoreFragment;
-import com.onpuri.Activity.Home.workerRecommend;
-import com.onpuri.Activity.Home.workerTransMore;
-import com.onpuri.Activity.MainActivity;
+import com.onpuri.Activity.Home.Fragment.TransDetailFragment;
+import com.onpuri.Activity.Home.Fragment.TransMoreFragment;
+import com.onpuri.Activity.Home.Thread.workerRecommend;
+import com.onpuri.Activity.Home.Thread.workerTransMore;
 import com.onpuri.R;
 
 import java.util.ArrayList;

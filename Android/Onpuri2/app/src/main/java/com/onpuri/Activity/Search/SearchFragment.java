@@ -26,11 +26,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.onpuri.Activity.Home.HomeSentenceFragment;
+import com.onpuri.Activity.Home.Fragment.HomeSentenceFragment;
 import com.onpuri.R;
 import com.onpuri.Activity.Note.workerNote;
 import com.onpuri.Activity.Note.workerNoteItemAdd;
-import com.onpuri.Activity.Search.workerSearch;
 
 import java.util.ArrayList;
 import java.util.HashMap;

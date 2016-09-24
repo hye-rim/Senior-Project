@@ -1,14 +1,12 @@
-package com.onpuri.Activity.Home;
+package com.onpuri.Activity.Home.Fragment;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.InflateException;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -19,9 +17,11 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.onpuri.Activity.Home.Thread.workerDelete;
+import com.onpuri.Activity.Home.Thread.workerRecommend;
+import com.onpuri.Activity.Home.Thread.workerTransDetail;
 import com.onpuri.Activity.MainActivity;
 import com.onpuri.R;
-import com.onpuri.Server.PacketUser;
 
 
 public class TransDetailFragment extends Fragment implements View.OnClickListener {

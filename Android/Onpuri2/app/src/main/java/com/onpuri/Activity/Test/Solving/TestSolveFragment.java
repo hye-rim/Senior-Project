@@ -12,10 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
-import com.onpuri.Activity.Test.Solving.workerTestList;
-import com.onpuri.Adapter.TestListAdapter;
+import com.onpuri.Activity.Home.Adapter.TestListAdapter;
 import com.onpuri.Listener.HomeItemClickListener;
 import com.onpuri.R;
 

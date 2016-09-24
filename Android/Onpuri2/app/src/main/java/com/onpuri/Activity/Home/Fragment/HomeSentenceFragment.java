@@ -1,4 +1,4 @@
-package com.onpuri.Activity.Home;
+package com.onpuri.Activity.Home.Fragment;
 
 
 import android.app.AlertDialog;
@@ -24,9 +24,13 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.onpuri.Activity.Home.Thread.workerDelete;
+import com.onpuri.Activity.Home.Thread.workerListen;
+import com.onpuri.Activity.Home.Thread.workerRecommend;
+import com.onpuri.Activity.Home.Thread.workerTrans;
 import com.onpuri.Activity.MainActivity;
-import com.onpuri.Adapter.SenListenListAdapter;
-import com.onpuri.Adapter.SenTransListAdapter;
+import com.onpuri.Activity.Home.Adapter.SenListenListAdapter;
+import com.onpuri.Activity.Home.Adapter.SenTransListAdapter;
 import com.onpuri.DividerItemDecoration;
 import com.onpuri.Listener.HomeItemClickListener;
 import com.onpuri.R;
@@ -185,9 +189,6 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 new HomeItemClickListener(getActivity().getApplicationContext(), ListenRecyclerView ,new HomeItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        if(worker_sentence_listen.getCount() == 0) {
-
-                        }
                         ttsStop();
                         ((MainActivity)getActivity()).mPlayer.PlayFile(list_listen_num.get(position));
                     }
@@ -211,6 +212,17 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
             reco_sen.setEnabled(false);
             del_sen.setVisibility(View.VISIBLE);
             del_sen.setEnabled(true);
+        }
+
+        if(worker_sentence_trans.getCount() == 0) {
+            TransRecyclerView.setVisibility(View.INVISIBLE);
+            TextView transNone = (TextView)view.findViewById(R.id.transnone);
+            transNone.setVisibility(View.VISIBLE);
+        }
+        if(worker_sentence_listen.getCount() == 0) {
+            ListenRecyclerView.setVisibility(View.INVISIBLE);
+            TextView listenNone = (TextView)view.findViewById(R.id.listennone);
+            listenNone.setVisibility(View.VISIBLE);
         }
 
         return view;

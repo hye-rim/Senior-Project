@@ -1,4 +1,4 @@
-package com.onpuri.Adapter;
+package com.onpuri.Activity.Home.Adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

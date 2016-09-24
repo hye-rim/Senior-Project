@@ -1,4 +1,4 @@
-package com.onpuri.Activity.Home;
+package com.onpuri.Activity.Home.Fragment;
 
 
 import android.app.AlertDialog;
@@ -7,7 +7,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,9 +21,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.onpuri.Adapter.TransListAdapter;
+import com.onpuri.Activity.Home.Adapter.TransListAdapter;
 import com.onpuri.DividerItemDecoration;
-import com.onpuri.Listener.HomeItemClickListener;
 import com.onpuri.R;
 import com.onpuri.Activity.Note.workerNote;
 import com.onpuri.Activity.Note.workerNoteItemAdd;

@@ -1,17 +1,16 @@
-package com.onpuri.Adapter;
+package com.onpuri.Activity.Home.Adapter;
 
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.onpuri.Activity.Home.HomeSentenceFragment;
+import com.onpuri.Activity.Home.Fragment.HomeSentenceFragment;
 import com.onpuri.R;
 
 import java.util.ArrayList;

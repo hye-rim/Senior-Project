@@ -14,13 +14,11 @@ import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.onpuri.Activity.Home.HomeSentenceFragment;
-import com.onpuri.Activity.Note.Sentence.NoteSenItemAdapter;
+import com.onpuri.Activity.Home.Fragment.HomeSentenceFragment;
 import com.onpuri.DividerItemDecoration;
 import com.onpuri.Listener.RecyclerItemClickListener;
 import com.onpuri.R;

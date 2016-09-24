@@ -16,9 +16,7 @@ import android.widget.CheckedTextView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.onpuri.Activity.Home.workerSentenceList;
 import com.onpuri.R;
 import com.onpuri.Server.PacketUser;
 

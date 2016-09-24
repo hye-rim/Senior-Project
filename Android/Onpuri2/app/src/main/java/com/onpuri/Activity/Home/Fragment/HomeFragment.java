@@ -1,4 +1,4 @@
-package com.onpuri.Activity.Home;
+package com.onpuri.Activity.Home.Fragment;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,11 +15,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.onpuri.Activity.MainActivity;
-import com.onpuri.Adapter.RecycleviewAdapter;
+import com.onpuri.Activity.Home.Adapter.RecycleviewAdapter;
+import com.onpuri.Activity.Home.Thread.workerSentenceList;
 import com.onpuri.Listener.EndlessRecyclerOnScrollListener;
-import com.onpuri.Listener.HomeItemClickListener;
-import com.onpuri.Listener.RecyclerItemClickListener;
 import com.onpuri.R;
 import com.onpuri.Server.PacketUser;
 

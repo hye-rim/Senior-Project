@@ -1,4 +1,4 @@
-package com.onpuri;
+package com.onpuri.Activity.Home;
 
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;

@@ -18,7 +18,7 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.onpuri.Activity.Home.HomeSentenceFragment;
+import com.onpuri.Activity.Home.Fragment.HomeSentenceFragment;
 import com.onpuri.Activity.SideTab.Act.ActTest.UserMyActTestFragment;
 import com.onpuri.DividerItemDecoration;
 import com.onpuri.Listener.RecyclerItemClickListener;

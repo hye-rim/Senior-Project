@@ -1,4 +1,4 @@
-package com.onpuri.Adapter;
+package com.onpuri.Activity.Home.Adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,23 +10,22 @@ import com.onpuri.R;
 
 import java.util.ArrayList;
 
-public class SenTransListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
-    private final String TAG = "SenTransListAdapter";
-    private ArrayList<String> transList;
-    private ArrayList<String> transRecoList;
+public class SenListenListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
+    private final String TAG = "SenListenListAdapter";
+    private ArrayList<String> listenList;
+    private ArrayList<String> listenRecoList;
 
-
-    public SenTransListAdapter(ArrayList<String> list_trans, ArrayList<String> list_trans_reco, RecyclerView TransRecyclerView) {
-        this.transList=list_trans;
-        this.transRecoList=list_trans_reco;
+    public SenListenListAdapter(ArrayList<String> list_listen, ArrayList<String> list_listen_reco,RecyclerView LIstenRecyclerView) {
+        this.listenList=list_listen;
+        this.listenRecoList=list_listen_reco;
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
-        public TextView trans;
+        public TextView listen;
         public TextView reco;
         public ItemViewHolder(View v) {
             super(v);
-            trans = (TextView) v.findViewById(R.id.item);
+            listen = (TextView) v.findViewById(R.id.item);
             reco = (TextView) v.findViewById(R.id.reco);
         }
     }
@@ -41,13 +40,13 @@ public class SenTransListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
-        itemViewHolder.trans.setText(transList.get(position));
-        itemViewHolder.reco.setText(transRecoList.get(position));
+        itemViewHolder.listen.setText(listenList.get(position));
+        itemViewHolder.reco.setText(listenRecoList.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return transList.size();
+        return listenList.size();
     }
 
 }

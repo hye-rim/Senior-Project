@@ -1,4 +1,4 @@
-package com.onpuri.Activity.Home;
+package com.onpuri.Activity.Home.Fragment;
 
 import android.app.AlertDialog;
 import android.graphics.Color;

@@ -140,6 +140,16 @@
                     android:layout_marginTop="3dp"
                     android:layout_marginBottom="2dp">
                 </android.support.v7.widget.RecyclerView>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="처음으로 해석을 등록해보세요"
+                    android:id="@+id/transnone"
+                    android:visibility="invisible"
+                    android:gravity="center"
+                    android:textSize="12dp" />
             </RelativeLayout>
 
             <ImageButton
@@ -199,6 +209,17 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="95dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="처음으로 듣기를 등록해보세요"
+                    android:id="@+id/listennone"
+                    android:visibility="invisible"
+                    android:gravity="center"
+                    android:textIsSelectable="false"
+                    android:textSize="12dp" />
 
                 <android.support.v7.widget.RecyclerView
                     android:scrollbars="vertical"

@@ -1,29 +1,22 @@
-package com.onpuri.Activity.Home;
+package com.onpuri.Activity.Home.Fragment;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.InflateException;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.onpuri.DividerItemDecoration;
 import com.onpuri.R;
 import com.onpuri.Server.PacketUser;
 import com.onpuri.Server.SocketConnection;
@@ -32,16 +25,16 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import static com.onpuri.R.drawable.divider_dark;
-
 /**
- * Created by kutemsys on 2016-07-16.
+ * Created by kutemsys on 2016-07-21.
  */
-public class TransAddFragment extends Fragment implements View.OnClickListener {
-    private static final String TAG = "TransAddFragment";
-    private WorkerTransAdd worker_add_trans;
+
+public class TransEditFragment extends Fragment implements View.OnClickListener {
+    private static final String TAG = "TransEditFragment";
+    private WorkerTransEdit worker_edit_trans;
 
     private static View view;
+    private Toast toast;
 
     DataOutputStream dos;
     DataInputStream dis;
@@ -49,11 +42,12 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
     byte[] inData = new byte[261];
     byte[] temp = new byte[261];
 
-    String sentence="";
-    int sentence_num;
+    String sentence;
+    String trans;
+    String sentence_num;
 
-    TextView item;
-    EditText trans;
+    TextView item_sen;
+    EditText edittrans;
 
     int i;
 
@@ -65,18 +59,22 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
                 parent.removeView(view);
         }
         try {
-            view = inflater.inflate(R.layout.fragment_trans_add, container, false);
-        } catch (InflateException e) {}
+            view = inflater.inflate(R.layout.fragment_trans_edit, container, false);
+        } catch (InflateException e) {
+        }
 
-        trans = (EditText) view.findViewById(R.id.new_trans);
-        item = (TextView) view.findViewById(R.id.tv_sentence);
+        edittrans = (EditText)view.findViewById(R.id.new_trans);
+        item_sen = (TextView) view.findViewById(R.id.tv_sentence);
 
         if (getArguments() != null) { //클릭한 문장 출력
             sentence = getArguments().getString("sen");
-            sentence_num=Integer.parseInt(getArguments().getString("sen_num"));
-            item.setText(sentence);
+            item_sen.setText(sentence);
+            sentence_num = getArguments().getString("sen_num");
+            trans = getArguments().getString("sen_trans");
+            edittrans.setText(trans);
 
-            item.setTextIsSelectable(true);
+            item_sen.setTextIsSelectable(true);
+
         }
 
         Button btn_new_trans = (Button) view.findViewById(R.id.btn_new_trans);
@@ -98,7 +96,7 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.btn_new_trans:
             new AlertDialog.Builder(getActivity())
-                    .setTitle("해석을 등록하시겠습니까?\n등록후에는 수정이 불가능합니다.")
+                    .setTitle("편집한 해석을 등록하시겠습니까?\n등록후에는 수정이 불가능합니다.")
                     .setOnKeyListener(new DialogInterface.OnKeyListener() {
                         @Override
                         public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
@@ -111,17 +109,20 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
                     })
                     .setPositiveButton("네", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
-                            AddTranslation();
-                            Toast.makeText(getActivity(), "등록되었습니다.", Toast.LENGTH_SHORT).show();
+                            final FragmentManager fm = getActivity().getSupportFragmentManager();
+                            final FragmentTransaction ft = getFragmentManager().beginTransaction();
+                            EditTranslation();
                             fm.popBackStack();
                             ft.commit();
+                            Toast.makeText(getActivity(), "등록되었습니다", Toast.LENGTH_SHORT).show();
                         }
                     })
                     .setNegativeButton("아니오", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dlg, int sumthin) {
+                            Toast.makeText(getActivity(), "취소되었습니다", Toast.LENGTH_SHORT).show();
                         }
                     }).show();
-            break;
+                break;
             case R.id.btn_new_trans_back:
                 new AlertDialog.Builder(getActivity())
                         .setTitle("해석 등록을 취소하시겠습니까?\n작성중인 내용이 전부 사라집니다.")
@@ -148,24 +149,25 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
                 break;
         }
     }
-    private void AddTranslation() {
-        if(worker_add_trans != null && worker_add_trans.isAlive()){  //이미 동작하고 있을 경우 중지
-            worker_add_trans.interrupt();
+    private void EditTranslation() {
+        if(worker_edit_trans != null && worker_edit_trans.isAlive()){  //이미 동작하고 있을 경우 중지
+            worker_edit_trans.interrupt();
         }
-        worker_add_trans = new WorkerTransAdd(true);
-        worker_add_trans.start();
+        worker_edit_trans = new WorkerTransEdit(true);
+        worker_edit_trans.start();
         try {
-            worker_add_trans.join();
+            worker_edit_trans.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
-    class WorkerTransAdd extends Thread {
+    class WorkerTransEdit extends Thread {
 
         private boolean isPlay = false;
-        String addTrans = trans.getText().toString();
+        String addTrans = edittrans.getText().toString();
+        int sNum = Integer.parseInt(sentence_num);
 
-        public WorkerTransAdd(boolean isPlay) {
+        public WorkerTransEdit(boolean isPlay) {
             this.isPlay = isPlay;
         }
 
@@ -187,13 +189,13 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
                     outData[i] = (byte) dataByte[i - 4];
                 }
 
-                outData[4 + dataByte.length] = (byte) (sentence_num / 255 + 1);
-                outData[5 + dataByte.length] = (byte) (sentence_num % 255 + 1);
+                outData[4 + dataByte.length] = (byte) (sNum / 255 + 1);
+                outData[5 + dataByte.length] = (byte) (sNum % 255 + 1);
                 outData[6 + dataByte.length] = (byte) PacketUser.CRC;
 
                 try {
                     dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
-                    dos.write(outData, 0, (dataByte.length)+7); // packet transmission
+                    dos.write(outData, 0, outData[3] + 7); // packet transmission
                     dos.flush();
 
                     dis = new DataInputStream(SocketConnection.socket.getInputStream());
