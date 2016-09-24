@@ -47,6 +47,7 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
 
     ArrayList<NoteData> listSentence;
     ArrayList<NoteWordData> listWord;
+    ArrayList<String> listSentenceNum, listWordNum;
 
     private RecyclerView mRecyclerSen, mRecyclerWord;
     private RecyclerView.Adapter mSenAdapter, mWordAdapter;
@@ -98,7 +99,7 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
         mLayoutManager = new LinearLayoutManager(getActivity());
 
         mRecyclerSen.setLayoutManager(mLayoutManager);
-        mSenAdapter = new NoteSenAdapter(listSentence, getContext(), getActivity().getSupportFragmentManager(), isNullSen);
+        mSenAdapter = new NoteSenAdapter(listSentence, listSentenceNum, getContext(), getActivity().getSupportFragmentManager(), isNullSen);
 
         mRecyclerSen.setAdapter(mSenAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerSen.addItemDecoration(new DividerItemDecoration(dividerDrawable));
@@ -106,8 +107,10 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
         //Set Word Adapter for Word RecyclerView (NoteTab)
         mRecyclerWord = (RecyclerView) view.findViewById(R.id.recycle_note_word);
         mLayoutManager = new LinearLayoutManager(getActivity());
+
         mRecyclerWord.setLayoutManager(mLayoutManager);
-        mWordAdapter = new NoteWordAdapter(listWord, getContext(), getActivity().getSupportFragmentManager(), isNullWord);
+        mWordAdapter = new NoteWordAdapter(listWord, listWordNum, getContext(), getActivity().getSupportFragmentManager(), isNullWord);
+        
         mRecyclerWord.setAdapter(mWordAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerWord.addItemDecoration(new DividerItemDecoration(dividerDrawable));
 
@@ -163,7 +166,9 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
 
     private void initData() {
         listSentence = new ArrayList<NoteData>();
+        listSentenceNum = new ArrayList<String>();
         listWord = new ArrayList<NoteWordData>();
+        listWordNum = new ArrayList<String>();
 
         if (mworker_note != null && mworker_note.isAlive()) {  //이미 동작하고 있을 경우 중지
             mworker_note.interrupt();
@@ -178,6 +183,8 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
 
         listSentence.clear();
         listWord.clear();
+        listSentenceNum.clear();
+        listWordNum.clear();
 
         //문장 모음 리스트
         int i = 0;
@@ -185,6 +192,7 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
             isNullSen = false;
             while( i < mworker_note.getNoteSen().size()){
                 listSentence.add(new NoteData( mworker_note.getNoteSen().get(i).toString() ));
+                listSentenceNum.add(mworker_note.getNoteSenNum().get(i).toString());
                 Log.d(TAG, mworker_note.getNoteSen().get(i).toString());
                 i++;
             }
@@ -200,6 +208,7 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
             isNullWord = false;
             while( i < mworker_note.getNoteWord().size()){
                 listWord.add(new NoteWordData( mworker_note.getNoteWord().get(i).toString() ));
+                listWordNum.add(mworker_note.getNoteWordNum().get(i).toString());
                 Log.d(TAG, mworker_note.getNoteWord().get(i).toString());
                 i++;
             }

@@ -30,14 +30,16 @@ public class workerNote extends Thread {
     private Boolean senEnd, wordEnd;
 
     private char noteFlag = '0'; //1 : 문장모음, 2 : 단어모음
-    private List noteSen;
-    private List noteWord;
+    private List noteSen, noteSenNum;
+    private List noteWord, noteWordNum;
 
     public workerNote(boolean isPlay) {
         this.isPlay = isPlay;
 
         noteSen = new ArrayList<String>();
         noteWord = new ArrayList<String>();
+        noteSenNum = new ArrayList<String>();
+        noteWordNum = new ArrayList<String>();
 
         senEnd = false;
         wordEnd = false;
@@ -48,6 +50,12 @@ public class workerNote extends Thread {
     }
     public List getNoteWord() {
         return noteWord;
+    }
+    public List getNoteSenNum() {
+        return noteSenNum;
+    }
+    public List getNoteWordNum() {
+        return noteWordNum;
     }
 
     public void stopThread() {
@@ -123,14 +131,19 @@ public class workerNote extends Thread {
 
                             //inData[4] : 문장,단어 구분 / inData[5] : 구분자 '+'
                             String name = new String(inData, 6, nameEnd); //문장
+                            int plus = name.indexOf("+");
+                            String nameNum = name.substring(plus+1, name.length());
+                            name = name.substring(0, plus);
 
                             switch (noteFlag){
                                 case '1':
                                     noteSen.add(name);
+                                    noteSenNum.add(nameNum);
                                     break;
 
                                 case '2':
                                     noteWord.add(name);
+                                    noteWordNum.add(nameNum);
                                     break;
 
                                 default:
