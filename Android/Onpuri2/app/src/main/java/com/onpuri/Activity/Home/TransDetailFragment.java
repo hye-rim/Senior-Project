@@ -79,6 +79,7 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
             item_userid.setText(id+"님");
             item_day.setText(day);
 
+            item_sen.setTextIsSelectable(true);
         }
 
         transrecommend(num);

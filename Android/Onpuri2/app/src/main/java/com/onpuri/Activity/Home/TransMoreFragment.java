@@ -67,8 +67,10 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
         if (getArguments() != null) { //클릭한 문장 출력
             sentence = getArguments().getString("sen");
             sentence_num=getArguments().getString("sen_num");
-
             item.setText(sentence);
+
+            item.setTextIsSelectable(true);
+
         }
 
         noteLoad();

@@ -84,6 +84,9 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
             sentence = getArguments().getString("sen");
             sentence_num=getArguments().getString("sen_num");
             item.setText(sentence);
+
+            item.setTextIsSelectable(true);
+
         }
         listen();
         noteLoad();

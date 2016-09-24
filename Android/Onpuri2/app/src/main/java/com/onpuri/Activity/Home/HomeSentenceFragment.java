@@ -114,8 +114,9 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
             sentence = getArguments().getString("sen");
             sentence_num = getArguments().getString("sen_num");
             id = getArguments().getString("id");
-
             item.setText(sentence);
+
+            item.setTextIsSelectable(true);
         }
 
         translation();

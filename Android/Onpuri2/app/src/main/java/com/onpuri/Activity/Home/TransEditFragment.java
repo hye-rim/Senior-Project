@@ -72,6 +72,9 @@ public class TransEditFragment extends Fragment implements View.OnClickListener 
             sentence_num = getArguments().getString("sen_num");
             trans = getArguments().getString("sen_trans");
             edittrans.setText(trans);
+
+            item_sen.setTextIsSelectable(true);
+
         }
 
         Button btn_new_trans = (Button) view.findViewById(R.id.btn_new_trans);
