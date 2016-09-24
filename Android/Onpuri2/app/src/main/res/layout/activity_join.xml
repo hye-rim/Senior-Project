@@ -198,6 +198,7 @@
             android:background="@drawable/btn_border_black"
             android:id="@+id/et_newPhone1"
             android:singleLine="true"
+            android:maxLength="3"
             android:layout_gravity="center_vertical"
             android:inputType="number" />
         <TextView
@@ -220,6 +221,7 @@
             android:background="@drawable/btn_border_black"
             android:id="@+id/et_newPhone2"
             android:singleLine="true"
+            android:maxLength="4"
             android:layout_gravity="center_vertical"
             android:inputType="number" />
         <TextView

@@ -13,7 +13,6 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
@@ -26,13 +25,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.onpuri.Activity.Home.HomeFragment;
 import com.onpuri.Activity.Login.LoginActivity;
 import com.onpuri.Activity.Search.SearchFragment;
 import com.onpuri.Activity.SideTab.Act.UserMyActFragment;
@@ -42,7 +41,7 @@ import com.onpuri.ActivityList;
 import com.onpuri.R;
 import com.onpuri.Server.PacketUser;
 import com.onpuri.Activity.SideTab.workerLogout;
-import com.onpuri.MediaPlayerManager;
+import com.onpuri.Activity.Home.MediaPlayerManager;
 import com.tsengvn.typekit.TypekitContextWrapper;
 
 import java.io.File;
@@ -80,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         actManager.addActivity(this);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
         mPlayer = new MediaPlayerManager();
         user = new PacketUser();

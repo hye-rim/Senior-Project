@@ -1,4 +1,4 @@
-package com.onpuri.Activity.Home;
+package com.onpuri.Activity.Home.Fragment;
 
 import android.app.AlertDialog;
 import android.graphics.Color;
@@ -92,6 +92,9 @@ public class ListenAddFragment extends Fragment implements View.OnClickListener,
             sentence = getArguments().getString("sen");
             sentence_num=Integer.parseInt(getArguments().getString("sen_num"));
             item.setText(sentence);
+
+            item.setTextIsSelectable(true);
+
         }
 
         btn_listen = (Button) view.findViewById(R.id.listen);

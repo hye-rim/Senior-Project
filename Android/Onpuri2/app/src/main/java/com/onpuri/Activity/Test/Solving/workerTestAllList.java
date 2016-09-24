@@ -53,6 +53,7 @@ public class workerTestAllList extends Thread{
 
     public void run() {
         super.run();
+        Log.d(TAG, "num : " + num);
 
         while(isPlay) {
             outData[0] = (byte) PacketUser.SOF;

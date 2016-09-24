@@ -1,4 +1,4 @@
-package com.onpuri.Adapter;
+package com.onpuri.Activity.Home.Adapter;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -7,19 +7,17 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.onpuri.Activity.Home.ListenMoreFragment;
-import com.onpuri.Activity.Home.workerDelete;
-import com.onpuri.Activity.Home.workerRecommend;
-import com.onpuri.MediaPlayerManager;
+import com.onpuri.Activity.Home.Fragment.ListenMoreFragment;
+import com.onpuri.Activity.Home.Thread.workerDelete;
+import com.onpuri.Activity.Home.Thread.workerRecommend;
+import com.onpuri.Activity.Home.MediaPlayerManager;
 import com.onpuri.R;
 
 import java.util.ArrayList;

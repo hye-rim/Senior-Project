@@ -1,4 +1,4 @@
-package com.onpuri.Activity.Home;
+package com.onpuri.Activity.Home.Thread;
 
 import com.onpuri.Server.PacketUser;
 import com.onpuri.Server.SocketConnection;
