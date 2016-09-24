@@ -39,12 +39,12 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private static final char USR_NOTE_DEL = 67; //내노트 이름 삭제
 
     private ArrayList<NoteData> noteSenList;
+    private ArrayList<String> noteSenNumList;
 
     private TextView mSenItem;
     public ImageButton mSenMore;
     public Button mSenAdd;
     private EditText mAddItem, mChangeItem;
-    private LinearLayout mSenMoreLayout;
 
     public boolean isBtnClicked;
 
@@ -52,18 +52,22 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     Context context;
 
     workerNoteChanges mworker_add;
-    private workerNote mworker_note;
+    workerNote mworker_note;
 
-    String originalName;
+    String originalName,name;
     FragmentManager fm;
 
     Boolean isNullSen;
 
     private int pos;
 
-    public NoteSenAdapter(ArrayList<NoteData> listSentence, Context context, FragmentManager fragmentManager, Boolean isNullSen) {
+    public NoteSenAdapter(ArrayList<NoteData> listSentence, ArrayList<String> noteSenNumList , Context context, FragmentManager fragmentManager, Boolean isNullSen) {
         noteSenList = new ArrayList<>();
         noteSenList.addAll(listSentence);
+
+        this.noteSenNumList = new ArrayList<String>();
+        this.noteSenNumList.addAll(noteSenNumList);
+
         isBtnClicked = false;
         this.context = context;
         this.fm = fragmentManager;
@@ -84,7 +88,7 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     if(isNullSen){
                         Toast.makeText(context, "새로운 문장모음을 추가해주세요.", Toast.LENGTH_LONG).show();
                     }else{
-                        originalName = noteSenList.get(getPosition()).getName();
+                        originalName = noteSenList.get(getAdapterPosition()).getName();
 
                         NoteSenFragment noteSenItem = new NoteSenFragment();
 
@@ -104,7 +108,8 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
                                             @Override
                                             public void onClick(final View v) {
-                                                originalName = noteSenList.get(getPosition()).getName();
+                                                name = noteSenList.get(getAdapterPosition()).getName();
+                                                originalName = noteSenNumList.get(getAdapterPosition());
                                                 final String[] items = {"이름수정" , "삭제"};
                                                 AlertDialog.Builder noteSelectDialog = new AlertDialog.Builder(v.getContext());
 
@@ -117,7 +122,7 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                                                 switch(index){
                                                                     case 0:
                                                                         mChangeItem = new EditText((v.getContext()));
-                                                                        mChangeItem.setText(originalName);
+                                                                        mChangeItem.setText(name);
 
                                                                         new AlertDialog.Builder(v.getContext())
                                                                                 .setTitle("노트 이름 수정")
@@ -138,7 +143,7 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                                                                     @Override
                                                                                     public void onClick(DialogInterface dialog, int which) {
                                                                                         Log.d(TAG,"change : " +  mChangeItem.getText().toString());
-                                                                                        changeItem(getPosition(),  mChangeItem.getText().toString());
+                                                                                        changeItem(getAdapterPosition(),  mChangeItem.getText().toString());
                                                                                         dialog.cancel();
                                                                                     }})
                                                                                 .setNegativeButton("취소", new DialogInterface.OnClickListener() {
@@ -153,7 +158,7 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                                                     case 1:
                                                                         new AlertDialog.Builder(v.getContext())
                                                                                 .setTitle("노트 삭제")
-                                                                                .setMessage(originalName)
+                                                                                .setMessage(name)
                                                                                 .setOnKeyListener(new DialogInterface.OnKeyListener() {
                                                                                     @Override
                                                                                     public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
@@ -168,7 +173,7 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                                                                 .setPositiveButton("삭제",new DialogInterface.OnClickListener(){
                                                                                     @Override
                                                                                     public void onClick(DialogInterface dialog, int which) {
-                                                                                        removeItem(getPosition() ,originalName);
+                                                                                        removeItem(getAdapterPosition() ,originalName);
                                                                                         dialog.cancel();
                                                                                     }})
                                                                                 .setNegativeButton("취소", new DialogInterface.OnClickListener() {
@@ -244,7 +249,7 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     ).setPositiveButton("추가",new DialogInterface.OnClickListener(){
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            String itemName = "문장 모음" + getPosition();
+                            String itemName = "문장 모음" + getAdapterPosition();
                             if(!mAddItem.getText().toString().isEmpty())
                                 itemName = mAddItem.getText().toString();
                             addItem(selectedPos, itemName);
@@ -290,13 +295,11 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         switch (itemType){
             case VIEW_TYPE_CELL:
-                Log.d(TAG, "Sentence Item set. - " + position);
                 ItemViewHolder itemViewHolder = (ItemViewHolder)holder;
                 itemViewHolder.setData(noteSenList.get(position).getName());
                 itemViewHolder.itemView.setSelected(selectedPos == position);
                 break;
             case VIEW_TYPE_FOOTER:
-                Log.d(TAG, "Add Button set. - " + position);
                 AddViewHolder addViewHolder = (AddViewHolder)holder;
                 addViewHolder.itemView.setSelected(selectedPos == position);
                 break;
@@ -330,12 +333,14 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
 
         noteSenList.clear();
+        noteSenNumList.clear();
 
         //문장 모음 리스트
         int i = 0;
         if(mworker_note.getNoteSen() != null){
             while( i < mworker_note.getNoteSen().size()){
                 noteSenList.add(new NoteData( mworker_note.getNoteSen().get(i).toString() ));
+                noteSenNumList.add(mworker_note.getNoteSenNum().get(i).toString());
                 Log.d(TAG, mworker_note.getNoteSen().get(i).toString());
                 i++;
             }

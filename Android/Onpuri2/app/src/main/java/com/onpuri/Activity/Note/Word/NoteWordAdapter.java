@@ -37,6 +37,7 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private static final char USR_NOTE_DEL = 67; //내노트 이름 삭제
 
     private ArrayList<NoteWordData> noteWordList;
+    private ArrayList<String> noteWordNumList;
 
     public TextView mWordItem;
     public ImageButton mWordMore;
@@ -49,18 +50,22 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     workerNoteChanges mworker_add;
     workerNote mworker_note;
 
-    String originalName;
+    String originalName, name;
     FragmentManager fm;
 
     Boolean isNullWord;
-
-    public NoteWordAdapter(ArrayList<NoteWordData> listWord, Context context, FragmentManager fragmentManager, Boolean isNullWord) {
+    int pos;
+    public NoteWordAdapter(ArrayList<NoteWordData> listWord, ArrayList<String> listWordNum, Context context, FragmentManager fragmentManager, Boolean isNullWord) {
         noteWordList = new ArrayList<>();
         noteWordList.addAll(listWord);
+
+        noteWordNumList = new ArrayList<>();
+        noteWordNumList.addAll(listWordNum);
         this.context = context;
         this.fm = fragmentManager;
         this.isNullWord = isNullWord;
     }
+
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
         public ItemViewHolder(View v) {
@@ -74,7 +79,7 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     if(isNullWord){
                         Toast.makeText(context, "새로운 단어모음을 추가해주세요.", Toast.LENGTH_LONG).show();
                     }else {
-                        originalName = noteWordList.get(getPosition()).getName();
+                        originalName = noteWordList.get(getAdapterPosition()).getName();
 
                         NoteWordFragment noteWordItem = new NoteWordFragment();
 
@@ -89,46 +94,110 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     }
                 }
             });
+
+
             mWordMore.setOnClickListener(new View.OnClickListener() {
                                             @Override
-                                            public void onClick(View v) {
-                                                originalName = noteWordList.get(getPosition()).getName();
+                                            public void onClick(final View v) {
+                                                name = noteWordList.get(getAdapterPosition()).getName();
+                                                originalName = noteWordNumList.get(getAdapterPosition());
+                                                final String[] items = {"이름수정" , "삭제"};
+                                                AlertDialog.Builder noteSelectDialog = new AlertDialog.Builder(v.getContext());
 
-                                                AlertDialog.Builder alertBuilder = new AlertDialog.Builder((v.getContext()));
+                                                noteSelectDialog.setTitle("메뉴 선택")
+                                                        .setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
+                                                            public void onClick(DialogInterface dialog, int index) {
+                                                                pos = index;
+                                                                dialog.dismiss();
 
-                                                mChangeItem = new EditText((v.getContext()));
-                                                mChangeItem.setText(originalName);
-                                                alertBuilder.setTitle("");
-                                                alertBuilder.setView(mChangeItem);
+                                                                switch(index){
+                                                                    case 0:
+                                                                        mChangeItem = new EditText((v.getContext()));
+                                                                        mChangeItem.setText(name);
 
-                                                //back key 셋팅
-                                                alertBuilder.setOnKeyListener(new DialogInterface.OnKeyListener() {
-                                                    @Override
-                                                    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-                                                        if(keyCode == KeyEvent.KEYCODE_BACK){
-                                                            dialog.dismiss();
-                                                            return true;
-                                                        }
-                                                        return false;
-                                                    }
-                                                });
+                                                                        new AlertDialog.Builder(v.getContext())
+                                                                                .setTitle("노트 이름 수정")
+                                                                                .setView(mChangeItem)
+                                                                                .setOnKeyListener(new DialogInterface.OnKeyListener() {
+                                                                                    @Override
+                                                                                    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
 
-                                                alertBuilder.setCancelable(false
-                                                ).setPositiveButton("이름 수정",new DialogInterface.OnClickListener(){
-                                                    @Override
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        Log.d(TAG,"change : " +  mChangeItem.getText().toString());
-                                                        changeItem(getPosition(),  mChangeItem.getText().toString());
-                                                    }
-                                                }).setNegativeButton("삭제", new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        removeItem(getPosition() , mChangeItem.getText().toString());
-                                                        dialog.cancel();
-                                                    }
-                                                });
-                                                AlertDialog alertDialog = alertBuilder.create();
-                                                alertDialog.show();  //<-- See This!
+                                                                                        if(keyCode == KeyEvent.KEYCODE_BACK){
+                                                                                            dialog.dismiss();
+                                                                                            return true;
+                                                                                        }
+                                                                                        return false;
+                                                                                    }
+                                                                                })
+                                                                                .setCancelable(false)
+                                                                                .setPositiveButton("수정",new DialogInterface.OnClickListener(){
+                                                                                    @Override
+                                                                                    public void onClick(DialogInterface dialog, int which) {
+                                                                                        Log.d(TAG,"change : " +  mChangeItem.getText().toString());
+                                                                                        changeItem(getAdapterPosition(),  mChangeItem.getText().toString());
+                                                                                        dialog.cancel();
+                                                                                    }})
+                                                                                .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                                                                                    @Override
+                                                                                    public void onClick(DialogInterface dialog, int which) {
+                                                                                        dialog.cancel();
+                                                                                    }
+                                                                                })
+                                                                                .show();
+                                                                        break;
+
+                                                                    case 1:
+                                                                        new AlertDialog.Builder(v.getContext())
+                                                                                .setTitle("노트 삭제")
+                                                                                .setMessage(name)
+                                                                                .setOnKeyListener(new DialogInterface.OnKeyListener() {
+                                                                                    @Override
+                                                                                    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                                                                                        if(keyCode == KeyEvent.KEYCODE_BACK){
+                                                                                            dialog.dismiss();
+                                                                                            return true;
+                                                                                        }
+                                                                                        return false;
+                                                                                    }
+                                                                                })
+                                                                                .setCancelable(false)
+                                                                                .setPositiveButton("삭제",new DialogInterface.OnClickListener(){
+                                                                                    @Override
+                                                                                    public void onClick(DialogInterface dialog, int which) {
+                                                                                        removeItem(getAdapterPosition() ,originalName);
+                                                                                        dialog.cancel();
+                                                                                    }})
+                                                                                .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                                                                                    @Override
+                                                                                    public void onClick(DialogInterface dialog, int which) {
+                                                                                        dialog.cancel();
+                                                                                    }
+                                                                                })
+                                                                                .show();
+                                                                        break;
+
+                                                                    default:
+                                                                        break;
+                                                                }
+
+                                                            }
+                                                        })
+                                                        .setOnKeyListener(new DialogInterface.OnKeyListener() {
+                                                            @Override
+                                                            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                                                                if(keyCode == KeyEvent.KEYCODE_BACK){
+                                                                    dialog.dismiss();
+                                                                    return true;
+                                                                }
+                                                                return false;
+                                                            }
+                                                        });
+
+                                                AlertDialog alert_dialog = noteSelectDialog.create();
+                                                alert_dialog.show();
+
+                                                // set defult select value
+                                                alert_dialog.getListView().setItemChecked(pos, true);
                                             }
                                         }
             );
@@ -170,7 +239,7 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     ).setPositiveButton("추가",new DialogInterface.OnClickListener(){
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            String itemName = "단어 모음" + getPosition();
+                            String itemName = "단어 모음" + getAdapterPosition();
                             if(!mAddItem.getText().toString().isEmpty())
                                 itemName = mAddItem.getText().toString();
                             addItem(selectedPos, itemName);
@@ -188,8 +257,6 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             });
 
         }
-
-
         public Button getButton() { return mWordAdd; }
 
     }
@@ -215,13 +282,11 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         // Get element from your dataset at this position and replace the contents of the view with that element
         switch (getItemViewType(position)){
             case VIEW_TYPE_CELL:
-                Log.d(TAG, "Word Item set. - " + position);
                 ItemViewHolder itemViewHolder = (ItemViewHolder)holder;
                 itemViewHolder.setData(noteWordList.get(position).getName());
                 itemViewHolder.itemView.setSelected(selectedPos == position);
                 break;
             case VIEW_TYPE_FOOTER:
-                Log.d(TAG, "Add Button set. - " + position);
                 AddViewHolder addViewHolder = (AddViewHolder)holder;
                 addViewHolder.itemView.setSelected(selectedPos == position);
                 break;
@@ -256,13 +321,15 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
 
         noteWordList.clear();
+        noteWordNumList.clear();
 
         //문장 모음 리스트
         int i = 0;
-        if(mworker_note.getNoteSen() != null){
-            while( i < mworker_note.getNoteSen().size()){
+        if(mworker_note.getNoteWord() != null){
+            while( i < mworker_note.getNoteWord().size()){
                 noteWordList.add(new NoteWordData( mworker_note.getNoteWord().get(i).toString() ));
-                Log.d(TAG, mworker_note.getNoteSen().get(i).toString());
+                noteWordNumList.add(mworker_note.getNoteWordNum().get(i).toString());
+                Log.d(TAG, mworker_note.getNoteWord().get(i).toString());
                 i++;
             }
         }
@@ -273,8 +340,8 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyDataSetChanged();
     }
 
-    private void addItem(int position, String itemName) {
-        String nameData = new String ("2+" + itemName);
+    private void addItem(int position, String itemNameNum) {
+        String nameData = new String ("2+" + itemNameNum);
 
         toServer(USR_NOTE_ADD ,nameData);
 
@@ -287,8 +354,8 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     }
 
-    private void changeItem(int position, String changeName){
-        String nameData = new String ("2+" + originalName + "+" + changeName);
+    private void changeItem(int position, String changeNameNum){
+        String nameData = new String ("2+" + originalName + "+" + changeNameNum);
 
         toServer(USR_NOTE_EDIT ,nameData);
 
@@ -299,8 +366,8 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    private void removeItem(int position, String itemName){
-        String nameData = new String ("2+" + itemName);
+    private void removeItem(int position, String itemNameNum){
+        String nameData = new String ("2+" + itemNameNum);
 
         toServer(USR_NOTE_DEL ,nameData);
 

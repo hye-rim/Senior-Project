@@ -421,9 +421,9 @@ public class UserMyActFragment extends Fragment {
             listTestKinds.add("");
         }
 
-        cntNew = ( isNullNew ? 0 : listNew.size() );
-        cntRecord = ( isNullRecord ? 0 : listRecord.size() );
-        cntTrans = ( isNullTrans ? 0 : listTrans.size() ) ;
+        cntNew = ( isNullNew ? 0 : listNew.size()-1 );
+        cntRecord = ( isNullRecord ? 0 : listRecord.size()-1 );
+        cntTrans = ( isNullTrans ? 0 : listTrans.size()-1 ) ;
         cntTest =( isNullTest ? 0 : listTest.size() ) ;
     }
 
