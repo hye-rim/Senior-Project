@@ -167,9 +167,6 @@ public class TestSelectObjectFragment extends Fragment implements AdapterView.On
         else if(mListView2 == parent){
             CheckedTextView item = (CheckedTextView) view;
 
-            Toast.makeText(getActivity(), mUserList.get(position).toString() + "  checked : " +
-                    item.isChecked(), Toast.LENGTH_SHORT).show();
-
             if(item.isChecked()) {
                 String selectUser =  mUserList.get(position).toString();
                 if( !mSelectUserList.contains(selectUser)){

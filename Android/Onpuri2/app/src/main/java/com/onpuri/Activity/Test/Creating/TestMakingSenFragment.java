@@ -38,7 +38,7 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
     private FragmentManager fragmentManager;
 
     private TextView mTitleTextView, mNowNumTextView, mMaxNumTextView, mTempSelectSentence;
-    private Button mNextButton, mProblemSelectButton;
+    private Button mNextButton, mProblemSelectButton, mCorrectCheckButton;
     private EditText mExampleEditText1, mExampleEditText2, mExampleEditText3, mExampleEditText4;
     private RadioButton mExampleRadio1, mExampleRadio2, mExampleRadio3, mExampleRadio4;
     private RadioGroup mExampleRadio;
@@ -82,12 +82,7 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
 
         mNextButton.setOnClickListener(this);
         mProblemSelectButton.setOnClickListener(this);
-
-        //mExampleEditTextList[correctNum-1].setText(correct);
-        if(!isFirst) {
-            mExampleEditTextList[correctNum-1].setText(correct);
-            Log.d(TAG, "why?? " + mExampleEditTextList[correctNum - 1].getText());
-        }
+        mCorrectCheckButton.setOnClickListener(this);
 
         return view;
     }
@@ -151,6 +146,7 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
 
 
     private void initView() {
+        mCorrectCheckButton = (Button)view.findViewById(R.id.btn_correct_check);
         mNextButton  = (Button)view.findViewById(R.id.btn_making_sen_next);
         mTitleTextView = (TextView)view.findViewById(R.id.tv_making_sen_title);
         mNowNumTextView  = (TextView)view.findViewById(R.id.tv_making_sen_now);
@@ -215,6 +211,17 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
                         .commit();
 
                 break;
+
+            case R.id.btn_correct_check:
+                if(!correct.isEmpty()) {
+                    exampleSet(correctNum - 1);
+                    mExampleEditTextList[correctNum - 1].setText(correct);
+                }else{
+                    Toast.makeText(getActivity(), "문제를 선택하세요.", Toast.LENGTH_SHORT).show();
+                }
+
+                break;
+
         }
     }
 
@@ -247,6 +254,7 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
     private void changeToNextData() {
         nowNum++;
         mNowNumTextView.setText("" + nowNum);
+        correct = new String();
 
         //mProblemEditText.setText(null);
 
