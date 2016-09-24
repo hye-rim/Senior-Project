@@ -123,18 +123,24 @@
                     android:background="@color/fuzzy_peach" />
 
             </LinearLayout>
-            <android.support.v7.widget.RecyclerView
-                android:scrollbars="vertical"
-                app:layoutManager="LinearLayoutManager"
-                android:id="@+id/trans_list"
+
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="95dp"
-                tools:listitem="@layout/sen_list"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginTop="3dp"
-                android:layout_marginBottom="2dp">
-            </android.support.v7.widget.RecyclerView>
+                android:layout_height="95dp">
+
+                <android.support.v7.widget.RecyclerView
+                    android:scrollbars="vertical"
+                    app:layoutManager="LinearLayoutManager"
+                    android:id="@+id/trans_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="95dp"
+                    tools:listitem="@layout/sen_list"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginBottom="2dp">
+                </android.support.v7.widget.RecyclerView>
+            </RelativeLayout>
 
             <ImageButton
                 android:layout_width="20dp"
@@ -189,18 +195,24 @@
                     android:background="@color/fuzzy_peach" />
 
             </LinearLayout>
-            <android.support.v7.widget.RecyclerView
-                android:scrollbars="vertical"
-                app:layoutManager="LinearLayoutManager"
-                android:id="@+id/listen_list"
+
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="95dp"
-                tools:listitem="@layout/sen_list"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginTop="3dp"
-                android:layout_marginBottom="2dp">
-            </android.support.v7.widget.RecyclerView>
+                android:layout_height="95dp">
+
+                <android.support.v7.widget.RecyclerView
+                    android:scrollbars="vertical"
+                    app:layoutManager="LinearLayoutManager"
+                    android:id="@+id/listen_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="95dp"
+                    tools:listitem="@layout/sen_list"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginBottom="2dp">
+                </android.support.v7.widget.RecyclerView>
+            </RelativeLayout>
 
             <ImageButton
                 android:layout_width="20dp"

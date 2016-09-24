@@ -193,7 +193,7 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
 
                 try {
                     dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
-                    dos.write(outData, 0, outData[3] + 7); // packet transmission
+                    dos.write(outData, 0, (dataByte.length)+7); // packet transmission
                     dos.flush();
 
                     dis = new DataInputStream(SocketConnection.socket.getInputStream());

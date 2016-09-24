@@ -185,6 +185,9 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 new HomeItemClickListener(getActivity().getApplicationContext(), ListenRecyclerView ,new HomeItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
+                        if(worker_sentence_listen.getCount() == 0) {
+
+                        }
                         ttsStop();
                         ((MainActivity)getActivity()).mPlayer.PlayFile(list_listen_num.get(position));
                     }
