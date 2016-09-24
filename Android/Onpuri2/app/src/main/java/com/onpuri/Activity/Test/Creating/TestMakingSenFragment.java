@@ -83,8 +83,12 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
         mNextButton.setOnClickListener(this);
         mProblemSelectButton.setOnClickListener(this);
 
-        mExampleEditTextList[correctNum-1].setText(correct);
-        exampleSet(correctNum-1);
+        //mExampleEditTextList[correctNum-1].setText(correct);
+        if(!isFirst) {
+            mExampleEditTextList[correctNum-1].setText(correct);
+            Log.d(TAG, "why?? " + mExampleEditTextList[correctNum - 1].getText());
+        }
+
         return view;
     }
 
@@ -116,6 +120,9 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
         mExampleRadioList[2] = mExampleRadio3;
         mExampleRadioList[3] = mExampleRadio4;
 
+        for(int i = 0; i < 4; i++)
+            mExampleRadioList[i].setEnabled(false);
+
         example = new String[4];
 
         if(isFirst) {
@@ -128,8 +135,8 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
             mProblemSelectButton.setVisibility(View.VISIBLE);
             mTempSelectSentence.setVisibility(View.GONE);
 
-            for(int i = 0; i < 4; i++)
-                mExampleRadioList[i].setEnabled(false);
+            isFirst = false;
+
         }else if(!isFirst){
             mProblemSelectButton.setVisibility(View.GONE);
             mTempSelectSentence.setVisibility(View.VISIBLE);
@@ -170,6 +177,7 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
             case R.id.btn_making_sen_next:
                 exampleSet(correctNum-1);
                 mExampleEditTextList[correctNum-1].setText(correct);
+
                 Log.d(TAG, "mExampleEditTextList set : " + mExampleEditTextList[correctNum-1].getText().toString());
                 if (!isNull(mTempSelectSentence) && !isNull(mExampleEditText1)
                         && !isNull(mExampleEditText2) && !isNull(mExampleEditText3)
@@ -225,8 +233,7 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
                 mExampleRadioList[i].setEnabled(false);
             }
         }
-        Log.d(TAG, "correct set : " + correct);
-        mExampleEditTextList[index].setText(correct);
+
         Log.d(TAG, "mExampleEditTextList set : " + mExampleEditTextList[index].getText().toString());
     }
 

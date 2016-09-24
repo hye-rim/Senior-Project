@@ -90,8 +90,8 @@
         <TextView
             android:text="select test"
             android:visibility="gone"
-            android:layout_marginTop="70dp"
-            android:layout_marginBottom="70dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="40dp"
             android:id="@+id/tv_select_sentence"
             android:textColor="@color/black"
             android:layout_width="250dp"
