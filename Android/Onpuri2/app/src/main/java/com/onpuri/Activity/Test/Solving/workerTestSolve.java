@@ -26,7 +26,6 @@ public class workerTestSolve extends Thread{
     public int tmp=0;
     public int score=0;
 
-
     List quiz = new ArrayList();
     List ex1 = new ArrayList();
     List ex2 = new ArrayList();
@@ -59,7 +58,7 @@ public class workerTestSolve extends Thread{
         Log.d(TAG, "num:"+num);
 
         byte[] outData = new byte[20];
-        byte[] quizData = new byte[200];
+        byte[] quizData = new byte[500];
         byte[] exampleData = new byte[200];
 
         while(isPlay) {
@@ -88,10 +87,9 @@ public class workerTestSolve extends Thread{
                 while(true) {
                     //패킷1
                     dis.read(quizData, 0, 4);
-                    Log.d(TAG, "indata:"+quizData[0]+" "+quizData[1]+" "+quizData[2]+" "+quizData[3] );
+                    Log.d(TAG, "quizData:"+quizData[0]+" "+quizData[1]+" "+quizData[2]+" "+quizData[3] );
 
-                    int q_len = quizData[3];
-
+                    int q_len = ((int) quizData[3] <= 0 ? (int) quizData[3] + 256 : (int) quizData[3]);
                     if (quizData[1] == PacketUser.ACK_TEST) {
                         dis.read(quizData, 0, 1+(q_len));
 
@@ -99,8 +97,10 @@ public class workerTestSolve extends Thread{
                         for(int i=0; i<q_len; i++) {
                             quizbyte[i] += quizData[i];
                         }
+                        String quizstring = new String(quizbyte, 0, q_len).replace("@", "_____");
+                        Log.d(TAG, "quiz" +quizstring);
 
-                        quiz.add(new String(quizbyte, 0, q_len));
+                        quiz.add(quizstring);
 
                         //패킷2
                         dis.read(exampleData, 0, 4);

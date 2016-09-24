@@ -1,4 +1,4 @@
-package com.onpuri.Activity.Home;
+package com.onpuri.Activity.Test.Solving;
 
 import android.util.Log;
 
@@ -10,10 +10,10 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 /**
- * Created by kutemsys on 2016-09-19.
+ * Created by kutemsys on 2016-09-22.
  */
-public class workerRecommend extends Thread{
-    private static final String TAG = "workerRecommend";
+public class workerTestFinish extends Thread{
+    private static final String TAG = "workerTestFinish";
     private boolean isPlay = false;
 
     DataOutputStream dos;
@@ -21,30 +21,34 @@ public class workerRecommend extends Thread{
     byte[] outData = new byte[30];
     byte[] inData = new byte[30];
 
-    String type;
     String num;
+    String score;
+    String percent;
 
-    public workerRecommend(boolean isPlay, String type, String num) {
+    public workerTestFinish(boolean isPlay, String num, String score, String percent) {
         this.isPlay = isPlay;
-        this.type = type;
         this.num = num;
+        this.score = score;
+        this.percent = percent;
 
     }
     public void run() {
         super.run();
         Log.d(TAG, "num : " + num);
+        Log.d(TAG, "score : " + score);
+        Log.d(TAG, "percent : " + percent);
 
-        String data = type+num;
+        String data = num+"+"+score+"+"+percent;
+        Log.d(TAG, "data : " + data);
+
 
         while(isPlay) {
             outData[0] = (byte) PacketUser.SOF;
-            outData[1] = (byte) PacketUser.USR_RECO;
+            outData[1] = (byte) PacketUser.USR_TEST_FINISH;
             outData[2] = (byte) PacketUser.getSEQ();
             outData[3] = (byte) data.length();
             for (int i = 4; i < 4 + data.length(); i++) {
                 outData[i] = (byte) data.charAt(i - 4);
-                Log.d(TAG, "data:"+outData[i]);
-
             }
             Log.d(TAG, "total data:"+data);
 
@@ -59,8 +63,8 @@ public class workerRecommend extends Thread{
                 dis.read(inData);
                 Log.d(TAG, "indata:"+inData[1]);
 
-                if(inData[1] == PacketUser.ACK_RECO) {
-                    Log.d(TAG,"추천");
+                if(inData[1] == PacketUser.ACK_TEST_FINISH) {
+                    Log.d(TAG,"시험종료");
                 }
 
             } catch (IOException e) {
@@ -70,3 +74,4 @@ public class workerRecommend extends Thread{
         }
     }
 }
+

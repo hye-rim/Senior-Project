@@ -335,6 +335,7 @@ public class HomeSentenceFragment extends Fragment implements View.OnClickListen
                 break;
             case R.id.reco_sen :
                 recommend();
+                Toast.makeText(getActivity(), "추천되었습니다", Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -341,10 +341,10 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }
         }
         if(noteSenList.isEmpty()){
-            isNullSen = true;
             noteSenList.add(new NoteData("새로운 문장 모음을 등록해보세요."));
         }
 
+        notifyDataSetChanged();
     }
 
 
@@ -355,7 +355,6 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         if(mworker_add.getSuccess()) {
             dataChange();
-            notifyDataSetChanged();
         }else{
             Toast.makeText(context, "추가에 실패하였습니다.", Toast.LENGTH_LONG).show();
         }
@@ -369,7 +368,6 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         if(mworker_add.getSuccess()) {
             dataChange();
-            notifyDataSetChanged();
         }else{
             Toast.makeText(context, "수정에 실패하였습니다.", Toast.LENGTH_LONG).show();
         }
@@ -383,7 +381,6 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         if(mworker_add.getSuccess()) {
             dataChange();
-            notifyDataSetChanged();
         }else{
             Toast.makeText(context, "삭제에 실패하였습니다.", Toast.LENGTH_LONG).show();
         }

@@ -114,7 +114,6 @@ public class ListenListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 public void onClick(View v) {
                     recommend(numList.get(getPosition()));
                     activity.getSupportFragmentManager().beginTransaction().detach(fragment).attach(fragment).commit();
-
                 }
             });
         }

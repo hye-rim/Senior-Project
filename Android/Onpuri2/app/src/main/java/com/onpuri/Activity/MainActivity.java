@@ -18,6 +18,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +28,7 @@ import android.widget.Toast;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.onpuri.Activity.Home.HomeFragment;
 import com.onpuri.Activity.Login.LoginActivity;
 import com.onpuri.Activity.Search.SearchFragment;
 import com.onpuri.Activity.SideTab.Act.UserMyActFragment;
@@ -56,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //Back Preesed
     private final long FINISH_INTERVAL_TIME = 3000;
     private long backPressedTime = 0;
-
+    public boolean Backkey = true;
     private workerLogout mworker_out;
 
     //User data - SharedPreferences
@@ -98,7 +100,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         nowPassword = intent.getStringExtra("NowPass");
 
         user.setuserId(userId);
-
         TabViewPager tabViewPager = new TabViewPager();
 
         mFragmentManager = getSupportFragmentManager();
@@ -140,41 +141,40 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         long tempTime = System.currentTimeMillis();
         long intervalTime = tempTime - backPressedTime;
 
-        //Navigation Drawer OPEN / CLOSE
-        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-            mDrawerLayout.closeDrawer(GravityCompat.START);
-        }
-        else {
-            //Fragment가 스택에 남아있을 경우
-            if(mFragmentManager.getBackStackEntryCount() > 0) {
-                if(mPlayer.mpfile != null) { mPlayer.mpfile.pause();}
+        if(Backkey) {
+            //Navigation Drawer OPEN / CLOSE
+            if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+            } else {
+                //Fragment가 스택에 남아있을 경우
+                if (mFragmentManager.getBackStackEntryCount() > 0) {
+                    Log.d(TAG,mFragmentManager.getBackStackEntryCount()+"");
+                    if (mPlayer.mpfile != null) {
+                        mPlayer.mpfile.pause();
+                    }
+                    mFragmentManager.popBackStack();
+                    mFragmentManager.beginTransaction().commit();
+                } else { //시간안에 2번 눌렀을 때
+                    if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime) {
+                        DeleteDir("/storage/emulated/0/Daily E");
 
-                mFragmentManager.popBackStack();
-                mFragmentManager.beginTransaction().commit();
+                        if (setting.getBoolean("autoLogin", false) == false) {
+                            editor.clear();
+                            editor.commit();
+                        }
 
-            }
+                        outThreadCheck();
 
-            else {
-                //시간안에 2번 눌렀을 때
-                if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime) {
-                    DeleteDir("/storage/emulated/0/Daily E");
-
-                    if (setting.getBoolean("autoLogin", false) == false) {
-                        editor.clear();
-                        editor.commit();
+                        ActivityCompat.finishAffinity(this);
+                        System.runFinalizersOnExit(true);
+                        System.exit(0);
                     }
 
-                    outThreadCheck();
-
-                    ActivityCompat.finishAffinity(this);
-                    System.runFinalizersOnExit(true);
-                    System.exit(0);
-                }
-
-                //First back preesed.
-                else{
-                    backPressedTime = tempTime;
-                    Toast.makeText(getApplicationContext(), "\'뒤로\' 버튼을 한번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT).show();
+                    //First back preesed.
+                    else {
+                        backPressedTime = tempTime;
+                        Toast.makeText(getApplicationContext(), "\'뒤로\' 버튼을 한번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         }

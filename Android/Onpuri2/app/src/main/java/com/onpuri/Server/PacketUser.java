@@ -100,19 +100,23 @@ public class PacketUser extends Application {
     static final public char USR_LEV = 99; //회원 탈퇴(user leave)
     static final public char ACK_LEV = 100; //회원 탈퇴 응답(user leave ACK)
 
-    static final public char SELECT_SENTENCE = 111;
-    static final public char ACK_SELECT_SENTENCE = 112;
-    static final public char ACK_NSELECT_SENTENCE = 113;
-
     static final public char USR_TRANS_DETAIL = 101; //해석 자세히보기
     static final public char ACK_TRANS_DETAIL = 102; //ACK 해석 자세히보기
 
-    static final public char USR_TEST_LIST = 105; //시험 목록
+    static final public char USR_TEST_AlllLIST = 104; //전체 시험 목록 요청
+    static final public char USR_TEST_LIST = 105; //지정 시험 목록 요청
     static final public char ACK_TEST_LIST = 106; //ACK 시험 목록
     static final public char ACK_NTEST_LIST = 107; //ACK no 시험 목록
     static final public char USR_TEST = 108; //시험 요청
     static final public char ACK_TEST = 109; //ACK 시험 요청
     static final public char ACK_NTEST = 110; //ACK no시험 요청
+
+    static final public char SELECT_SENTENCE = 111;
+    static final public char ACK_SELECT_SENTENCE = 112;
+    static final public char ACK_NSELECT_SENTENCE = 113;
+
+    static final public char USR_TEST_FINISH = 114; // 시험 결과 전송
+    static final public char ACK_TEST_FINISH = 115; //ACK 시험 결과 전송
 
     public static char SOF = 0xcc;//Decimal=204
     static public char CRC = 0x55;//Decimal=85

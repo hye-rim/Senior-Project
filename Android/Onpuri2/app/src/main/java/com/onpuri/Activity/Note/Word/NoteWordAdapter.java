@@ -17,6 +17,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.onpuri.Activity.Note.workerNote;
 import com.onpuri.Data.*;
 import com.onpuri.R;
 import com.onpuri.Activity.Note.workerNoteChanges;
@@ -46,6 +47,8 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     Context context;
 
     workerNoteChanges mworker_add;
+    workerNote mworker_note;
+
     String originalName;
     FragmentManager fm;
 
@@ -239,14 +242,45 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
+
+    private void dataChange(){
+        if (mworker_note != null && mworker_note.isAlive()) {  //이미 동작하고 있을 경우 중지
+            mworker_note.interrupt();
+        }
+        mworker_note = new workerNote(true);
+        mworker_note.start();
+        try {
+            mworker_note.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        noteWordList.clear();
+
+        //문장 모음 리스트
+        int i = 0;
+        if(mworker_note.getNoteSen() != null){
+            while( i < mworker_note.getNoteSen().size()){
+                noteWordList.add(new NoteWordData( mworker_note.getNoteWord().get(i).toString() ));
+                Log.d(TAG, mworker_note.getNoteSen().get(i).toString());
+                i++;
+            }
+        }
+        if(noteWordList.isEmpty()){
+            noteWordList.add(new NoteWordData("새로운 단어 모음을 등록해보세요."));
+        }
+
+        notifyDataSetChanged();
+    }
+
     private void addItem(int position, String itemName) {
         String nameData = new String ("2+" + itemName);
 
         toServer(USR_NOTE_ADD ,nameData);
 
         if(mworker_add.getSuccess()) {
-            noteWordList.add(new NoteWordData(itemName));
-            notifyDataSetChanged();
+            dataChange();
+
         }else{
             Toast.makeText(context, "추가에 실패하였습니다.", Toast.LENGTH_LONG).show();
         }
@@ -259,8 +293,7 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         toServer(USR_NOTE_EDIT ,nameData);
 
         if(mworker_add.getSuccess()) {
-            noteWordList.get(position).setName(changeName);
-            notifyDataSetChanged();
+            dataChange();
         }else{
             Toast.makeText(context, "수정에 실패하였습니다.", Toast.LENGTH_LONG).show();
         }
@@ -272,8 +305,7 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         toServer(USR_NOTE_DEL ,nameData);
 
         if(mworker_add.getSuccess()) {
-            noteWordList.remove(position);
-            notifyDataSetChanged();
+            dataChange();
         }else{
             Toast.makeText(context, "삭제에 실패하였습니다.", Toast.LENGTH_LONG).show();
         }

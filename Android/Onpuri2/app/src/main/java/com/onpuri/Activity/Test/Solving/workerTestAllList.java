@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by kutemsys on 2016-09-19.
  */
-public class workerTestList extends Thread{
+public class workerTestAllList extends Thread{
     private static final String TAG = "workerTestList";
     private boolean isPlay = false;
 
@@ -46,7 +46,7 @@ public class workerTestList extends Thread{
     }
 
 
-    public workerTestList(boolean isPlay, String type) {
+    public workerTestAllList(boolean isPlay, String type) {
         this.isPlay = isPlay;
         this.type = type;
     }
@@ -56,7 +56,7 @@ public class workerTestList extends Thread{
 
         while(isPlay) {
             outData[0] = (byte) PacketUser.SOF;
-            outData[1] = (byte) PacketUser.USR_TEST_LIST;
+            outData[1] = (byte) PacketUser.USR_TEST_AlllLIST;
             outData[2] = (byte) PacketUser.getSEQ();
             outData[3] = (byte) type.length();
             for (int i = 4; i < 4 + type.length(); i++) {

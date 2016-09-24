@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.InflateException;
@@ -14,9 +15,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.onpuri.Activity.MainActivity;
 import com.onpuri.Adapter.RecycleviewAdapter;
 import com.onpuri.Listener.EndlessRecyclerOnScrollListener;
 import com.onpuri.Listener.HomeItemClickListener;
+import com.onpuri.Listener.RecyclerItemClickListener;
 import com.onpuri.R;
 import com.onpuri.Server.PacketUser;
 
@@ -25,7 +28,7 @@ import java.util.ArrayList;
 /**
  * Created by kutemsys on 2016-05-03.
  */
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
     private static final String TAG = "HomeFragment";
     private static View view;
 
@@ -42,9 +45,9 @@ public class HomeFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private RecycleviewAdapter mAdapter;
-
     protected RecyclerView.LayoutManager mLayoutManager;
     protected Handler handler;
+    protected SwipeRefreshLayout mSwipeRefresh;
 
     // on scroll
     private static int current_page = 1;
@@ -65,7 +68,6 @@ public class HomeFragment extends Fragment {
         } catch (InflateException e) {
             /* map is already there, just return view as it is */
         }
-
         sentence_num = 0;
         userSentence = new PacketUser();
 
@@ -79,15 +81,13 @@ public class HomeFragment extends Fragment {
         FragmentManager fm = getActivity().getSupportFragmentManager();
         fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
-        if(!sentenceEnd)
-            loadData(current_page);
+        loadData(current_page);
 
         handler = new Handler();
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_sentence);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new RecycleviewAdapter(listSentence, listTransNum, listListenNum, listId, listReco, mRecyclerView);
-
+        mAdapter = new RecycleviewAdapter(getActivity(), listSentence, listSentenceNum, listTransNum, listListenNum, listId, listReco, mRecyclerView);
         mRecyclerView.setAdapter(mAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener((LinearLayoutManager) mLayoutManager) {
             @Override
@@ -101,29 +101,8 @@ public class HomeFragment extends Fragment {
 
         mAdapter.notifyDataSetChanged();
 
-        mRecyclerView.addOnItemTouchListener(
-                new HomeItemClickListener(getActivity().getApplicationContext(), mRecyclerView ,new HomeItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        HomeSentenceFragment hsf = new HomeSentenceFragment();
-                        FragmentManager fm = getActivity().getSupportFragmentManager();
-
-                        Bundle args = new Bundle();
-                        args.putString("sen", listSentence.get(position));
-                        args.putString("sen_num", listSentenceNum.get(position));
-                        args.putString("id", listId.get(position));
-                        hsf.setArguments(args);
-
-                        fm.beginTransaction()
-                                .replace(R.id.root_home, hsf)
-                                .addToBackStack(null)
-                                .commit();
-                    }
-                    @Override
-                    public void onLongItemClick(View view, int position) {
-                    }
-                })
-        );
+        mSwipeRefresh = (SwipeRefreshLayout)view.findViewById(R.id.swype_layout);
+        mSwipeRefresh.setOnRefreshListener(this);
 
         return view;
     }
@@ -162,7 +141,6 @@ public class HomeFragment extends Fragment {
         listListenNum.clear();
         listId.clear();
         listReco.clear();
-
 
         for (int i = 0; i < loadLimit; i++) {
             listSentence.add(userSentence.arrSentence.get(i));
@@ -230,4 +208,13 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onRefresh() {
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        final HomeRootFragment hrf = new HomeRootFragment();
+        ft.replace(R.id.root_home, hrf);
+        ft.addToBackStack(null);
+        ft.commit();
+        mSwipeRefresh.setRefreshing(false);
+    }
 }

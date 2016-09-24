@@ -18,6 +18,7 @@ import com.onpuri.Activity.Home.TransDetailFragment;
 import com.onpuri.Activity.Home.TransMoreFragment;
 import com.onpuri.Activity.Home.workerRecommend;
 import com.onpuri.Activity.Home.workerTransMore;
+import com.onpuri.Activity.MainActivity;
 import com.onpuri.R;
 
 import java.util.ArrayList;
