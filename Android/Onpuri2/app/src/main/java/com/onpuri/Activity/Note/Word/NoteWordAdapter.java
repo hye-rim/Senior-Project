@@ -39,8 +39,7 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private ArrayList<NoteWordData> noteWordList;
     private ArrayList<String> noteWordNumList;
 
-    public TextView mWordItem;
-    public ImageButton mWordMore;
+
     public Button mWordAdd;
     private EditText mAddItem, mChangeItem;
 
@@ -53,21 +52,27 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     String originalName, name;
     FragmentManager fm;
 
-    Boolean isNullWord;
+    Boolean isNullWord, first;
     int pos;
-    public NoteWordAdapter(ArrayList<NoteWordData> listWord, ArrayList<String> listWordNum, Context context, FragmentManager fragmentManager, Boolean isNullWord) {
-        noteWordList = new ArrayList<>();
-        noteWordList.addAll(listWord);
-
-        noteWordNumList = new ArrayList<>();
-        noteWordNumList.addAll(listWordNum);
-        this.context = context;
-        this.fm = fragmentManager;
-        this.isNullWord = isNullWord;
+    public NoteWordAdapter(ArrayList<NoteWordData> listWord, ArrayList<String> listWordNum,
+                           Context context, FragmentManager fragmentManager, Boolean isNullWord, Boolean first) {
+        this.first = first;
+        if(this.first) {
+            noteWordList = new ArrayList<NoteWordData>();
+            noteWordList.addAll(listWord);
+            noteWordNumList = new ArrayList<String>();
+            noteWordNumList.addAll(listWordNum);
+            this.context = context;
+            this.fm = fragmentManager;
+            this.isNullWord = isNullWord;
+            this.first = false;
+        }
     }
 
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
+        public TextView mWordItem;
+        public ImageButton mWordMore;
         public ItemViewHolder(View v) {
             super(v);
             mWordItem = (TextView) v.findViewById(R.id.note_word_item);
@@ -91,6 +96,7 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                 .addToBackStack(null)
                                 .commit();
                         fm.executePendingTransactions();
+
                     }
                 }
             });
@@ -135,6 +141,7 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                                                                     public void onClick(DialogInterface dialog, int which) {
                                                                                         Log.d(TAG,"change : " +  mChangeItem.getText().toString());
                                                                                         changeItem(getAdapterPosition(),  mChangeItem.getText().toString());
+                                                                                        notifyDataSetChanged();
                                                                                         dialog.cancel();
                                                                                     }})
                                                                                 .setNegativeButton("취소", new DialogInterface.OnClickListener() {
@@ -165,6 +172,7 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                                                                     @Override
                                                                                     public void onClick(DialogInterface dialog, int which) {
                                                                                         removeItem(getAdapterPosition() ,originalName);
+                                                                                        notifyDataSetChanged();
                                                                                         dialog.cancel();
                                                                                     }})
                                                                                 .setNegativeButton("취소", new DialogInterface.OnClickListener() {
@@ -243,6 +251,7 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             if(!mAddItem.getText().toString().isEmpty())
                                 itemName = mAddItem.getText().toString();
                             addItem(selectedPos, itemName);
+                            notifyDataSetChanged();
                         }
                     }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
                         @Override
@@ -283,7 +292,7 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         switch (getItemViewType(position)){
             case VIEW_TYPE_CELL:
                 ItemViewHolder itemViewHolder = (ItemViewHolder)holder;
-                itemViewHolder.setData(noteWordList.get(position).getName());
+                itemViewHolder.mWordItem.setText(noteWordList.get(position).getName());
                 itemViewHolder.itemView.setSelected(selectedPos == position);
                 break;
             case VIEW_TYPE_FOOTER:
@@ -323,21 +332,21 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         noteWordList.clear();
         noteWordNumList.clear();
 
-        //문장 모음 리스트
+        //단어 모음 리스트
         int i = 0;
         if(mworker_note.getNoteWord() != null){
             while( i < mworker_note.getNoteWord().size()){
                 noteWordList.add(new NoteWordData( mworker_note.getNoteWord().get(i).toString() ));
-                noteWordNumList.add(mworker_note.getNoteWordNum().get(i).toString());
                 Log.d(TAG, mworker_note.getNoteWord().get(i).toString());
                 i++;
             }
+            noteWordNumList.addAll(mworker_note.getNoteWordNum());
         }
         if(noteWordList.isEmpty()){
             noteWordList.add(new NoteWordData("새로운 단어 모음을 등록해보세요."));
         }
 
-        notifyDataSetChanged();
+        this.notifyDataSetChanged();
     }
 
     private void addItem(int position, String itemNameNum) {
@@ -351,6 +360,7 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }else{
             Toast.makeText(context, "추가에 실패하였습니다.", Toast.LENGTH_LONG).show();
         }
+        this.notifyDataSetChanged();
 
     }
 
@@ -364,6 +374,7 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }else{
             Toast.makeText(context, "수정에 실패하였습니다.", Toast.LENGTH_LONG).show();
         }
+        this.notifyDataSetChanged();
     }
 
     private void removeItem(int position, String itemNameNum){
@@ -376,6 +387,7 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }else{
             Toast.makeText(context, "삭제에 실패하였습니다.", Toast.LENGTH_LONG).show();
         }
+        this.notifyDataSetChanged();
     }
 
     @Override

@@ -41,8 +41,7 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private ArrayList<NoteData> noteSenList;
     private ArrayList<String> noteSenNumList;
 
-    private TextView mSenItem;
-    public ImageButton mSenMore;
+
     public Button mSenAdd;
     private EditText mAddItem, mChangeItem;
 
@@ -58,23 +57,31 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     FragmentManager fm;
 
     Boolean isNullSen;
+    Boolean first;
 
     private int pos;
 
-    public NoteSenAdapter(ArrayList<NoteData> listSentence, ArrayList<String> noteSenNumList , Context context, FragmentManager fragmentManager, Boolean isNullSen) {
-        noteSenList = new ArrayList<>();
-        noteSenList.addAll(listSentence);
+    public NoteSenAdapter(ArrayList<NoteData> listSentence, ArrayList<String> listSentenceNum ,
+                          Context context, FragmentManager fragmentManager, Boolean isNullSen, Boolean first) {
+        this.first= first;
+        if( this.first){
+            noteSenList = new ArrayList<NoteData>();
+            noteSenList.addAll(listSentence);
 
-        this.noteSenNumList = new ArrayList<String>();
-        this.noteSenNumList.addAll(noteSenNumList);
+            this.noteSenNumList = new ArrayList<String>();
+            this.noteSenNumList.addAll(listSentenceNum);
 
-        isBtnClicked = false;
-        this.context = context;
-        this.fm = fragmentManager;
-        this.isNullSen = isNullSen;
+            isBtnClicked = false;
+            this.context = context;
+            this.fm = fragmentManager;
+            this.isNullSen = isNullSen;
+            this.first = false;
+        }
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
+        private TextView mSenItem;
+        public ImageButton mSenMore;
         public ItemViewHolder(View v) {
             super(v);
             mSenItem = (TextView) v.findViewById(R.id.note_sen_item);
@@ -101,6 +108,7 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                 .commit();
                         fm.executePendingTransactions();
                     }
+
                 }
             });
 
@@ -144,6 +152,7 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                                                                     public void onClick(DialogInterface dialog, int which) {
                                                                                         Log.d(TAG,"change : " +  mChangeItem.getText().toString());
                                                                                         changeItem(getAdapterPosition(),  mChangeItem.getText().toString());
+                                                                                        notifyDataSetChanged();
                                                                                         dialog.cancel();
                                                                                     }})
                                                                                 .setNegativeButton("취소", new DialogInterface.OnClickListener() {
@@ -174,6 +183,7 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                                                                     @Override
                                                                                     public void onClick(DialogInterface dialog, int which) {
                                                                                         removeItem(getAdapterPosition() ,originalName);
+                                                                                        notifyDataSetChanged();
                                                                                         dialog.cancel();
                                                                                     }})
                                                                                 .setNegativeButton("취소", new DialogInterface.OnClickListener() {
@@ -253,6 +263,7 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                             if(!mAddItem.getText().toString().isEmpty())
                                 itemName = mAddItem.getText().toString();
                             addItem(selectedPos, itemName);
+                            notifyDataSetChanged();
                         }
                     }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
                         @Override
@@ -296,7 +307,7 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         switch (itemType){
             case VIEW_TYPE_CELL:
                 ItemViewHolder itemViewHolder = (ItemViewHolder)holder;
-                itemViewHolder.setData(noteSenList.get(position).getName());
+                itemViewHolder.mSenItem.setText(noteSenList.get(position).getName());
                 itemViewHolder.itemView.setSelected(selectedPos == position);
                 break;
             case VIEW_TYPE_FOOTER:
@@ -340,16 +351,17 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         if(mworker_note.getNoteSen() != null){
             while( i < mworker_note.getNoteSen().size()){
                 noteSenList.add(new NoteData( mworker_note.getNoteSen().get(i).toString() ));
-                noteSenNumList.add(mworker_note.getNoteSenNum().get(i).toString());
                 Log.d(TAG, mworker_note.getNoteSen().get(i).toString());
                 i++;
             }
+            noteSenNumList.addAll(mworker_note.getNoteSenNum());
         }
         if(noteSenList.isEmpty()){
+            isNullSen = true;
             noteSenList.add(new NoteData("새로운 문장 모음을 등록해보세요."));
         }
 
-        notifyDataSetChanged();
+        this.notifyDataSetChanged();
     }
 
 
@@ -363,6 +375,7 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }else{
             Toast.makeText(context, "추가에 실패하였습니다.", Toast.LENGTH_LONG).show();
         }
+        this.notifyDataSetChanged();
 
     }
 
@@ -376,6 +389,7 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }else{
             Toast.makeText(context, "수정에 실패하였습니다.", Toast.LENGTH_LONG).show();
         }
+        this.notifyDataSetChanged();
 
     }
 
@@ -389,6 +403,7 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }else{
             Toast.makeText(context, "삭제에 실패하였습니다.", Toast.LENGTH_LONG).show();
         }
+        this.notifyDataSetChanged();
     }
 
     @Override

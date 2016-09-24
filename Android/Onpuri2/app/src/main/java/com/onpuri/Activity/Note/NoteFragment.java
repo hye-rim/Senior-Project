@@ -61,6 +61,7 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
 
     private Boolean isNullSen, isNullWord;
     private int noteKinds = 0;
+    private Boolean first;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -90,6 +91,7 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
         initData(); //노트 데이터 서버로부터 받기
         Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_dark);
 
+        first = true;
         //문장탭이 기본으로 오도록 한다.
         tabSen.setVisibility(LinearLayout.VISIBLE);
         tabWord.setVisibility(LinearLayout.INVISIBLE);
@@ -99,7 +101,7 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
         mLayoutManager = new LinearLayoutManager(getActivity());
 
         mRecyclerSen.setLayoutManager(mLayoutManager);
-        mSenAdapter = new NoteSenAdapter(listSentence, listSentenceNum, getContext(), getActivity().getSupportFragmentManager(), isNullSen);
+        mSenAdapter = new NoteSenAdapter(listSentence, listSentenceNum, getContext(), getActivity().getSupportFragmentManager(), isNullSen, first);
 
         mRecyclerSen.setAdapter(mSenAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerSen.addItemDecoration(new DividerItemDecoration(dividerDrawable));
@@ -109,13 +111,10 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
         mLayoutManager = new LinearLayoutManager(getActivity());
 
         mRecyclerWord.setLayoutManager(mLayoutManager);
-        mWordAdapter = new NoteWordAdapter(listWord, listWordNum, getContext(), getActivity().getSupportFragmentManager(), isNullWord);
-        
+        mWordAdapter = new NoteWordAdapter(listWord, listWordNum, getContext(), getActivity().getSupportFragmentManager(), isNullWord, first);
+
         mRecyclerWord.setAdapter(mWordAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerWord.addItemDecoration(new DividerItemDecoration(dividerDrawable));
-
-        mSenAdapter.notifyDataSetChanged();
-        mWordAdapter.notifyDataSetChanged();
 
         return view;
     }
