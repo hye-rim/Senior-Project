@@ -53,7 +53,7 @@ public class workerTestAllList extends Thread{
 
     public void run() {
         super.run();
-        Log.d(TAG, "num : " + num);
+        Log.d(TAG, "type : " + type);
 
         while(isPlay) {
             outData[0] = (byte) PacketUser.SOF;
@@ -64,6 +64,7 @@ public class workerTestAllList extends Thread{
                 outData[4] = (byte) type.charAt(i - 4);
             }
             outData[4 + type.length()] = (byte) PacketUser.CRC;
+            Log.d(TAG, "outData[1] : " + outData[1]);
 
             try {
                 dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
@@ -76,6 +77,7 @@ public class workerTestAllList extends Thread{
 
                     dis.read(inData, 0, 4);
                     int len = inData[3];
+                    Log.d(TAG, "inData[1] : " + inData[1]);
 
                     if (inData[1] == PacketUser.ACK_TEST_LIST) {
                         dis.read(inData, 0, 1+(len));
