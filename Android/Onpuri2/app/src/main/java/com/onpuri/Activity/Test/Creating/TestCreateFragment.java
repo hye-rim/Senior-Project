@@ -48,6 +48,7 @@ public class TestCreateFragment extends Fragment implements View.OnClickListener
     private int kinds, problemNum, objectNum;
     private ArrayList<String> selectObjectList;
 
+    private String testInfo;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,6 +108,7 @@ public class TestCreateFragment extends Fragment implements View.OnClickListener
             objectNum = 0;
             selectObjectList = new ArrayList<String>();
         }
+        testInfo = new String();
 
         //view 아이디
         mTestTitleTextView = (EditText)view.findViewById(R.id.et_test_title);
@@ -207,7 +209,7 @@ public class TestCreateFragment extends Fragment implements View.OnClickListener
             }
             Log.d(TAG, "selectObjectList ===>" + selectObjectList);
         }
-        String testInfo = new String (selectObjectList.get(0) + "+" + kinds + "+" + problemNum + "+" + objectNum);
+        testInfo = new String (selectObjectList.get(0) + "+" + kinds + "+" + problemNum + "+" + objectNum);
         Log.d(TAG, testInfo);
 
         toServer(testInfo);

@@ -19,14 +19,6 @@
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="35dp"
-                android:text="이전"
-                android:id="@+id/btn_making_sen_back"
-                android:background="@color/background_material_light"
-                android:textSize="14dp"
-                android:textColor="@color/black" />
 
             <Button
                 android:layout_width="wrap_content"
