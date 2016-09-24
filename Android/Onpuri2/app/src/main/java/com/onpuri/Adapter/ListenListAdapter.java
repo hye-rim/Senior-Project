@@ -16,6 +16,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.onpuri.Activity.Home.ListenMoreFragment;
 import com.onpuri.Activity.Home.workerDelete;
 import com.onpuri.Activity.Home.workerRecommend;
 import com.onpuri.MediaPlayerManager;
@@ -41,9 +42,10 @@ public class ListenListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     MediaPlayerManager mPlayer;
     Context con;
     FragmentManager fm;
+    ListenMoreFragment fragment;
     String id;
 
-    public ListenListAdapter(FragmentActivity activity, MediaPlayerManager mPlayer, String id,
+    public ListenListAdapter(ListenMoreFragment fragment, FragmentActivity activity, MediaPlayerManager mPlayer, String id,
                              ArrayList<String> list_listen, ArrayList<String> list_userid, ArrayList<String> list_reco, ArrayList<String> list_num, Context con, FragmentManager fm, RecyclerView recyclerView) {
         this.listenList=list_listen;
         this.useridList=list_userid;
@@ -54,6 +56,7 @@ public class ListenListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         this.mPlayer = mPlayer;
         this.id = id;
         this.activity = activity;
+        this.fragment = fragment;
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
@@ -79,7 +82,7 @@ public class ListenListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 @Override
                 public void onClick(View v) {
                     new AlertDialog.Builder(activity)
-                            .setTitle("선택한 해석을 삭제하시겠습니까?")
+                            .setTitle("선택한 듣기를 삭제하시겠습니까?")
                             .setOnKeyListener(new DialogInterface.OnKeyListener() {
                                 @Override
                                 public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
@@ -95,6 +98,7 @@ public class ListenListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                     final FragmentManager fm = activity.getSupportFragmentManager();
                                     final FragmentTransaction ft = fm.beginTransaction();
                                     delete(numList.get(getPosition()));
+                                    activity.getSupportFragmentManager().beginTransaction().detach(fragment).attach(fragment).commit();
                                     fm.popBackStack();
                                     ft.commit();
                                 }
@@ -109,6 +113,7 @@ public class ListenListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 @Override
                 public void onClick(View v) {
                     recommend(numList.get(getPosition()));
+                    activity.getSupportFragmentManager().beginTransaction().detach(fragment).attach(fragment).commit();
 
                 }
             });

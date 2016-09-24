@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.InflateException;
@@ -30,8 +31,13 @@ public class HomeFragment extends Fragment {
 
     private workerSentenceList mworker_sentence;
 
-    ArrayList<String> listSentence, listSentenceNum, listId;
-    ArrayList<String> listTransNum, listListenNum;
+    ArrayList<String> listSentence;
+    ArrayList<String> listSentenceNum;
+    ArrayList<String> listTransNum;
+    ArrayList<String> listListenNum;
+    ArrayList<String> listId;
+    ArrayList<String> listReco;
+
     PacketUser userSentence;
 
     private RecyclerView mRecyclerView;
@@ -63,6 +69,13 @@ public class HomeFragment extends Fragment {
         sentence_num = 0;
         userSentence = new PacketUser();
 
+        listSentence = new ArrayList<String>();
+        listSentenceNum = new ArrayList<String>();
+        listTransNum = new ArrayList<String>();
+        listListenNum = new ArrayList<String>();
+        listId = new ArrayList<String>();
+        listReco = new ArrayList<String>();
+
         FragmentManager fm = getActivity().getSupportFragmentManager();
         fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
@@ -73,7 +86,7 @@ public class HomeFragment extends Fragment {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_sentence);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new RecycleviewAdapter(listSentence, listTransNum, listListenNum, listId, mRecyclerView);
+        mAdapter = new RecycleviewAdapter(listSentence, listTransNum, listListenNum, listId, listReco, mRecyclerView);
 
         mRecyclerView.setAdapter(mAdapter);// Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener((LinearLayoutManager) mLayoutManager) {
@@ -147,6 +160,9 @@ public class HomeFragment extends Fragment {
         listSentenceNum.clear();
         listTransNum.clear();
         listListenNum.clear();
+        listId.clear();
+        listReco.clear();
+
 
         for (int i = 0; i < loadLimit; i++) {
             listSentence.add(userSentence.arrSentence.get(i));
@@ -154,6 +170,8 @@ public class HomeFragment extends Fragment {
             listTransNum.add(userSentence.arrSentenceTransNum.get(i));
             listListenNum.add(userSentence.arrSentenceListenNum.get(i));
             listId.add(userSentence.arrSentenceId.get(i));
+            listReco.add(userSentence.arrSentenceReco.get(i));
+
             ival++;
         }
     }
@@ -182,6 +200,8 @@ public class HomeFragment extends Fragment {
                 listTransNum.add(userSentence.arrSentenceTransNum.get(i));
                 listListenNum.add(userSentence.arrSentenceListenNum.get(i));
                 listId.add(userSentence.arrSentenceId.get(i));
+                listReco.add(userSentence.arrSentenceReco.get(i));
+
                 ival++;
             }
             mAdapter.notifyDataSetChanged();
@@ -196,6 +216,8 @@ public class HomeFragment extends Fragment {
                 listTransNum.add(userSentence.arrSentenceTransNum.get(i));
                 listListenNum.add(userSentence.arrSentenceListenNum.get(i));
                 listId.add(userSentence.arrSentenceId.get(i));
+                listReco.add(userSentence.arrSentenceReco.get(i));
+
                 ival++;
             }
             mAdapter.notifyDataSetChanged();

@@ -15,18 +15,33 @@ import java.util.ArrayList;
  */
 public class TestListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
     private final String TAG = "TestListAdapter";
-    private ArrayList<String> testList = null;
 
-    public TestListAdapter(ArrayList<String> testList, RecyclerView TransRecyclerView) {
-        this.testList=testList;
+    private ArrayList<String> list_title;
+    private ArrayList<String> list_id;
+    private ArrayList<String> list_part;
+    private ArrayList<String> list_quiz;
+
+    public TestListAdapter(ArrayList<String> list_title, ArrayList<String> list_id, ArrayList<String> list_part, ArrayList<String> list_quiz, RecyclerView TransRecyclerView) {
+        this.list_title=list_title;
+        this.list_id=list_id;
+        this.list_part=list_part;
+        this.list_quiz=list_quiz;
+
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
         public TextView test;
+        public TextView userid;
+        public TextView partcount;
+        public TextView quizcount;
 
         public ItemViewHolder(View v) {
             super(v);
             test = (TextView) v.findViewById(R.id.test);
+            userid = (TextView) v.findViewById(R.id.id);
+            partcount = (TextView) v.findViewById(R.id.usercount);
+            quizcount = (TextView) v.findViewById(R.id.quizcount);
+
         }
     }
 
@@ -40,12 +55,16 @@ public class TestListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
-        itemViewHolder.test.setText(testList.get(position));
+        itemViewHolder.test.setText(list_title.get(position));
+        itemViewHolder.userid.setText(list_id.get(position)+"님");
+        itemViewHolder.partcount.setText(list_part.get(position));
+        itemViewHolder.quizcount.setText(list_quiz.get(position));
+
     }
 
     @Override
     public int getItemCount() {
-        return testList.size();
+        return list_title.size();
     }
 
 }

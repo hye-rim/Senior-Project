@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.onpuri.Activity.Test.Solving.workerTestList;
 import com.onpuri.Adapter.TestListAdapter;
 import com.onpuri.Listener.HomeItemClickListener;
 import com.onpuri.R;
@@ -24,7 +25,13 @@ public class TestSolveFragment extends Fragment implements View.OnClickListener{
     private static final String TAG = "TestSolveFragment" ;
     private static View view;
 
-    ArrayList<String> list_test;
+    private workerTestList worker_test_list;
+
+    ArrayList<String> list_title = new ArrayList<String>();
+    ArrayList<String> list_id = new ArrayList<String>();
+    ArrayList<String> list_part = new ArrayList<String>();
+    ArrayList<String> list_quiz = new ArrayList<String>();
+    ArrayList<String> list_num = new ArrayList<String>();
 
     private RecyclerView TestRecyclerView;
     private TestListAdapter TestListAdapter;
@@ -50,7 +57,7 @@ public class TestSolveFragment extends Fragment implements View.OnClickListener{
             view = inflater.inflate(R.layout.fragment_test_solve, container, false);
         } catch (InflateException e) {}
 
-        testlist();
+        testlist("1");
 
         btn_word = (Button) view.findViewById(R.id.word);
         btn_word.setOnClickListener(this);
@@ -61,7 +68,7 @@ public class TestSolveFragment extends Fragment implements View.OnClickListener{
 
         TestRecyclerView = (RecyclerView) view.findViewById(R.id.test_list);
 
-        TestListAdapter = new TestListAdapter(list_test, TestRecyclerView);
+        TestListAdapter = new TestListAdapter(list_title, list_id, list_part, list_quiz, TestRecyclerView);
         TestRecyclerView.setAdapter(TestListAdapter);
         TestRecyclerView.addOnItemTouchListener(
                 new HomeItemClickListener(getActivity().getApplicationContext(), TestRecyclerView ,new HomeItemClickListener.OnItemClickListener() {
@@ -71,7 +78,9 @@ public class TestSolveFragment extends Fragment implements View.OnClickListener{
                         FragmentManager fm = getActivity().getSupportFragmentManager();
 
                         Bundle args = new Bundle();
-                        args.putString("testname", list_test.get(position));
+                        args.putString("testname", list_title.get(position));
+                        args.putString("testnum", list_num.get(position));
+                        args.putString("testquiz", list_quiz.get(position));
                         tssf.setArguments(args);
 
                         fm.beginTransaction()
@@ -96,6 +105,8 @@ public class TestSolveFragment extends Fragment implements View.OnClickListener{
                     btn_sen.setBackgroundResource((R.color.fuzzy_peach));
                     btn_word.setBackgroundResource((R.drawable.btn_border));
                 }
+                testlist("2");
+                TestListAdapter.notifyDataSetChanged();
                 break;
 
             case R.id.word:
@@ -106,7 +117,10 @@ public class TestSolveFragment extends Fragment implements View.OnClickListener{
                     btn_word.setBackgroundResource((R.color.fuzzy_peach));
                     btn_sen.setBackgroundResource((R.drawable.btn_border));
                 }
+                testlist("1");
+                TestListAdapter.notifyDataSetChanged();
                 break;
+
             case R.id.selftest:
                 final TestSolveStartFrgment tssf = new TestSolveStartFrgment();
                 FragmentManager fm = getActivity().getSupportFragmentManager();
@@ -122,11 +136,32 @@ public class TestSolveFragment extends Fragment implements View.OnClickListener{
                 break;
         }
     }
-    void testlist() {
-        list_test = new ArrayList<String>();
-        this.list_test.add("70%  test님    쪽지시험(문장 10문제)입니다.");
-        this.list_test.add("80%  admin님   문장 쪽지시험 2");
-        this.list_test.add("65%  admin님   문장 쪽지시험 1");
+
+    private void testlist(String num) {
+        if(worker_test_list != null && worker_test_list.isAlive()){
+            worker_test_list.interrupt();
+        }
+        worker_test_list = new workerTestList(true, num);
+        worker_test_list.start();
+        try {
+            worker_test_list.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        list_title.clear();
+        list_id.clear();
+        list_part.clear();
+        list_quiz.clear();
+        list_num.clear();
+
+        for (int i = 0; i < worker_test_list.getCount(); i++) {
+            list_title.add(worker_test_list.getTitle().get(i).toString());
+            list_id.add(worker_test_list.getUserid().get(i).toString());
+            list_part.add(worker_test_list.getPart().get(i).toString());
+            list_quiz.add(worker_test_list.getQuiz().get(i).toString());
+            list_num.add(worker_test_list.getNum().get(i).toString());
+        }
     }
 
 }

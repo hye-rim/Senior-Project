@@ -3,6 +3,7 @@ package com.onpuri.Activity.Test.Solving;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,8 @@ public class TestSolveFinishFragment extends Fragment implements View.OnClickLis
     private static final String TAG = "TestSolveFinishFrgment";
 
     private static View view;
+
+    String total, score;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -33,6 +36,16 @@ public class TestSolveFinishFragment extends Fragment implements View.OnClickLis
         try {
             view = inflater.inflate(R.layout.fragment_test_solve_finish, container, false);
         } catch (InflateException e) {}
+
+        if (getArguments() != null) { //클릭한 문장 출력
+            total = getArguments().getString("total");
+            score = getArguments().getString("score");
+Log.d(TAG,total);
+        }
+        TextView totalText = (TextView) view.findViewById(R.id.total);
+        totalText.setText(total);
+        TextView scoreText = (TextView) view.findViewById(R.id.score);
+        scoreText.setText(score);
 
         Button finish = (Button) view.findViewById(R.id.finish);
         finish.setOnClickListener(this);

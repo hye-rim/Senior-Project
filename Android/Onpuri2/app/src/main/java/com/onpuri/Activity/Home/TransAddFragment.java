@@ -41,20 +41,19 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "TransAddFragment";
     private WorkerTransAdd worker_add_trans;
 
+    private static View view;
+
     DataOutputStream dos;
     DataInputStream dis;
     byte[] outData = new byte[261];
     byte[] inData = new byte[261];
     byte[] temp = new byte[261];
 
-    private static View view;
-
-    TextView item;
     String sentence="";
     int sentence_num;
 
+    TextView item;
     EditText trans;
-    String addTrans="";
 
     int i;
 
@@ -70,7 +69,6 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
         } catch (InflateException e) {}
 
         trans = (EditText) view.findViewById(R.id.new_trans);
-        addTrans = trans.getText().toString();
         item = (TextView) view.findViewById(R.id.tv_sentence);
 
         if (getArguments() != null) { //클릭한 문장 출력
@@ -111,7 +109,7 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
                     })
                     .setPositiveButton("네", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
-                            Addtranslation();
+                            AddTranslation();
                             Toast.makeText(getActivity(), "등록되었습니다.", Toast.LENGTH_SHORT).show();
                             fm.popBackStack();
                             ft.commit();
@@ -148,7 +146,7 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
                 break;
         }
     }
-    private void Addtranslation() {
+    private void AddTranslation() {
         if(worker_add_trans != null && worker_add_trans.isAlive()){  //이미 동작하고 있을 경우 중지
             worker_add_trans.interrupt();
         }

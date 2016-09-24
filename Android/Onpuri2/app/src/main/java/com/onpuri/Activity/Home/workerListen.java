@@ -28,8 +28,8 @@ public class workerListen extends Thread {
     byte[] outData = new byte[20];
     byte[] recordbyte;
 
-    String sentence_num;
-    int count;
+    String sentence_num;    int count;
+
 
     List listen = new ArrayList();
     List userid = new ArrayList();

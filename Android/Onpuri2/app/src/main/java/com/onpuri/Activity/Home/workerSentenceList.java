@@ -22,7 +22,7 @@ public class workerSentenceList extends Thread {//홈 문장 10개씩 서버에�
     DataInputStream dis;
     byte[] outData = new byte[261]; //나가는 데이터
     byte[] sen = new byte[261];
-    byte[] info = new byte[30];
+    byte[] info = new byte[50];
 
     PacketUser userSentence;
     int sentence_num;
@@ -78,7 +78,7 @@ public class workerSentenceList extends Thread {//홈 문장 10개씩 서버에�
                 num = 0;
                 while (num < 10) {
                     byte[] inData = new byte[261];
-                    byte[] senData = new byte[30];
+                    byte[] senData = new byte[50];
 
                     for (i = 0; i < 261; i++)
                         inData[i] = 0;
@@ -116,7 +116,7 @@ public class workerSentenceList extends Thread {//홈 문장 10개씩 서버에�
                             senData[j] = info[j];    // SOF // OPC// SEQ// LEN 까지만 읽어온다.
                         }
 
-                        //문장번호+해석수+듣기수+아이디 데이터
+                        //문장번호+해석수+듣기수+아이디+추천수 데이터
                         int len = (int) senData[3];
 
                         dis.read(info, 0, (1 + len));
@@ -137,18 +137,24 @@ public class workerSentenceList extends Thread {//홈 문장 10개씩 서버에�
 
                         plus = seninfo.indexOf('+');
                         String ListenNum = seninfo.substring(0, plus); //듣기수
-                        String Id = seninfo.substring(plus+1, seninfo.length()); //아이디
+                        seninfo = seninfo.substring(plus+1,seninfo.length());
+                        plus = seninfo.indexOf('+');
+                        String Id = seninfo.substring(0, plus); //아이디
+                        String reco = seninfo.substring(plus+1, seninfo.length()); // 추천수
 
                         Log.d(TAG, "senNum : " + senNum);
                         Log.d(TAG, "transNum : " + transNum);
                         Log.d(TAG, "ListenNum : " + ListenNum);
                         Log.d(TAG, "id : " + Id);
+                        Log.d(TAG, "reco : " + reco);
+
 
                         userSentence.setSentence(sen);
                         userSentence.setSentenceNum(senNum);
                         userSentence.setSentenceTransNum(transNum);
                         userSentence.setSentenceListenNum(ListenNum);
                         userSentence.setsentenceId(Id);
+                        userSentence.setsentenceReco(reco);
 
                         sentence_num++;
                         num++;

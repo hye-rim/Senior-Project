@@ -28,6 +28,8 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
     private static final String TAG = "TransDetailFragment";
     private workerRecommend worker_reco;
     private workerDelete worker_delete;
+    private workerTransDetail worker_trans_detail;
+
 
     private static View view;
 
@@ -66,15 +68,21 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
 
         if (getArguments() != null) { //클릭한 문장 출력
             sentence = getArguments().getString("sen");
-            sen_num= getArguments().getString("sen_num");
+            sen_num= getArguments().getString("sennum");
+            trans = getArguments().getString("trans");
             num = getArguments().getString("num");
+            id = getArguments().getString("id");
+            day = getArguments().getString("day");
 
             item_sen.setText(sentence);
-            item_trans.setText("A");
-            item_userid.setText("님");
-            item_day.setText("A");
-            item_reco.setText("A");
+            item_trans.setText(trans);
+            item_userid.setText(id+"님");
+            item_day.setText(day);
+
         }
+
+        transrecommend(num);
+        item_reco.setText(worker_trans_detail.getRecommend());
 
         Button item_reco = (Button) view.findViewById(R.id.item_reco);
         item_reco.setOnClickListener(this);
@@ -84,9 +92,9 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
         del_trans.setOnClickListener(this);
 
         String userid = ((MainActivity)getActivity()).user.getuserId();
-      /*  if (!id.equals(userid)) {
+        if (!id.equals(userid)) {
             del_trans.setVisibility(View.INVISIBLE);
-        }*/
+        }
 
         return view;
     }
@@ -97,16 +105,14 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
     @Override
     public void onClick(View v) {
         final FragmentTransaction ft = getFragmentManager().beginTransaction();
-
         final Bundle args = new Bundle();
-        args.putString("sen", sentence);
-        args.putString("sen_trans", trans);
 
         switch (v.getId()) {
             case R.id.item_edit:
                 final TransEditFragment tef = new TransEditFragment();
                 args.putString("sen", sentence);
                 args.putString("sen_trans", trans);
+                args.putString("sen_num", sen_num);
                 tef.setArguments(args);
                 ft.replace(R.id.root_home, tef);
                 ft.addToBackStack(null);
@@ -132,7 +138,7 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
                                 delete();
                                 fm.popBackStack();
                                 ft.commit();
-                                Toast.makeText(getActivity(), "삭제되었습니다(구현예정)", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), "삭제되었습니다", Toast.LENGTH_SHORT).show();
                             }
                         })
                         .setNegativeButton("취소", new DialogInterface.OnClickListener() {
@@ -143,9 +149,10 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
                 break;
             case R.id.item_reco:
                 recommend();
+                ft.detach(this).attach(this).commit();
         }
     }
-    void recommend() {
+    void recommend() {// 해석을 추천
         if (worker_reco != null && worker_reco.isAlive()) {  //이미 동작하고 있을 경우 중지
             worker_reco.interrupt();
         }
@@ -158,7 +165,7 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
         }
     }
 
-    void delete() {
+    void delete() { //해석을 삭제
         if (worker_delete != null && worker_delete.isAlive()) {  //이미 동작하고 있을 경우 중지
             worker_delete.interrupt();
         }
@@ -166,6 +173,19 @@ public class TransDetailFragment extends Fragment implements View.OnClickListene
         worker_delete.start();
         try {
             worker_delete.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    void transrecommend(String num) { //해석의 추천수 호출
+        if (worker_trans_detail != null && worker_trans_detail.isAlive()) {  //이미 동작하고 있을 경우 중지
+            worker_trans_detail.interrupt();
+        }
+        worker_trans_detail = new workerTransDetail(true, num);
+        worker_trans_detail.start();
+        try {
+            worker_trans_detail.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

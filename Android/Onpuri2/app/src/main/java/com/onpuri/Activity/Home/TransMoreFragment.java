@@ -35,20 +35,13 @@ import static com.onpuri.R.drawable.divider_dark;
 
 public class TransMoreFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "TransMoreFragment";
-    private workerTransMore worker_trans_more;
-    private workerRecommend worker_reco;
 
     private static View view;
-
-    ArrayList<String> list_trans;
-    ArrayList<String> list_userid;
-    ArrayList<String> list_day;
-    ArrayList<String> list_reco;
-    ArrayList<String> list_num;
 
     TextView item;
     String sentence = "";
     String sentence_num = "";
+    String num="";
 
     private RecyclerView RecyclerView;
     private TransListAdapter Adapter;
@@ -70,20 +63,15 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
             view = inflater.inflate(R.layout.fragment_trans_more, container, false);
         } catch (InflateException e) {}
 
-        list_trans = new ArrayList<String>();
-        list_userid = new ArrayList<String>();
-        list_day = new ArrayList<String>();
-        list_reco = new ArrayList<String>();
-        list_num = new ArrayList<String>();
-
         item = (TextView) view.findViewById(R.id.tv_sentence);
         if (getArguments() != null) { //클릭한 문장 출력
             sentence = getArguments().getString("sen");
             sentence_num=getArguments().getString("sen_num");
+
             item.setText(sentence);
         }
 
-        translation();
+
         noteLoad();
 
         ImageButton add_note = (ImageButton) view.findViewById(R.id.add_note);
@@ -94,40 +82,13 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
         RecyclerView = (RecyclerView) view.findViewById(R.id.recycler_trans);
         LayoutManager = new LinearLayoutManager(getActivity());
         RecyclerView.setLayoutManager(LayoutManager);
-        Adapter = new TransListAdapter(sentence, sentence_num, list_trans, list_day, list_reco, list_num, getFragmentManager().beginTransaction(), RecyclerView);
+        Adapter = new TransListAdapter(this, sentence, sentence_num, getFragmentManager().beginTransaction(), RecyclerView);
         RecyclerView.setAdapter(Adapter);
 
         Drawable dividerDrawable = ContextCompat.getDrawable(getActivity(), divider_dark);
         RecyclerView.addItemDecoration(new DividerItemDecoration(dividerDrawable));
 
         return view;
-    }
-
-    private void translation() {
-        if (worker_trans_more != null && worker_trans_more.isAlive()) {  //이미 동작하고 있을 경우 중지
-            worker_trans_more.interrupt();
-        }
-        worker_trans_more = new workerTransMore(true, sentence_num);
-        worker_trans_more.start();
-        try {
-            worker_trans_more.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        list_trans.clear();
-        list_userid.clear();
-        list_day.clear();
-        list_reco.clear();
-        list_num.clear();
-
-        for (int i = 0; i < worker_trans_more.getCount(); i++) {
-            list_trans.add(worker_trans_more.getTrans().get(i).toString());
-            list_userid.add(worker_trans_more.getUserid().get(i).toString());
-            list_day.add(worker_trans_more.getDay().get(i).toString());
-            list_reco.add(worker_trans_more.getReco().get(i).toString());
-            list_num.add(worker_trans_more.getTransnum().get(i).toString());
-        }
     }
 
     @Override
@@ -183,7 +144,6 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
         }
     }
 
-
     private void noteLoad(){
         listNote = new ArrayList<String>();
 
@@ -207,7 +167,6 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
                 i++;
             }
         }
-
     }
 
     private void selectNote(String item) {

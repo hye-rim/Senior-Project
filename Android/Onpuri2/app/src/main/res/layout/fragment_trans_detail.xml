@@ -44,7 +44,7 @@
                 android:layout_marginRight="8dp"
                 android:textColor="@color/black"
                 android:lineSpacingExtra="3dp"
-                android:ellipsize="end"
+                android:ellipsize="marquee"
                 android:id="@+id/userid"
                 android:layout_width="310dp"
                 android:layout_height="30dp"

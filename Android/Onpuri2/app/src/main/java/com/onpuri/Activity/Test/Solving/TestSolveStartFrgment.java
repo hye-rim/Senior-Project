@@ -18,7 +18,7 @@ public class TestSolveStartFrgment extends Fragment implements View.OnClickListe
     private static View view;
 
     TextView testname;
-    String name="";
+    String name, num, quiz;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,6 +40,8 @@ public class TestSolveStartFrgment extends Fragment implements View.OnClickListe
         testname = (TextView) view.findViewById(R.id.testname);
         if (getArguments() != null) { //클릭한 문장 출력
             name = getArguments().getString("testname");
+            num = getArguments().getString("testnum");
+            quiz = getArguments().getString("testquiz");
             testname.setText(name);
         }
 
@@ -61,6 +63,7 @@ public class TestSolveStartFrgment extends Fragment implements View.OnClickListe
 
                 Bundle args = new Bundle();
                 args.putString("testname", name);
+                args.putString("testnum", num);
                 tswf.setArguments(args);
 
                 fm.beginTransaction()

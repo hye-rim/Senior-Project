@@ -12,7 +12,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/sentence"
+            android:id="@+id/tv_sentence"
             android:textSize="17dp"
             android:text="영어 문장 내용"
             android:layout_marginLeft="15dp"
@@ -23,7 +23,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="180dp"
-        android:id="@+id/edittrans"
+        android:id="@+id/new_trans"
         android:hint="해석을 입력하세요"
         android:background="@color/material_grey_100"
         android:gravity="top"
