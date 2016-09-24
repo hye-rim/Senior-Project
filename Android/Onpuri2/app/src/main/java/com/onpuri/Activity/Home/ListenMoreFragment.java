@@ -56,10 +56,11 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
     private ListenListAdapter Adapter;
     protected RecyclerView.LayoutManager LayoutManager;
 
-    private ArrayList<String> listNote;
+    private ArrayList<String> listNote, listNoteNum;
     private workerNote mworker_note;
     private workerNoteItemAdd mworker_item_add;
     private int pos;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -150,7 +151,7 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
                             public void onClick(DialogInterface dialog, int index) {
                                 pos = index;
 
-                                selectNote(items[index]);
+                                selectNote(listNoteNum.get(index));
 
                                 dialog.cancel();
                             }
@@ -185,6 +186,7 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
 
     private void noteLoad() {
         listNote = new ArrayList<String>();
+        listNoteNum = new ArrayList<String>();
 
         if (mworker_note != null && mworker_note.isAlive()) {  //이미 동작하고 있을 경우 중지
             mworker_note.interrupt();
@@ -205,6 +207,7 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
                 Log.d(TAG, mworker_note.getNoteSen().get(i).toString());
                 i++;
             }
+            listNoteNum.addAll(mworker_note.getNoteSenNum());
         }
     }
 
@@ -222,9 +225,9 @@ public class ListenMoreFragment extends Fragment implements View.OnClickListener
         }
 
         if(mworker_item_add.getResult() == 1) {
-            Toast.makeText(getActivity(), item + "에 추가되었습니다.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "추가되었습니다.", Toast.LENGTH_LONG).show();
         }else if( mworker_item_add.getResult() == 2){
-            Toast.makeText(getActivity(), item + "에 이미 있습니다.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "목록에 이미 존재합니다.", Toast.LENGTH_LONG).show();
         }else{
             Toast.makeText(getActivity(), "추가에 실패하였습니다.", Toast.LENGTH_LONG).show();
         }
