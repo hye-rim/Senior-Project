@@ -322,8 +322,8 @@ printf("auauauau lengTH: %d \n", audioLength);
 					switch(buff_rcv[1]){
 					case MPC_RDY:{	
 						deviceCheck(buff_rcv, client_fd);		// device id, model을 디비 조회해서 옳은지 조사, 없으면 추가 후 ack
-				//		clusteringStart(buff_rcv, conn_ptr);
-				//		countInClust(buff_rcv, conn_ptr);
+					//	clusteringStart(buff_rcv, conn_ptr);
+					//	countInClust(buff_rcv, conn_ptr);
 						break;
 						}
 					case USR_LOG:{	// 로그인 id, pass 검사
@@ -1461,7 +1461,7 @@ void send_trans_all(unsigned char* buff_rcv, int client_fd, int userSeq){
 
 	memset(query, '\0', sizeof(query));
 	
-	sprintf(query, "SELECT trans, transBy, regDay, recommend, seq FROM TB_Translation WHERE sentenceSeq = %d", sentenceSeq);
+	sprintf(query, "SELECT trans, transBy, regDay, recommend, seq FROM TB_Translation WHERE sentenceSeq = %d order by recommend desc", sentenceSeq);
 
 	if(mysql_query(conn_ptr, query)){
 		printf("%s\n", mysql_error(conn_ptr));
@@ -1530,12 +1530,16 @@ void userWithdrawal(unsigned char* buff_rcv, unsigned char* userId, int client_f
 
 	char toClientData[LEN_DATA];	// client에게 보낼 데이터
 	char query[LEN_QUERY];
+	char rmDir[LEN_QUERY];
 
 	memset(query, '\0', sizeof(query));
+	memset(rmDir, '\0', LEN_QUERY);
 	memset(toClientData, '\0', sizeof(toClientData));
 
 	sprintf(query, "DELETE FROM TB_USER WHERE UID = '%s'", userId);
+	sprintf(rmDir, "rm -r %s", userId);
 
+	system(rmDir);
 	if(mysql_query(conn_ptr, query)){
 		printf("%s\n", mysql_error(conn_ptr));
 		toClientData[0] = '0';
@@ -2250,11 +2254,12 @@ void noteNameSend(unsigned char* buff_rcv, unsigned char* userId, int client_fd)
 	char toClientData[LEN_DATA];
 	char query[LEN_QUERY];
 	int senOrWord,  i, j;
-
+printf("noteName send!!!\n");
+puts(buff_rcv);
 	// send sentence note name
 	memset(query, '\0', sizeof(query));
 
-	sprintf(query, "select noteName from TB_note where id = '%s' and senOrWord = 1", userId);
+	sprintf(query, "select noteName, seq from TB_note where id = '%s' and senOrWord = 1", userId);
 
 	if(mysql_query(conn_ptr, query))
 		printf("noteNameSend 1\n%s", mysql_error(conn_ptr));
@@ -2277,6 +2282,8 @@ void noteNameSend(unsigned char* buff_rcv, unsigned char* userId, int client_fd)
 				toClientData[0] = '1';
 				toClientData[1] = '+';
 				strcat(toClientData, row[0]);
+				strcat(toClientData, "+");
+				strcat(toClientData, row[1]);
 
 				buff_rcv[1] = NOTE_TRANS_NAME;
 		
@@ -2290,7 +2297,7 @@ void noteNameSend(unsigned char* buff_rcv, unsigned char* userId, int client_fd)
 	// send word note name
 	memset(query, '\0', sizeof(query));
 
-	sprintf(query, "select noteName from TB_note where id = '%s' and senOrWord = 2", userId);
+	sprintf(query, "select noteName, seq from TB_note where id = '%s' and senOrWord = 2", userId);
 
 	if(mysql_query(conn_ptr, query))
 		printf("noteNameSend 2\n%s", mysql_error(conn_ptr));
@@ -2313,6 +2320,8 @@ void noteNameSend(unsigned char* buff_rcv, unsigned char* userId, int client_fd)
 				toClientData[0] = '2';
 				toClientData[1] = '+';
 				strcat(toClientData, row[0]);
+				strcat(toClientData, "+");
+				strcat(toClientData, row[1]);
 
 				buff_rcv[1] = NOTE_TRANS_NAME;
 		
@@ -2379,7 +2388,7 @@ void noteAdd(unsigned char* buff_rcv, unsigned char* userId, int client_fd){
 void noteRename(unsigned char* buff_rcv, unsigned char* userId, int client_fd){
 	char toClientData[LEN_DATA];
 	char query[LEN_QUERY];
-	char noteName[LEN_DATA];
+	char noteSeq[LEN_DATA];
 	char newName[LEN_NAME];
 	int dataLength, senOrWord, i, j;
 
@@ -2387,7 +2396,7 @@ void noteRename(unsigned char* buff_rcv, unsigned char* userId, int client_fd){
 	senOrWord = buff_rcv[4] - 48;
 	i = j = 0;
 
-	memset(noteName, '\0', LEN_NAME);
+	memset(noteSeq, '\0', LEN_NAME);
 	memset(newName, '\0', LEN_NAME);
 
 	while(1){
@@ -2396,7 +2405,7 @@ void noteRename(unsigned char* buff_rcv, unsigned char* userId, int client_fd){
 			break;
 		}
 		else{
-			noteName[i] = buff_rcv[6 + j];
+			noteSeq[i] = buff_rcv[6 + j];
 			i++;
 			j++;
 		}
@@ -2412,14 +2421,12 @@ void noteRename(unsigned char* buff_rcv, unsigned char* userId, int client_fd){
 			j++;
 		}
 	}
-puts(noteName);
-puts(newName);
 
 	memset(query, '\0', LEN_QUERY);
 
 	if(senOrWord == 1 || senOrWord == 2){
 		sprintf(query,"update TB_note set noteName = '%s' where \
-			id = '%s' and noteName = '%s' and senOrWord = %d", newName, userId, noteName, senOrWord);	
+			id = '%s' and seq = '%s' and senOrWord = %d", newName, userId, noteSeq, senOrWord);	
 
 		if(mysql_query(conn_ptr, query)){
 			printf("noteRename 1\n%s", mysql_error(conn_ptr));
@@ -2448,26 +2455,26 @@ puts(newName);
 void noteDelete(unsigned char* buff_rcv, unsigned char* userId, int client_fd){
 	char toClientData[LEN_DATA];
 	char query[LEN_QUERY];
-	char noteName[LEN_NAME];
+	char noteSeq[LEN_NAME];
 	int dataLength, senOrWord, i;
 
 	dataLength = buff_rcv[3];
 	senOrWord = buff_rcv[4] - 48;
 	i = 0;
 
-	memset(noteName, '\0', LEN_NAME);
+	memset(noteSeq, '\0', LEN_NAME);
 	
 	while(1){
 		if(dataLength - 2 == i)
 			break;
 		else{
-			noteName[i] = buff_rcv[6 + i];
+			noteSeq[i] = buff_rcv[6 + i];
 			i++;
 		}
 	}
-printf(" note name!!!! : %s\n", noteName);
+
 	if(senOrWord == 1 || senOrWord == 2){
-		sprintf(query, "delete from TB_note where id = '%s' and senOrWord = %d and noteName = '%s'", userId, senOrWord, noteName);
+		sprintf(query, "delete from TB_note where id = '%s' and senOrWord = %d and seq = '%s'", userId, senOrWord, noteSeq);
 		if(mysql_query(conn_ptr, query)){
 			printf("noteDelete 1\n %s", mysql_error(conn_ptr));
 			
@@ -2499,13 +2506,13 @@ void noteSentenceRegist(unsigned char* buff_rcv, unsigned char* userId, int clie
 	MYSQL_ROW row;
 	char toClientData[LEN_DATA];
 	char query[LEN_QUERY];
-	char noteName[LEN_NAME], word[LEN_DATA];
+	char noteSeq[LEN_NAME], word[LEN_DATA];
 	int i, j, senOrWord, sentenceNumber, dataLength;
 
 	i = j = 0;
 	senOrWord = buff_rcv[4] - 48;
 	dataLength = buff_rcv[3];
-	memset(noteName, '\0', LEN_NAME);
+	memset(noteSeq, '\0', LEN_NAME);
 	memset(word, '\0', LEN_DATA);
 
 	while(1){
@@ -2514,7 +2521,7 @@ void noteSentenceRegist(unsigned char* buff_rcv, unsigned char* userId, int clie
 			break;
 		}
 		else{
-			noteName[j] = buff_rcv[6 + i];
+			noteSeq[j] = buff_rcv[6 + i];
 			i++;
 			j++;	
 		}
@@ -2541,12 +2548,12 @@ void noteSentenceRegist(unsigned char* buff_rcv, unsigned char* userId, int clie
 	
 	memset(query, '\0', LEN_QUERY);
 	if(senOrWord == 1)
-		sprintf(query, "select count(*) from TB_noteContents where senOrWord = %d and noteName = '%s' and sentenceSeq = %d and\
-				id = (select UID from TB_USER where UID = '%s')", senOrWord, noteName, sentenceNumber, userId);
+		sprintf(query, "select count(*) from TB_noteContents where senOrWord = %d and noteSeq = '%s' and sentenceSeq = %d and\
+				id = (select UID from TB_USER where UID = '%s')", senOrWord, noteSeq, sentenceNumber, userId);
 	else
-		sprintf(query, "select count(*) from TB_noteContents where senOrWord = %d and noteName = '%s' and\
+		sprintf(query, "select count(*) from TB_noteContents where senOrWord = %d and noteSeq = '%s' and\
 				sentenceSeq = (select seq from TB_dictionary where word like '%s%%' limit 1) and\
-				id = (select UID from TB_USER where UID = '%s')", senOrWord, noteName, word, userId);
+				id = (select UID from TB_USER where UID = '%s')", senOrWord, noteSeq, word, userId);
 
 	if(mysql_query(conn_ptr, query)){
 		printf("noteSentenceRegist 1\n%s", mysql_error(conn_ptr));
@@ -2562,12 +2569,12 @@ void noteSentenceRegist(unsigned char* buff_rcv, unsigned char* userId, int clie
 
 		if(strcmp(row[0], "0") == 0){
 			if(senOrWord == 1)
-				sprintf(query, "insert into TB_noteContents(senOrWord, noteName, sentenceSeq, id)\
-						values(%d, '%s', %d, (select UID from TB_USER where UID = '%s'))", senOrWord, noteName, sentenceNumber, userId);
+				sprintf(query, "insert into TB_noteContents(senOrWord, noteSeq, sentenceSeq, id)\
+						values(%d, '%s', %d, (select UID from TB_USER where UID = '%s'))", senOrWord, noteSeq, sentenceNumber, userId);
 			else
-				sprintf(query, "insert into TB_noteContents(senOrWord, noteName, sentenceSeq, id)\
+				sprintf(query, "insert into TB_noteContents(senOrWord, noteSeq, sentenceSeq, id)\
 						values(%d, '%s', (select seq from TB_dictionary where word like '%s%%' limit 1),\
-						(select UID from TB_USER where UID = '%s'))", senOrWord, noteName, word, userId);
+						(select UID from TB_USER where UID = '%s'))", senOrWord, noteSeq, word, userId);
 		
 		
 			if(mysql_query(conn_ptr, query)){
@@ -2606,10 +2613,10 @@ void noteContentReq(unsigned char* buff_rcv, unsigned char* userId, int client_f
 
 	char toClientData[LEN_DATA];
 	char query[LEN_QUERY];
-	char noteName[LEN_NAME];
+	char noteSeq[LEN_NAME];
 	int i, dataLength, senOrWord;
 
-	memset(noteName, '\0', LEN_NAME);
+	memset(noteSeq, '\0', LEN_NAME);
 	dataLength = buff_rcv[3];
 	senOrWord = buff_rcv[4] - 48;
 	i = 0;
@@ -2618,16 +2625,16 @@ void noteContentReq(unsigned char* buff_rcv, unsigned char* userId, int client_f
 		if(dataLength - 2 == i)
 			break;
 		else{
-			noteName[i] = buff_rcv[6 + i];
+			noteSeq[i] = buff_rcv[6 + i];
 			i++;
 		}
 	}
 	
 	memset(query, '\0', LEN_QUERY);
 
-	sprintf(query, "select sentenceSeq from TB_noteContents where senOrWord = %d and noteName = '%s' and id = '%s'", senOrWord, noteName, userId);
+	sprintf(query, "select sentenceSeq from TB_noteContents where senOrWord = %d and noteSeq = '%s' and id = '%s'", senOrWord, noteSeq, userId);
 
-	printf("select sentenceSeq from TB_noteContents where senOrWord = %d and noteName = '%s' and id = '%s'", senOrWord, noteName, userId);
+puts(query);
 	if(mysql_query(conn_ptr, query)){
 		printf("noteContentReq failed!\n%s", mysql_error(conn_ptr));
 		
@@ -2824,6 +2831,10 @@ void testRegister(unsigned char* buff_rcv, unsigned char* userId, int client_fd,
 	int testType, numOfQuestion, examinee;
 	int i,j;
 	
+puts("==========");
+puts("testRegister");
+puts(buff_rcv);
+puts("==========");
 	memset(testName, '\0', LEN_NAME);
 	i = 0;
 
@@ -2902,7 +2913,10 @@ void testExaminee(unsigned char* buff_rcv, int client_fd){
 	char examineeId[LEN_NAME];	
 	char toClientData[LEN_DATA];
 	int i, j, dataLength;
-
+puts("==========");
+puts("testExaminee");
+puts(buff_rcv);
+puts("==========");
 	i = j = 0;
 	dataLength = buff_rcv[3]; 
 
@@ -2976,6 +2990,13 @@ void questionRegister(unsigned char* buff_rcv, unsigned char* userId, int client
 	char answer[LEN_ANSWER], ans1[LEN_ANSWER], ans2[LEN_ANSWER], ans3[LEN_ANSWER], ans4[LEN_ANSWER];
 	int i, j, dataLength, questionSeq;
 
+puts("==========");
+puts("==========");
+puts("==========");
+puts("==========");
+puts("questionRegister");
+puts(buff_rcv);
+puts("==========");
 	memset(testTitle, '\0', LEN_NAME);
 	memset(question, '\0', LEN_NAME);
 	
@@ -3118,8 +3139,8 @@ puts("HERE");
 			buff_rcv[1] = QUESTION_REGISTER_END;
 
 			Make_Packet(buff_rcv, toClientData, client_fd);
-for(i = 0 ; i < strlen(buff_rcv); i++)
-	printf("* %d", buff_rcv[i]);
+for(i = 0 ; i < strlen(toClientData); i++)
+	printf("###$$$$ %d", toClientData[i]);
 		}
 		else{
 			memset(toClientData, '\0', LEN_DATA);
@@ -3128,8 +3149,8 @@ for(i = 0 ; i < strlen(buff_rcv); i++)
 			buff_rcv[1] = QUESTION_REGISTER_END;
 
 			Make_Packet(buff_rcv, toClientData, client_fd);
-for(i = 0 ; i < strlen(buff_rcv); i++)
-	printf("& %d", buff_rcv[i]);
+for(i = 0 ; i < strlen(toClientData); i++)
+	printf("& %d", toClientData[i]);
 		}
 
 	}
@@ -3368,6 +3389,10 @@ void userTestlistReq(unsigned char* buff_rcv, int userSeq, int client_fd){
 	int type;
 
 	type = buff_rcv[4] - 48;
+puts("=================");
+
+puts("=================");
+
 
 	memset(query, '\0', LEN_QUERY);
 
@@ -3394,7 +3419,7 @@ void userTestlistReq(unsigned char* buff_rcv, int userSeq, int client_fd){
 		else{
 			while(row != NULL){
 				memset(query, '\0', LEN_QUERY);
-				sprintf(query, "select seq, userSeq, title, num, examinee, ratio from TB_test where seq = '%s' and type = %d", row[0], type);
+				sprintf(query, "select seq, userSeq, title, num, examinee, ratio from TB_test where seq = '%s' and type = %d order by desc date", row[0], type);
 				printf("select seq, userSeq, title, num, examinee, ratio from TB_test where seq = '%s' and type = %d", row[0], type);
 				if(mysql_query(conn_ptr, query)){
 					memset(toClientData, '\0', LEN_DATA);
@@ -3470,7 +3495,7 @@ void userTestlistReqAll(unsigned char* buff_rcv, int userSeq, int client_fd){
 
 	memset(query, '\0', LEN_QUERY);
 
-	sprintf(query, "select seq, userSeq, title, num, examinee, ratio from TB_test where examinee = 0 and type = %d", type);
+	sprintf(query, "select seq, userSeq, title, num, examinee, ratio from TB_test where examinee = 0 and type = %d order by desc date", type);
 	puts(query);
 
 	if(mysql_query(conn_ptr, query)){
