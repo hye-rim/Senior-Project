@@ -27,7 +27,7 @@ import com.onpuri.Activity.SideTab.Setting.workerLeave;
 public class UserSetFragment extends Fragment implements View.OnClickListener {
     private static View view;
 
-    Button btn_notice, btn_question, btn_version, btn_tou, btn_out;
+    Button btn_notice, btn_question,  btn_tou, btn_out;
     FragmentManager mFragmentManager;
 
     String userId;
@@ -69,13 +69,11 @@ public class UserSetFragment extends Fragment implements View.OnClickListener {
 
         btn_notice = (Button)view.findViewById(R.id.btn_set_notice);
         btn_question = (Button)view.findViewById(R.id.btn_set_question);
-        btn_version = (Button)view.findViewById(R.id.btn_set_version);
         btn_tou = (Button)view.findViewById(R.id.btn_set_tou);
         btn_out = (Button)view.findViewById(R.id.btn_set_out);
 
         btn_notice.setOnClickListener(this);
         btn_question.setOnClickListener(this);
-        btn_version.setOnClickListener(this);
         btn_tou.setOnClickListener(this);
         btn_out.setOnClickListener(this);
         return view;
@@ -105,13 +103,6 @@ public class UserSetFragment extends Fragment implements View.OnClickListener {
 
                 mFragmentManager.beginTransaction()
                         .add(R.id.containerView, setQuestionFragment)
-                        .addToBackStack("fragBack")
-                        .commit();
-                break;
-
-            case R.id.btn_set_version:
-                mFragmentManager.beginTransaction()
-                        .add(R.id.containerView, new UserSetVersionFragment())
                         .addToBackStack("fragBack")
                         .commit();
                 break;

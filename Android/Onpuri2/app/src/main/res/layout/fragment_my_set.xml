@@ -48,24 +48,6 @@
         android:background="#A9A9A9" />
 
     <Button
-        android:id="@+id/btn_set_version"
-        android:textColor="@color/black"
-        android:gravity="left|center_vertical"
-        android:background="@color/background_material_light"
-        android:paddingLeft="10dp"
-        android:textSize="16dp"
-        android:text="버전정보"
-        android:layout_width="match_parent"
-        android:layout_height="50dp" />
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_gravity="center_horizontal"
-        android:background="#A9A9A9" />
-
-    <Button
         android:id="@+id/btn_set_tou"
         android:textColor="@color/black"
         android:gravity="left|center_vertical"

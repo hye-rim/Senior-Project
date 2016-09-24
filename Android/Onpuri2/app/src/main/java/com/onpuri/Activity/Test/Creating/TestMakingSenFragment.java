@@ -38,7 +38,7 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
     private FragmentManager fragmentManager;
 
     private TextView mTitleTextView, mNowNumTextView, mMaxNumTextView, mTempSelectSentence;
-    private Button mNextButton, mBackButton, mProblemSelectButton;
+    private Button mNextButton, mProblemSelectButton;
     private EditText mExampleEditText1, mExampleEditText2, mExampleEditText3, mExampleEditText4;
     private RadioButton mExampleRadio1, mExampleRadio2, mExampleRadio3, mExampleRadio4;
     private RadioGroup mExampleRadio;
@@ -81,7 +81,6 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
         initData(); //데이터 기본 설정
 
         mNextButton.setOnClickListener(this);
-        mBackButton.setOnClickListener(this);
         mProblemSelectButton.setOnClickListener(this);
 
         mExampleEditTextList[correctNum-1].setText(correct);
@@ -99,8 +98,6 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
     private void initData() {
         fragmentManager = getActivity().getSupportFragmentManager();
         getArgumentsData();
-
-        nowNum = 1;
 
         mTitleTextView.setText(title);
         mNowNumTextView.setText(""+nowNum);
@@ -122,6 +119,7 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
         example = new String[4];
 
         if(isFirst) {
+            nowNum = 1;
             problemList = new ArrayList<CreatedTestData>();
             correctNum = 1;
 
@@ -147,7 +145,6 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
 
     private void initView() {
         mNextButton  = (Button)view.findViewById(R.id.btn_making_sen_next);
-        mBackButton  = (Button)view.findViewById(R.id.btn_making_sen_back);
         mTitleTextView = (TextView)view.findViewById(R.id.tv_making_sen_title);
         mNowNumTextView  = (TextView)view.findViewById(R.id.tv_making_sen_now);
         mMaxNumTextView  = (TextView)view.findViewById(R.id.tv_making_sen_max);
@@ -174,7 +171,7 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
                 exampleSet(correctNum-1);
                 mExampleEditTextList[correctNum-1].setText(correct);
                 Log.d(TAG, "mExampleEditTextList set : " + mExampleEditTextList[correctNum-1].getText().toString());
-                if (/*!isNull(mProblemEditText) &&*/ !isNull(mExampleEditText1)
+                if (!isNull(mTempSelectSentence) && !isNull(mExampleEditText1)
                         && !isNull(mExampleEditText2) && !isNull(mExampleEditText3)
                         && !isNull(mExampleEditText4)) {
                     getEnteredData(correctNum-1);
@@ -197,11 +194,6 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
                 } else {
                     Toast.makeText(getActivity(), "빈칸이 존재합니다.", Toast.LENGTH_LONG).show();
                 }
-                break;
-
-            case R.id.btn_making_sen_back:
-                if (nowNum != 1)
-                    changeToBackData();
                 break;
 
             case R.id.btn_making_sen_problem:
@@ -245,25 +237,6 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
         return false;
     }
 
-    private void changeToBackData() {
-        nowNum--;
-        mNowNumTextView.setText("" + nowNum);
-
-        problem = problemList.get(nowNum-1).getProblem();
-        example[0] = problemList.get(nowNum-1).getExample1();
-        example[1] = problemList.get(nowNum-1).getExample2();
-        example[2] = problemList.get(nowNum-1).getExample3();
-        example[3] = problemList.get(nowNum-1).getExample4();
-        correctNum = problemList.get(nowNum-1).getCorrectNum();
-
-        //mProblemEditText.setText(problem);
-        for(int i = 0; i< 4; i++)
-            mExampleEditTextList[i].setText(example[i]);
-
-        exampleSet(nowNum-1);
-
-    }
-
     private void changeToNextData() {
         nowNum++;
         mNowNumTextView.setText("" + nowNum);
@@ -288,7 +261,7 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
         selectSentence = new String[2];
         mProblemSelectButton.setVisibility(View.VISIBLE);
         mTempSelectSentence.setVisibility(View.GONE);
-        mTempSelectSentence.setText(selectSentence[0]);
+        mTempSelectSentence.setText("");
 
         for(int i = 0; i < 4; i ++){
             mExampleEditTextList[i].setEnabled(true);

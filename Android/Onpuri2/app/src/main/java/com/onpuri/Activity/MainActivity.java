@@ -1,8 +1,11 @@
 package com.onpuri.Activity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,6 +18,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
@@ -333,6 +337,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .add(R.id.containerView, SetFrament)
                         .addToBackStack("fragBack")
                         .commit();
+                break;
+
+            case R.id.nav_ver:
+                PackageInfo pi = null;
+                try {
+                    pi = getPackageManager().getPackageInfo(getPackageName(), 0);
+                } catch (PackageManager.NameNotFoundException e) {
+                    Log.e(TAG, e.getMessage());
+                }
+                String appVersion = pi.versionName;
+
+                AlertDialog.Builder alert = new AlertDialog.Builder(this);
+                alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();//닫기
+                        }
+                });
+                alert.setMessage("Ver. " + appVersion);
+                alert.show();
                 break;
         }
         return false;

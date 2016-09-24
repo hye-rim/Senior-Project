@@ -37,7 +37,7 @@ public class TestMakingWordFragment extends Fragment implements View.OnClickList
     private static View view;
 
     private TextView mTitleTextView, mNowNumTextView, mMaxNumTextView;
-    private Button mNextButton, mBackButton;
+    private Button mNextButton;
     private EditText mProblemEditText, mExampleEditText1, mExampleEditText2, mExampleEditText3, mExampleEditText4;
     private RadioButton mExampleRadio1, mExampleRadio2, mExampleRadio3, mExampleRadio4;
     private RadioGroup mExampleRadio;
@@ -73,7 +73,6 @@ public class TestMakingWordFragment extends Fragment implements View.OnClickList
         initData(); //데이터 기본 설정
 
         mNextButton.setOnClickListener(this);
-        mBackButton.setOnClickListener(this);
         mExampleRadio1.setOnClickListener(this);
         mExampleRadio2.setOnClickListener(this);
         mExampleRadio3.setOnClickListener(this);
@@ -103,8 +102,7 @@ public class TestMakingWordFragment extends Fragment implements View.OnClickList
 
 
     private void initView() {
-        mNextButton  = (Button)view.findViewById(R.id.btn_making_word_back);
-        mBackButton  = (Button)view.findViewById(R.id.btn_making_word_next);
+        mNextButton  = (Button)view.findViewById(R.id.btn_making_word_next);
         mTitleTextView = (TextView)view.findViewById(R.id.tv_making_word_title);
         mNowNumTextView  = (TextView)view.findViewById(R.id.tv_making_word_now);
         mMaxNumTextView  = (TextView)view.findViewById(R.id.tv_making_word_max);
@@ -147,11 +145,6 @@ public class TestMakingWordFragment extends Fragment implements View.OnClickList
                 }
                 break;
 
-            case R.id.btn_making_word_back:
-                if(nowNum != 1)
-                    changeToBackData();
-                break;
-
             case R.id.radio_example1:
                 correctNum = 1;
                 mExampleRadio1.setChecked(true);
@@ -190,25 +183,6 @@ public class TestMakingWordFragment extends Fragment implements View.OnClickList
         if ( test.getText().toString().isEmpty() || test.getText().toString() == "")
             return true;
         return false;
-    }
-
-    private void changeToBackData() {
-        nowNum--;
-        mNowNumTextView.setText("" + nowNum);
-
-        problem = problemList.get(nowNum-1).getProblem();
-        example1 = problemList.get(nowNum-1).getExample1();
-        example2 = problemList.get(nowNum-1).getExample2();
-        example3 = problemList.get(nowNum-1).getExample3();
-        example4 = problemList.get(nowNum-1).getExample4();
-        correctNum = problemList.get(nowNum-1).getCorrectNum();
-
-        mProblemEditText.setText(problem);
-        mExampleEditText1.setText(example1);
-        mExampleEditText2.setText(example2);
-        mExampleEditText3.setText(example3);
-        mExampleEditText4.setText(example4);
-
     }
 
     private void changeToNextData() {

@@ -18,6 +18,9 @@
             <item
                 android:id="@+id/nav_set"
                 android:title="더보기" />
+            <item
+                android:id="@+id/nav_ver"
+                android:title="버전정보" />
         </menu>
     </item>
 </menu>
