@@ -19,6 +19,7 @@ import com.onpuri.Activity.MainActivity;
 import com.onpuri.Adapter.RecycleviewAdapter;
 import com.onpuri.Listener.EndlessRecyclerOnScrollListener;
 import com.onpuri.Listener.HomeItemClickListener;
+import com.onpuri.Listener.RecyclerItemClickListener;
 import com.onpuri.R;
 import com.onpuri.Server.PacketUser;
 
@@ -67,7 +68,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         } catch (InflateException e) {
             /* map is already there, just return view as it is */
         }
-
         sentence_num = 0;
         userSentence = new PacketUser();
 
@@ -81,9 +81,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         FragmentManager fm = getActivity().getSupportFragmentManager();
         fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
-        if (!sentenceEnd) {
-            loadData(current_page);
-        }
+        loadData(current_page);
 
         handler = new Handler();
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_sentence);

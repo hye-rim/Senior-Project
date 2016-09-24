@@ -1,5 +1,6 @@
 package com.onpuri.Activity.SideTab.UserInfo;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -38,6 +39,9 @@ public class UserMyFragment extends Fragment implements View.OnClickListener {
     //현재비밀번호 일치여부, 새로운 비밀번호 일치여부, 현재비밀번호 != 새로운 비밀번호
 
     private FragmentManager mFragmentManager;
+
+    SharedPreferences setting;
+    SharedPreferences.Editor editor;
 
     public static UserMyFragment newInstance() {
         UserMyFragment fragment = new UserMyFragment();
@@ -127,7 +131,6 @@ public class UserMyFragment extends Fragment implements View.OnClickListener {
                 } else {
                     checkNewPw = false;
                 }
-
                 checkComparePw = (et_userNewPass.getText().toString().equals(nowPass)) ? true //현재 비밀번호 != 새 비밀번호 여부
                         : false; //false : 현재 비밀번호 != 새 비밀번호
             }
@@ -174,6 +177,7 @@ public class UserMyFragment extends Fragment implements View.OnClickListener {
                         worker_change.interrupt();
                     }
 
+                    storeSharedData();
                     Toast.makeText(getActivity(), "정보수정이 완료되었습니다.", Toast.LENGTH_SHORT).show();
                     FragmentManager.BackStackEntry entry = mFragmentManager.getBackStackEntryAt(0);
                     mFragmentManager.popBackStack(entry.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
@@ -204,6 +208,22 @@ public class UserMyFragment extends Fragment implements View.OnClickListener {
                 break;
         }
 
+    }
+
+    private void storeSharedData() {
+        setting = getActivity().getSharedPreferences("setting",0);
+        editor = setting.edit();
+        String id, password;
+
+        if(setting.getBoolean("autoLogin", false)){
+            id = setting.getString("ID", "");
+            password = newPass;
+
+            editor.putString("ID", id);
+            editor.putString("PW", password);
+            editor.putBoolean("autoLogin", true);
+            editor.commit();
+        }
     }
 
     //edittext 영문+숫자만 입력되도록 하는 함수

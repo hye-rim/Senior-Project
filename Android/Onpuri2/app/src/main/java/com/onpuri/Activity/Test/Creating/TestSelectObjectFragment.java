@@ -171,9 +171,15 @@ public class TestSelectObjectFragment extends Fragment implements AdapterView.On
                     item.isChecked(), Toast.LENGTH_SHORT).show();
 
             if(item.isChecked()) {
-                mSelectUserList.add( mUserList.get(position).toString() );
-                selectArrayAdapter.notifyDataSetChanged();
-                ListUtils.setDynamicHeight(mListView1);
+                String selectUser =  mUserList.get(position).toString();
+                if( !mSelectUserList.contains(selectUser)){
+                    mSelectUserList.add( mUserList.get(position).toString() );
+                    selectArrayAdapter.notifyDataSetChanged();
+                    ListUtils.setDynamicHeight(mListView1);
+                }else{
+                    Toast.makeText(getActivity(), "이미 추가한 응시자 입니다.", Toast.LENGTH_SHORT).show();
+                }
+
             }
         }
 
