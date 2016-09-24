@@ -75,7 +75,7 @@ public class workerTrans extends Thread {
 
             try {
                 dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
-                dos.write(outData, 0, outData[3]+5);
+                dos.write(outData, 0, sentence_num.length()+5);
                 dos.flush();
                 dis = new DataInputStream(SocketConnection.socket.getInputStream());
 

@@ -80,21 +80,21 @@
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="160dp"
             android:text="remember"
             android:id="@+id/word"
-            android:gravity="center"
+            android:gravity="top|center"
             android:textColor="@color/black"
-            android:textSize="25dp"
-            android:layout_marginTop="70dp"
-            android:layout_marginBottom="70dp" />
+            android:textSize="20dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp" />
 
         <Button
             android:layout_width="220dp"
             android:layout_height="35dp"
             android:text="가다"
             android:id="@+id/example1"
-            android:background="@drawable/btn_border"
+            android:background="@drawable/btn_click"
             android:textSize="18dp"
             android:textColor="@color/black" />
 
@@ -103,7 +103,7 @@
             android:layout_height="35dp"
             android:text="기억하다"
             android:id="@+id/example2"
-            android:background="@drawable/btn_border"
+            android:background="@drawable/btn_click"
             android:layout_marginTop="15dp"
             android:textSize="18dp"
             android:textColor="@color/black" />
@@ -113,7 +113,7 @@
             android:layout_height="35dp"
             android:text="추천하다"
             android:id="@+id/example3"
-            android:background="@drawable/btn_border"
+            android:background="@drawable/btn_click"
             android:layout_marginTop="15dp"
             android:textSize="18dp"
             android:textColor="@color/black" />
@@ -123,7 +123,7 @@
             android:layout_height="35dp"
             android:text="차리다"
             android:id="@+id/example4"
-            android:background="@drawable/btn_border"
+            android:background="@drawable/btn_click"
             android:layout_marginTop="15dp"
             android:textSize="18dp"
             android:textColor="@color/black" />

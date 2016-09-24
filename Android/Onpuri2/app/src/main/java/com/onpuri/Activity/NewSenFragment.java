@@ -244,7 +244,7 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
 
                 try {
                     dos = new DataOutputStream(SocketConnection.socket.getOutputStream());
-                    dos.write(outData, 0, outData[3]+5); // packet transmission
+                    dos.write(outData, 0, (dataByte.length)+5); // packet transmission
                     dos.flush();
 
                     dis = new DataInputStream(SocketConnection.socket.getInputStream());

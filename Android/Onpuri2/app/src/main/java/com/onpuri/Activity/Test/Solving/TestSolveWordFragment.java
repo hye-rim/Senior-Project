@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.onpuri.Activity.MainActivity;
 import com.onpuri.R;
 
 import java.util.Locale;
@@ -25,13 +26,12 @@ public class TestSolveWordFragment extends Fragment implements View.OnClickListe
     private static View view;
 
     private workerTestSolve worker_test_solve;
+    private workerTestFinish worker_test_finish;
 
-    TextView testname, quizWord, next, total, score;
+    TextView testname, quizWord, next, totaltext, scoretext;
     Button ex1, ex2, ex3, ex4;
-    boolean IsFinish = false;
 
     String name, num, quiz;
-    String word="";
     TextToSpeech tts;
 
     @Override
@@ -53,6 +53,8 @@ public class TestSolveWordFragment extends Fragment implements View.OnClickListe
         } catch (InflateException e) {
         }
 
+        ((MainActivity)getActivity()).Backkey = false;
+
         testname = (TextView) view.findViewById(R.id.testname);
         if (getArguments() != null) { //클릭한 문장 출력
             name = getArguments().getString("testname");
@@ -63,9 +65,9 @@ public class TestSolveWordFragment extends Fragment implements View.OnClickListe
 
         testlist(num);
 
-        total = (TextView) view.findViewById(R.id.total);
-        score = (TextView) view.findViewById(R.id.score);
-        total.setText(String.valueOf(worker_test_solve.count));
+        totaltext = (TextView) view.findViewById(R.id.total);
+        scoretext = (TextView) view.findViewById(R.id.score);
+        totaltext.setText(String.valueOf(worker_test_solve.count));
 
         quizWord = (TextView) view.findViewById(R.id.word);
         quizWord.setText(worker_test_solve.getQuiz().get(worker_test_solve.tmp).toString());
@@ -96,47 +98,20 @@ public class TestSolveWordFragment extends Fragment implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.example1 :
+                if(worker_test_solve.getSol().get(worker_test_solve.tmp).toString().equals("1")) { worker_test_solve.score++;}
+                check();
+                break;
             case R.id.example2 :
+                if(worker_test_solve.getSol().get(worker_test_solve.tmp).toString().equals("2")) { worker_test_solve.score++;}
+                check();
+                break;
             case R.id.example3 :
+                if(worker_test_solve.getSol().get(worker_test_solve.tmp).toString().equals("3")) { worker_test_solve.score++;}
+                check();
+                break;
             case R.id.example4 :
-                if(worker_test_solve.getSol().get(worker_test_solve.tmp).toString().equals("1")) {
-                    ex1.setTextColor(getResources().getColor(R.color.white));
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        ex1.setBackground(getResources().getDrawable(R.color.fuzzy_peach));
-                    } else {
-                        ex1.setBackgroundResource((R.color.fuzzy_peach));
-                    }
-                }
-                if(worker_test_solve.getSol().get(worker_test_solve.tmp).toString().equals("2")) {
-                    ex2.setTextColor(getResources().getColor(R.color.white));
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        ex2.setBackground(getResources().getDrawable(R.color.fuzzy_peach));
-                    } else {
-                        ex2.setBackgroundResource((R.color.fuzzy_peach));
-                    }
-                }
-                if(worker_test_solve.getSol().get(worker_test_solve.tmp).toString().equals("3")) {
-                    ex3.setTextColor(getResources().getColor(R.color.white));
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        ex3.setBackground(getResources().getDrawable(R.color.fuzzy_peach));
-                    } else {
-                        ex3.setBackgroundResource((R.color.fuzzy_peach));
-                    }
-                }
-                if(worker_test_solve.getSol().get(worker_test_solve.tmp).toString().equals("4")) {
-                    ex4.setTextColor(getResources().getColor(R.color.white));
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        ex4.setBackground(getResources().getDrawable(R.color.fuzzy_peach));
-                    } else {
-                        ex4.setBackgroundResource((R.color.fuzzy_peach));
-                    }
-                }
-                next.setVisibility(LinearLayout.VISIBLE);
-
-                if((worker_test_solve.tmp)+1 >= worker_test_solve.count) {
-                    next.setText("종료");
-                }
-
+                if(worker_test_solve.getSol().get(worker_test_solve.tmp).toString().equals("4")) { worker_test_solve.score++;}
+                check();
                 break;
 
             case R.id.next :
@@ -144,49 +119,9 @@ public class TestSolveWordFragment extends Fragment implements View.OnClickListe
                     tts.stop();
                     tts.shutdown();
                 }
-                ex1.setTextColor(getResources().getColor(R.color.black));
-                ex2.setTextColor(getResources().getColor(R.color.black));
-                ex3.setTextColor(getResources().getColor(R.color.black));
-                ex4.setTextColor(getResources().getColor(R.color.black));
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    ex1.setBackground(getResources().getDrawable(R.drawable.btn_border));
-                    ex2.setBackground(getResources().getDrawable(R.drawable.btn_border));
-                    ex3.setBackground(getResources().getDrawable(R.drawable.btn_border));
-                    ex4.setBackground(getResources().getDrawable(R.drawable.btn_border));
 
-                }else{
-                    ex1.setBackgroundResource((R.drawable.btn_border));
-                    ex2.setBackgroundResource((R.drawable.btn_border));
-                    ex3.setBackgroundResource((R.drawable.btn_border));
-                    ex4.setBackgroundResource((R.drawable.btn_border));
-
-                }
-                next.setVisibility(LinearLayout.INVISIBLE);
-
-                if((worker_test_solve.tmp)+1 < worker_test_solve.count) {
-                    worker_test_solve.tmp++;
-                    quizWord.setText(worker_test_solve.getQuiz().get(worker_test_solve.tmp).toString());
-                    ex1.setText(worker_test_solve.getEx1().get(worker_test_solve.tmp).toString());
-                    ex2.setText(worker_test_solve.getEx2().get(worker_test_solve.tmp).toString());
-                    ex3.setText(worker_test_solve.getEx3().get(worker_test_solve.tmp).toString());
-                    ex4.setText(worker_test_solve.getEx4().get(worker_test_solve.tmp).toString());
-                    score.setText(String.valueOf((worker_test_solve.tmp)));
-                }
-                else {
-                    FragmentManager fm = getActivity().getSupportFragmentManager();
-                  /*  final TestSolveFinishFragment tsff = new TestSolveFinishFragment();
-
-                    Bundle args = new Bundle();
-                    args.putString("total", String.valueOf(worker_test_solve.count));
-                    args.putString("score", String.valueOf(worker_test_solve.score));
-                    fm.beginTransaction()
-                            .replace(R.id.root_test, tsff)
-                            .addToBackStack(null)
-                            .commit();*/
-                    FragmentManager.BackStackEntry entry = fm.getBackStackEntryAt(0);
-                    fm.popBackStack(entry.getId(), 0);
-                    fm.beginTransaction().commit();
-                }
+                if((worker_test_solve.tmp)+1 < worker_test_solve.count) {nextQuiz();}
+                else {finishQuiz();}
 
                 break;
         }
@@ -208,5 +143,101 @@ public class TestSolveWordFragment extends Fragment implements View.OnClickListe
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    private void testfinish(String num, String score, String percent) {
+        if(worker_test_finish != null && worker_test_finish.isAlive()){
+            worker_test_finish.interrupt();
+        }
+        worker_test_finish = new workerTestFinish(true, num, score, percent);
+        worker_test_finish.start();
+        try {
+            worker_test_finish.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    void check() {
+        if(worker_test_solve.getSol().get(worker_test_solve.tmp).toString().equals("1")) {
+            ex1.setTextColor(getResources().getColor(R.color.white));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                ex1.setBackground(getResources().getDrawable(R.color.fuzzy_peach));
+            } else {
+                ex1.setBackgroundResource((R.color.fuzzy_peach));
+            }
+        }
+        if(worker_test_solve.getSol().get(worker_test_solve.tmp).toString().equals("2")) {
+            ex2.setTextColor(getResources().getColor(R.color.white));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                ex2.setBackground(getResources().getDrawable(R.color.fuzzy_peach));
+            } else {
+                ex2.setBackgroundResource((R.color.fuzzy_peach));
+            }
+        }
+        if(worker_test_solve.getSol().get(worker_test_solve.tmp).toString().equals("3")) {
+            ex3.setTextColor(getResources().getColor(R.color.white));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                ex3.setBackground(getResources().getDrawable(R.color.fuzzy_peach));
+            } else {
+                ex3.setBackgroundResource((R.color.fuzzy_peach));
+            }
+        }
+        if(worker_test_solve.getSol().get(worker_test_solve.tmp).toString().equals("4")) {
+            ex4.setTextColor(getResources().getColor(R.color.white));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                ex4.setBackground(getResources().getDrawable(R.color.fuzzy_peach));
+            } else {
+                ex4.setBackgroundResource((R.color.fuzzy_peach));
+            }
+        }
+
+        next.setVisibility(LinearLayout.VISIBLE);
+        scoretext.setText(String.valueOf((worker_test_solve.score)));
+
+        if((worker_test_solve.tmp)+1 >= worker_test_solve.count) {
+            next.setText("종료");
+        }
+
+    }
+    void nextQuiz() {
+        quizWord.setText(worker_test_solve.getQuiz().get(worker_test_solve.tmp).toString());
+
+        ex1.setText(worker_test_solve.getEx1().get(worker_test_solve.tmp).toString());
+        ex2.setText(worker_test_solve.getEx2().get(worker_test_solve.tmp).toString());
+        ex3.setText(worker_test_solve.getEx3().get(worker_test_solve.tmp).toString());
+        ex4.setText(worker_test_solve.getEx4().get(worker_test_solve.tmp).toString());
+
+        ex1.setTextColor(getResources().getColor(R.color.black));
+        ex2.setTextColor(getResources().getColor(R.color.black));
+        ex3.setTextColor(getResources().getColor(R.color.black));
+        ex4.setTextColor(getResources().getColor(R.color.black));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            ex1.setBackground(getResources().getDrawable(R.drawable.btn_click));
+            ex2.setBackground(getResources().getDrawable(R.drawable.btn_click));
+            ex3.setBackground(getResources().getDrawable(R.drawable.btn_click));
+            ex4.setBackground(getResources().getDrawable(R.drawable.btn_click));
+
+        }else{
+            ex1.setBackgroundResource((R.drawable.btn_click));
+            ex2.setBackgroundResource((R.drawable.btn_click));
+            ex3.setBackgroundResource((R.drawable.btn_click));
+            ex4.setBackgroundResource((R.drawable.btn_click));
+
+        }
+
+        worker_test_solve.tmp++;
+        next.setVisibility(LinearLayout.INVISIBLE);
+    }
+    void finishQuiz() {
+        int percent = (worker_test_solve.score) * 100 / (worker_test_solve.count);
+        ((MainActivity)getActivity()).Backkey = true;
+        testfinish(num, String.valueOf(worker_test_solve.score), String.valueOf(percent));
+
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        FragmentManager.BackStackEntry entry = fm.getBackStackEntryAt(0);
+        getFragmentManager().popBackStack(entry.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        fm.beginTransaction().commit();
     }
 }

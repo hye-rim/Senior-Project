@@ -71,7 +71,6 @@ public class TransMoreFragment extends Fragment implements View.OnClickListener 
             item.setText(sentence);
         }
 
-
         noteLoad();
 
         ImageButton add_note = (ImageButton) view.findViewById(R.id.add_note);
