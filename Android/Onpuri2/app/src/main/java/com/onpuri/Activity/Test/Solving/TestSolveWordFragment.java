@@ -201,6 +201,8 @@ public class TestSolveWordFragment extends Fragment implements View.OnClickListe
 
     }
     void nextQuiz() {
+        worker_test_solve.tmp++;
+
         quizWord.setText(worker_test_solve.getQuiz().get(worker_test_solve.tmp).toString());
 
         ex1.setText(worker_test_solve.getEx1().get(worker_test_solve.tmp).toString());
@@ -226,8 +228,6 @@ public class TestSolveWordFragment extends Fragment implements View.OnClickListe
             ex4.setBackgroundResource((R.drawable.btn_click));
 
         }
-
-        worker_test_solve.tmp++;
         next.setVisibility(LinearLayout.INVISIBLE);
     }
     void finishQuiz() {
