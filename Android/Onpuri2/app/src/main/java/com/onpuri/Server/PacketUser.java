@@ -118,7 +118,6 @@ public class PacketUser extends Application {
     static final public char USR_TEST_FINISH = 114; // 시험 결과 전송
     static final public char ACK_TEST_FINISH = 115; //ACK 시험 결과 전송
 
-
     public static char SOF = 0xcc;//Decimal=204
     static public char CRC = 0x55;//Decimal=85
 

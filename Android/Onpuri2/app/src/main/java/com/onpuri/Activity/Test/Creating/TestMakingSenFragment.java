@@ -84,6 +84,8 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
         mBackButton.setOnClickListener(this);
         mProblemSelectButton.setOnClickListener(this);
 
+        mExampleEditTextList[correctNum-1].setText(correct);
+        exampleSet(correctNum-1);
         return view;
     }
 
@@ -117,6 +119,8 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
         mExampleRadioList[2] = mExampleRadio3;
         mExampleRadioList[3] = mExampleRadio4;
 
+        example = new String[4];
+
         if(isFirst) {
             problemList = new ArrayList<CreatedTestData>();
             correctNum = 1;
@@ -136,6 +140,7 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
             Log.d(TAG, "correct isFirst : " + correct);
 
             randomCorrect();
+
         }
     }
 
@@ -166,8 +171,8 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_making_sen_next:
+                exampleSet(correctNum-1);
                 mExampleEditTextList[correctNum-1].setText(correct);
-                Toast.makeText(getActivity(), "정답 : " + correct, Toast.LENGTH_LONG).show();
                 Log.d(TAG, "mExampleEditTextList set : " + mExampleEditTextList[correctNum-1].getText().toString());
                 if (/*!isNull(mProblemEditText) &&*/ !isNull(mExampleEditText1)
                         && !isNull(mExampleEditText2) && !isNull(mExampleEditText3)
@@ -217,7 +222,7 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
         for(int i = 0; i < 4; i ++){
             if(i == index) {
                 Log.d(TAG, "correct set : " + correct);
-                mExampleEditTextList[i].setText(correct+selectSentence[1].toString());
+                mExampleEditTextList[i].setText(correct);
                 mExampleEditTextList[i].setEnabled(false);
                 mExampleRadioList[i].setChecked(true);
                 mExampleRadioList[i].setEnabled(false);

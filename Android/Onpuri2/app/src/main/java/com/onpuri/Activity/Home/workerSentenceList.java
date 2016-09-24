@@ -24,7 +24,6 @@ public class workerSentenceList extends Thread {//홈 문장 10개씩 서버에�
     byte[] sen = new byte[261];
     byte[] info = new byte[50];
 
-
     PacketUser userSentence;
     int sentence_num;
     int count, num; //서버로부터 받은 문장의 수
@@ -80,7 +79,6 @@ public class workerSentenceList extends Thread {//홈 문장 10개씩 서버에�
                 while (num < 10) {
                     byte[] inData = new byte[261];
                     byte[] senData = new byte[50];
-
 
                     for (i = 0; i < 261; i++)
                         inData[i] = 0;

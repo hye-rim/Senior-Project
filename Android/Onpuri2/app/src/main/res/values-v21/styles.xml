@@ -8,5 +8,8 @@
         <item name="android:colorPrimaryDark">@color/fuzzy_peach</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:colorAccent">@color/fuzzy_peach</item>
+        <item name="android:colorControlNormal">@color/fuzzy_peach</item>
+        <item name="android:colorControlHighlight">@color/fuzzy_peach</item>
+
     </style>
 </resources>
