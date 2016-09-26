@@ -62,7 +62,7 @@ public class TestSolveStartFrgment extends Fragment implements View.OnClickListe
 
         switch (v.getId()) {
             case R.id.start:
-                if(quiz.compareTo("0") == 0) {
+                if(quiz != "0") {
                     final TestSolveWordFragment tswf = new TestSolveWordFragment();
 
                     Bundle args = new Bundle();
