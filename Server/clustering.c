@@ -210,6 +210,26 @@ void countInClust(unsigned char* buff_rcv, MYSQL* conn_ptr){
 				}
 			}
 		}
+		memset(query, '\0', sizeof(query));
+		sprintf(query, "select seq from TB_SENTENCE");
+
+		if(mysql_query(conn_ptr, query)){
+			
+		}
+		else{
+			res_ptr = mysql_store_result(conn_ptr);
+			row = mysql_fetch_row(res_ptr);
+			
+			while(row != NULL){
+				memset(query, '\0', sizeof(query));
+				sprintf(query, "update TB_clustChart set recommend = (select recommend from TB_SENTENCE where seq = '%s') where sentenceSeq = '%s'", row[0], row[0]);	
+				if(mysql_query(conn_ptr, query)){
+					printf("recommend update failed");
+				}
+
+				row = mysql_fetch_row(res_ptr);
+			}
+		}
 	}
 }
 

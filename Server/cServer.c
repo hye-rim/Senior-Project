@@ -168,7 +168,7 @@ void userTestlistReq 	(unsigned char*, int, int);
 void userTestlistReqAll	(unsigned char*, int, int);
 
 void Make_Packet	(unsigned char*, unsigned char*, int);
-void Send_Sentence	(unsigned char*, unsigned char*, int);
+
 void sendSentenceAll	(unsigned char*, unsigned char*, int);
 void userInfoChange	(unsigned char*, unsigned char*, int);
 void sentenceRegister	(unsigned char*, unsigned char*, int);
@@ -183,6 +183,7 @@ void noteContentReq 	(unsigned char*, unsigned char*, int);
 void testRegister 	(unsigned char*, unsigned char*, int, int);
 void sendMyActivity	(unsigned char*, unsigned char*, int, int);
 void addRecorder	(unsigned char*, unsigned char*, int, int);
+void Send_Sentence	(unsigned char*, unsigned char*, int, int);
 
 int TD_LOGIN_Check	(unsigned char*, unsigned char*, int, int*);
 
@@ -322,8 +323,8 @@ printf("auauauau lengTH: %d \n", audioLength);
 					switch(buff_rcv[1]){
 					case MPC_RDY:{	
 						deviceCheck(buff_rcv, client_fd);		// device id, model을 디비 조회해서 옳은지 조사, 없으면 추가 후 ack
-					//	clusteringStart(buff_rcv, conn_ptr);
-					//	countInClust(buff_rcv, conn_ptr);
+				//		clusteringStart(buff_rcv, conn_ptr);
+				//		countInClust(buff_rcv, conn_ptr);
 						break;
 						}
 					case USR_LOG:{	// 로그인 id, pass 검사
@@ -359,7 +360,7 @@ printf("auauauau lengTH: %d \n", audioLength);
 						break;
 						}
 					case SEN_REQ:{
-						Send_Sentence(buff_rcv, userId, client_fd);
+						Send_Sentence(buff_rcv, userId, client_fd, userSeq);
 						break;
 						}
 					case SEN_SEND_ALL:{
@@ -829,7 +830,7 @@ void TD_USER_REG(unsigned char* buff_rcv, int client_fd){
 }
 
 // app main에 문장 전송
-void Send_Sentence(unsigned char* buff_rcv, unsigned char* userId, int client_fd){
+void Send_Sentence(unsigned char* buff_rcv, unsigned char* userId, int client_fd, int userSeq){
 	MYSQL_RES *res_ptr;	// 쿼리문 결과
 	MYSQL_RES *res_ptr1;
 	MYSQL_ROW row;		// 값 빼오기
@@ -840,6 +841,7 @@ void Send_Sentence(unsigned char* buff_rcv, unsigned char* userId, int client_fd
 	char toClientData[LEN_DATA];	// client에게 보낼 데이터
 	int data_len = buff_rcv[3];
 	int i, numOfSentence, index = 0, clustSeq;
+	int numOfNotIn;
 	char transCount[100], audioCount[100];
 
 	portion = buff_rcv[4] - 1; 
@@ -935,11 +937,24 @@ void Send_Sentence(unsigned char* buff_rcv, unsigned char* userId, int client_fd
 		}
 		else{
 puts("new method=\n");
+			memset(query, '\0', LEN_QUERY);
+			sprintf(query, "select count(*) from TB_clustChart where clustSeq = %d and sentenceSeq not in(select sentenceSeq from TB_SentenceClick where userSeq = %d)", clustSeq, userSeq);
+			
+			mysql_query(conn_ptr, query);
+			res_ptr = mysql_store_result(conn_ptr);
+			row = mysql_fetch_row(res_ptr);
+
+			numOfNotIn = atoi(row[0]);
+
 			for(i = 0 ; i < 10; i++){	// 쿼리를 통해 얻은 사용자 정보로 패킷을 만든다.	
 			memset(query, '\0', sizeof(query));
 			memset(toClientData, '\0', sizeof(toClientData));	
 	
-			sprintf(query, "select SEN, SEQ, userSeq, recommend from TB_SENTENCE where seq = (select sentenceSeq from TB_clustChart where clustSeq = %d order by cnt DESC limit %d, %d)", clustSeq, numOfSentence++, 1);
+			//sprintf(query, "select SEN, SEQ, userSeq, recommend from TB_SENTENCE where seq = (select sentenceSeq from TB_clustChart where clustSeq = %d order by cnt DESC limit %d, %d)", clustSeq, numOfSentence++, 1);
+			sprintf(query, "select SEN, SEQ, userSeq, recommend from TB_SENTENCE where seq =\
+							(select sentenceSeq from TB_clustChart where clustSeq = %d and sentenceSeq \
+							not in(select sentenceSeq from TB_SentenceClick where userSeq = %d) order by recommend desc limit %d, %d)", clustSeq, userSeq, numOfSentence, 1);
+			//select sentenceSeq from TB_clustChart where clustSeq = 538 and sentenceSeq not in(select sentenceSeq from TB_SentenceClick where userSeq = 49) order by sentenceSeq limit %d, %d;
 		
 				if(mysql_query(conn_ptr, query)){
 					printf("%s\n", mysql_error(conn_ptr));
@@ -955,13 +970,101 @@ puts("new method=\n");
 					row = mysql_fetch_row(res_ptr);
 		
 					if(row == NULL){
-						buff_rcv[1] = SEN_NOMORE;
-						toClientData[0] = 1;
+puts("*****************************");
+puts(" In In");
+puts("*****************************");
+						memset(query, '\0', sizeof(query));
+						memset(toClientData, '\0', sizeof(toClientData));
 
-						Make_Packet(buff_rcv, toClientData, client_fd);
-						break;
+						sprintf(query, "select SEN, SEQ, userSeq, recommend from TB_SENTENCE where seq =\
+							(select sentenceSeq from TB_clustChart where clustSeq = %d and sentenceSeq \
+							in(select sentenceSeq from TB_SentenceClick where userSeq = %d) order by recommend desc limit %d, %d)", clustSeq, userSeq, numOfSentence-numOfNotIn, 1);
+puts(query);
+						if (mysql_query(conn_ptr, query)) {
+							printf("%s\n", mysql_error(conn_ptr));
+							//
+							buff_rcv[1] = SEN_NOMORE;
+							toClientData[0] = 1;
+
+							Make_Packet(buff_rcv, toClientData, client_fd);
+							break;
+						}
+						else {
+							res_ptr = mysql_store_result(conn_ptr);
+							row = mysql_fetch_row(res_ptr);
+
+							if (row == NULL) {
+								buff_rcv[1] = SEN_NOMORE;
+								toClientData[0] = 1;
+
+								Make_Packet(buff_rcv, toClientData, client_fd);
+								break;
+							}
+							else {
+								memset(transCount, '\0', sizeof(transCount));
+								memset(audioCount, '\0', sizeof(audioCount));
+								memset(query, '\0', sizeof(query));
+
+								sprintf(query, "select count(*) from TB_Translation where sentenceSeq = '%s'", row[1]);
+
+								mysql_query(conn_ptr, query);
+								res_ptr1 = mysql_store_result(conn_ptr);
+								row1 = mysql_fetch_row(res_ptr1);
+
+								strcat(transCount, row1[0]);
+
+								memset(query, '\0', sizeof(query));
+
+								sprintf(query, "select count(*) from TB_audioDir where sentenceSeq = '%s'", row[1]);
+
+								if (mysql_query(conn_ptr, query))
+									printf("new method failed \n%s", mysql_error(conn_ptr));
+
+								res_ptr1 = mysql_store_result(conn_ptr);
+								row1 = mysql_fetch_row(res_ptr1);
+
+								strcat(audioCount, row1[0]);
+								strcpy(toClientData, row[0]);
+
+								Make_Packet(buff_rcv, toClientData, client_fd);
+
+								memset(query, '\0', sizeof(query));
+
+								sprintf(query, "select UID from TB_USER where seq = '%s'", row[2]);
+
+								if (mysql_query(conn_ptr, query))
+									printf("new method failed \n%s", mysql_error(conn_ptr));
+
+								res_ptr1 = mysql_store_result(conn_ptr);
+								row1 = mysql_fetch_row(res_ptr1);
+								puts(toClientData);
+								memset(toClientData, '\0', sizeof(toClientData));
+
+								strcpy(toClientData, row[1]);
+								strcat(toClientData, "+");
+								strcat(toClientData, transCount);
+								strcat(toClientData, "+");
+								strcat(toClientData, audioCount);
+								strcat(toClientData, "+");
+
+								if (row1 == NULL)
+									strcat(toClientData, "admin");
+								else
+									strcat(toClientData, row1[0]);
+
+								strcat(toClientData, "+");
+								strcat(toClientData, row[3]);
+								puts(toClientData);
+
+								Make_Packet(buff_rcv, toClientData, client_fd);
+							}
+						}
 					}
 					else{
+puts("*****************************");
+puts(" Not In In");
+puts("*****************************");
+puts(query);
 						memset(transCount, '\0', sizeof(transCount));
 						memset(audioCount, '\0', sizeof(audioCount));
 						memset(query, '\0', sizeof(query));
@@ -1020,6 +1123,7 @@ puts(toClientData);
 						Make_Packet(buff_rcv, toClientData, client_fd);
 					}
 				}
+				numOfSentence++;
 			} 
 		}
 	}
@@ -3215,6 +3319,13 @@ printf("recommend :: %d\n", num);
 		Make_Packet(buff_rcv, toClientData, client_fd);
 	}
 	else{
+		if(type == 1){
+			memset(query, '\0', LEN_QUERY);
+			sprintf(query, "update TB_clustChart set recommend = recommend + 1 where sentenceSeq = %d", num);
+			if(mysql_query(conn_ptr, query)){
+				printf("recommend failed2\n%s", mysql_error(conn_ptr));
+			}		
+		}
 		memset(toClientData, '\0', LEN_DATA);
 
 		toClientData[0] = '1';
