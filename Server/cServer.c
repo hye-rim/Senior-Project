@@ -323,8 +323,8 @@ printf("auauauau lengTH: %d \n", audioLength);
 					switch(buff_rcv[1]){
 					case MPC_RDY:{	
 						deviceCheck(buff_rcv, client_fd);		// device id, model을 디비 조회해서 옳은지 조사, 없으면 추가 후 ack
-				//		clusteringStart(buff_rcv, conn_ptr);
-				//		countInClust(buff_rcv, conn_ptr);
+//						clusteringStart(buff_rcv, conn_ptr);
+//						countInClust(buff_rcv, conn_ptr);
 						break;
 						}
 					case USR_LOG:{	// 로그인 id, pass 검사
@@ -922,7 +922,8 @@ void Send_Sentence(unsigned char* buff_rcv, unsigned char* userId, int client_fd
 						strcat(toClientData, "+");
 						strcat(toClientData, audioCount);
 						strcat(toClientData, "+");
-
+puts("000000000000000000");
+puts(toClientData);
 						if(row1 == NULL)
 							strcat(toClientData, "admin");
 						else						
@@ -3530,7 +3531,7 @@ puts("=================");
 		else{
 			while(row != NULL){
 				memset(query, '\0', LEN_QUERY);
-				sprintf(query, "select seq, userSeq, title, num, examinee, ratio from TB_test where seq = '%s' and type = %d order by desc date", row[0], type);
+				sprintf(query, "select seq, userSeq, title, num, examinee, ratio from TB_test where seq = '%s' and type = %d order by date desc", row[0], type);
 				printf("select seq, userSeq, title, num, examinee, ratio from TB_test where seq = '%s' and type = %d", row[0], type);
 				if(mysql_query(conn_ptr, query)){
 					memset(toClientData, '\0', LEN_DATA);
@@ -3606,7 +3607,7 @@ void userTestlistReqAll(unsigned char* buff_rcv, int userSeq, int client_fd){
 
 	memset(query, '\0', LEN_QUERY);
 
-	sprintf(query, "select seq, userSeq, title, num, examinee, ratio from TB_test where examinee = 0 and type = %d order by desc date", type);
+	sprintf(query, "select seq, userSeq, title, num, examinee, ratio from TB_test where examinee = 0 and type = %d order by date desc", type);
 	puts(query);
 
 	if(mysql_query(conn_ptr, query)){
