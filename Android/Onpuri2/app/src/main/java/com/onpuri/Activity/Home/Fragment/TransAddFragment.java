@@ -49,13 +49,16 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
     byte[] inData = new byte[261];
     byte[] temp = new byte[261];
 
+    final FragmentManager fm = getActivity().getSupportFragmentManager();
+    final FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+
     String sentence="";
     int sentence_num;
 
     TextView item;
     EditText trans;
 
-    int i;
+    int i, checkLen;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -92,8 +95,7 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
     }
     @Override
     public void onClick(View v) {
-        final FragmentManager fm = getActivity().getSupportFragmentManager();
-        final FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+
 
         switch (v.getId()) {
             case R.id.btn_new_trans:
@@ -111,10 +113,9 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
                     })
                     .setPositiveButton("네", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
-                            AddTranslation();
-                            Toast.makeText(getActivity(), "등록되었습니다.", Toast.LENGTH_SHORT).show();
-                            fm.popBackStack();
-                            ft.commit();
+                            checkingLen();
+                            senMsg();
+
                         }
                     })
                     .setNegativeButton("아니오", new DialogInterface.OnClickListener() {
@@ -148,7 +149,39 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
                 break;
         }
     }
-    private void AddTranslation() {
+
+    private void senMsg() {
+        switch (checkLen){
+            case 0: //ok
+                Addtranslation();
+                Toast.makeText(getActivity(), "등록되었습니다.", Toast.LENGTH_SHORT).show();
+                fm.popBackStack();
+                ft.commit();
+                break;
+
+            case 1: //null
+                Toast.makeText(getActivity(), "해석을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                break;
+
+            case 2: //max
+                Toast.makeText(getActivity(), "최대 글자 수(125자)를 초과하셨습니다.", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+    private void checkingLen() {
+        String inputTrans = trans.getText().toString();
+
+        if(inputTrans.compareTo("") == 0 || trans.getText().toString().isEmpty()){
+            checkLen = 1; //null
+        }else if( inputTrans.getBytes().length >= 125){
+            checkLen = 2;//max
+        }else{
+            checkLen = 0; //OK
+        }
+    }
+
+    private void Addtranslation() {
         if(worker_add_trans != null && worker_add_trans.isAlive()){  //이미 동작하고 있을 경우 중지
             worker_add_trans.interrupt();
         }

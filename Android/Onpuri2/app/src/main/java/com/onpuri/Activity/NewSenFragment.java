@@ -69,9 +69,7 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
 
     ViewPager viewPager;
 
-    int i;
-
-    int checkLen;
+    int i, checkLen;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -173,7 +171,7 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
                 break;
 
             case 2: //max
-                Toast.makeText(getActivity(), "등록하려는 문장이 너무 깁니다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "최대 글자 수(230자)를 초과하셨습니다.", Toast.LENGTH_SHORT).show();
                 break;
         }
     }
