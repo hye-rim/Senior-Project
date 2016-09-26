@@ -90,6 +90,7 @@ public class NoteWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                         Bundle args = new Bundle();
                         args.putString("wordItemName", originalName);
+                        args.putString("wordItemNum", noteWordNumList.get(getAdapterPosition()));
                         noteWordItem.setArguments(args);
                         fm.beginTransaction()
                                 .replace(R.id.root_note, noteWordItem)

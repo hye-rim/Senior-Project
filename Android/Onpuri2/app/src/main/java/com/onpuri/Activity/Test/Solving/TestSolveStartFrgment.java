@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.onpuri.R;
 
@@ -17,13 +18,12 @@ public class TestSolveStartFrgment extends Fragment implements View.OnClickListe
 
     private static View view;
 
-    TextView testname;
+    TextView testname, mTestNumTextView;
     String name, num, quiz;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -37,12 +37,15 @@ public class TestSolveStartFrgment extends Fragment implements View.OnClickListe
             view = inflater.inflate(R.layout.fragment_test_solve_start, container, false);
         } catch (InflateException e) {}
 
+
         testname = (TextView) view.findViewById(R.id.testname);
+        mTestNumTextView = (TextView)view.findViewById(R.id.test_num);
         if (getArguments() != null) { //클릭한 문장 출력
-            name = getArguments().getString("testname");
-            num = getArguments().getString("testnum");
+            name = getArguments().getString("testname","null");
+            num = getArguments().getString("testnum","0");
             quiz = getArguments().getString("testquiz");
             testname.setText(name);
+            mTestNumTextView.setText("문제 수\n"+num);
         }
 
         Button start = (Button) view.findViewById(R.id.start);
@@ -59,17 +62,22 @@ public class TestSolveStartFrgment extends Fragment implements View.OnClickListe
 
         switch (v.getId()) {
             case R.id.start:
-                final TestSolveWordFragment tswf = new TestSolveWordFragment();
+                if(num.compareTo("0") == 0) {
+                    final TestSolveWordFragment tswf = new TestSolveWordFragment();
 
-                Bundle args = new Bundle();
-                args.putString("testname", name);
-                args.putString("testnum", num);
-                tswf.setArguments(args);
+                    Bundle args = new Bundle();
+                    args.putString("testname", name);
+                    args.putString("testnum", num);
+                    tswf.setArguments(args);
 
-                fm.beginTransaction()
-                        .replace(R.id.root_test, tswf)
-                        .addToBackStack(null)
-                        .commit();
+                    fm.beginTransaction()
+                            .replace(R.id.root_test, tswf)
+                            .addToBackStack(null)
+                            .commit();
+                }
+                else{
+
+                }
                 break;
 
             case R.id.back:

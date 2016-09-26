@@ -101,6 +101,7 @@ public class NoteSenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
                         Bundle args = new Bundle();
                         args.putString("senItemName", originalName );
+                        args.putString("senItemNum", noteSenNumList.get(getAdapterPosition()));
                         noteSenItem.setArguments(args);
                         fm.beginTransaction()
                                 .replace(R.id.root_note, noteSenItem)
