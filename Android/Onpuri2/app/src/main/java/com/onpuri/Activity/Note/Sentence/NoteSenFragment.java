@@ -43,7 +43,7 @@ public class NoteSenFragment extends Fragment {
     protected RecyclerView.LayoutManager mLayoutManager;
     private Context context;
 
-    String itemName;
+    String itemName, itemNum;
 
     private FrameLayout mItemFrame;
     private FragmentManager mFragmentManager;
@@ -72,6 +72,7 @@ public class NoteSenFragment extends Fragment {
         tvItemName = (TextView)view.findViewById(R.id.note_sen_name);
         if (getArguments() != null) {                       //클릭한 문장이름 저장
             itemName = getArguments().getString("senItemName");
+            itemNum = getArguments().getString("senItemNum");
             tvItemName.setText(itemName);
         }
 
@@ -118,7 +119,7 @@ public class NoteSenFragment extends Fragment {
     }
 
     private void initData() {
-        String nameData = new String ("1+" + itemName);
+        String nameData = new String ("1+" + itemNum);
         itemSentence = new ArrayList<String>();
         itemSentenceNum = new ArrayList<String>();
         itemSentenceId = new ArrayList<String>();

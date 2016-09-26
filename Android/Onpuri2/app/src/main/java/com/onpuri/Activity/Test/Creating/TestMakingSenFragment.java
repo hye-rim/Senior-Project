@@ -214,6 +214,7 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
 
             case R.id.btn_correct_check:
                 if(!correct.isEmpty()) {
+                    randomCorrect();
                     exampleSet(correctNum - 1);
                     mExampleEditTextList[correctNum - 1].setText(correct);
                 }else{
@@ -288,6 +289,8 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
         double randomValue = Math.random();
         int random = (int)(randomValue * 3 ) + 0;
         Log.d(TAG, "random : " + random);
+
+        correctNum = random+1;
 
         exampleSet(random); //0~3
     }

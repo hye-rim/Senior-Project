@@ -85,7 +85,7 @@ public class NewSenFragment extends Fragment implements View.OnClickListener{
         }
         viewPager = (ViewPager)getActivity().findViewById(R.id.viewpager);
 
-        mSentenceEditText = (EditText) view.findViewById(R.id.sentence);
+        mSentenceEditText = (EditText) view.findViewById(R.id.et_new_sentence);
         mSentenceEditText.setFilters(new InputFilter[]{filterAlphaNum});
         mSentenceEditText.setPrivateImeOptions("defaultInputmode=english;");
 

@@ -45,7 +45,7 @@ public class NoteWordFragment  extends Fragment  {
     private RecyclerView.Adapter mWordAdapter;
     private Context context;
 
-    String itemName;
+    String itemName, itemNum;
 
     private FrameLayout mItemFrame;
     private FragmentManager mFragmentManager;
@@ -71,6 +71,7 @@ public class NoteWordFragment  extends Fragment  {
         tvItemName = (TextView)view.findViewById(R.id.note_word_name);
         if (getArguments() != null) {   //클릭한 단어이름 저장
             itemName = getArguments().getString("wordItemName");
+            itemNum = getArguments().getString("wordItemNum");
             tvItemName.setText(itemName);
         }
 
@@ -120,7 +121,7 @@ public class NoteWordFragment  extends Fragment  {
     }
 
     private void initData() {
-        String nameData = new String ("2+" + itemName);
+        String nameData = new String ("2+" + itemNum);
         itemWord = new ArrayList<WordData>();
 
         if (mworker_note != null && mworker_note.isAlive()) {  //이미 동작하고 있을 경우 중지

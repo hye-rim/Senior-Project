@@ -3,18 +3,17 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_material_light"
-    android:baselineAligned="true">
+    >
     <EditText
         android:layout_width="match_parent"
         android:layout_height="180dp"
         android:hint="영어문장을 입력해주세요"
         android:gravity="top"
         android:layout_gravity="center"
-        android:textColor="#060606"
+        android:textColor="@color/black"
         android:textSize="15dp"
-        android:id="@+id/sentence"
+        android:id="@+id/et_new_sentence"
         android:padding="15dp"
-        android:textIsSelectable="true"
         android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="30dp"

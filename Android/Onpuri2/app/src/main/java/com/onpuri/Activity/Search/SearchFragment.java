@@ -56,6 +56,8 @@ public class SearchFragment extends Fragment {
     private ArrayList<String> listNote, listNoteNum;
     private ViewPager viewPager;
     private int pos;
+
+    private boolean isNullSen;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (view != null) {
@@ -146,37 +148,41 @@ public class SearchFragment extends Fragment {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View viewList = super.getView(position, convertView, parent);
-                TextView textView = ((TextView) viewList.findViewById(android.R.id.text1));
-                Spannable str = new SpannableString(textView.getText());
-                int i = str.toString().indexOf(searchText);
-                str.setSpan(new ForegroundColorSpan(Color.parseColor("#E36153")), i, i+searchText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                textView.setText(str, TextView.BufferType.SPANNABLE);
-                textView.setHeight(140); // Height
-                textView.setMaxLines(2);
+                if(!isNullSen) {
+                    TextView textView = ((TextView) viewList.findViewById(android.R.id.text1));
+                    Spannable str = new SpannableString(textView.getText());
+                    int i = str.toString().indexOf(searchText);
+                    str.setSpan(new ForegroundColorSpan(Color.parseColor("#E36153")), i, i + searchText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    textView.setText(str, TextView.BufferType.SPANNABLE);
+                    textView.setHeight(140); // Height
+                    textView.setMaxLines(2);
+                }
                 return viewList;
             }
         });
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                HomeSentenceFragment homeSentenceFragment = new HomeSentenceFragment();
-                FragmentManager fm = getActivity().getSupportFragmentManager();
+                if(!isNullSen) {
+                    HomeSentenceFragment homeSentenceFragment = new HomeSentenceFragment();
+                    FragmentManager fm = getActivity().getSupportFragmentManager();
 
-                int realPosition = position -1;
-                Bundle args = new Bundle();
-                args.putString("sen", searchList.get(realPosition));
-                args.putString("sen_num", sentenceNumList.get(realPosition));
-                args.putString("id", sentenceIdList.get(realPosition));
+                    int realPosition = position - 1;
+                    Bundle args = new Bundle();
+                    args.putString("sen", searchList.get(realPosition));
+                    args.putString("sen_num", sentenceNumList.get(realPosition));
+                    args.putString("id", sentenceIdList.get(realPosition));
 
-                homeSentenceFragment.setArguments(args);
+                    homeSentenceFragment.setArguments(args);
 
-                fm.beginTransaction()
-                        .replace(R.id.root_home, homeSentenceFragment)
-                        .addToBackStack(null)
-                        .commit();
-                fm.executePendingTransactions();
+                    fm.beginTransaction()
+                            .replace(R.id.root_home, homeSentenceFragment)
+                            .addToBackStack(null)
+                            .commit();
+                    fm.executePendingTransactions();
 
-                viewPager.setCurrentItem(0);
+                    viewPager.setCurrentItem(0);
+                }
             }
         });
 
@@ -213,6 +219,7 @@ public class SearchFragment extends Fragment {
         //문장
         int i = 0;
         if( mworker_search.getUserSentence().arrSentence != null) {
+            isNullSen = false;
             while (i < mworker_search.getUserSentence().arrSentence.size()) {
                 searchList.add(mworker_search.getUserSentence().arrSentence.get(i));
                 sentenceNumList.add(mworker_search.getUserSentence().arrSentenceNum.get(i));
@@ -220,6 +227,9 @@ public class SearchFragment extends Fragment {
                 Log.d(TAG, mworker_search.getUserSentence().arrSentence.get(i));
                 i++;
             }
+        }else{
+            isNullSen = true;
+            searchList.add("검색결과가 없습니다..");
         }
     }
 
