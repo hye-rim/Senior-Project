@@ -49,9 +49,6 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
     byte[] inData = new byte[261];
     byte[] temp = new byte[261];
 
-    final FragmentManager fm = getActivity().getSupportFragmentManager();
-    final FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-
     String sentence="";
     int sentence_num;
 
@@ -115,7 +112,6 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
                         public void onClick(DialogInterface dialog, int whichButton) {
                             checkingLen();
                             senMsg();
-
                         }
                     })
                     .setNegativeButton("아니오", new DialogInterface.OnClickListener() {
@@ -138,6 +134,8 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
                         })
                         .setPositiveButton("네", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
+                                final FragmentManager fm = getActivity().getSupportFragmentManager();
+                                final FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                                 fm.popBackStack();
                                 ft.commit();
                             }
@@ -151,12 +149,15 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
     }
 
     private void senMsg() {
+        final FragmentManager fm = getActivity().getSupportFragmentManager();
+        final FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+
         switch (checkLen){
             case 0: //ok
                 Addtranslation();
-                Toast.makeText(getActivity(), "등록되었습니다.", Toast.LENGTH_SHORT).show();
                 fm.popBackStack();
                 ft.commit();
+                Toast.makeText(getActivity(), "등록되었습니다.", Toast.LENGTH_SHORT).show();
                 break;
 
             case 1: //null
@@ -174,7 +175,7 @@ public class TransAddFragment extends Fragment implements View.OnClickListener {
 
         if(inputTrans.compareTo("") == 0 || trans.getText().toString().isEmpty()){
             checkLen = 1; //null
-        }else if( inputTrans.getBytes().length >= 125){
+        }else if( inputTrans.getBytes().length >= 250){
             checkLen = 2;//max
         }else{
             checkLen = 0; //OK
