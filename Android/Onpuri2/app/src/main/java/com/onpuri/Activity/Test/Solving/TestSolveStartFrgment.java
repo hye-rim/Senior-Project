@@ -42,10 +42,10 @@ public class TestSolveStartFrgment extends Fragment implements View.OnClickListe
         mTestNumTextView = (TextView)view.findViewById(R.id.test_num);
         if (getArguments() != null) { //클릭한 문장 출력
             name = getArguments().getString("testname","null");
-            num = getArguments().getString("testnum","0");
+            num = getArguments().getString("testnum");
             quiz = getArguments().getString("testquiz");
             testname.setText(name);
-            mTestNumTextView.setText("문제 수\n"+num);
+            mTestNumTextView.setText("문제 수\n"+quiz);
         }
 
         Button start = (Button) view.findViewById(R.id.start);
@@ -62,7 +62,7 @@ public class TestSolveStartFrgment extends Fragment implements View.OnClickListe
 
         switch (v.getId()) {
             case R.id.start:
-                if(num.compareTo("0") == 0) {
+                if(quiz != "0") {
                     final TestSolveWordFragment tswf = new TestSolveWordFragment();
 
                     Bundle args = new Bundle();
