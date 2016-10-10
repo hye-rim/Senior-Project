@@ -99,6 +99,7 @@
             android:id="@+id/et_newPw"
             android:layout_gravity="center_vertical"
             android:singleLine="true"
+            android:password="true"
             android:imeOptions="actionSearch"
             android:background="@drawable/btn_border_black"/>
     </LinearLayout>

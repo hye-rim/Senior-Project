@@ -50,6 +50,9 @@ public class workerProblemCreating extends Thread {
         while (isPlay) {
             String titleProblem, example;
             for(int i = 0; i < problemList.size() ; i++){
+                title = title.replaceAll(" ","");
+                title = title.replaceAll("(^\\p{Z}+|\\p{Z}+$)", "");
+                titleProblem = new String();
                 titleProblem = title + "+" + problemList.get(i).getProblem();
                 titleProblem = titleProblem.replace("______", "@");
                 example = problemList.get(i).toStringExmaple();

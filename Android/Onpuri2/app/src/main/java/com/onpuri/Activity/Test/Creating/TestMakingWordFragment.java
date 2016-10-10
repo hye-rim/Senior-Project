@@ -21,6 +21,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.onpuri.Activity.MainActivity;
 import com.onpuri.Data.CreatedTestData;
 import com.onpuri.R;
 
@@ -98,6 +99,8 @@ public class TestMakingWordFragment extends Fragment implements View.OnClickList
         mTitleTextView.setText(title);
         mNowNumTextView.setText(""+nowNum);
         mMaxNumTextView.setText(""+maxNum);
+
+        ((MainActivity)getActivity()).Backkey = false;
     }
 
 
@@ -134,8 +137,10 @@ public class TestMakingWordFragment extends Fragment implements View.OnClickList
                         problemList.set(nowNum - 1, new CreatedTestData(problem, example1, example2, example3, example4, correctNum));
 
                     Log.d(TAG,"problem :: " + problem);
-                    if (nowNum == maxNum)
+                    if (nowNum == maxNum) {
                         checkExitDialog();
+                        ((MainActivity) getActivity()).Backkey = true;
+                    }
                     else {
                         changeToNextData();
                     }

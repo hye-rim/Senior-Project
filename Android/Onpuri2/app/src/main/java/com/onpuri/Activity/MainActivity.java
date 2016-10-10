@@ -37,6 +37,7 @@ import com.onpuri.Activity.Search.SearchFragment;
 import com.onpuri.Activity.SideTab.Act.UserMyActFragment;
 import com.onpuri.Activity.SideTab.Setting.UserSetFragment;
 import com.onpuri.Activity.SideTab.UserInfo.UserMyFragment;
+import com.onpuri.Activity.Test.Creating.TestMakingSenFragment;
 import com.onpuri.ActivityList;
 import com.onpuri.R;
 import com.onpuri.Server.PacketUser;
@@ -389,7 +390,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             e.printStackTrace();
         }
     }
-
     @Override
     public void onStart() {
         super.onStart();

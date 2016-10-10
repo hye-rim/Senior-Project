@@ -99,18 +99,30 @@ public class TestSolveWordFragment extends Fragment implements View.OnClickListe
         switch (v.getId()) {
             case R.id.example1 :
                 if(worker_test_solve.getSol().get(worker_test_solve.tmp).toString().equals("1")) { worker_test_solve.score++;}
+                ex2.setEnabled(false);
+                ex3.setEnabled(false);
+                ex4.setEnabled(false);
                 check();
                 break;
             case R.id.example2 :
                 if(worker_test_solve.getSol().get(worker_test_solve.tmp).toString().equals("2")) { worker_test_solve.score++;}
+                ex1.setEnabled(false);
+                ex3.setEnabled(false);
+                ex4.setEnabled(false);
                 check();
                 break;
             case R.id.example3 :
                 if(worker_test_solve.getSol().get(worker_test_solve.tmp).toString().equals("3")) { worker_test_solve.score++;}
+                ex1.setEnabled(false);
+                ex2.setEnabled(false);
+                ex4.setEnabled(false);
                 check();
                 break;
             case R.id.example4 :
                 if(worker_test_solve.getSol().get(worker_test_solve.tmp).toString().equals("4")) { worker_test_solve.score++;}
+                ex1.setEnabled(false);
+                ex2.setEnabled(false);
+                ex3.setEnabled(false);
                 check();
                 break;
 
@@ -119,6 +131,11 @@ public class TestSolveWordFragment extends Fragment implements View.OnClickListe
                     tts.stop();
                     tts.shutdown();
                 }
+
+                ex1.setEnabled(true);
+                ex2.setEnabled(true);
+                ex3.setEnabled(true);
+                ex4.setEnabled(true);
 
                 if((worker_test_solve.tmp)+1 < worker_test_solve.count) {nextQuiz();}
                 else {finishQuiz();}

@@ -20,6 +20,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.onpuri.Activity.MainActivity;
 import com.onpuri.Data.CreatedTestData;
 import com.onpuri.R;
 
@@ -94,6 +95,8 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
         }
     }
 
+
+
     private void initData() {
         fragmentManager = getActivity().getSupportFragmentManager();
         getArgumentsData();
@@ -142,6 +145,8 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
             randomCorrect();
 
         }
+
+        ((MainActivity)getActivity()).Backkey = false;
     }
 
 
@@ -321,6 +326,8 @@ public class TestMakingSenFragment extends Fragment implements View.OnClickListe
 
     private void sendingProblem() {
         toServer();
+        ((MainActivity)getActivity()).Backkey = true;
+
 
         if(mworker_problem.getSuccess()){
             Toast.makeText(getActivity(), "등록되었습니다.", Toast.LENGTH_SHORT).show();
