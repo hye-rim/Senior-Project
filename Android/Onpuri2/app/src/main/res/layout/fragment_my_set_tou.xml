@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_material_light">
+    <TextView
+        android:background="@color/fuzzy_peach"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:paddingLeft="10dp"
+        android:text= "이용약관"
+        android:textColor="@color/black"
+        android:textSize="16dp"
+        android:gravity="center_vertical" />
+    <ScrollView
+        android:background="@color/background_material_light"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:background="@color/background_material_light"
+            android:id="@+id/tv_tou"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text= ""
+            android:textColor="@color/black"
+            android:textSize="16dp"
+            android:layout_marginTop="3dp" />
+    </ScrollView>
+
+</LinearLayout>

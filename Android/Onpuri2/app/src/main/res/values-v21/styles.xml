@@ -1,0 +1,15 @@
+<resources>>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:colorPrimary">@color/never_forgotten</item>
+        <item name="android:colorPrimaryDark">@color/fuzzy_peach</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:colorAccent">@color/fuzzy_peach</item>
+        <item name="android:colorControlNormal">@color/fuzzy_peach</item>
+        <item name="android:colorControlHighlight">@color/fuzzy_peach</item>
+
+    </style>
+</resources>

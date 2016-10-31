@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#000000</color>
+    <color name="dark_gray">#A9A9A9</color>
+    <color name="light_gray">#d9d9d9</color>
+    <color name="more_light_gray">#e6e6e6</color>
+    <color name="white">#ffffff</color>
+    <color name="cultural">#E36153</color>
+    <color name="fuzzy_peach">#FFAA78</color>
+    <color name="never_forgotten">#fee098</color>
+    <color name="pale_gold">#FAF5B3</color>
+    <color name="china_ivory">#FDF5D2</color>
+</resources>

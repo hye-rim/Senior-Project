@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_material_light"
+    android:gravity="center">
+    <LinearLayout
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:layout_marginBottom="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageButton
+            android:id = "@+id/btn_test_solving"
+            android:background="@drawable/ic_test_exam_fuzzy"
+            android:layout_width="80dp"
+            android:layout_height="80dp" />
+        <TextView
+            android:text = "응시"
+            android:textSize="16dp"
+            android:textColor="@color/black"
+            android:layout_marginLeft="40dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_marginTop="50dp"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageButton
+            android:id = "@+id/btn_test_creating"
+            android:background="@drawable/ic_test_writer"
+            android:layout_width="80dp"
+            android:layout_height="80dp" />
+        <TextView
+            android:text = "출제"
+            android:textSize="16dp"
+            android:textColor="@color/black"
+            android:layout_marginLeft="40dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+    </LinearLayout>
+</LinearLayout>

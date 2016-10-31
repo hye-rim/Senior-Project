@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_material_light"
+    >
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:hint="영어문장을 입력해주세요"
+        android:gravity="top"
+        android:layout_gravity="center"
+        android:textColor="@color/black"
+        android:textSize="15dp"
+        android:id="@+id/et_new_sentence"
+        android:padding="15dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="30dp"
+        android:background="@color/material_grey_300" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <Button
+            android:textSize="16dp"
+            android:id="@+id/btn_new_sen"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="10dp"
+            android:text="등록"
+            android:textColor="@color/primary_text_default_material_light"
+            android:background="@drawable/btn_border" />
+        <Button
+            android:textSize="16dp"
+            android:id="@+id/btn_new_sen_back"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:text="취소"
+            android:textColor="@color/primary_text_default_material_light"
+            android:background="@drawable/btn_border"  />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="▶ 등록 후에는 수정이 되지 않으니 문장에 오류가 있는지\n    다시 한번 확인해주세요."
+        android:textColor="@color/black"
+        android:layout_margin="25dp" />
+</LinearLayout>

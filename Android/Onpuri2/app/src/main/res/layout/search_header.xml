@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:background="@color/background_material_light"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:background="@color/fuzzy_peach"
+        android:textSize="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:textStyle="bold"
+        android:text="단어/숙어"
+        android:layout_gravity="center_vertical"
+        android:paddingLeft="10dp"
+        android:gravity="center_vertical" />
+    <RelativeLayout
+        android:id="@+id/rl_search_word"
+        android:visibility="visible"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/btn_border_fuzzy_peach"
+        android:layout_gravity="center_vertical">
+        <TextView
+            android:text="word"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_centerInParent="true"
+            android:layout_alignParentLeft="true"
+            android:textColor="@color/black"
+            android:id="@+id/tv_search_word"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <ImageButton
+            android:layout_toRightOf="@+id/tv_search_word"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/tts_icon"
+            android:id="@+id/btn_search_word_listen"
+            android:layout_marginRight="8dp" />
+        <ImageButton
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:background="@drawable/addnote_icon"
+            android:id="@+id/btn_search_word_add"
+            android:layout_centerInParent="true"
+            android:layout_toRightOf="@+id/btn_search_word_listen" />
+    </RelativeLayout>
+    <TextView
+        android:textSize="16dp"
+        android:text="내용"
+        android:id="@+id/tv_word_search"
+        android:textColor="@color/black"
+        android:scrollbars="vertical"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="130dp" />
+    <TextView
+        android:textSize="16dp"
+        android:background="@color/fuzzy_peach"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:textStyle="bold"
+        android:text="문장"
+        android:layout_gravity="center_vertical"
+        android:paddingLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical" />
+</LinearLayout>

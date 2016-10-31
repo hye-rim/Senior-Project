@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_material_light">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="600dp">
+        <LinearLayout
+            android:paddingRight="5px"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:orientation="vertical"
+            android:backgroundTint="#662727"
+            android:backgroundTintMode="src_in">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/tv_sentence"
+                android:textSize="17dp"
+                android:text="영어 문장 내용"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:textColor="@android:color/black"
+                android:layout_marginTop="10dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:weightSum="1"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:textSize="14dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:textColor="@color/black"
+                android:lineSpacingExtra="3dp"
+                android:ellipsize="marquee"
+                android:id="@+id/userid"
+                android:layout_width="310dp"
+                android:layout_height="30dp"
+                android:text="user id"
+                android:gravity="center_vertical" />
+
+            <ImageButton
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@drawable/deltrans_icon"
+                android:id="@+id/del_trans"
+                android:layout_marginRight="8dp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:textSize="16dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:textColor="@color/black"
+            android:lineSpacingExtra="3dp"
+            android:ellipsize="end"
+            android:id="@+id/trans_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="none"
+            android:layout_marginBottom="3dp"
+            />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:weightSum="1">
+            <TextView
+                android:textSize="14dp"
+                android:layout_marginLeft="8dp"
+                android:textColor="@color/black"
+                android:lineSpacingExtra="3dp"
+                android:ellipsize="end"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:text="추천수 : " />
+
+            <TextView
+                android:textSize="14dp"
+                android:layout_marginLeft="8dp"
+                android:textColor="@color/black"
+                android:lineSpacingExtra="3dp"
+                android:ellipsize="end"
+                android:id="@+id/reco"
+                android:layout_width="60dp"
+                android:layout_height="match_parent"
+                android:text="00"
+                android:layout_weight="0.90" />
+
+            <TextView
+                android:textSize="14dp"
+                android:layout_marginRight="8dp"
+                android:textColor="@color/black"
+                android:lineSpacingExtra="3dp"
+                android:ellipsize="end"
+                android:id="@+id/day"
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
+                android:text="2016.00.00" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:gravity="center_vertical|center_horizontal">
+
+            <Button
+                android:textSize="14dp"
+                android:layout_width="130dp"
+                android:layout_height="30dp"
+                android:text="추천하기"
+                android:id="@+id/item_reco"
+                android:layout_marginLeft="8dp"
+                android:gravity="center_vertical|center_horizontal"
+                android:background="@drawable/btn_border"
+                android:textColor="@color/black"
+                android:layout_gravity="center"
+                android:layout_marginRight="20dp" />
+
+            <Button
+                android:textSize="14dp"
+                android:layout_width="130dp"
+                android:layout_height="30dp"
+                android:text="편집하기"
+                android:id="@+id/item_edit"
+                android:layout_marginRight="8dp"
+                android:gravity="center_vertical|center_horizontal"
+                android:background="@drawable/btn_border"
+                android:textColor="@color/black"
+                android:layout_gravity="center"
+                android:layout_marginLeft="20dp" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+</ScrollView>
+
+

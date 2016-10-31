@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:gravity="center"
+    android:background="@color/background_material_light">
+
+    <TextView
+        android:textSize="16dp"
+        android:textColor="@color/black"
+        android:lineSpacingExtra="3dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:id="@+id/tv_trans_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="none"
+        android:layout_alignParentTop="true"
+        android:layout_weight="1"
+        android:layout_marginLeft="10dp" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:weightSum="1"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_vertical"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="5dp">
+
+        <ImageButton
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:id="@+id/reco_bnt"
+            android:background="@drawable/reco_icon" />
+
+        <TextView
+            android:textSize="14dp"
+            android:textColor="@color/black"
+            android:lineSpacingExtra="3dp"
+            android:ellipsize="end"
+            android:id="@+id/reco"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="00"
+            android:layout_weight="0.90"
+            android:layout_marginLeft="8dp" />
+
+    </LinearLayout>
+
+</LinearLayout>

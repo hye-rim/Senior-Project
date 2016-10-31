@@ -1,0 +1,133 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activity.Test.Solving.TestSolveWordFragment"
+    android:background="@color/background_material_light">
+
+<!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="testname"
+            android:id="@+id/testname"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="18dp" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/testsetting"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="120dp"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:textSize="15dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="0"
+                android:id="@+id/score"
+                android:textSize="15dp"
+                android:gravity="right"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="/"
+                android:id="@+id/textView4"
+                android:textSize="15dp"
+                android:gravity="right"
+                android:layout_marginRight="3dp"
+                android:layout_marginLeft="3dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="00"
+                android:id="@+id/total"
+                android:textSize="15dp"
+                android:gravity="right"
+                android:layout_marginRight="3dp"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:layout_width="120dp"
+                android:layout_height="50dp"
+                android:text="다음 >"
+                android:id="@+id/next"
+                android:gravity="center_vertical|right"
+                android:textColor="@color/black"
+                android:textSize="15dp"
+                android:visibility="invisible"/>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:text="remember"
+            android:id="@+id/word"
+            android:gravity="top|center"
+            android:textColor="@color/black"
+            android:textSize="20dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp" />
+
+        <Button
+            android:layout_width="220dp"
+            android:layout_height="35dp"
+            android:text="가다"
+            android:id="@+id/example1"
+            android:background="@drawable/btn_click"
+            android:textSize="18dp"
+            android:textColor="@color/black" />
+
+        <Button
+            android:layout_width="220dp"
+            android:layout_height="35dp"
+            android:text="기억하다"
+            android:id="@+id/example2"
+            android:background="@drawable/btn_click"
+            android:layout_marginTop="15dp"
+            android:textSize="18dp"
+            android:textColor="@color/black" />
+
+        <Button
+            android:layout_width="220dp"
+            android:layout_height="35dp"
+            android:text="추천하다"
+            android:id="@+id/example3"
+            android:background="@drawable/btn_click"
+            android:layout_marginTop="15dp"
+            android:textSize="18dp"
+            android:textColor="@color/black" />
+
+        <Button
+            android:layout_width="220dp"
+            android:layout_height="35dp"
+            android:text="차리다"
+            android:id="@+id/example4"
+            android:background="@drawable/btn_click"
+            android:layout_marginTop="15dp"
+            android:textSize="18dp"
+            android:textColor="@color/black" />
+
+    </LinearLayout>
+
+</FrameLayout>

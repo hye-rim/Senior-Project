@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:gravity="center_vertical">
+    <TextView
+        android:textSize="16dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="3dp"
+        android:layout_marginLeft="20dp"
+        android:textColor="@color/black"
+        android:lineSpacingExtra="3dp"
+        android:ellipsize="end"
+        android:id="@+id/tv_act_test_name"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true" />
+    <TextView
+        android:textSize="16dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="3dp"
+        android:layout_marginRight="20dp"
+        android:textColor="@color/fuzzy_peach"
+        android:lineSpacingExtra="3dp"
+        android:ellipsize="end"
+        android:id="@+id/tv_act_test_per"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/tv_act_test_name"
+        android:layout_toLeftOf="@+id/tv_act_test_kinds"
+        android:gravity="right" />
+    <TextView
+        android:textSize="14dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="3dp"
+        android:layout_marginRight="20dp"
+        android:textColor="@color/black"
+        android:lineSpacingExtra="3dp"
+        android:ellipsize="end"
+        android:id="@+id/tv_act_test_kinds"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:gravity="right" />
+</RelativeLayout>

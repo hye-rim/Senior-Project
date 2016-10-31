@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.onpuri.Activity.Test.Solving.TestSolveFragment"
+    android:background="@color/more_light_gray"
+    android:orientation="vertical">
+
+    <!-- TODO: Update blank fragment layout -->
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="5dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="시험 목록"
+            android:id="@+id/textView"
+            android:textSize="18dp"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/black" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="3dp">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical|right"
+                android:layout_marginRight="10dp"
+                android:id="@+id/linearLayout"
+                android:layout_marginBottom="5dp">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:text="지정"
+                    android:id="@+id/point"
+                    android:background="@color/fuzzy_peach"
+                    android:textColor="@color/black"
+                    android:textSize="11dp" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:text="전체"
+                    android:id="@+id/all"
+                    android:background="@drawable/minibtn_border"
+                    android:layout_marginRight="5dp"
+                    android:textColor="@color/black"
+                    android:textSize="11dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical|right"
+                android:layout_marginRight="10dp"
+                android:id="@+id/testsetting">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:text="단어"
+                    android:id="@+id/word"
+                    android:background="@color/fuzzy_peach"
+                    android:textColor="@color/black"
+                    android:textSize="11dp" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:text="문장"
+                    android:id="@+id/sen"
+                    android:background="@drawable/minibtn_border"
+                    android:layout_marginRight="5dp"
+                    android:textColor="@color/black"
+                    android:textSize="11dp" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:scrollbars="vertical"
+        app:layoutManager="LinearLayoutManager"
+        android:id="@+id/test_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:listitem="@layout/test_list"
+        android:background="@color/more_light_gray"
+        android:layout_alignParentTop="true"
+        android:layout_weight="1">
+    </android.support.v7.widget.RecyclerView>
+
+</LinearLayout>
+

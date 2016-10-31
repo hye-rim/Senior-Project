@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/background_material_light">
+    <TextView
+        android:background="@color/fuzzy_peach"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text= "     문의사항"
+        android:textColor="@color/black"
+        android:textSize="18dp"
+        android:gravity="center_vertical" />
+    <LinearLayout
+        android:background="@color/background_material_light"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
+        <EditText
+            android:id="@+id/tv_question"
+            android:textSize="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:padding="15dp"
+            android:layout_margin="30dp"
+            android:background="@color/material_grey_300"
+            android:gravity="start"
+            android:hint="문의사항을 입력해주세요. " />
+        <LinearLayout
+            android:background="@color/background_material_light"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center">
+            <Button
+                android:textColor="@color/primary_text_default_material_light"
+                android:background="@drawable/btn_border"
+                android:layout_marginRight="20dp"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:id="@+id/btn_question_ok"
+                android:text="확인"
+                android:textSize="16dp"/>
+            <Button
+                android:textColor="@color/primary_text_default_material_light"
+                android:background="@drawable/btn_border"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:id="@+id/btn_question_cancel"
+                android:text="취소"
+                android:textSize="16dp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activity.Test.Creating.TestMakingWordFragment"
+    android:background="@color/background_material_light"
+    android:fitsSystemWindows="true"
+   >
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:text="다음"
+                android:id="@+id/btn_making_word_next"
+                android:background="@color/background_material_light"
+                android:textSize="14dp"
+                android:textColor="@color/black" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="title"
+            android:id="@+id/tv_making_word_title"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="16dp" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00"
+                android:id="@+id/tv_making_word_now"
+                android:textSize="15dp"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="/"
+                android:id="@+id/textView4"
+                android:textSize="15dp"
+                android:layout_marginRight="3dp"
+                android:layout_marginLeft="3dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00"
+                android:id="@+id/tv_making_word_max"
+                android:textSize="15dp"
+                android:layout_marginRight="3dp"
+                android:textColor="@color/black" />
+        </LinearLayout>
+
+        <EditText
+            android:layout_width="220dp"
+            android:layout_height="50dp"
+            android:hint="문제입력"
+            android:id="@+id/et_making_word_problem"
+            android:singleLine="true"
+            android:nextFocusDown="@+id/et_making_word_example1"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="25dp"
+            android:layout_marginTop="70dp"
+            android:layout_marginBottom="70dp" />
+
+        <RadioGroup
+            android:id="@+id/radio_example"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:checkedButton="@+id/radio_example1">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <RadioButton
+                    android:buttonTint="@color/fuzzy_peach"
+                    android:layout_marginRight="20dp"
+                    android:id="@+id/radio_example1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <EditText
+                    android:layout_width="220dp"
+                    android:layout_height="35dp"
+                    android:hint="보기 1"
+                    android:singleLine="true"
+                    android:nextFocusDown="@+id/et_making_word_example2"
+                    android:gravity="center"
+                    android:id="@+id/et_making_word_example1"
+                    android:background="@drawable/btn_border"
+                    android:textSize="18dp"
+                    android:textColor="@color/black" />
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_marginTop="15dp"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content">
+            <RadioButton
+                android:buttonTint="@color/fuzzy_peach"
+                android:layout_marginRight="20dp"
+                android:id="@+id/radio_example2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+                <EditText
+                    android:layout_width="220dp"
+                    android:layout_height="35dp"
+                    android:hint="보기 2"
+                    android:singleLine="true"
+                    android:nextFocusDown="@+id/et_making_word_example3"
+                    android:gravity="center"
+                    android:id="@+id/et_making_word_example2"
+                    android:background="@drawable/btn_border"
+                    android:textSize="18dp"
+                    android:textColor="@color/black" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_marginTop="15dp"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content">
+                <RadioButton
+                    android:buttonTint="@color/fuzzy_peach"
+                    android:layout_marginRight="20dp"
+                    android:id="@+id/radio_example3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <EditText
+                    android:layout_width="220dp"
+                    android:layout_height="35dp"
+                    android:hint="보기 3"
+                    android:singleLine="true"
+                    android:nextFocusDown="@+id/et_making_word_example4"
+                    android:gravity="center"
+                    android:id="@+id/et_making_word_example3"
+                    android:background="@drawable/btn_border"
+                    android:textSize="18dp"
+                    android:textColor="@color/black" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginTop="15dp"
+                android:orientation="horizontal"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content">
+                <RadioButton
+                    android:buttonTint="@color/fuzzy_peach"
+                    android:layout_marginRight="20dp"
+                    android:id="@+id/radio_example4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <EditText
+                    android:layout_width="220dp"
+                    android:layout_height="35dp"
+                    android:hint="보기 4"
+                    android:singleLine="true"
+                    android:gravity="center"
+                    android:id="@+id/et_making_word_example4"
+                    android:background="@drawable/btn_border"
+                    android:textSize="18dp"
+                    android:textColor="@color/black" />
+            </LinearLayout>
+
+        </RadioGroup>
+
+
+    </LinearLayout>
+
+</ScrollView>

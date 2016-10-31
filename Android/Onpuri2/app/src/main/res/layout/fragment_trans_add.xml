@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_material_light">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:orientation="vertical"
+        android:backgroundTint="#662727"
+        android:backgroundTintMode="src_in">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/tv_sentence"
+            android:textSize="17dp"
+            android:text="영어 문장 내용"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="10dp"/>
+    </LinearLayout>
+    <EditText
+        android:id="@+id/new_trans"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:hint="해석을 입력하세요"
+        android:background="@color/material_grey_100"
+        android:gravity="top"
+        android:layout_gravity="center"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:textColor="#060606"
+        android:textSize="15dp"
+        android:layout_marginTop="10dp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:orientation="horizontal"
+        android:gravity="center">
+        <Button
+            android:id="@+id/btn_new_trans"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:text="등록"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/btn_border"
+            android:textColor="@android:color/black"/>
+        <Button
+            android:id="@+id/btn_new_trans_back"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:text="취소"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/btn_border"
+            android:textColor="@android:color/black"/>
+
+    </LinearLayout>
+</LinearLayout>

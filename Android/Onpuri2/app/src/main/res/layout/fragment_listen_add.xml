@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.onpuri.Activity.Test.Solving.TestSolveStartFrgment"
+    android:background="@color/background_material_light">
+
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:orientation="vertical"
+        android:backgroundTintMode="src_in">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/tv_sentence"
+            android:textSize="17dp"
+            android:text="영어 문장 내용"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="10dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="350dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:background="@color/background_material_light">
+
+        <Button
+            android:id="@+id/listen"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:text="녹음"
+            android:layout_gravity="center_horizontal"
+            android:background="@color/fuzzy_peach"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="5dp" />
+
+        <Button
+            android:id="@+id/play"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:text="재생"
+            android:layout_gravity="center_horizontal"
+            android:background="@color/fuzzy_peach"
+            android:textColor="@color/black"
+            android:layout_marginTop="5dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/btn_new_listen"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:text="등록"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/btn_border"
+            android:textColor="@android:color/black"/>
+        <Button
+            android:id="@+id/btn_new_listen_back"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:text="취소"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/btn_border"
+            android:textColor="@android:color/black"/>
+
+    </LinearLayout>
+</LinearLayout>
+</FrameLayout>
