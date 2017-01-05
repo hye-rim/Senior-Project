@@ -16,5 +16,5 @@ This project provides the personalized english learning environment by analyzing
 #
 This is a graduation project at School of Computer Science and Engineering, Koreatech.
 
-<img src="https://github.com/hye-rim/Images/blob/master/senior-project-poster.jpg" width="300">
+<img src="https://github.com/hye-rim/Images/blob/master/senior-project-poster.jpg" width="500">
 
